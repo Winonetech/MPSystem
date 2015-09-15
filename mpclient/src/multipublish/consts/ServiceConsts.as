@@ -1,0 +1,175 @@
+package multipublish.consts
+{
+	
+	/**
+	 * 
+	 * 定义所有的终端指令常量。
+	 * 
+	 */
+	
+	import cn.vision.core.NoInstance;
+	
+	
+	public final class ServiceConsts extends NoInstance
+	{
+		
+		/**
+		 * 
+		 * 地址推送。<br>
+		 * 默认值为“UPSC:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_DATA_PUSH:String = "UPSC:";
+		
+		
+		/**
+		 * 
+		 * 终端上线。
+		 * 默认值为“ONLI:”。
+		 * 
+		 */
+		
+		public static const FORWARD_ON_LINE:String = "ONLI:";
+		
+		
+		/**
+		 * 
+		 * 终端离线。
+		 * 默认值为“ONLI:”。
+		 * 
+		 */
+		
+		public static const FORWARD_OFF_LINE:String = "OFLI:";
+		
+		
+		/**
+		 * 
+		 * 文件下载上报。
+		 * 默认值为“FTPS:”。
+		 * 
+		 */
+		
+		public static const FILE_DOWNLOAD:String = "FTPS:";
+		
+		
+		/**
+		 * 
+		 * 上传日志。
+		 * 默认值为“UPLG:”。
+		 * 
+		 */
+		
+		public static const UPLOAD_LOG:String = "UPLG:";
+		
+		
+		/**
+		 * 
+		 * 文件下载进度上报。
+		 * 默认值为“PRGS:”。
+		 * 
+		 */
+		
+		public static const FILE_PROGRESS:String = "PRGS:";
+		
+		
+		/**
+		 * 
+		 * 接受开始文件下载进度上报。
+		 * 默认值为“DLPS:”。
+		 * 
+		 */
+		
+		public static const REPORT_FILE_START:String = "DLPS:";
+		
+		
+		/**
+		 * 
+		 * 接受结束文件下载进度上报。
+		 * 默认值为“DLPT:”。
+		 * 
+		 */
+		
+		public static const REPORT_FILE_END:String = "DLPT:";
+		
+		
+		/**
+		 * 
+		 * 终端心跳。<br>
+		 * 默认值为“HRBT:”。
+		 * 
+		 */
+		
+		public static const FORWARD_HEART_BEAT:String = "HRBT:";
+		
+		
+		/**
+		 * 
+		 * 重启终端。<br>
+		 * 默认值为“REBO:”。
+		 * 
+		 */
+		
+		public static const REBOOT_TERMINAL:String = "REBO:";
+		
+		
+		/**
+		 * 
+		 * 重启播放器。<br>
+		 * 默认值为“UIRE:”。
+		 * 
+		 */
+		
+		public static const RESTART_PLAYER:String = "UIRE:";
+		
+		
+		/**
+		 * 
+		 * 声音设置。<br>
+		 * 默认值为“VOLU:”。
+		 * 
+		 */
+		
+		public static const REGULATE_VOL:String = "VOLU:";
+		
+		
+		/**
+		 * 
+		 * 设定关机时间。<br>
+		 * 默认值为“SHDO:”。
+		 * 
+		 */
+		
+		public static const SET_SHUTDOWN_TIME:String = "SHDO:";
+		
+		
+		/**
+		 * 
+		 * 收到截图。<br>
+		 * 默认值为“SCRN:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_SHOTCUT:String = "SCRN:";
+		
+		
+		/**
+		 * 
+		 * 发送截图。<br>
+		 * 默认值为“CAPT:”。
+		 * 
+		 */
+		
+		public static const SEND_SHOTCUT:String = "CAPT:";
+		
+		/**
+		 * 
+		 * 地址推送。<br>
+		 * 默认值为“UPSC:”。
+		 * 
+		 */
+		
+		public static const LOCK_TIME:String = "SYTI:";
+		
+	}
+}

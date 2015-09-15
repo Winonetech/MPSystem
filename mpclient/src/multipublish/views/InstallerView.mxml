@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vw:MPView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s ="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   xmlns:vw="multipublish.views.*"
+		   xmlns:ct="multipublish.controls.*"
+		   horizontalCenter="0" verticalCenter="0"
+		   width="600" height="420"
+		   click="handlerInputClick(event)" xmlns:controls="com.winonetech.controls.*">
+	<s:Panel title="{language.setting}"
+			 width="100%" height="100%"
+			 skinClass="multipublish.skins.MPPanelSkin">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"
+							  paddingBottom="10"
+							  paddingLeft="10"
+							  paddingRight="10"
+							  paddingTop="10"/>
+		</s:layout>
+		<mx:TabNavigator width="100%" height="100%" creationPolicy="all">
+			<s:NavigatorContent width="100%" height="100%" label="{language.terminal}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					<s:FormItem label="{language.language}">
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<s:RadioButton label="中文" value="中文" group="{languageGroup}"/>
+						<s:RadioButton label="English" value="English" group="{languageGroup}"/>
+					</s:FormItem>
+					<s:FormItem label="{language.companyID}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.integerRequired}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.companyID}" name="companyID"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.deviceNO}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.integer}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.deviceNO}" name="deviceNO"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.terminalNO}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.manual}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<s:Label color="0xFF0000" text="{config.terminalNO}"/>
+					</s:FormItem>
+					<s:FormItem label="{language.packageData}" visible="{!config.exportData}">
+						<s:Button label="{language.labelImport}" click="import_clickHandler(event)"/>
+					</s:FormItem>
+				</s:Form>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="{language.http}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					<s:FormItem label="{language.httpHost}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.ipRequired}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.httpHost}" name="httpHost"
+										textAlign="left" restrict="0-9."
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.httpPort}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultPort80}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.httpPort}" name="httpPort"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+				</s:Form>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="{language.socket}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					<s:FormItem label="{language.socketHost}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.ipRequired}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.socketHost}" name="socketHost"
+										textAlign="left" restrict="0-9."
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.messagePort}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultPort6666}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.messagePort}" name="messagePort"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.capturePort}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultPort6668}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.capturePort}" name="capturePort"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.heartbeatTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime30}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.heartbeatTime}" name="heartbeatTime"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.pushwaitTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime5}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.pushwaitTime}" name="pushwaitTime"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.reconnectTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime60}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.reconnectTime}" name="reconnectTime"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+				</s:Form>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="{language.ftp}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					<s:FormItem label="{language.ftpHost}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.ipRequired}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.ftpHost}" name="ftpHost"
+										textAlign="left" restrict="0-9."
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.ftpPort}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultPort21}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.ftpPort}" name="ftpPort"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.ftpUserName}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.required}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.ftpUserName}" name="ftpUserName"
+										textAlign="left"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.ftpPassWord}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.required}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.ftpPassWord}" name="ftpPassWord"
+										textAlign="left"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+				</s:Form>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="{language.other}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					<s:FormItem label="{language.support}">
+						<controls:Field text="{config.support}" name="support"
+										textAlign="left"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.welcome}">
+						<controls:Field text="{config.welcome}" name="welcome"
+										textAlign="left"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.netTimeoutTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime30}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.netTimeoutTime}" name="netTimeoutTime"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.maxDurationTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime7200}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.maxDurationTime}" name="maxDurationTime"
+										textAlign="left" restrict="0-9"
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.slideTweenTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime1_5}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.slideTweenTime}" name="slideTweenTime"
+										textAlign="left" restrict="0-9."
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.zoomTweenTime}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultTime1}"></s:Label>
+							</s:VGroup>
+						</s:helpContent>
+						<controls:Field text="{config.zoomTweenTime}" name="zoomTweenTime"
+										textAlign="left" restrict="0-9."
+										change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+				</s:Form>
+			</s:NavigatorContent>
+		</mx:TabNavigator>
+		<s:Group>
+			<s:layout>
+				<s:HorizontalLayout gap="50" horizontalAlign="center"/>
+			</s:layout>
+			<s:Button label="{labelSubmit}" click="submit_clickHandler(event)"/>
+			<s:Button label="{labelCancel}" click="cancel_clickHandler(event)"/>
+		</s:Group>
+	</s:Panel>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="languageGroup" selectedValue="{language.data}"
+							change="language_changeHandler(event)"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.DebugUtil;
+			
+			import input.Input;
+			import input.utils.TextUtil;
+			
+			import multipublish.core.MPCPresenter;
+			import multipublish.vo.Language;
+			
+			import spark.events.TextOperationEvent;
+			
+			
+			/**
+			 * @private
+			 */
+			private function setProperty($name:String, $value:*):void
+			{
+				config[$name] = $value;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function setLanguage($value:String):void
+			{
+				language.data = $value;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerInputClick($e:MouseEvent):void
+			{
+				var property:String = TextUtil.checkSPTextInput($e.target.parent.parent);
+				if (property && ! config.exportData) Input.open($e.target.parent.parent, property);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function textinput_changeHandler($e:TextOperationEvent):void
+			{
+				var field:Field = Field($e.currentTarget);
+				DebugUtil.execute(setProperty, false, field.name, field.text);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function language_changeHandler(event:Event):void
+			{
+				DebugUtil.execute(setLanguage, false, languageGroup.selectedValue);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function submit_clickHandler($e:MouseEvent):void
+			{
+				if (onSubmit != null) 
+				{
+					onSubmit();
+					onSubmit = null;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function cancel_clickHandler(event:MouseEvent):void
+			{
+				if (onCancel != null) 
+				{
+					onCancel();
+					onCancel = null;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function import_clickHandler(event:MouseEvent):void
+			{
+				presenter.importData();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function get language():Language
+			{
+				return config.language;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function get presenter():MPCPresenter
+			{
+				return MPCPresenter.instance;
+			}
+			
+			
+			/**
+			 * 
+			 * 提交回调函数。
+			 * 
+			 */
+			
+			public var onSubmit:Function;
+			
+			
+			/**
+			 * 
+			 * 取消回调函数。
+			 * 
+			 */
+			
+			public var onCancel:Function;
+			
+			
+			/**
+			 * 
+			 * 取消回调函数。
+			 * 
+			 */
+			
+			public var onImport:Function;
+			
+			
+			/**
+			 * 
+			 * 提交按钮的标签。
+			 * 
+			 */
+			
+			[Bindable]
+			public var labelSubmit:String = "提交";
+			
+			
+			/**
+			 * 
+			 * 取消按钮的标签。
+			 * 
+			 */
+			
+			[Bindable]
+			public var labelCancel:String = "取消";
+			
+		]]>
+	</fx:Script>
+</vw:MPView>

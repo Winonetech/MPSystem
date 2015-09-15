@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<el:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:el="multipublish.views.elements.*"
+				xmlns:ct="com.winonetech.controls.*">
+	<ct:Browser width="100%" height="100%" id="browser" y="70"
+				htmlDOMInitialize="handlerBrowserInitialize(event)"
+				complete="handlerBrowserComplete(event)"/>
+	
+	<ct:SwapBtn upSource="assets/images/backwardUp.png"
+				downSource="assets/images/backwardDown.png"
+				left="10" top="10" id="backwardBtn" enabled="false"
+				click="browser.historyBack()"/>
+	<ct:SwapBtn upSource="assets/images/forwardUp.png"
+				downSource="assets/images/forwardDown.png"
+				left="90" top="10" id="forwardBtn" enabled="false"
+				click="browser.historyForward()"/>
+	<ct:SwapBtn upSource="assets/images/refreshUp.png"
+				downSource="assets/images/refreshDown.png"
+				left="170" top="10" enabled="{browser.location != null}"
+				click="browser.reload()"/>
+	<ct:SwapBtn upSource="assets/images/homepageUp.png"
+				downSource="assets/images/homepageDown.png"
+				left="250" top="10" enabled="{browser.home != null}"
+				click="browser.location = browser.home"/>
+	
+	<ct:SwapBtn upSource="assets/images/backUp.png"
+				downSource="assets/images/backDown.png"
+				right="10" top="10" click="back()"/>
+	<fx:Declarations>
+		<s:Fade id="fadeIn"  alphaFrom="0" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="500"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.HTTPUtil;
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.vo.elements.Website;
+			
+			import input.Input;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				if (website && website.url)
+					browser.location = browser.home = HTTPUtil.normalize(website.url);
+				browser.soundTransform.volume = 100;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				browser.location = browser.home = "about:blank";
+				browser.soundTransform.volume = 0;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				loaded = false;
+				browser.location = browser.home = "about:blank";
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				website = data as Website;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerBrowserInitialize(event:Event):void
+			{
+				log(MPTipConsts.RECORD_WEBSITE_OPEN, browser);
+				
+				backwardBtn.enabled = browser.historyBackwardable;
+				forwardBtn .enabled = browser.historyForwardable;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerBrowserComplete(event:Event):void
+			{
+				log(MPTipConsts.RECORD_WEBSITE_COMP, browser);
+				
+				for each (var item:* in browser.inputs)
+				{
+					item.onclick = function(o:*):void
+					{
+						Input.open(o.srcElement, "value");
+					};
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var website:Website;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var loaded:Boolean = true;
+			
+		]]>
+	</fx:Script>
+</el:ElementView>

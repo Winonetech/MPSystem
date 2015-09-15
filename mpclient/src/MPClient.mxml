@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:MainApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:ct="com.winonetech.controls.*"
+					creationComplete="init()">
+	<fx:Script>
+		<![CDATA[
+			
+			/**
+			 * 
+			 * 客户端主入口。
+			 * 
+			 */
+			
+			
+			import multipublish.core.MPCPresenter;
+			
+			
+			/**
+			 * @private
+			 */
+			private function init():void
+			{
+				presenter = MPCPresenter.instance;
+				presenter.start(this);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var presenter:MPCPresenter;
+			
+		]]>
+	</fx:Script>
+</ct:MainApplication>

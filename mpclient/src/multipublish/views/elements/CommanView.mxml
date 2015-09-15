@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<el:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:el="multipublish.views.elements.*"
+				xmlns:ct="com.winonetech.controls.*">
+	<s:Group id="container" width="100%" height="100%"
+			 mouseChildren="{navigatable}"/>
+	<ct:SwapBtn upSource="assets/images/prevUp.png"
+				downSource="assets/images/prevDown.png"
+				width="100" height="100"
+				visible="{navigatable &amp;&amp; navigate}"
+				verticalCenter="0" left="10"
+				enabled="{!tweening}" click="tween( width)"/>
+	<ct:SwapBtn upSource="assets/images/nextUp.png"
+				downSource="assets/images/nextDown.png"
+				width="100" height="100"
+				visible="{navigatable &amp;&amp; navigate}"
+				verticalCenter="0" right="10"
+				enabled="{!tweening}" click="tween(-width)"/>
+	<ct:SwapBtn upSource="assets/images/backUp.png"
+				downSource="assets/images/backDown.png"
+				width="100" height="100"
+				right="10" top="10" 
+				visible="{navigatable}"
+				enabled="{!tweening}" click="back()"/>
+	<fx:Script>
+		<![CDATA[
+			
+			import caurina.transitions.Tweener;
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.consts.DocumentTypeConsts;
+			import multipublish.core.mp;
+			import multipublish.views.documents.*;
+			import multipublish.vo.documents.Document;
+			import multipublish.vo.elements.Comman;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				if (view) 
+				{
+					view.addEventListener(ControlEvent.STOP, handlerViewStop);
+					view.play();
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				if (view) 
+				{
+					view.removeEventListener(ControlEvent.STOP, handlerViewStop);
+					view.stop();
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				container && container.removeAllElements();
+				if (view) view.reset();
+				view = last = fore = next = prev = null;
+				neigh = index = 0;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				initializeType();
+				initializeTouch();
+				comman = data as Comman;
+				if (comman)
+				{
+					fore && container.removeElement(fore);
+					last && container.removeElement(last);
+					view = generateView();
+					fore = generateNext();
+					last = generateNext(false);
+					navigate = fore && last;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function generateView():DocumentView
+			{
+				var l:uint = comman.documents.length;
+				if (l)
+				{
+					var c:Document = comman.documents[index];
+					var t:uint = c ? c.type : 0;
+					var result:DocumentView = type[t] ? new type[t] : null;
+					if (result)
+					{
+						result.width  = width;
+						result.height = height;
+						result.time   = comman.time;
+						result.loop   =!automatic;
+						result.data   = c;
+						container.addElement(result);
+						neigh = index;
+					}
+					else
+					{
+						index ++;
+						if (index != neigh)
+							result = generateView();
+					}
+				}
+				return result;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function generateNext($side:Boolean = true):DocumentView
+			{
+				var l:uint = comman.documents.length;
+				if (l)
+				{
+					$side ? neigh ++ : neigh --;
+					if (neigh != index)
+					{
+						var c:Document = comman.documents[neigh];
+						var t:uint = c ? c.type : 0;
+						var result:DocumentView = type[t] ? new type[t] : null;
+						if (result) 
+						{
+							result.width  = width;
+							result.height = height;
+							result.time   = comman.time;
+							result.loop   =!automatic;
+							result.data   = c;
+							result.x      = $side ? width : -width;
+							container.addElement(result);
+							neigh = index;
+						}
+					}
+					if(!result && neigh != index) result = generateNext($side);
+				}
+				return result;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function initializeTouch():void
+			{
+				container.addEventListener(MouseEvent.MOUSE_DOWN, handlerMouseDown);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function initializeType():void
+			{
+				if(!type)
+				{
+					type = {};
+					type[DocumentTypeConsts.IMAGE] = ImageDocumentView;
+					type[DocumentTypeConsts.VIDEO] = VideoDocumentView;
+					type[DocumentTypeConsts.FLASH] = FlashDocumentView;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function tween($distance:Number):void
+			{
+				var d:Number = $distance;
+				if (d)
+				{
+					side = d < 0;
+					prev = view;
+					next = side ? fore : last;
+					if (prev && next)
+					{
+						var b:Number = Math.abs(d);
+						var f:Boolean = b > distance;
+						var a:Number = f ? (side ? -width : width) : 0;
+						var p:Number = b / width;
+						var t:Number = Math.max(.3, p * config.slideTweenTime);
+						if (f) tweening = true;
+						Tweener.addTween(container, {x:a, time:t, 
+							onComplete:callbackTweenOver, 
+							onCompleteParams:[f]});
+					} else tweening = false;
+				} else tweening = false;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function callbackTweenOver($generate:Boolean = true):void
+			{
+				if ($generate)
+				{
+					container.x = 0;
+					container.removeElement(side ? last : fore);
+					container.removeElement(view);
+					var gcable:Boolean = (view.data as Document).type == DocumentTypeConsts.VIDEO;
+					view.removeEventListener(ControlEvent.STOP, handlerViewStop);
+					view.reset();
+					view = next;
+					view.x = 0;
+					index += side ? 1 : -1;
+					neigh = index;
+					fore = generateNext();
+					last = generateNext(false);
+					view.addEventListener(ControlEvent.STOP, handlerViewStop);
+					view.play();
+					
+					next = prev = null;
+					
+					if (gcable) System.gc();
+				}
+				
+				tweening = false;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerViewStop($e:ControlEvent):void
+			{
+				if (view)
+				{
+					view.removeEventListener(ControlEvent.STOP, handlerViewStop);
+				}
+				if (automatic)
+				{
+					if (down)
+					{
+						stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
+						stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
+					}
+					tween(-width);
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerMouseDown($e:MouseEvent):void
+			{
+				if(navigatable && navigate && !tweening)
+				{
+					var temp:Boolean = (!automatic && (view is FlashDocumentView) && $e.target != view);
+					if(!temp)
+					{
+						down = true;
+						tweening = true;
+						stage.addEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
+						stage.addEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
+						start = mouseX;
+					}
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerMouseMove($e:MouseEvent):void
+			{
+				container.x = mouseX - start;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerMouseUp($e:MouseEvent):void
+			{
+				if (navigate && tweening)
+				{
+					down = false;
+					stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
+					stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
+					var d:Number = mouseX - start;
+					tween((Math.abs(d) > distance) ? (d > 0 ? width - d : -width - d) : d);
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function get index():int
+			{
+				return mp::index;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function set index($value:int):void
+			{
+				var l:int = comman && comman.documents 
+					? comman.documents.length : 0;
+				if (l)
+				{
+					if ($value < 0) $value = l - 1;
+					if ($value>= l) $value = 0;
+					mp::index = $value;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function get neigh():int
+			{
+				return mp::neigh;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function set neigh($value:int):void
+			{
+				var l:int = comman && comman.documents 
+					? comman.documents.length : 0;
+				if (l)
+				{
+					if ($value>= l) $value = 0;
+					if ($value < 0) $value = l - 1;
+					mp::neigh = $value;
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 是否可以导航。
+			 * 
+			 */
+			
+			[Bindable]
+			public var navigatable:Boolean = true;
+			
+			
+			/**
+			 * 
+			 * 自动切换。
+			 * 
+			 */
+			
+			public var automatic:Boolean = false;
+			
+			
+			/**
+			 * @private
+			 */
+			private var distance:Number = 150;
+			
+			/**
+			 * @private
+			 */
+			private var start:Number;
+			
+			/**
+			 * @private
+			 */
+			private var side:Boolean;
+			
+			/**
+			 * @private
+			 */
+			private var type:Object;
+			
+			/**
+			 * @private
+			 */
+			private var comman:Comman;
+			
+			/**
+			 * @private
+			 */
+			private var last:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var fore:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var view:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var prev:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var next:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var down:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var navigate:Boolean;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var index:int;
+			
+			/**
+			 * @private
+			 */
+			mp var neigh:int;
+			
+		]]>
+	</fx:Script>
+</el:ElementView>

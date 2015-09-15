@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dc:DocumentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s ="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" 
+				 xmlns:dc="multipublish.views.documents.*"
+				 cacheAsBitmap="true">
+	<s:Image id="image" width="100%" height="100%"
+			 fillMode="scale" scaleMode="zoom"
+			 horizontalAlign="center" verticalAlign="middle"
+			 skinClass="multipublish.skins.ImageBrokenSkin"
+			 source="{media.path}" smooth="true"/>
+</dc:DocumentView>

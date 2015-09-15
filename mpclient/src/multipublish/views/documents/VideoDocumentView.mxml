@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dc:DocumentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s ="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" 
+				 xmlns:dc="multipublish.views.documents.*">
+	<s:VideoPlayer id="video" loop="{loop}"
+				   scaleMode="zoom" autoPlay="false"
+				   autoRewind="false"
+				   autoDisplayFirstFrame="true"
+				   width="100%" height="100%"
+				   source="{media.path}" complete="stop()"
+				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"/>
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.vo.documents.Document;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				video && video.source && callLater(video.play);
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				if (video)
+				{
+					video.source = null;
+					System.gc();
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				video && video.stop();
+			}
+			
+		]]>
+	</fx:Script>
+</dc:DocumentView>

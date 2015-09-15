@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vw:MPView xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s ="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:cp="com.winonetech.components.*"
+		   xmlns:vw="multipublish.views.*">
+	<vw:states>
+		<s:State name="loading"/>
+		<s:State name="display"/>
+	</vw:states>
+	<cp:ProgressView id="progress" includeIn="loading" data="{data.caches}"
+					 horizontalCenter="0" verticalCenter="0"
+					 skinClass="multipublish.skins.MPPanelSkin"/>
+	<s:Group id="container" includeIn="display"
+			 horizontalCenter="0" verticalCenter="0"/>
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.ClassUtil;
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.core.mp;
+			
+			import mx.events.FlexEvent;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				if (data)
+				{
+					if (data.ready)
+					{
+						view && view.play();
+					}
+					else
+					{
+						if (progress)
+						{
+							log(MPTipConsts.RECORD_CACHE_NEED, data);
+							progress.play();
+						}
+					}
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				if (data)
+				{
+					data.ready
+						? (view && view.stop())
+						: (progress && progress.stop());
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			override protected function processReset():void
+			{
+				if (data)
+				{
+					if (data.hasEventListener(ControlEvent.READY))
+						data.removeEventListener(ControlEvent.READY, handlerReady);
+				}
+				if (view)
+				{
+					view.reset();
+					if (container.containsElement(view)) 
+						container.removeElement(view);
+					view = null;
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				if (created)
+				{
+					callbackData();
+				}
+				else
+				{
+					var handlerCreated:Function = function($e:FlexEvent):void
+					{
+						removeEventListener(FlexEvent.CREATION_COMPLETE, handlerCreated);
+						callbackData();
+					};
+					addEventListener(FlexEvent.CREATION_COMPLETE, handlerCreated);
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function prepareView():void
+			{
+				if (ClassUtil.validateSubclass(refer, MPView))
+				{
+					container.addElement(view = new refer);
+					view.addEventListener(ControlEvent.PLAY, handlerPlay);
+					view.addEventListener(ControlEvent.STOP, handlerStop);
+					view.width  = width;
+					view.height = height;
+					view.data   = data;
+					view.horizontalCenter = 0;
+					view.verticalCenter = 0;
+					playing && processPlay();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():void
+			{
+				if (data) 
+				{
+					var ready:Boolean = data.ready;
+					currentState = ready ? "display" : "loading";
+					if (ready)
+						prepareView();
+					else
+						data.addEventListener(ControlEvent.READY, handlerReady, false, 0, true);
+					
+					playing && processPlay();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerPlay($e:ControlEvent):void
+			{
+				play();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerStop($e:ControlEvent):void
+			{
+				stop();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerReady($e:ControlEvent):void
+			{
+				data.removeEventListener(ControlEvent.READY, handlerReady);
+				if (stage)
+				{
+					log(MPTipConsts.RECORD_CACHE_COMP, data);
+					
+					currentState = "display";
+					prepareView();
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 相关的视图。
+			 * 
+			 */
+			
+			public function get refer():Class
+			{
+				return mp::refer;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set refer($value:Class):void
+			{
+				mp::refer = $value;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var view:MPView;
+			
+			/**
+			 * @private
+			 */
+			mp var refer:Class;
+			
+		]]>
+	</fx:Script>
+</vw:MPView>
