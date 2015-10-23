@@ -95,6 +95,7 @@ package multipublish.commands.steps
 				if ($data is Typeset)
 				{
 					var arrange:Arrange = $data.arrange = store.registData($xml, Arrange);
+					arrange.level = 1;
 					handlerAdvertise($xml.descendants("ad")[0], arrange);
 					solv($xml, arrange);
 				}
@@ -105,10 +106,12 @@ package multipublish.commands.steps
 					arrange = store.retrieveData(icon.id, Arrange);
 					if(!arrange)
 					{
-						arrange = store.registData($xml, Arrange);
-						solv($xml, arrange);
+						solv($xml, (icon.element = store.registData($xml, Arrange)) as Arrange);
 					}
-					icon.element = arrange;
+					else
+					{
+						icon.element = arrange;
+					}
 				}
 			}
 		}

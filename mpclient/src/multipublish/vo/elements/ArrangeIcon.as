@@ -16,6 +16,7 @@ package multipublish.vo.elements
 	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
 	
+	import multipublish.consts.ArrangeLayoutType;
 	import multipublish.core.mp;
 	
 	
@@ -52,6 +53,21 @@ package multipublish.vo.elements
 				mp::iconWidth  = getProperty("width"   , Number);
 				mp::iconHeight = getProperty("height"  , Number);
 				mp::time       = getProperty("interval", uint);
+				mp::tween      = getProperty("hasTween", Boolean);
+				
+				mp::layoutType = getProperty("layoutType");
+				
+				if (layoutType == ArrangeLayoutType.CUSTOM_LAYOUT)
+				{
+					list = data["customInfo"];
+					if (list)
+					{
+						mp::customX = XMLUtil.convert(list["x"], Number);
+						mp::customY = XMLUtil.convert(list["y"], Number);
+						mp::customW = XMLUtil.convert(list["w"], Number);
+						mp::customH = XMLUtil.convert(list["h"], Number);
+					}
+				}
 			}
 			else
 			{
@@ -174,6 +190,66 @@ package multipublish.vo.elements
 		
 		/**
 		 * 
+		 * 排版布局类型。
+		 * 
+		 */
+		
+		public function get layoutType():String
+		{
+			return mp::layoutType;
+		}
+		
+		
+		/**
+		 * 
+		 * 自定义排版布局X。
+		 * 
+		 */
+		
+		public function get customX():Number
+		{
+			return mp::customX;
+		}
+		
+		
+		/**
+		 * 
+		 * 自定义排版布局Y。
+		 * 
+		 */
+		
+		public function get customY():Number
+		{
+			return mp::customY;
+		}
+		
+		
+		/**
+		 * 
+		 * 自定义排版布局W。
+		 * 
+		 */
+		
+		public function get customW():Number
+		{
+			return mp::customW;
+		}
+		
+		
+		/**
+		 * 
+		 * 自定义排版布局H。
+		 * 
+		 */
+		
+		public function get customH():Number
+		{
+			return mp::customH;
+		}
+		
+		
+		/**
+		 * 
 		 * 缩略图。
 		 * 
 		 */
@@ -195,6 +271,18 @@ package multipublish.vo.elements
 			return mp::time;
 		}
 		
+		
+		/**
+		 * 
+		 * 有无缓动。
+		 * 
+		 */
+		
+		public function get tween():Boolean
+		{
+			return mp::tween as Boolean;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -209,12 +297,38 @@ package multipublish.vo.elements
 		
 		/**
 		 * 
+		 * 层级关系
+		 * 
+		 */
+		
+		public var level:uint;
+		
+		
+		/**
+		 * 
 		 * 对应的元素。
 		 * 
 		 */
 		
-		public var element:Element;
+		public function get element():Element
+		{
+			return mp::element;
+		}
 		
+		/**
+		 * @private
+		 */
+		public function set element($value:Element):void
+		{
+			mp::element = $value;
+			if (element is Arrange && !element.level) element.level = level;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		mp var element:Element;
 		
 		/**
 		 * @private
@@ -249,12 +363,42 @@ package multipublish.vo.elements
 		/**
 		 * @private
 		 */
+		mp var layoutType:String;
+		
+		/**
+		 * @private
+		 */
+		mp var customX:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var customY:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var customW:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var customH:Number;
+		
+		/**
+		 * @private
+		 */
 		mp var thumbnail:String;
 		
 		/**
 		 * @private
 		 */
 		mp var time:uint;
+		
+		/**
+		 * @private
+		 */
+		mp var tween:Boolean;
 		
 	}
 }

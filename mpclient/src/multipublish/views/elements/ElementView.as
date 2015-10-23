@@ -81,7 +81,7 @@ package multipublish.views.elements
 		protected function drawBackground($w:Number, $h:Number):void
 		{
 			graphics.clear();
-			graphics.beginFill(0xFFFFFF);
+			graphics.beginFill(0xFFFFFF, 0);
 			graphics.drawRect(0, 0, $w, $h);
 			graphics.endFill();
 		}

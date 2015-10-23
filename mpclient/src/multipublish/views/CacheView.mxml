@@ -2,13 +2,13 @@
 <vw:MPView xmlns:fx="http://ns.adobe.com/mxml/2009"
 		   xmlns:s ="library://ns.adobe.com/flex/spark"
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
-		   xmlns:cp="com.winonetech.components.progress.*"
-		   xmlns:vw="multipublish.views.*">
+		   xmlns:cp="com.winonetech.components.*"
+		   xmlns:vw="multipublish.views.*" xmlns:progress="com.winonetech.components.progress.*">
 	<vw:states>
 		<s:State name="loading"/>
 		<s:State name="display"/>
 	</vw:states>
-	<cp:ProgressView id="progress" includeIn="loading" data="{data.caches}"
+	<progress:ProgressView id="progress" includeIn="loading" data="{data.caches}"
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
 	<s:Group id="container" includeIn="display"
@@ -78,9 +78,9 @@
 				if (view)
 				{
 					view.reset();
-					if (container.containsElement(view)) 
+					/* if (container.containsElement(view)) 
 						container.removeElement(view);
-					view = null;
+					view = null; */
 				}
 			}
 			

@@ -124,6 +124,7 @@ package multipublish.commands
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, handlerLoadDefault);
 			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerLoadDefault);
 			loader.removeEventListener(TimeoutEvent.TIMEOUT, handlerLoadDefault);
+			loader.close();
 			
 			if ($e.type == Event.COMPLETE)
 			{

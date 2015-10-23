@@ -66,6 +66,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.ADVERTISE] = handlerAdvertise;
 			type[ElementTypeConsts.GENERAL  ] = handlerComman;
 			type[ElementTypeConsts.WEBSITE  ] = handlerWebsite;
+			type[ElementTypeConsts.OFFICE   ] = handlerOffice;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -133,6 +134,15 @@ package multipublish.commands.steps
 		{
 			$data.parse($xml);
 			return $data.element = new Comman($data.raw);
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerOffice($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new Office($data.raw);
 		}
 		
 		/**
@@ -206,8 +216,7 @@ package multipublish.commands.steps
 				if (model.extra.id == XMLUtil.convert(xml["folder"]["id"]))
 				{
 					make(xml, config.temp[model.extra.id]);
-					if (model.url != url) save(url, xml);
-					else flag(url);
+					model.url != url ? save(url, xml) : flag(url);
 				}
 				else
 				{

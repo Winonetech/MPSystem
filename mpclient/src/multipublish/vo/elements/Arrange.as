@@ -47,6 +47,7 @@ package multipublish.vo.elements
 		public function addElement($icon:ArrangeIcon):void
 		{
 			$icon.parent = this;
+			$icon.level = level + 1;
 			ArrayUtil.push(icons, $icon);
 		}
 		

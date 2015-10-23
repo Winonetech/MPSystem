@@ -10,6 +10,7 @@ package multipublish.views.contents
 	
 	import com.winonetech.controls.Zoomer;
 	import com.winonetech.core.VO;
+	import com.winonetech.core.View;
 	import com.winonetech.tools.LogSaver;
 	
 	import flash.events.MouseEvent;
@@ -19,6 +20,7 @@ package multipublish.views.contents
 	
 	import input.Input;
 	
+	import multipublish.consts.ArrangeLayoutType;
 	import multipublish.consts.ElementTypeConsts;
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -27,6 +29,9 @@ package multipublish.views.contents
 	import multipublish.views.elements.*;
 	import multipublish.vo.contents.Typeset;
 	import multipublish.vo.elements.*;
+	
+	import mx.effects.Sequence;
+	import mx.events.EffectEvent;
 	
 	import spark.components.Group;
 	import spark.effects.Fade;
@@ -57,25 +62,57 @@ package multipublish.views.contents
 		 * 
 		 */
 		
-		public function back($level:uint = 1):void
+		public function back($level:uint = 1, $tween:Boolean = true, $play:Boolean = true):void
 		{
-			if(!zoomer.playing)
+			if(!tweening)
 			{
-				var index:int = history.length - $level;
+				var index:int = history.length - 1 - $level;
 				if (0 <= index && index < history.length)
 				{
-					last = history[index];
-					history.length = index;
-					
 					log(MPTipConsts.RECORD_TYPESET_BACK, last.data);
-					
-					if (last)
+					var lasts:Array = [];
+					var l:uint = history.length;
+					for (var i:uint = l - 1; i > index; i--)
 					{
-						var temp:CacheView = main;
-						main = last;
-						last = temp;
-						zoomer.play(last, main, null, true);
+						lasts.push(history[i]);
 					}
+					last = history[index];
+					var temp:CacheView = main;
+					main = last;
+					last = temp;
+					
+					var fadeOutStart:Function = function():void
+					{
+						for each (var item:View in lasts) item.stop();
+					};
+					var fadeOutEnd:Function = function():void
+					{
+						for each (var item:View in lasts) 
+						{
+							item.visible = false;
+							item.reset();
+						}
+						if ($play) main.play();
+						prepareElements(main.data);
+					};
+					
+					if ($tween)
+					{
+						onFadeOutStart = fadeOutStart;
+						onFadeOutEnd = fadeOutEnd;
+						fadeOut.target = null;
+						fadeOut.targets = lasts;
+						sequence.children = [fadeOut];
+						sequence.play();
+					}
+					else
+					{
+						fadeOutStart();
+						fadeOutEnd();
+					}
+					
+					last = index > 0 ? history[index - 1] : null;
+					history.length -= lasts.length;
 				}
 			}
 		}
@@ -87,19 +124,10 @@ package multipublish.views.contents
 		 * 
 		 */
 		
-		public function home():void
+		public function home($tween:Boolean = true, $play:Boolean = true):void
 		{
-			log(MPTipConsts.RECORD_TYPESET_HOME, typeset.arrange);
-			last = (history.length) ? history[0] : null;
-			if (last && main)
-			{
-				history.length = 0;
-				main.stop(false);
-				var temp:CacheView = main;
-				main = last;
-				last = temp;
-				zoomer.play(last, main, null, true);
-			}
+			var level:int = history.length;
+			if (level > 0) back(level - 1, $tween, $play);
 		}
 		
 		
@@ -111,29 +139,89 @@ package multipublish.views.contents
 		
 		public function view($data:ArrangeIcon, $rect:Rectangle = null):void
 		{
-			var index:int = indexOfHistory($data);
-			if (index == -1)
+			//非缓动
+			if (!tweening)
 			{
-				if(!zoomer.playing)
+				var index:int = indexOfHistory($data);
+				if (index == -1)
 				{
+					//新页面在历史记录中不存在，打开新页面。
 					log(MPTipConsts.RECORD_TYPESET_VIEW, $data.element);
 					
-					if (elements[$data.vid])
+					if (elements[$data.vid] && elements[$data.vid] != main)
 					{
+						var effects:Array = [];
+						//检测历史纪录中需要隐藏的页面
+						lasts = check($data);
 						last = main;
 						main = elements[$data.vid];
-						delete elements[$data.vid];
-						history.push(last);
-						zoomer.play(last, main, $rect);
+						if (lasts)
+						{
+							history.length -= lasts.length;
+							var fadeOutStart:Function = function():void
+							{
+								for each (var view:View in lasts) view.stop();
+							};
+							var fadeOutEnd:Function = function():void
+							{
+								for each (var view:View in lasts) 
+								{
+									view.visible = false;
+									view.reset();
+								}
+							};
+							if ($data.tween)
+							{
+								onFadeOutStart = fadeOutStart;
+								onFadeOutEnd = fadeOutEnd;
+								fadeOut.targets = lasts;
+								effects.push(fadeOut);
+							}
+							else
+							{
+								fadeOutStart();
+								fadeOutEnd();
+							}
+						}
+						
+						//显示新页面
+						var fadeInStart:Function = function():void
+						{
+							main.alpha = 0;
+							main.visible = true;
+						};
+						var fadeInEnd:Function = function():void
+						{
+							main.alpha = 1;
+							main.play();
+							prepareElements(main.data);
+						};
+						
+						if ($data.tween)
+						{
+							onFadeInStart = fadeInStart;
+							onFadeInEnd = fadeInEnd;
+							fadeIn.target = main;
+							effects.push(fadeIn);
+							sequence.children = effects;
+							sequence.play();
+						}
+						else
+						{
+							fadeInStart();
+							fadeInEnd();
+						}
+						
+						history.push(main);
 					}
 				}
-			}
-			else
-			{
-				if (index == 0)
-					home();
 				else
-					back(history.length - index);
+				{
+					if (index == 0)
+						home($data.tween);
+					else if (index < history.length - 1)
+						back(history.length - 1 - index, $data.tween);
+				}
 			}
 		}
 		
@@ -156,7 +244,7 @@ package multipublish.views.contents
 		
 		override protected function processStop():void
 		{
-			zoomer.stop();
+			//zoomer.stop();
 			main && main.stop(false);
 			advertise && advertise.stop(false);
 			timer && timer.stop();
@@ -198,12 +286,15 @@ package multipublish.views.contents
 			{
 				log(MPTipConsts.RECORD_TYPESET_DATA, typeset.arrange);
 				
-				prepareElements(typeset.arrange);
 				container.addElement(main = new CacheView);
 				main.refer  = ArrangeView;
 				main.width  = width;
 				main.height = height;
 				main.data   = typeset.arrange;
+				history.push(main);
+				
+				prepareElements(typeset.arrange);
+				
 				if (typeset.arrange.advertise)
 				{
 					var ad:Advertise = typeset.arrange.advertise;
@@ -214,9 +305,6 @@ package multipublish.views.contents
 						advertise.width = width;
 						advertise.height = height;
 						advertise.data = ad;
-						
-						advertise.setStyle("showEffect", fadeIn);
-						advertise.setStyle("hideEffect", fadeOut);
 						
 						if(!timer)
 						{
@@ -238,25 +326,30 @@ package multipublish.views.contents
 		{
 			fadeIn = new Fade;
 			fadeOut = new Fade;
+			sequence = new Sequence;
+			sequence.duration = config.zoomTweenTime * 250;
 			fadeIn.alphaFrom = fadeOut.alphaTo = 0;
 			fadeIn.alphaTo = fadeOut.alphaFrom = 1;
-			fadeIn.duration = fadeOut.duration = 500;
+			fadeIn.addEventListener(EffectEvent.EFFECT_START, handlerFadeInStart);
+			fadeIn.addEventListener(EffectEvent.EFFECT_END, handlerFadeInEnd);
+			fadeOut.addEventListener(EffectEvent.EFFECT_START, handlerFadeOutStart);
+			fadeOut.addEventListener(EffectEvent.EFFECT_END, handlerFadeOutEnd);
 			history = new Vector.<CacheView>;
 			addElement(container = new Group);
 			container.percentWidth  = 100;
 			container.percentHeight = 100;
-			addElement(zoomer = new Zoomer);
+			/*addElement(zoomer = new Zoomer);
 			zoomer.percentWidth  = 100;
 			zoomer.percentHeight = 100;
-			zoomer.time          =(config.zoomTweenTime || 1);
-			zoomer.onPlay        = callbackTweenPlay;
-			zoomer.onStop        = callbackTweenStop;
+			zoomer.time          =(config.zoomTweenTime || 1);*/
+			/*zoomer.onPlay        = callbackFadeOutStart;
+			zoomer.onStop        = callbackFadeInEnd;*/
 			
 			type = {};
 			type[ElementTypeConsts.ADVERTISE] = NavableAdView;
 			type[ElementTypeConsts.ARRANGE  ] = ArrangeView;
 			type[ElementTypeConsts.GENERAL  ] = CommanView;
-			//type[ElementTypeConsts.OFFICE   ] = OfficeView;
+			type[ElementTypeConsts.OFFICE   ] = OfficeView;
 			//type[ElementTypeConsts.POPWINDOW] = PopWindowView;
 			//type[ElementTypeConsts.THUMBNAIL] = ThumbnailView;
 			//type[ElementTypeConsts.TIMELINE ] = TimelineView;
@@ -272,32 +365,75 @@ package multipublish.views.contents
 			{
 				var count:uint = 0;
 				var arrange:Arrange = Arrange($data);
-				for each (var view:CacheView in elements)
-				{
-					view.reset();
-					if (container.containsElement(view))
-						container.removeElement(view);
-				}
-				elements = {};
 				
 				for each (var item:ArrangeIcon in arrange.icons)
 				{
-					if (type[item.element.type])
+					if (item.element && type[item.element.type] && !elements[item.vid])
 					{
 						count++;
-						view = new CacheView;
+						var view:CacheView = new CacheView;
+						//判断$data的排版类型，应用不同布局
+						switch (item.layoutType)
+						{
+							case ArrangeLayoutType.CUSTOM_LAYOUT:
+								//自定义排版，设置新页面布局
+								view.x = main ? main.x + item.customX : item.customX;
+								view.y = main ? main.y + item.customY : item.customY;
+								view.width  = item.customW;
+								view.height = item.customH;
+								break;
+							case ArrangeLayoutType.PARENT_LAYOUT:
+								//使用父级排版布局
+								view.x = main ? main.x : 0;
+								view.y = main ? main.y : 0;
+								view.width  = main ? main.width  : 0;
+								view.height = main ? main.height : 0;
+								break;
+							case ArrangeLayoutType.FULL_SCREEN:
+							default:
+								view.x = 0;
+								view.y = 0;
+								view.width  = width;
+								view.height = height;
+								break;
+						}
+						
 						view.refer   = type[item.element.type];
-						view.width   = width;
-						view.height  = height;
 						view.data    = item.element;
 						view.visible = false;
 						container.addElement(view);
-						//每个item的vid一定不同，因此用vid存储，而id有可能相同。
+						//每个item的vid一定不同，用vid存储
 						elements[item.vid] = view;
 					}
 				}
 				trace("prepareElements:", $data.id, "-", count);
 			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function check($data:ArrangeIcon):Array
+		{
+			if (history.length)
+			{
+				var flag:int = history.length - 1;
+				var result:Array;
+				while (flag >= 0)
+				{
+					if ($data.parent == history[flag].data)
+					{
+						for (var i:uint = history.length - 1; i > flag; i--)
+						{
+							result = result || [];
+							result.push(history[i]);
+						}
+						break;
+					}
+					flag--;
+				}
+			}
+			return result;
 		}
 		
 		/**
@@ -319,30 +455,10 @@ package multipublish.views.contents
 		{
 			if (history.length)
 			{
-				for (var i:int = history.length - 1; i >=0; i--)
-					if (history[i].data.id == $data.element.id) return i;
+				for (var i:int = history.length - 1; i >= 0; i--)
+					if ($data.element && history[i].data.id == $data.element.id) return i;
 			}
 			return -1;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function callbackTweenPlay():void
-		{
-			last.stop();
-		}
-		
-		/**
-		 * @private
-		 */
-		private function callbackTweenStop():void
-		{
-			main.play();
-			last.visible = false;
-			main.visible = true;
-			prepareElements(main.data);
 		}
 		
 		
@@ -362,10 +478,24 @@ package multipublish.views.contents
 						log(MPTipConsts.RECORD_TYPESET_PLAY_AD, advertise.data));
 					
 					timer.stop();
-					advertise.visible = true;
-					advertise.play(false);
-					home();
-					Input.close();
+					
+					var fadeInStart:Function = function():void
+					{
+						main.stop();
+						Input.close();
+						advertise.visible = true;
+					};
+					
+					var fadeInEnd:Function = function():void
+					{
+						advertise.play();
+						home();
+					};
+					
+					onFadeInStart = fadeInStart;
+					onFadeInEnd = fadeInEnd;
+					fadeIn.target = advertise;
+					fadeIn.play();
 				}
 				else
 				{
@@ -396,6 +526,79 @@ package multipublish.views.contents
 			}
 		}
 		
+		/**
+		 * @private
+		 */
+		private function handlerFadeInStart($e:EffectEvent):void
+		{
+			if (onFadeInStart!= null)
+			{
+				onFadeInStart();
+				onFadeInStart = null;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerFadeInEnd($e:EffectEvent):void
+		{
+			if (onFadeInEnd!= null)
+			{
+				onFadeInEnd();
+				onFadeInEnd = null;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerFadeOutStart($e:EffectEvent):void
+		{
+			if (onFadeOutStart!= null)
+			{
+				onFadeOutStart();
+				onFadeOutStart = null;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerFadeOutEnd($e:EffectEvent):void
+		{
+			if (onFadeOutEnd!= null)
+			{
+				onFadeOutEnd();
+				onFadeOutEnd = null;
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private var onFadeInStart:Function;
+		
+		/**
+		 * @private
+		 */
+		private var onFadeInEnd:Function;
+		
+		/**
+		 * @private
+		 */
+		private var onFadeOutStart:Function;
+		
+		/**
+		 * @private
+		 */
+		private var onFadeOutEnd:Function;
+		
+		/**
+		 * @private
+		 */
+		private var tweening:Boolean;
 		
 		/**
 		 * @private
@@ -425,6 +628,11 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
+		private var lasts:Array;
+		
+		/**
+		 * @private
+		 */
 		private var history:Vector.<CacheView>;
 		
 		/**
@@ -440,7 +648,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var elements:Object;
+		private var elements:Object = {};
 		
 		/**
 		 * @private
@@ -456,6 +664,11 @@ package multipublish.views.contents
 		 * @private
 		 */
 		private var fadeOut:Fade;
+		
+		/**
+		 * @private
+		 */
+		private var sequence:Sequence;
 		
 	}
 }

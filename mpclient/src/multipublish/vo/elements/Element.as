@@ -135,6 +135,15 @@ package multipublish.vo.elements
 		
 		
 		/**
+		 * 
+		 * 层级关系
+		 * 
+		 */
+		
+		public var level:uint;
+		
+		
+		/**
 		 * @private
 		 */
 		mp var id:String;

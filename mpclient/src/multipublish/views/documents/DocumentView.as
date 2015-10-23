@@ -21,6 +21,9 @@ package multipublish.views.documents
 	import multipublish.vo.documents.Document;
 	
 	
+	[Event(name="ready", type="com.winonetech.events.ControlEvent")]
+	
+	
 	public class DocumentView extends MPView
 	{
 		
