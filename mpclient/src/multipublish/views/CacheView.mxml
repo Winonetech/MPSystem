@@ -2,7 +2,7 @@
 <vw:MPView xmlns:fx="http://ns.adobe.com/mxml/2009"
 		   xmlns:s ="library://ns.adobe.com/flex/spark"
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
-		   xmlns:cp="com.winonetech.components.*"
+		   xmlns:cp="com.winonetech.components.progress.*"
 		   xmlns:vw="multipublish.views.*">
 	<vw:states>
 		<s:State name="loading"/>

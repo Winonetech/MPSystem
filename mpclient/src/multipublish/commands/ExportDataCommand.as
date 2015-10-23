@@ -14,7 +14,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	
 	import com.coltware.airxzip.ZipFileWriter;
-	import com.winonetech.components.ProgressView;
+	import com.winonetech.components.progress.ProgressView;
 	import com.winonetech.tools.Cache;
 	
 	import flash.events.Event;
