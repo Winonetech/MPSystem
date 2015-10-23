@@ -40,9 +40,9 @@ package multipublish.vo.elements
 		{
 			super.parse($data);
 			var list:* = data["folder"];
-			if (list && list.length())
+			if (list)
 			{
-				mp::url = XMLUtil.convert(list["item"]["web_url"][0]);
+				mp::url = XMLUtil.convert(list["item"]["web_url"]);
 			}
 		}
 		

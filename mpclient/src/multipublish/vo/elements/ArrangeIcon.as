@@ -67,7 +67,7 @@ package multipublish.vo.elements
 				else
 				{
 					list = data["layout"];
-					if (list && list.length())
+					if (list)
 					{
 						var pre:String = XMLUtil.convert(data["thumbnailurl"]);
 						tmb = pre + XMLUtil.convert(list["thumbnailpath"]);
