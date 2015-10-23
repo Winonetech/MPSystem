@@ -11,7 +11,7 @@ package multipublish.core
 	import cn.vision.core.VSObject;
 	import cn.vision.errors.SingleTonError;
 	
-	import com.winonetech.components.ProgressView;
+	import com.winonetech.components.progress.ProgressView;
 	
 	import input.Input;
 	
