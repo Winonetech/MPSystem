@@ -344,6 +344,7 @@ package com.rubenswieringa.book {
 				this._book = Book(value);
 				this._book.addEventListener(BookEvent.CONTENT_CHANGED, this.changeIndex);
 			}
+			refreshFoldGradient();
 		}
 		
 		
@@ -429,10 +430,10 @@ package com.rubenswieringa.book {
 		 */
 		[Bindable(event='indexChanged')]
 		public function get side ():int {
-			if (this._index == -1){
+			if (this.index == -1){
 				return -1;
 			}else{
-				return ((this._index+1) % 2);
+				return ((this.index+1) % 2);
 			}
 		}
 		

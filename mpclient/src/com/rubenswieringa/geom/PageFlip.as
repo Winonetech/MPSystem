@@ -248,6 +248,7 @@ package com.rubenswieringa.geom {
 		 * 
 		 */
 		public static function drawBitmapSheet(ocf:Object,mc:Shape,bmp0:BitmapData,bmp1:BitmapData):void{
+			if (!bmp0 || !bmp1) return;
 			// affectations
 			var wid:Number=ocf.width;
 			var hei:Number=ocf.height;

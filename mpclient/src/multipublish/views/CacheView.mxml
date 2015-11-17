@@ -15,13 +15,13 @@
 			 horizontalCenter="0" verticalCenter="0"/>
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.ClassUtil;
 			
 			import com.winonetech.events.ControlEvent;
 			
 			import multipublish.consts.MPTipConsts;
 			import multipublish.core.mp;
+			import multipublish.views.elements.WebsiteView;
 			
 			import mx.events.FlexEvent;
 			
@@ -196,6 +196,24 @@
 			{
 				mp::refer = $value;
 			}
+			
+			
+			/**
+			 * 
+			 * 历史ID。
+			 * 
+			 */
+			
+			public var historyID:uint;
+			
+			
+			/**
+			 * 
+			 * 是否为全屏。
+			 * 
+			 */
+			
+			public var fullscreen:Boolean;
 			
 			
 			/**

@@ -389,9 +389,9 @@ package com.rubenswieringa.book {
 			super.childrenCreated();
 			
 			// make sure that non-hard pages whose flipsides are hard don't have fold-gradients:
-			for (var i:int=0; i<this._pages.length; i++){
+			/*for (var i:int=0; i<this._pages.length; i++){
 				Page(this._pages.getItemAt(i)).refreshFoldGradient();
-			}
+			}*/
 			
 			// create hit regions for page-corners:
 			this.createRegions();
@@ -444,7 +444,6 @@ package com.rubenswieringa.book {
 		
 	// PAGEFLIP PROCESSING:
 		
-		
 		/**
 		 * Makes preparations for the pageflipping and sets certain listeners, typically called upon mouse-press.
 		 * 
@@ -458,16 +457,16 @@ package com.rubenswieringa.book {
 		 */
 		protected function startPageFlip (event:MouseEvent=null, attemptHover:Boolean=false):void {
 			
-			if (!_pages.length) return;
-			var side:uint = this.getCurrentSide();
-			var oldPage:Page = this.getPage(this._currentPage+this.lastFlippedSide, false);
-			
 			// no pageflips before creationComplete:
-			if (!this.created){
-				return;
-			}
+			if (!this.created) return;
+			
+			if (!_pages.length) return;
+			_currentPage = _currentPage;
+			var side:uint = getCurrentSide();
+			var oldPage:Page = getPage(_currentPage + lastFlippedSide, false);
+			
 			// if the Book was clicked and gotoPage is active then attempt to abort gotoPage:
-			if (this.autoFlipActive && !this.tearActive && this.pageCorner.x >= 0 && this.pageCorner.x <= this.width/2 && event != null){
+			if (this.autoFlipActive && !this.tearActive && this.pageCorner.x >= 0 && this.pageCorner.x <= width * .5 && event != null){
 				this.cancelGotoPage(false);
 				return;
 			}
@@ -480,7 +479,7 @@ package com.rubenswieringa.book {
 				return;
 			}
 			// don't flip if Page isn't allowed to:
-			if (Page(this._pages.getItemAt(this._currentPage+side)).lock){
+			if (Page(this._pages.getItemAt(_currentPage + side)).lock){
 				this.autoFlipActive = false; // shut-down auto-pageflip if active
 				return;
 			}
@@ -508,7 +507,8 @@ package com.rubenswieringa.book {
 			
 			// throw an Error if the Page in question has no flipside:
 			// in the above stated situation the right-hand side Page typically does not have a flipside, and consequently its index will be equal to the total amount of pages (minus one). Also note that any left-hand side Page will always have a flipside, because the first Page in a Book is always on the right-hand side.
-			if (this._currentPage+1 == this._pages.length-1 && side == Page.RIGHT){
+			if (_currentPage + 1 == this._pages.length-1 && side == Page.RIGHT){
+				return;
 				throw new BookError(BookError.NO_FLIPSIDE);
 			}
 			
@@ -525,57 +525,54 @@ package com.rubenswieringa.book {
 			this.render.x = this.lastFlippedSide * this.width * .5;
 			
 			// specify front and flipside indexes:
-			var frontIndex:uint = this._currentPage + this.lastFlippedSide;
-			var backIndex :uint = this._currentPage + this.lastFlippedSide + this.lastFlippedDirection;
+			var frontIndex:uint = _currentPage + lastFlippedSide;
+			var backIndex:uint = autoFlipIndex + ((_currentPage == autoFlipIndex) 
+				? (lastFlippedSide ? 2 : -1)
+				: (lastFlippedSide ? 0 : 1));
+			//trace("a   current:", _currentPage, "lastFlipedSide:", lastFlippedSide, "back:",backIndex, "front:", frontIndex, "autoIndex:", autoFlipIndex);
+			
+			var front:Page	= Page(this._pages.getItemAt(frontIndex));
+			var back :Page	= Page(this._pages.getItemAt(backIndex));
+			
 			// save bitmapData:
-			this.saveBitmapData(Page(this._pages.getItemAt(frontIndex)), Page(this._pages.getItemAt(backIndex)));
+			saveBitmapData(front, back);
 			
 			// select pages in SuperViewStacks:
-			if (this.lastFlippedSide == Page.LEFT){ // if left-hand page was flipped
-				this.pageL.visible = !this.isFirstPage(this._currentPage+1-2);
-				if (this.pageL.visible){
-					this.pageL.selectedChild = Page(this._pages.getItemAt(this._currentPage-2));
-				}else{
-				}
+			if (lastFlippedSide == Page.LEFT){ // if left-hand page was flipped
+				pageL.visible = !isFirstPage(_currentPage + 1 - 2);
+				if (this.pageL.visible)
+					this.pageL.selectedChild = Page(this._pages.getItemAt(_currentPage - 2));
+				
 			}
 			if (this.lastFlippedSide == Page.RIGHT){ // if right-hand page was flipped
 				this.pageR.visible = !this.isLastPage(this._currentPage+2);
 				if (this.pageR.visible){
-					this.pageR.selectedChild = Page(this._pages.getItemAt(this._currentPage+1+2));
+					this.pageR.selectedChild = Page(this._pages.getItemAt(_currentPage+1+2));
 				}
 			}
 			
 			// set page corner markers:
-			this.pageCorner = new Point(this.lastFlippedCorner.x*this.width/2, this.lastFlippedCorner.y*this.height);
-			if (this.autoFlipActive){
-				this.pageCornerTarget = this.pageCorner.clone();
-			}
+			pageCorner = new Point(lastFlippedCorner.x * width * .5, lastFlippedCorner.y * height);
+			if (autoFlipActive) pageCornerTarget = pageCorner.clone();
 			
 			// if necessary, remember time at which pageflip started:
-			this.setLastFlippedTime();
-			
+			setLastFlippedTime();
 			
 			// set status:
-			this.setStatus((this.hoverActive) ? BookEvent.HOVER_STARTED : BookEvent.PAGEFLIP_STARTED, false); // false = dispatch Event later
+			setStatus((this.hoverActive) ? BookEvent.HOVER_STARTED : BookEvent.PAGEFLIP_STARTED, false); // false = dispatch Event later
 			
 			// add listeners:
-			this.dragPageCorner();
+			dragPageCorner();
+			
 			timer.addEventListener(TimerEvent.TIMER, dragPageCorner);
 			timer.start();
-			//this.addEventListener(Event.ENTER_FRAME, this.dragPageCorner);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP, this.endPageFlip);
-			
+			if (stage) stage.addEventListener(MouseEvent.MOUSE_UP, this.endPageFlip);
 			// dispatch event:
-			var page:Page = Page(this._pages.getItemAt(this._currentPage+this.lastFlippedSide));
-			if (this.hoverActive){
-				this.dispatchEvent(new BookEvent(BookEvent.HOVER_STARTED, this, page));
-			}else{
-				this.dispatchEvent(new BookEvent(BookEvent.PAGEFLIP_STARTED, this, page));
-			}
-			
+			dispatchEvent(new BookEvent(hoverActive ? BookEvent.HOVER_STARTED : BookEvent.PAGEFLIP_STARTED, this, front));
 		}
 		
 		private var timer:Timer = new Timer(33);
+		
 		
 		
 		/**
@@ -617,8 +614,14 @@ package com.rubenswieringa.book {
 			
 			
 			// specify front and flipside indexes:
-			var frontIndex:uint	= this._currentPage + this.lastFlippedSide;
-			var backIndex:uint	= this._currentPage + this.lastFlippedSide + this.lastFlippedDirection;
+			var frontIndex:uint = _currentPage + lastFlippedSide;
+			//var backIndex :uint = _currentPage + lastFlippedSide + lastFlippedDirection;
+			//trace("b   current:", _currentPage, "lastFlipedSide:", lastFlippedSide, "back:",backIndex, "front:", frontIndex, "autoIndex:", autoFlipIndex);
+			var backIndex:uint = (_currentPage == autoFlipIndex) 
+				? autoFlipIndex + (lastFlippedSide ? 2 : -1)
+				: autoFlipIndex + (lastFlippedSide ? 0 : 1);
+			//trace("d   current:", _currentPage, "lastFlipedSide:", lastFlippedSide, "back:",backIndex, "front:", frontIndex, "autoIndex:", autoFlipIndex);
+			
 			var front:Page	= Page(this._pages.getItemAt(frontIndex));
 			var back:Page	= Page(this._pages.getItemAt(backIndex));
 			
@@ -678,13 +681,13 @@ package com.rubenswieringa.book {
 			
 			
 			// remove mouse-listener:
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP, this.endPageFlip);
+			if (stage) this.stage.removeEventListener(MouseEvent.MOUSE_UP, this.endPageFlip);
 			
 			// make sure page corner slides to the appropriate position:
 			if (!this.tearActive){
 				var x:Number;
 				var y:Number = this.lastFlippedCorner.y*this.height;
-				if (this.lastFlippedSide == Page.LEFT){ // if left-hand page was flipped
+				if (lastFlippedSide == Page.LEFT){ // if left-hand page was flipped
 					this.lastFlipSucceeded = (this.pageCornerTarget.x > this.width/2);
 					x = (this.lastFlipSucceeded) ? this.width : 0;
 				}else{ // if right-hand page was flipped
@@ -698,7 +701,7 @@ package com.rubenswieringa.book {
 			
 			// set status and dispatch event:
 			var newStatus:String = (this._status == BookEvent.HOVER_STARTED) ? BookEvent.HOVER_ENDING : BookEvent.PAGEFLIP_ENDING;
-			var page:Page = Page(this._pages.getItemAt(this._currentPage+this.lastFlippedSide));
+			var page:Page = Page(this._pages.getItemAt(this._currentPage+lastFlippedSide));
 			this.setStatus(newStatus, true, page);
 			
 		}
@@ -735,7 +738,14 @@ package com.rubenswieringa.book {
 			
 			// if the page has been flipped over, change the _currentPage property:
 			if (this.lastFlipSucceeded && !this.tearActive){ // lastFlipSucceeded is always false when a Page was torn, but this makes the code more readable
-				this._currentPage += this.lastFlippedDirection * 2;
+				if (this._currentPage == this.autoFlipIndex)
+				{
+					this._currentPage += this.lastFlippedDirection * 2;
+				}
+				else
+				{
+					this._currentPage = this.autoFlipIndex;
+				}
 			}
 			// change _currentPage where appropriate after a page-tear:
 			if (this.tearActive && this.lastFlippedSide == Page.LEFT && !wasLastPage){
@@ -923,20 +933,23 @@ package com.rubenswieringa.book {
 		 */
 		public function gotoPage (page:*, cancelable:Boolean=true):void {
 			
-			page = this.getPageIndex(page, true);
-			if (page%2 != 1 && page != -1) page -= 1;
-			
-			// return if we're already at the specified Page:
-			if (this._currentPage == page){
-				return;
-			}
-			
-			// set target index and start pageflip:
-			this.autoFlipIndex = page;
-			this.autoFlipCancelable = cancelable;
-			if (!this.autoFlipActive){
-				this.autoFlipActive = true;
-				this.startPageFlip();
+			if (this._pages && _pages.length)
+			{
+				page = this.getPageIndex(page, true);
+				if (page%2 != 1 && page != -1) page -= 1;
+				
+				// return if we're already at the specified Page:
+				if (this._currentPage == page){
+					return;
+				}
+				
+				// set target index and start pageflip:
+				this.autoFlipIndex = page;
+				this.autoFlipCancelable = cancelable;
+				if (!this.autoFlipActive){
+					this.autoFlipActive = true;
+					this.startPageFlip();
+				}
 			}
 		}
 		/**
@@ -1428,7 +1441,7 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function get autoFlipSpeed ():uint {
-			return this.width / ((this.autoFlipDuration/1000) * this.stage.frameRate);
+			return this.width / ((this.autoFlipDuration/1000) * (stage ? stage.frameRate : 30));
 		}
 		
 		

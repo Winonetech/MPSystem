@@ -8,9 +8,9 @@ package multipublish.views.contents
 	 */
 	
 	
-	import com.winonetech.controls.Zoomer;
-	import com.winonetech.core.VO;
-	import com.winonetech.core.View;
+	import cn.vision.collections.Map;
+	import cn.vision.utils.TimerUtil;
+	
 	import com.winonetech.tools.LogSaver;
 	
 	import flash.events.MouseEvent;
@@ -72,28 +72,29 @@ package multipublish.views.contents
 					log(MPTipConsts.RECORD_TYPESET_BACK, last.data);
 					var lasts:Array = [];
 					var l:uint = history.length;
-					for (var i:uint = l - 1; i > index; i--)
-					{
-						lasts.push(history[i]);
-					}
+					for (var i:uint = l - 1; i > index; i--) lasts.push(history[i]);
 					last = history[index];
 					var temp:CacheView = main;
 					main = last;
 					last = temp;
+					setArrange(main);
 					
 					var fadeOutStart:Function = function():void
 					{
-						for each (var item:View in lasts) item.stop();
+						for each (var item:CacheView in lasts) item.stop();
 					};
 					var fadeOutEnd:Function = function():void
 					{
-						for each (var item:View in lasts) 
+						for each (var item:CacheView in lasts) 
 						{
 							item.visible = false;
 							item.reset();
+							if (container.containsElement(item))
+								container.removeElement(item);
 						}
 						if ($play) main.play();
-						prepareElements(main.data);
+						last = index > 0 ? history[index - 1] : null;
+						history.length -= lasts.length;
 					};
 					
 					if ($tween)
@@ -110,9 +111,6 @@ package multipublish.views.contents
 						fadeOutStart();
 						fadeOutEnd();
 					}
-					
-					last = index > 0 ? history[index - 1] : null;
-					history.length -= lasts.length;
 				}
 			}
 		}
@@ -148,26 +146,27 @@ package multipublish.views.contents
 					//新页面在历史记录中不存在，打开新页面。
 					log(MPTipConsts.RECORD_TYPESET_VIEW, $data.element);
 					
-					if (elements[$data.vid] && elements[$data.vid] != main)
+					if ($data.element && $data.element != main.data)
 					{
 						var effects:Array = [];
-						//检测历史纪录中需要隐藏的页面
 						lasts = check($data);
 						last = main;
-						main = elements[$data.vid];
+						main = createElement($data);
+						setArrange(main)
 						if (lasts)
 						{
 							history.length -= lasts.length;
 							var fadeOutStart:Function = function():void
 							{
-								for each (var view:View in lasts) view.stop();
+								for each (var item:CacheView in lasts) item.stop();
 							};
 							var fadeOutEnd:Function = function():void
 							{
-								for each (var view:View in lasts) 
+								for (var i:int = lasts.length - 1; i >= 0; i--) 
 								{
-									view.visible = false;
-									view.reset();
+									var item:CacheView = lasts[i];
+									item.visible = false;
+									item.reset();
 								}
 							};
 							if ($data.tween)
@@ -194,7 +193,7 @@ package multipublish.views.contents
 						{
 							main.alpha = 1;
 							main.play();
-							prepareElements(main.data);
+							history.push(main);
 						};
 						
 						if ($data.tween)
@@ -208,11 +207,14 @@ package multipublish.views.contents
 						}
 						else
 						{
-							fadeInStart();
-							fadeInEnd();
+							var handler:Function = function():void
+							{
+								fadeInStart();
+								fadeInEnd();
+							};
+							TimerUtil.callLater(250, handler);
+							
 						}
-						
-						history.push(main);
 					}
 				}
 				else
@@ -259,7 +261,6 @@ package multipublish.views.contents
 		override protected function processReset():void
 		{
 			container.removeAllElements();
-			elements = null;
 			typeset = null;
 			history.length = 0;
 			if (timer)
@@ -291,9 +292,8 @@ package multipublish.views.contents
 				main.width  = width;
 				main.height = height;
 				main.data   = typeset.arrange;
+				setArrange(main);
 				history.push(main);
-				
-				prepareElements(typeset.arrange);
 				
 				if (typeset.arrange.advertise)
 				{
@@ -359,55 +359,42 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private function prepareElements($data:VO):void
+		private function createElement(item:ArrangeIcon):CacheView
 		{
-			if ($data is Arrange)
+			var temp:CacheView = new CacheView;
+			//判断$data的排版类型，应用不同布局
+			switch (item.layoutType)
 			{
-				var count:uint = 0;
-				var arrange:Arrange = Arrange($data);
-				
-				for each (var item:ArrangeIcon in arrange.icons)
-				{
-					if (item.element && type[item.element.type] && !elements[item.vid])
-					{
-						count++;
-						var view:CacheView = new CacheView;
-						//判断$data的排版类型，应用不同布局
-						switch (item.layoutType)
-						{
-							case ArrangeLayoutType.CUSTOM_LAYOUT:
-								//自定义排版，设置新页面布局
-								view.x = main ? main.x + item.customX : item.customX;
-								view.y = main ? main.y + item.customY : item.customY;
-								view.width  = item.customW;
-								view.height = item.customH;
-								break;
-							case ArrangeLayoutType.PARENT_LAYOUT:
-								//使用父级排版布局
-								view.x = main ? main.x : 0;
-								view.y = main ? main.y : 0;
-								view.width  = main ? main.width  : 0;
-								view.height = main ? main.height : 0;
-								break;
-							case ArrangeLayoutType.FULL_SCREEN:
-							default:
-								view.x = 0;
-								view.y = 0;
-								view.width  = width;
-								view.height = height;
-								break;
-						}
-						
-						view.refer   = type[item.element.type];
-						view.data    = item.element;
-						view.visible = false;
-						container.addElement(view);
-						//每个item的vid一定不同，用vid存储
-						elements[item.vid] = view;
-					}
-				}
-				trace("prepareElements:", $data.id, "-", count);
+				case ArrangeLayoutType.CUSTOM_LAYOUT:
+					//自定义排版，设置新页面布局
+					temp.x = arrange ? arrange.x + item.customX : item.customX;
+					temp.y = arrange ? arrange.y + item.customY : item.customY;
+					temp.width  = item.customW;
+					temp.height = item.customH;
+					break;
+				case ArrangeLayoutType.PARENT_LAYOUT:
+					//使用父级排版布局
+					temp.x = arrange ? arrange.x : 0;
+					temp.y = arrange ? arrange.y : 0;
+					temp.width  = arrange ? arrange.width  : 0;
+					temp.height = arrange ? arrange.height : 0;
+					break;
+				case ArrangeLayoutType.FULL_SCREEN:
+				default:
+					temp.fullscreen = true;
+					temp.x = 0;
+					temp.y = 0;
+					temp.width  = width;
+					temp.height = height;
+					break;
 			}
+			temp.refer   = type[item.element.type];
+			temp.data    = item.element;
+			temp.visible = false;
+			temp.historyID = item.vid;
+			container.addElement(temp);
+			//每个item的vid一定不同，用vid存储
+			return temp;
 		}
 		
 		/**
@@ -434,6 +421,14 @@ package multipublish.views.contents
 				}
 			}
 			return result;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function setArrange($view:CacheView):void
+		{
+			if ($view.data is Arrange) arrange = $view;
 		}
 		
 		/**
@@ -608,7 +603,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var zoomer:Zoomer;
+		//private var zoomer:Zoomer;
 		
 		/**
 		 * @private
@@ -648,7 +643,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var elements:Object = {};
+		private var arrange:CacheView;
 		
 		/**
 		 * @private

@@ -22,7 +22,7 @@
 			
 			override protected function processPlay():void
 			{
-				video && video.source && callLater(video.play);
+				video && video.source && video.play();
 			}
 			
 			

@@ -104,7 +104,7 @@ package com.rubenswieringa.book {
 			
 			StateManager.instance.register(this);
 			
-			this._pages.addEventListener(CollectionEvent.COLLECTION_CHANGE, this.onContentChanged);
+			_pages.addEventListener(CollectionEvent.COLLECTION_CHANGE, onContentChanged);
 		}
 		
 		
@@ -119,7 +119,7 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function onContentChanged (event:CollectionEvent):void {
-			this.dispatchEvent(new BookEvent(BookEvent.CONTENT_CHANGED, this));
+			dispatchEvent(new BookEvent(BookEvent.CONTENT_CHANGED, this));
 		}
 		
 		
@@ -131,7 +131,7 @@ package com.rubenswieringa.book {
 		override protected function updateDisplayList (unscaledWidth:Number, unscaledHeight:Number):void {
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
-			this.refreshViewStacks();
+			refreshViewStacks();
 		}
 		
 		
@@ -144,11 +144,11 @@ package com.rubenswieringa.book {
 			
 			super.createChildren();
 			
-			this.rawChildren.addChild(this.pageL);
-			this.rawChildren.addChild(this.pageR);
-			this.rawChildren.addChild(this.render);
+			rawChildren.addChild(pageL);
+			rawChildren.addChild(pageR);
+			rawChildren.addChild(render);
 			
-			this.pageL.fade = this.pageR.fade = 1;
+			pageL.fade = pageR.fade = 1;
 			
 		}
 		
@@ -162,17 +162,17 @@ package com.rubenswieringa.book {
 			super.childrenCreated();
 			
 			// if the amount of Pages is uneven, add another Page:
-			if (this._pages.length%2 == 1){
+			if (_pages.length%2 == 1){
 				var page:Page = new Page();
-				this.addChild(page);
+				addChild(page);
 			}
 			
 			// set startup properties:
-			this.openAt = this._openAt;
-			this._currentPage = this._openAt;
+			openAt = _openAt;
+			_currentPage = _openAt;
 			
 			// activate children:
-			this.refreshViewStacks();
+			refreshViewStacks();
 		}
 		
 		
@@ -188,7 +188,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function addChild(child:DisplayObject):DisplayObject {
-			return this.addChildAt(child, this._pages.length);
+			return addChildAt(child, _pages.length);
 		}
 		/**
 		 * Adds a child Page instance to this PageManager instance at the index position specified.
@@ -208,21 +208,21 @@ package com.rubenswieringa.book {
 				var page:Page = Page(child);
 				// correct index so that it is within bounds:
 				if (index < 0)					index = 0;
-				if (index > this._pages.length)	index = this._pages.length;
+				if (index > _pages.length)	index = _pages.length;
 				// initialize Page:
-				this.initPage(page, index);
+				initPage(page, index);
 				// add Page to left or right ViewStack:
 				if (index%2 == 1){
-					this.pageL.addChildAt(child, this.generateStackIndex(page));
+					pageL.addChildAt(child, generateStackIndex(page));
 				}else{
-					this.pageR.addChildAt(child, this.generateStackIndex(page));
+					pageR.addChildAt(child, generateStackIndex(page));
 				}
 				// make sure all other Pages are in the right ViewStacks:
-				if (index < this._pages.length-1){
-					this.jumpViewStacks(index+1);
+				if (index < _pages.length-1){
+					jumpViewStacks(index+1);
 				}
 				if (StateManager.instance.getState(this) == StateManager.UPDATE_COMPLETE){
-					this.refreshViewStacks();
+					refreshViewStacks();
 				}
 				// return value:
 				return page;
@@ -237,17 +237,17 @@ package com.rubenswieringa.book {
 		 */
 		override public function removeAllChildren ():void {
 			// remove all Pages children from ViewStacks:
-			this.pageL.removeAllChildren();
-			this.pageR.removeAllChildren();
+			pageL.removeAllChildren();
+			pageR.removeAllChildren();
 			// clear book property of Pages:
-			for (var i:int=0; i<this._pages.length; i++){
-				Page(this._pages.getItemAt(i)).setBook(null);
+			for (var i:int=0; i<_pages.length; i++){
+				Page(_pages.getItemAt(i)).setBook(null);
 			}
 			// reset properties:
-			this._pages = new ArrayCollection();
-			this._currentPage = -1;
+			_pages = new ArrayCollection();
+			_currentPage = -1;
 			// refresh ViewStacks:
-			this.refreshViewStacks();
+			refreshViewStacks();
 		}
 		/**
 		 * Removes a child Page from the child list of this Container.
@@ -266,11 +266,11 @@ package com.rubenswieringa.book {
 		override public function removeChild (child:DisplayObject):DisplayObject {
 			// only instances of the Page class are allowed as children:
 			if (child is Page){
-				var index:int = this._pages.getItemIndex(child);
+				var index:int = _pages.getItemIndex(child);
 				if (Page(child).book != this || index == -1){
 					throw new ArgumentError(BookError.PAGE_NOT_CHILD);
 				}
-				return this.removeChildAt(index);
+				return removeChildAt(index);
 			}else{
 				throw new BookError(BookError.CHILD_NOT_PAGE);
 			}
@@ -288,30 +288,30 @@ package com.rubenswieringa.book {
 		 */
 		override public function removeChildAt (index:int):DisplayObject {
 			// throw error if index is out of bounds:
-			if (index < 0 || index > this._pages.length-1){
+			if (index < 0 || index > _pages.length-1){
 				throw new ArgumentError(BookError.OUT_OF_BOUNDS);
 			}
 			// define Page:
-			var page:Page = Page(this._pages.getItemAt(index));
+			var page:Page = Page(_pages.getItemAt(index));
 			// remove Page from left or right ViewStack:
 			if (index%2 == 1){
-				this.pageL.removeChild(page);
+				pageL.removeChild(page);
 			}else{
-				this.pageR.removeChild(page);
+				pageR.removeChild(page);
 			}
 			// remove Page from Array and clear book property:
-			this._pages.removeItemAt(index);
+			_pages.removeItemAt(index);
 			page.setBook(null);
 			// adjust _currentPage if necessary:
-			if (this._currentPage > this._pages.length-1){
-				this._currentPage -= 2;
+			if (_currentPage > _pages.length-1){
+				_currentPage -= 2;
 			}
 			// make sure all other Pages are in the right ViewStacks:
-			if (index <= this._pages.length-1){
-				this.jumpViewStacks(index);
+			if (index <= _pages.length-1){
+				jumpViewStacks(index);
 			}
 			if (StateManager.instance.getState(this) >= StateManager.UPDATE_COMPLETE){
-				this.refreshViewStacks();
+				refreshViewStacks();
 			}
 			
 			// return value:
@@ -338,8 +338,8 @@ package com.rubenswieringa.book {
 				if (Page(child).book != this || Page(child).index == -1){
 					throw new ArgumentError(BookError.PAGE_NOT_CHILD);
 				}
-				this.removeChild(child);
-				this.addChildAt(child, newIndex);
+				removeChild(child);
+				addChildAt(child, newIndex);
 				Page(child).refreshFoldGradient();
 			}else{
 				throw new BookError(BookError.CHILD_NOT_PAGE);
@@ -366,9 +366,9 @@ package com.rubenswieringa.book {
 					throw new ArgumentError(BookError.PAGE_NOT_CHILD);
 				}
 				ChildTool.swapChildren(child1, child2);
-				this._pages.setItemAt(child2, index1);
-				this._pages.setItemAt(child1, index2);
-				this.refreshViewStacks();
+				_pages.setItemAt(child2, index1);
+				_pages.setItemAt(child1, index2);
+				refreshViewStacks();
 				Page(child1).refreshFoldGradient();
 				Page(child2).refreshFoldGradient();
 			}else{ // if children are not both Pages, then they don't belong to the externally visible part of this instance:
@@ -383,7 +383,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function swapChildrenAt (index1:int, index2:int):void {
-			this.swapChildren(Page(this._pages.getItemAt(index1)), Page(this._pages.getItemAt(index2)));
+			swapChildren(Page(_pages.getItemAt(index1)), Page(_pages.getItemAt(index2)));
 		}
 		
 		
@@ -398,8 +398,8 @@ package com.rubenswieringa.book {
 		override public function getChildByName (name:String):DisplayObject {
 			// see if child with provided name is in either one of the ViewStacks:
 			var child:Page;
-			for (var i:int=0; i<this._pages.length; i++){
-				child = Page(this._pages.getItemAt(i));
+			for (var i:int=0; i<_pages.length; i++){
+				child = Page(_pages.getItemAt(i));
 				if (child.name == name){
 					return child;
 				}
@@ -416,7 +416,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function getChildIndex (child:DisplayObject):int {
-			return this._pages.getItemIndex(child);
+			return _pages.getItemIndex(child);
 		}
 		/**
 		 * Returns an Array of Page objects consisting of the content children of the container. Note that this method returns the source property of the pages property.
@@ -427,7 +427,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function getChildren ():Array {
-			return this._pages.source;
+			return _pages.source;
 		}
 		/**
 		 * Returns an array of objects that lie under the specified point and are children (or grandchildren, and so on) of this PageManager instance.
@@ -438,8 +438,8 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function getObjectsUnderPoint (point:Point):Array {
-			var pagesL:Array = this.pageL.getObjectsUnderPoint(point);
-			var pagesR:Array = this.pageR.getObjectsUnderPoint(point);
+			var pagesL:Array = pageL.getObjectsUnderPoint(point);
+			var pagesR:Array = pageR.getObjectsUnderPoint(point);
 			return pagesL.concat(pagesR);
 		}
 		
@@ -453,7 +453,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function contains (child:DisplayObject):Boolean {
-			return (this.pageL.contains(child) || this.pageR.contains(child) || child == this);
+			return (pageL.contains(child) || pageR.contains(child) || child == this);
 		}
 		/**
 		 * Returns true if the chain of owner properties points from child to this PageManager.
@@ -464,7 +464,7 @@ package com.rubenswieringa.book {
 		 * 
 		 */
 		override public function owns (child:DisplayObject):Boolean {
-			return (this.pageL.owns(child) || this.pageR.owns(child));
+			return (pageL.owns(child) || pageR.owns(child));
 		}
 		
 		
@@ -485,11 +485,11 @@ package com.rubenswieringa.book {
 		 */
 		protected function initPage (page:Page, index:int):void {
 			// set properties:
-			page.setBook(this);
-			page.width =	this.width * .5;
-			page.height =	this.height;
+			page.width =	width * .5;
+			page.height =	height;
 			// add Page to Array:
-			this._pages.addItemAt(page, index);
+			_pages.addItemAt(page, index);
+			page.setBook(this);
 		}
 		
 		
@@ -503,9 +503,9 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function generateStackIndex (page:Page):int {
-			var index:int = this._pages.getItemIndex(page);
+			var index:int = _pages.getItemIndex(page);
 			if (index%2 == 1){
-				return Math.ceil(this._pages.length/2)-Math.ceil(index/2);
+				return Math.ceil(_pages.length/2)-Math.ceil(index/2);
 			}else{
 				return index/2;
 			}
@@ -521,12 +521,12 @@ package com.rubenswieringa.book {
 		 */
 		protected function jumpViewStacks (fromIndex:int):void {
 			var page:Page;
-			for (var i:int=fromIndex; i<this._pages.length; i++){
-				page = Page(this._pages.getItemAt(i))
+			for (var i:int=fromIndex; i<_pages.length; i++){
+				page = Page(_pages.getItemAt(i))
 				if (page.side != Page.LEFT){
-					ChildTool.moveChild(page, this.pageR, this.generateStackIndex(page));
+					ChildTool.moveChild(page, pageR, generateStackIndex(page));
 				}else{
-					ChildTool.moveChild(page, this.pageL, this.generateStackIndex(page));
+					ChildTool.moveChild(page, pageL, generateStackIndex(page));
 				}
 			}
 		}
@@ -537,25 +537,21 @@ package com.rubenswieringa.book {
 		 * 
 		 * @private
 		 */
-		protected function refreshViewStacks ():void {
+		protected function refreshViewStacks():void
+		{
+			pageL.width  = pageR.width  = width * .5;
+			pageL.height = pageR.height = height;
 			
-			this.pageL.width =	this.pageR.width =	this.width / 2;
-			this.pageL.height =	this.pageR.height =	this.height;
+			pageR.x = render.x = width * .5;
 			
-			this.pageR.x = this.render.x = this.width / 2;
+			pageL.visible = ((!isFirstPage(_currentPage + 1) || _pages.length <= 1) && pageL.numChildren > 0);
+			if (pageL.visible) pageL.selectedChild = Page(_pages.getItemAt(_currentPage));
 			
-			this.pageL.visible = ((!this.isFirstPage(this._currentPage+1) || this._pages.length <= 1) && this.pageL.numChildren > 0);
-			if (this.pageL.visible){
-				this.pageL.selectedChild = Page(this._pages.getItemAt(this._currentPage));
-			}
-			this.pageL.invalidateDisplayList();
+			pageL.invalidateDisplayList();
 			
-			this.pageR.visible = ((!this.isLastPage(this._currentPage) || this._pages.length <= 1) && this.pageR.numChildren > 0);
-			if (this.pageR.visible){
-				this.pageR.selectedChild = Page(this._pages.getItemAt(this._currentPage+1));
-			}
-			this.pageR.invalidateDisplayList();
-			
+			pageR.visible = ((!isLastPage(_currentPage) || _pages.length <= 1) && pageR.numChildren > 0);
+			if (pageR.visible) pageR.selectedChild = Page(_pages.getItemAt(_currentPage + 1));
+			pageR.invalidateDisplayList();
 		}
 		
 		
@@ -572,7 +568,7 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function isFirstPage (page:*):Boolean {
-			page = this.getPage(page, false);
+			page = getPage(page, false);
 			return (page != null && page.index == 0);
 		}
 		/**
@@ -588,8 +584,8 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function isLastPage (page:*):Boolean {
-			page = this.getPage(page, false);
-			return (page != null && page.index == this._pages.length-1);
+			page = getPage(page, false);
+			return (page != null && page.index == _pages.length-1);
 		}
 		
 		
@@ -611,14 +607,14 @@ package com.rubenswieringa.book {
 			// if page is numeric, transform it into a Page:
 			if (!(page is Page)){
 				// throw Error if index is out of bounds:
-				if (page < 0 || page >= this._pages.length){
+				if (page < 0 || page >= _pages.length){
 					if (varify && page != -1){ // even though -1 is not a valid index, it does virtually indicate a Page
 						throw new ArgumentError(BookError.OUT_OF_BOUNDS);
 					}else{
 						page = null;
 					}
 				}else{
-					page = Page(this._pages.getItemAt(page));
+					page = Page(_pages.getItemAt(page));
 				}
 			}
 			// throw Error if Page its parent is not this PageManager instance:	
@@ -639,7 +635,7 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function getPageIndex (page:*, varify:Boolean=false):int {
-			page = this.getPage(page, varify);
+			page = getPage(page, varify);
 			return (page == null) ? -1 : page.index;
 		}
 		
@@ -661,7 +657,7 @@ package com.rubenswieringa.book {
 		 */
 		[Bindable(event='currentPageChanged')]
 		public function get currentPage ():int {
-			return this._currentPage;
+			return _currentPage;
 		}
 		
 		
@@ -672,17 +668,17 @@ package com.rubenswieringa.book {
 		 * @private
 		 */
 		protected function set _currentPage (value:int):void {
-			if (this._currentPage == value){
+			if (_currentPage == value){
 				return;
 			}
-			this.__currentPage = value;
-			this.dispatchEvent(new Event(BookEvent.CURRENTPAGE_CHANGED));
+			__currentPage = value;
+			dispatchEvent(new Event(BookEvent.CURRENTPAGE_CHANGED));
 		}
 		/**
 		 * @private
 		 */
 		protected function get _currentPage ():int {
-			return this.__currentPage;
+			return __currentPage;
 		}
 		
 		
@@ -691,19 +687,19 @@ package com.rubenswieringa.book {
 		 * @default	-1
 		 */
 		public function get openAt ():int {
-			return this._openAt;
+			return _openAt;
 		}
 		public function set openAt (value:int):void {
 			if (value < -1){
 				value = -1;
 			}
-			if (value > this._pages.length-1 && this._pages.length > 0){
-				value = this._pages.length-1;
+			if (value > _pages.length-1 && _pages.length > 0){
+				value = _pages.length-1;
 			}
 			if (value % 2 == 0){
 				value--;
 			}
-			this._openAt = value;
+			_openAt = value;
 		}
 		
 		
@@ -712,7 +708,7 @@ package com.rubenswieringa.book {
 		 */
 		[Bindable(event='contentChanged')]
 		public function get pages ():ArrayCollection {
-			return this._pages;
+			return _pages;
 		}
 		
 		

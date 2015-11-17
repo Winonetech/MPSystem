@@ -20,9 +20,13 @@
 	
 	<ct:SwapBtn upSource="assets/images/backUp.png"
 				downSource="assets/images/backDown.png"
-				width="100" height="100"
-				right="10" top="10" 
+				width="100" height="100" right="10" top="10" 
 				click="back()"/>
+	
+	<!--<s:HGroup horizontalCenter="0" bottom="10">
+		<s:TextInput id="text"/>
+		<s:Button click="button_clickHandler(event)"/>
+	</s:HGroup>-->
 	
 	<fx:Script>
 		<![CDATA[
@@ -78,6 +82,7 @@
 					var image:Image = new Image;
 					image.fillMode = BitmapFillMode.SCALE;
 					image.scaleMode = BitmapScaleMode.ZOOM;
+					image.smooth = true;
 					image.width = myBook.width * .5;
 					image.height = myBook.height;
 					image.source = item;
@@ -135,7 +140,7 @@
 					var ow:Number = width;
 					var oh:Number = height;
 					var sc:Number = (ow / oh < cw / ch) ? ow / cw : oh / ch;
-					myBook.width = cw * sc;
+					myBook.width  = cw * sc;
 					myBook.height = ch * sc;
 					
 					if (myBook)
@@ -164,12 +169,6 @@
 			 * @private
 			 */
 			private var type:Object;
-			
-			[Bindable]
-			public var itemSize:String = "halfPage";
-			
-			
-			
 			
 		]]>
 	</fx:Script>
