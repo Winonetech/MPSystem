@@ -24,7 +24,7 @@ DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputBaseFilename=WOS Player
-SetupIconFile=C:\Work\projects\winonetech\MPSystem\MPClient\bin\MPClient.ico
+SetupIconFile=files\MPClient.ico
 Compression=lzma
 SolidCompression=yes
 VersionInfoVersion={#MyAppVersion}
@@ -42,16 +42,16 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\mimetype"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Work\projects\winonetech\MPSystem\MPClient\bin\files\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
+Source: "MPClient\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 
