@@ -16,7 +16,7 @@ package multipublish.commands
 	import cn.vision.pattern.queue.SequenceQueue;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.steps.*;
 	import multipublish.consts.EventConsts;
@@ -79,7 +79,7 @@ package multipublish.commands
 		 */
 		private function load():void
 		{
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_UPDATE_SCHEDULE,
 				LogUtil.logTip(MPTipConsts.RECORD_DATA_UPDATE));

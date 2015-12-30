@@ -98,6 +98,7 @@ package multipublish.commands
 			var window:WindowedApplication = view.application;
 			//hide window statusbar
 			window.showStatusBar = false;
+			//window.alwaysInFront = true;
 			
 			var r:Rectangle = Screen.mainScreen.bounds;
 			if (config.exportData || config.updateVersion)

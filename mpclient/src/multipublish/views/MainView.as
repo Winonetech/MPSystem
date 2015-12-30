@@ -11,7 +11,7 @@ package multipublish.views
 	import caurina.transitions.Tweener;
 	
 	import com.winonetech.events.ControlEvent;
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -66,7 +66,7 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.FILE,
 				EventConsts.EVENT_START_PLAYING, schedule.summary,
 				log(MPTipConsts.RECORD_SCHEDULE_PLAY, schedule));

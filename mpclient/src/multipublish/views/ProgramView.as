@@ -9,7 +9,7 @@ package multipublish.views
 	
 	
 	import com.winonetech.events.ControlEvent;
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -61,7 +61,7 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.FILE,
 				EventConsts.EVENT_START_PLAYING, program.summary,
 				log(MPTipConsts.RECORD_PROGRAM_PLAY, program));

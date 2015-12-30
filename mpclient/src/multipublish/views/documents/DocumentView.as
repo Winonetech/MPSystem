@@ -8,7 +8,7 @@ package multipublish.views.documents
 	 */
 	
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -47,7 +47,7 @@ package multipublish.views.documents
 		
 		override protected function processPlay():void
 		{
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.FILE,
 				EventConsts.EVENT_START_PLAYING,
 				media.path.split("/").pop(),

@@ -15,7 +15,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	import com.winonetech.utils.CacheUtil;
 	
 	import flash.events.Event;
@@ -74,7 +74,7 @@ package multipublish.commands
 		 */
 		private function logUpload():void
 		{
-			LogSaver.log(TypeConsts.NETWORK, 
+			LogSQLite.log(TypeConsts.NETWORK, 
 				EventConsts.EVENT_UPLOAD_LOG,
 				LogUtil.logTip(MPTipConsts.RECORD_LOG_UPLOAD));
 			
@@ -129,7 +129,7 @@ package multipublish.commands
 				: MPTipConsts.RECORD_LOG_UPLOAD_FAILURE;
 			var text:String = success ? "" : ($e as IOErrorEvent).text;
 			
-			LogSaver.log(TypeConsts.NETWORK, 
+			LogSQLite.log(TypeConsts.NETWORK, 
 				EventConsts.EVENT_LOG_UPLOADED,
 				LogUtil.logTip(description, text));
 			

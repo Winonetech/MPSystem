@@ -51,6 +51,28 @@ package multipublish.commands
 		
 		
 		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function commandEnd():void
+		{
+			super.commandEnd();
+			LogUtil.log(className + ".commandEnd()");
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function commandStart():void
+		{
+			super.commandStart();
+			LogUtil.log(className + ".commandStart()");
+		}
+		
+		
+		/**
 		 * 
 		 * 弹出提示框。
 		 * 

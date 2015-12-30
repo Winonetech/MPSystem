@@ -163,6 +163,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * debug模式。
+		 * 
+		 */
+		
+		public var debug:Boolean;
+		
+		
+		/**
+		 * 
 		 * 自动关机指令。
 		 * 
 		 */
@@ -194,7 +203,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var companyID:String = "999";
+		public var companyID:String = "";
 		
 		
 		/**
@@ -338,7 +347,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var netTimeoutTime:uint = 5;
+		public var netTimeoutTime:uint = 60;
 		
 		
 		/**

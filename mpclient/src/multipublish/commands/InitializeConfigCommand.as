@@ -67,20 +67,33 @@ package multipublish.commands
 				{
 					XMLUtil.map(xml, config);
 					config.language.data = XMLUtil.convert(xml["languageData"]);
-					if(!StringUtil.isEmpty(config.ftpHost) && 
-						config.ftpHost != "127.0.0.1")
-					{
-						Cache.deftp(
-							config.ftpHost, 
-							config.ftpPort, 
-							config.ftpUserName, 
-							config.ftpPassWord);
-					}
+					
+					applySettings();
 				}
 				reader.close();
 				reader = null;
 			}
 			file = null;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function applySettings():void
+		{
+			if(!StringUtil.isEmpty(config.ftpHost) && 
+				config.ftpHost != "127.0.0.1")
+			{
+				Cache.deftp(
+					config.ftpHost, 
+					config.ftpPort, 
+					config.ftpUserName, 
+					config.ftpPassWord);
+			}
+			
+			Cache.timeout = config.netTimeoutTime;
+			
+			view.application.alwaysInFront =!config.debug;
 		}
 		
 	}

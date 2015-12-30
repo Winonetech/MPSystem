@@ -87,12 +87,10 @@ package multipublish.commands
 			request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80)+ URLConsts.GET_CLIENT_INFO;
 			var variables:URLVariables = new URLVariables;
 			variables.terminalNumber = config.terminalNO;
-			variables.versionNumber = config.version;
+			variables.versionNumber  = config.version;
 			request.data = variables;
 			
-			LogUtil.log("连接服务端自动更新检测：" + request.url);
-			LogUtil.log("terminalNumber:" + variables.terminalNumber);
-			LogUtil.log("versionNumber:" + variables.versionNumber);
+			LogUtil.log("连接服务端自动更新检测：" + request.url, variables.terminalNumber, variables.versionNumber);
 			
 			loader.load(request);
 		}
@@ -130,20 +128,23 @@ package multipublish.commands
 			{
 				var xml:XML = XMLUtil.convert($e.target.data, XML);
 				
-				LogUtil.log(xml.version, config.version);
+				LogUtil.log("检测版本 " + "服务端：" + xml.version + "本地：" + config.version);
 				var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
 				if (compareVersion(xml.version))
 				{
 					if (updater.exists)
 					{
 						//升级包下载完毕，退出并调用升级程序。
+						LogUtil.log("升级包下载完毕，退出并调用升级程序");
 						ApplicationUtil.exit();
 						ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
 					}
 					else
 					{
 						//下载更新包。
+						LogUtil.log("下载更新包：" + xml.file);
 						var ftp:FTPLoader = new FTPLoader;
+						ftp.timeout = 10;
 						ftp.addEventListener(Event.COMPLETE, handlerFTPDefault);
 						ftp.addEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
 						ftp.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
@@ -160,7 +161,11 @@ package multipublish.commands
 				}
 				else
 				{
-					if (updater.exists) updater.deleteFile();
+					if (updater.exists) 
+					{
+						LogUtil.log("升级完毕，删除更新包");
+						updater.deleteFile();
+					}
 				}
 			}
 			else
@@ -178,6 +183,16 @@ package multipublish.commands
 			loader.removeEventListener(Event.COMPLETE, handlerFTPDefault);
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
 			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
+			if ($e.type == IOErrorEvent.IO_ERROR)
+			{
+				LogUtil.log("下载更新包失败：" + IOErrorEvent($e).text);
+			}
+			else
+			{
+				LogUtil.log("下载更新包成功，退出执行升级程序！");
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+			}
 		}
 		
 		

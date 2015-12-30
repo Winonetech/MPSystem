@@ -10,7 +10,7 @@ package multipublish.commands
 	
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
@@ -64,7 +64,7 @@ package multipublish.commands
 		 */
 		private function regulateVolume():void
 		{
-			LogSaver.log(TypeConsts.NETWORK, 
+			LogSQLite.log(TypeConsts.NETWORK, 
 				EventConsts.EVENT_ADJUST_VOL,
 				LogUtil.logTip(MPTipConsts.RECORD_ADJUST_VOL));
 			

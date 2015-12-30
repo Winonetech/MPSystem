@@ -14,7 +14,7 @@ package multipublish.commands
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.tools.Cache;
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -102,7 +102,7 @@ package multipublish.commands
 		 */
 		private function shutdownDirectly():void
 		{
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_PC_SHUTDOWN,
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN));

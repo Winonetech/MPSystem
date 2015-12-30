@@ -9,9 +9,10 @@ package multipublish.views.contents
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.ClassUtil;
 	import cn.vision.utils.TimerUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -448,10 +449,13 @@ package multipublish.views.contents
 		 */
 		private function indexOfHistory($data:ArrangeIcon):int
 		{
-			if (history.length)
+			if (history.length && $data.element)
 			{
 				for (var i:int = history.length - 1; i >= 0; i--)
-					if ($data.element && history[i].data.id == $data.element.id) return i;
+				{
+					if (history[i].data.className == $data.element.className && 
+						history[i].data == $data.element) return i;
+				}
 			}
 			return -1;
 		}
@@ -466,7 +470,7 @@ package multipublish.views.contents
 			{
 				if (advertise.data.ready)
 				{
-					LogSaver.log(
+					LogSQLite.log(
 						TypeConsts.FILE,
 						EventConsts.EVENT_START_PLAYING,
 						advertise.data,

@@ -15,7 +15,7 @@ package multipublish.commands
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.tools.Cache;
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.Event;
 	
@@ -75,7 +75,7 @@ package multipublish.commands
 			var exit:String = "del %0";
 			var cmd:String = date + StringUtil.lineEnding + time + StringUtil.lineEnding + exit;
 			
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_SYNC_SERVER_TIME,
 				LogUtil.log(MPTipConsts.RECORD_COMMAND_LOCKTIME));

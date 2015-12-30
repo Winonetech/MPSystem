@@ -13,7 +13,7 @@ package multipublish.commands.steps
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.XMLUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.Step;
 	import multipublish.consts.ClientStateConsts;
@@ -232,7 +232,7 @@ package multipublish.commands.steps
 				}
 				else
 				{
-					LogSaver.log(
+					LogSQLite.log(
 						TypeConsts.FILE,
 						EventConsts.EVENT_LOAD_ERROR,
 						LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_DOCUMENT, model.extra));

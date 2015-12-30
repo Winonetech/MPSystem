@@ -12,9 +12,10 @@ package multipublish.tools
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.RegexpUtil;
 	
 	import com.winonetech.tools.Cache;
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Dictionary;
@@ -95,17 +96,17 @@ package multipublish.tools
 		private function handlerCacheStart($e:QueueEvent):void
 		{
 			var cache:Cache = $e.command as Cache;
-			REPORTABLE[cache] = !cache.exist;
-			if(REPORTABLE[cache])
+			REPORTABLE[cache] =!cache.exist;
+			if (REPORTABLE[cache])
 			{
 				var name:String = cache.saveURL.split("/").pop();
 				var data:String = name + ";2";
-				var memo:String = name + "开始下载";
+				var memo:String = name + (cache.reloadCount == 0 ? "开始下载" : "再次下载");
 				
-				LogSaver.log(
+				LogSQLite.log(
 					TypeConsts.FILE, 
 					EventConsts.EVENT_DOWNLOADING_START, name,
-					LogUtil.logTip(MPTipConsts.RECORD_CACHE_REPORT, memo));
+					RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
 				
 				service.report(data);//发送2，开始下载。
 			}
@@ -117,21 +118,19 @@ package multipublish.tools
 		private function handlerCacheEnd($e:QueueEvent):void
 		{
 			var cache:Cache = $e.command as Cache;
-			if(REPORTABLE[cache])
-			{
-				var exist:Boolean = cache.exist;
-				var name:String = cache.saveURL.split("/").pop();
-				var data:String = name + (exist ? ";3" : ";4");
-				var memo:String = name + (exist ? " 下载完成" : " 下载失败");
-				if(!exist) memo += "，" + cache.message;
-				
-				LogSaver.log(
-					TypeConsts.FILE,
-					EventConsts.EVENT_DOWNLOADING_END, name,
-					LogUtil.logTip(MPTipConsts.RECORD_CACHE_REPORT, memo));
-				
-				service.report(data);//发送3,4，完成下载。
-			}
+			
+			var exist:Boolean = cache.exist;
+			var name:String = cache.saveURL.split("/").pop();
+			var data:String = name + (exist ? ";3" : ";4");
+			var memo:String = name + (exist ? " 下载完成" : " 下载失败");
+			if(!exist) memo += "，" + cache.message;
+			
+			LogSQLite.log(
+				TypeConsts.FILE,
+				EventConsts.EVENT_DOWNLOADING_END, name,
+				RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
+			
+			service.report(data);//发送3,4，完成下载。
 			delete REPORTABLE[cache];
 		}
 		

@@ -20,9 +20,10 @@ package multipublish.utils
 		public static function getConfig():String
 		{
 			var e:String = StringUtil.lineEnding;
+			var config:MPCConfig = MPCConfig.instance;
 			return '' + 
 				'<?xml version="1.0" encoding="utf-8"?>' + e + 
-				'<config version="' + config.version + '">' + e + 
+				'<config>' + e + 
 				e + 
 				'<!--' + e + 
 				'\t配置文件，包含以下部分：' + e + 
@@ -39,13 +40,14 @@ package multipublish.utils
 				'\t<!-- 语言 -->' + e + 
 				'\t<languageData>' + config.language.data + '</languageData>' + e + 
 				'\t<!-- 公司ID -->' + e + 
-				'\t<companyID>'    + config.companyID     + '</companyID>'    + e + 
+				'\t<companyID>'    + config.companyID     + '</companyID>'     + e + 
 				'\t<!-- 设备编号 -->' + e + 
-				'\t<deviceNO>'     + config.deviceNO      + '</deviceNO>'     + e + 
+				'\t<deviceNO>'     + config.deviceNO      + '</deviceNO>'      + e + 
 				'\t<!-- 终端编号 -->' + e + 
 				'\t<terminalNO>'   + config.terminalNO    + '</terminalNO>'   + e + 
 				'\t<!-- 自动关机指令 -->' + e + 
-				'\t<shutdown>'     + config.shutdown      + '</shutdown>'     + e + 
+				'\t<shutdown>'     + config.shutdown      + '</shutdown>'      + e + 
+				getDebug() + e + 
 				e + 
 				'\t<!-- 网络协议 -->' + e + 
 				e + 
@@ -72,9 +74,9 @@ package multipublish.utils
 				'\t<!-- FTP服务 -->' + e + 
 				e + 
 				'\t<!-- FTP主机IP -->' + e + 
-				'\t<ftpHost>'     + config.ftpHost       + '</ftpHost>'     + e + 
+				'\t<ftpHost>'     + config.ftpHost       + '</ftpHost>'      + e + 
 				'\t<!-- FTP主机端口 -->' + e + 
-				'\t<ftpPort>'     +(config.ftpPort || 21)+ '</ftpPort>'     + e + 
+				'\t<ftpPort>'     +(config.ftpPort || 21)+ '</ftpPort>'      + e + 
 				'\t<!-- FTP用户名 -->' + e + 
 				'\t<ftpUserName>' + config.ftpUserName   + '</ftpUserName>' + e + 
 				'\t<!-- FTP密码 -->' + e + 
@@ -83,9 +85,9 @@ package multipublish.utils
 				'\t<!-- 其他 -->' + e + 
 				e + 
 				'\t<!-- 技术支持 -->' + e + 
-				'\t<support>'         + config.support                 + '</support>'         + e + 
+				'\t<support>'         + config.support                  + '</support>'          + e + 
 				'\t<!-- 欢迎语 -->' + e + 
-				'\t<welcome>'         + config.welcome                 + '</welcome>'         + e + 
+				'\t<welcome>'         + config.welcome                  + '</welcome>'          + e + 
 				'\t<!-- 网络无应答超时时长 -->' + e + 
 				'\t<netTimeoutTime>'  +(config.netTimeoutTime  || 10  )+ '</netTimeoutTime>'  + e + 
 				'\t<!-- 最大节目时长 -->' + e + 
@@ -102,9 +104,17 @@ package multipublish.utils
 		/**
 		 * @private
 		 */
-		private static function get config():MPCConfig
+		private static function getDebug():String
 		{
-			return MPCConfig.instance;
+			var e:String = StringUtil.lineEnding;
+			var config:MPCConfig = MPCConfig.instance;
+			var result:String = "";
+			if (config.debug)
+			{
+				result += '\t<!-- 调试模式 -->' + e;
+				result += '\t<debug>' + config.debug + '</debug>' + e;
+			}
+			return result;
 		}
 		
 	}

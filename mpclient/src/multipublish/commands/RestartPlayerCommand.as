@@ -12,7 +12,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -58,7 +58,7 @@ package multipublish.commands
 			
 			config.service.offline();
 			
-			LogSaver.log(
+			LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_PLAYER_START,
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_RESTART));

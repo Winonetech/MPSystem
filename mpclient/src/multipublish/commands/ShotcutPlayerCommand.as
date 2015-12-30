@@ -2,7 +2,7 @@ package multipublish.commands
 {
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSaver;
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -61,7 +61,7 @@ package multipublish.commands
 		{
 			if (time > 0)
 			{
-				LogSaver.log(TypeConsts.NETWORK, 
+				LogSQLite.log(TypeConsts.NETWORK, 
 					EventConsts.EVENT_TAKE_SCREENSHOT,
 					LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHOTCUT));
 			}
