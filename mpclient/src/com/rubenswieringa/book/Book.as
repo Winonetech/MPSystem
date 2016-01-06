@@ -1515,6 +1515,17 @@ package com.rubenswieringa.book {
 			this._regionSize = value;
 			this.createRegions();
 		}
+		
+		public function get prevable():Boolean
+		{
+			return pageL.numChildren > 0;
+		}
+		
+		public function get nextable():Boolean
+		{
+			return pageR.numChildren > 0 && currentPage < pages.length;
+		}
+		
 		/**
 		 * Creates an Array with hit-regions for pagecorners.
 		 * 
