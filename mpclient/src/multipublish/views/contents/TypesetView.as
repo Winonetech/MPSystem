@@ -21,7 +21,7 @@ package multipublish.views.contents
 	
 	import input.Input;
 	
-	import multipublish.consts.ArrangeLayoutType;
+	import multipublish.consts.ArrangeLayoutTypeConsts;
 	import multipublish.consts.ElementTypeConsts;
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -366,21 +366,21 @@ package multipublish.views.contents
 			//判断$data的排版类型，应用不同布局
 			switch (item.layoutType)
 			{
-				case ArrangeLayoutType.CUSTOM_LAYOUT:
+				case ArrangeLayoutTypeConsts.CUSTOM_LAYOUT:
 					//自定义排版，设置新页面布局
 					temp.x = arrange ? arrange.x + item.customX : item.customX;
 					temp.y = arrange ? arrange.y + item.customY : item.customY;
 					temp.width  = item.customW;
 					temp.height = item.customH;
 					break;
-				case ArrangeLayoutType.PARENT_LAYOUT:
+				case ArrangeLayoutTypeConsts.PARENT_LAYOUT:
 					//使用父级排版布局
 					temp.x = arrange ? arrange.x : 0;
 					temp.y = arrange ? arrange.y : 0;
 					temp.width  = arrange ? arrange.width  : 0;
 					temp.height = arrange ? arrange.height : 0;
 					break;
-				case ArrangeLayoutType.FULL_SCREEN:
+				case ArrangeLayoutTypeConsts.FULL_SCREEN:
 				default:
 					temp.fullscreen = true;
 					temp.x = 0;

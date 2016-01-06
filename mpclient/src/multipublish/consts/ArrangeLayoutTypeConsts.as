@@ -11,7 +11,7 @@ package multipublish.consts
 	import cn.vision.core.NoInstance;
 	
 	
-	public final class ArrangeLayoutType extends NoInstance
+	public final class ArrangeLayoutTypeConsts extends NoInstance
 	{
 		
 		/**

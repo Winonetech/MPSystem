@@ -16,7 +16,7 @@ package multipublish.vo.elements
 	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
 	
-	import multipublish.consts.ArrangeLayoutType;
+	import multipublish.consts.ArrangeLayoutTypeConsts;
 	import multipublish.core.mp;
 	
 	
@@ -57,7 +57,7 @@ package multipublish.vo.elements
 				
 				mp::layoutType = getProperty("layoutType");
 				
-				if (layoutType == ArrangeLayoutType.CUSTOM_LAYOUT)
+				if (layoutType == ArrangeLayoutTypeConsts.CUSTOM_LAYOUT)
 				{
 					list = data["customInfo"];
 					if (list)
