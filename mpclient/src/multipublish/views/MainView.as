@@ -61,6 +61,22 @@ package multipublish.views
 		
 		
 		/**
+		 * 
+		 * 播放某一类型的节目，选取最靠近当前节目的一个，
+		 * 如果当前正在播放的节目是该类型，则不切换。
+		 * 
+		 */
+		
+		public function playbackProgram($type:String):void
+		{
+			if (view)
+			{
+				
+			}
+		}
+		
+		
+		/**
 		 * @inheritDoc
 		 */
 		

@@ -14,6 +14,13 @@
 		</s:fill>
 	</s:Rect>
 	
+	<s:Image source="assets/images/prevUp.png"
+			 visible="{prevable}"
+			 verticalCenter="0" left="10"/>
+	<s:Image source="assets/images/nextUp.png"
+			 visible="{nextable}"
+			 verticalCenter="0" right="10"/>
+	
 	<rs:Book id="myBook" width="1920" height="1080" horizontalCenter="0" verticalCenter="0"
 			 openAt="0" autoFlipDuration="600" easing="0.7" regionSize="600" 
 			 sideFlip="false" hardCover="false" hover="false" snap="true" flipOnClick="true"/>
@@ -23,13 +30,9 @@
 				width="100" height="100" right="10" top="10" 
 				click="back()"/>
 	
-	<!--<s:HGroup horizontalCenter="0" bottom="10">
-		<s:TextInput id="text"/>
-		<s:Button click="button_clickHandler(event)"/>
-	</s:HGroup>-->
-	
 	<fx:Script>
 		<![CDATA[
+			
 			import com.rubenswieringa.book.Book;
 			import com.rubenswieringa.book.Page;
 			
@@ -169,6 +172,18 @@
 			 * @private
 			 */
 			private var type:Object;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
 			
 		]]>
 	</fx:Script>

@@ -162,14 +162,25 @@ package multipublish.consts
 		
 		public static const SEND_SHOTCUT:String = "CAPT:";
 		
+		
 		/**
 		 * 
-		 * 地址推送。<br>
-		 * 默认值为“UPSC:”。
+		 * 时间同步。<br>
+		 * 默认值为“SYTI:”。
 		 * 
 		 */
 		
 		public static const LOCK_TIME:String = "SYTI:";
+		
+		
+		/**
+		 * 
+		 * 播放节目。<br>
+		 * 默认值为“PLPG:”。
+		 * 
+		 */
+		
+		public static const PLAY_PROGRAM:String = "PLPG:";
 		
 	}
 }

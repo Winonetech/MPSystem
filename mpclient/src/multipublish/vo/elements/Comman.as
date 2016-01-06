@@ -10,7 +10,6 @@ package multipublish.vo.elements
 	
 	import cn.vision.utils.ArrayUtil;
 	
-	import multipublish.consts.ConvertConsts;
 	import multipublish.core.mp;
 	import multipublish.interfaces.IFolder;
 	import multipublish.vo.documents.Document;
@@ -21,7 +20,7 @@ package multipublish.vo.elements
 		
 		/**
 		 * 
-		 * <code>Comman</code>构造函数。
+		 * 构造函数。
 		 * 
 		 * @param $data:Object (default = null) 初始化的数据。
 		 * 

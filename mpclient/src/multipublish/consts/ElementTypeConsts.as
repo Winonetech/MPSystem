@@ -24,6 +24,7 @@ package multipublish.consts
 		
 		public static const ADVERTISE:uint = 2;
 		
+		
 		/**
 		 * 
 		 * 布局，排版。
@@ -56,6 +57,27 @@ package multipublish.consts
 		
 		public static const GENERAL:uint = 1;
 		
+		
+		/**
+		 * 
+		 * 地图模式。
+		 * 
+		 * @default 6
+		 * 
+		 */
+		
+		public static const MAP:uint = 8;
+		
+		
+		/**
+		 * 
+		 * 幻灯片模式。
+		 * 
+		 * @default 6
+		 * 
+		 */
+		
+		public static const SLIDE:uint = 9;
 		
 		/**
 		 * 
