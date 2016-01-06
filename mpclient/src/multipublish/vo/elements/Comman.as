@@ -10,7 +10,6 @@ package multipublish.vo.elements
 	
 	import cn.vision.utils.ArrayUtil;
 	
-	import multipublish.consts.ConvertConsts;
 	import multipublish.core.mp;
 	import multipublish.interfaces.IFolder;
 	import multipublish.vo.documents.Document;
