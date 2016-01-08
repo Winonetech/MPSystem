@@ -96,6 +96,24 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 通知服务端播放某一类型的节目。
+		 * 
+		 * @param $type:String 节目类型。
+		 * 
+		 */
+		
+		public function program($type:String):void
+		{
+			if (socket && socket.connected)
+			{
+				socket.writeUTF(ServiceConsts.PLAY_PROGRAM + $type);
+				socket.flush();
+			}
+		}
+		
+		
+		/**
+		 * 
 		 * 是否已注册某个Socket命令回调。
 		 * 
 		 * @param $cmd Socket命令回调名称，参见ServiceConsts。

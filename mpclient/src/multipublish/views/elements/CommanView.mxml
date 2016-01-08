@@ -9,8 +9,10 @@
 			<s:SolidColor color="0xff00f0"/>
 		</s:fill>
 	</s:Rect>
-	<s:Group id="container" width="100%" height="100%"
-			 mouseChildren="{navigatable}"/>
+	<s:Group id="container" width="{width}" height="{height}"
+			 clipAndEnableScrolling="true"
+			 mouseChildren="{navigatable}"
+			 horizontalCenter="0" verticalCenter="0"/>
 	<ct:SwapBtn upSource="assets/images/prevUp.png"
 				downSource="assets/images/prevDown.png"
 				width="100" height="100"

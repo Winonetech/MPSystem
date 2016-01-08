@@ -214,7 +214,6 @@ package multipublish.views.contents
 								fadeInEnd();
 							};
 							TimerUtil.callLater(250, handler);
-							
 						}
 					}
 				}

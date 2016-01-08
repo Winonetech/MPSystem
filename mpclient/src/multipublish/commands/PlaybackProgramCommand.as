@@ -8,6 +8,9 @@ package multipublish.commands
 	 */
 	
 	
+	import multipublish.tools.MPService;
+	
+	
 	public final class PlaybackProgramCommand extends _InternalCommand
 	{
 		
@@ -17,11 +20,11 @@ package multipublish.commands
 		 * 
 		 */
 		
-		public function PlaybackProgramCommand($type:String = null)
+		public function PlaybackProgramCommand($type:String = null, $send:Boolean = true)
 		{
 			super();
 			
-			type = $type;
+			initialize($type, $send);
 		}
 		
 		
@@ -42,9 +45,18 @@ package multipublish.commands
 		/**
 		 * @private
 		 */
+		private function initialize($type:String, $send:Boolean):void
+		{
+			type = $type;
+			send = $send;
+		}
+		
+		/**
+		 * @private
+		 */
 		private function playbackProgram():void
 		{
-			view.main.playbackProgram(type);
+			send ? config.service.program(type) : view.main.playbackProgram(type);
 		}
 		
 		
@@ -52,6 +64,11 @@ package multipublish.commands
 		 * @private
 		 */
 		private var type:String;
+		
+		/**
+		 * @private
+		 */
+		private var send:Boolean;
 		
 	}
 }
