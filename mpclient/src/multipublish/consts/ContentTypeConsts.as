@@ -3,7 +3,7 @@ package multipublish.consts
 	
 	/**
 	 * 
-	 * ContentTypeConsts 定义了几种内容格式常量。
+	 * 定义了几种内容格式常量。
 	 * 
 	 */
 	

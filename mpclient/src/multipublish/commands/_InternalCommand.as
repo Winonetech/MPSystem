@@ -56,8 +56,11 @@ package multipublish.commands
 		
 		override protected function commandEnd():void
 		{
-			super.commandEnd();
-			LogUtil.log(className + ".commandEnd()");
+			if (executing) 
+			{
+				super.commandEnd();
+				LogUtil.log(className + ".commandEnd()");
+			}
 		}
 		
 		
@@ -67,8 +70,11 @@ package multipublish.commands
 		
 		override protected function commandStart():void
 		{
-			super.commandStart();
-			LogUtil.log(className + ".commandStart()");
+			if(!executing)
+			{
+				super.commandStart();
+				LogUtil.log(className + ".commandStart()");
+			}
 		}
 		
 		

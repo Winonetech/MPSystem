@@ -36,7 +36,7 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			playbackProgram():
+			playbackProgram();
 			
 			commandEnd();
 		}

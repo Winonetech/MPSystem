@@ -3,7 +3,7 @@ package multipublish.consts
 	
 	/**
 	 * 
-	 * CacheConsts定义了一些缓存路径。
+	 * 定义了一些缓存路径。
 	 * 
 	 */
 	

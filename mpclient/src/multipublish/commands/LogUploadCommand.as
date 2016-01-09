@@ -54,8 +54,6 @@ package multipublish.commands
 			commandStart();
 			
 			logUpload();
-			
-			commandEnd();
 		}
 		
 		
@@ -134,6 +132,8 @@ package multipublish.commands
 				LogUtil.logTip(description, text));
 			
 			service.logover(success, uploader.remoteURL.split("/").pop());
+			
+			commandEnd();
 		}
 		
 		

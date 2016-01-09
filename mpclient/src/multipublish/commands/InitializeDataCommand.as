@@ -57,12 +57,16 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			if (config.importData || 
-				config.loadable || 
-				config.cache)
+			if (config.cache || 
+				config.importData || 
+				config.loadable)
+			{
 				load();
+			}
 			else
+			{
 				commandEnd();
+			}
 		}
 		
 		

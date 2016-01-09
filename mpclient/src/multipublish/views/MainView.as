@@ -69,9 +69,16 @@ package multipublish.views
 		
 		public function playbackProgram($type:String):void
 		{
-			if (view)
+			var program:Program = view ? view.data as Program : null;
+			if(!program || program.expansion != $type)
 			{
-				
+				var flag:int = indexOfType($type);
+				if (flag != -1)
+				{
+					index = flag;
+					
+					viewProgram();
+				}
 			}
 		}
 		
@@ -130,23 +137,7 @@ package multipublish.views
 			
 			schedule = data as Schedule;
 			
-			if(!view)
-			{
-				view = generateView();
-				next = generateNext();
-				play();
-			}
-			else
-			{
-				if (next)
-				{
-					if (containsElement(next))
-						removeElement(next);
-				}
-				next = generateView();
-				next.visible = false;
-				delay(1, tween);
-			}
+			viewProgram();
 		}
 		
 		
@@ -174,6 +165,18 @@ package multipublish.views
 		/**
 		 * @private
 		 */
+		private function indexOfType($type:String):int
+		{
+			var index:int = -1;
+			for (var i:uint = 0; i < schedule.programs.length; i++)
+			{
+				
+			}
+			return index;
+		}
+		/**
+		 * @private
+		 */
 		private function initializeEnvironment():void
 		{
 			verticalCenter = horizontalCenter = 0;
@@ -184,6 +187,30 @@ package multipublish.views
 			}
 			addEventListener(Event.ADDED_TO_STAGE, handlerAddedToStage);
 			application.addEventListener(ResizeEvent.RESIZE, handlerResize);
+		}
+		
+		/**
+		 * @private
+		 */
+		private function viewProgram():void
+		{
+			if(!view)
+			{
+				view = generateView();
+				next = generateNext();
+				play();
+			}
+			else
+			{
+				if (next)
+				{
+					if (containsElement(next))
+						removeElement(next);
+				}
+				next = generateView();
+				next.visible = false;
+				delay(1, tween);
+			}
 		}
 		
 		/**

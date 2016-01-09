@@ -136,16 +136,25 @@ package multipublish.commands
 			if ($e.type == Event.COMPLETE)
 			{
 				var xml:XML = XMLUtil.convert($e.target.data, XML);
-				config.terminalNO = XMLUtil.convert(xml.terminalNo);
-				if(uint(config.terminalNO) > 0)
+				if (xml)
 				{
-					view.installer.onSubmit = save;
-					BindingUtils.bindProperty(view.installer, "labelSubmit", language, "save");
+					config.terminalNO = XMLUtil.convert(xml.terminalNo);
+					if(uint(config.terminalNO) > 0)
+					{
+						view.installer.onSubmit = save;
+						BindingUtils.bindProperty(view.installer, "labelSubmit", language, "save");
+					}
+					else
+					{
+						view.installer.onSubmit = load;
+						view.installer.onCancel = exit;
+						tip(language.data == "中文" 
+							? MPTipConsts.ERROR_CN_TERMINAL_GET_NO
+							: MPTipConsts.ERROR_EN_TERMINAL_GET_NO);
+					}
 				}
 				else
 				{
-					view.installer.onSubmit = load;
-					view.installer.onCancel = exit;
 					tip(language.data == "中文" 
 						? MPTipConsts.ERROR_CN_TERMINAL_GET_NO
 						: MPTipConsts.ERROR_EN_TERMINAL_GET_NO);

@@ -44,7 +44,7 @@ package multipublish.vo.schedules
 		
 		public function removeAllPrograms():void
 		{
-			mp::programs = new Map;
+			mp::programs.clear();
 		}
 		
 		

@@ -86,6 +86,7 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REPORT_FILE_END  , presenter.reportProgressEnd);
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
+				service.registHandler(ServiceConsts.PLAY_PROGRAM     , presenter.playProgram);
 			}
 			service.connect(config.socketHost, config.messagePort || 6666);
 			

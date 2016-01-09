@@ -147,7 +147,6 @@ package multipublish.commands.steps
 					}
 					schedule.programs[$data.index] = program;
 				}
-				//ArrayUtil.normalize(schedule.programs);
 			}
 		}
 		

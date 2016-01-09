@@ -70,6 +70,18 @@ package multipublish.vo.programs
 		
 		/**
 		 * 
+		 * 对应产品。
+		 * 
+		 */
+		
+		public function get expansion():String
+		{
+			return getProperty("expansion");
+		}
+		
+		
+		/**
+		 * 
 		 * 高度。
 		 * 
 		 */

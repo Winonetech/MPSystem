@@ -152,8 +152,7 @@ package multipublish.views.contents
 						var effects:Array = [];
 						lasts = check($data);
 						last = main;
-						main = createElement($data);
-						setArrange(main)
+						setArrange(main = createElement($data));
 						if (lasts)
 						{
 							history.length -= lasts.length;

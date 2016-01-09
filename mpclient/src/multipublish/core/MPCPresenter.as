@@ -140,6 +140,17 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 播放某一类型节目。
+		 * 
+		 */
+		
+		public function playProgram($value:String, $send:Boolean = false):void
+		{
+			execute(new PlaybackProgramCommand($value, $send));
+		}
+		
+		/**
+		 * 
 		 * 重启终端。
 		 * 
 		 */
@@ -159,42 +170,6 @@ package multipublish.core
 		public function restartPlayer(...$args):void
 		{
 			execute(new RestartPlayerCommand);
-		}
-		
-		
-		/**
-		 * 
-		 * 截图。
-		 * 
-		 */
-		
-		public function shotcutPlayer($value:String):void
-		{
-			execute(new ShotcutPlayerCommand(uint($value)));
-		}
-		
-		
-		/**
-		 * 
-		 * 打开设置面板。
-		 * 
-		 */
-		
-		public function showDeploy():void
-		{
-			execute(new ShowDeployCommand);
-		}
-		
-		
-		/**
-		 * 
-		 * 设定关机时间。
-		 * 
-		 */
-		
-		public function shutdownTerminal($value:String = null):void
-		{
-			execute(new InitializeShutdownCommand($value));
 		}
 		
 		
@@ -236,17 +211,37 @@ package multipublish.core
 		
 		/**
 		 * 
-		 * 结束上报进度。
+		 * 截图。
 		 * 
 		 */
 		
-		public function update($app:*, $value:String = null):void
+		public function shotcutPlayer($value:String):void
 		{
-			app = $app;
-			config.updateVersion = true;
-			execute(new InitializeEnvironmentCommand);
-			execute(new InitializeConfigCommand);
-			execute(new ClientUpdateCommand($value));
+			execute(new ShotcutPlayerCommand(uint($value)));
+		}
+		
+		
+		/**
+		 * 
+		 * 打开设置面板。
+		 * 
+		 */
+		
+		public function showDeploy():void
+		{
+			execute(new ShowDeployCommand);
+		}
+		
+		
+		/**
+		 * 
+		 * 设定关机时间。
+		 * 
+		 */
+		
+		public function shutdownTerminal($value:String = null):void
+		{
+			execute(new InitializeShutdownCommand($value));
 		}
 		
 		
