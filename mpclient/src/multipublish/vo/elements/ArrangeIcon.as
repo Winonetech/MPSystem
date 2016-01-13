@@ -54,6 +54,7 @@ package multipublish.vo.elements
 				mp::iconHeight = getProperty("height"  , Number);
 				mp::time       = getProperty("interval", uint);
 				mp::tween      = getProperty("hasTween", Boolean);
+				mp::reverse    = getProperty("reversal", Boolean);
 				
 				mp::layoutType = getProperty("layoutType");
 				
@@ -283,6 +284,18 @@ package multipublish.vo.elements
 			return mp::tween as Boolean;
 		}
 		
+		
+		/**
+		 * 
+		 * 是否颠倒。
+		 * 
+		 */
+		
+		public function get reverse():Boolean
+		{
+			return mp::reverse as Boolean;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -399,6 +412,11 @@ package multipublish.vo.elements
 		 * @private
 		 */
 		mp var tween:Boolean;
+		
+		/**
+		 * @private
+		 */
+		mp var reverse:Boolean;
 		
 	}
 }
