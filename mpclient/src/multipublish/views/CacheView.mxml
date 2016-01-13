@@ -12,10 +12,11 @@
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
 	<s:Group id="container" includeIn="display"
+			 width="0" height="0"
+			 clipAndEnableScrolling="false"
 			 horizontalCenter="0" verticalCenter="0"/>
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.ClassUtil;
 			
 			import com.winonetech.events.ControlEvent;
@@ -23,6 +24,7 @@
 			import multipublish.consts.MPTipConsts;
 			import multipublish.core.mp;
 			import multipublish.views.elements.WebsiteView;
+			import multipublish.vo.elements.Element;
 			
 			import mx.events.FlexEvent;
 			
@@ -124,6 +126,18 @@
 					view.horizontalCenter = 0;
 					view.verticalCenter = 0;
 					playing && processPlay();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function checkReverse():void
+			{
+				if (view && view.data && view.data is Element)
+				{
+					var element:Element = view.data as Element;
+					view.rotation = element.reverse ? 180 : 0;
 				}
 			}
 			
