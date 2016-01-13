@@ -23,7 +23,20 @@
 	
 	<rs:Book id="myBook" width="1920" height="1080" horizontalCenter="0" verticalCenter="0"
 			 openAt="0" autoFlipDuration="600" easing="0.7" regionSize="600" 
-			 sideFlip="false" hardCover="false" hover="false" snap="true" flipOnClick="true"/>
+			 sideFlip="false" hardCover="false" hover="false" snap="true" flipOnClick="true"
+			 bookOpened="resolveBtns()"
+			 pageTurned="resolveBtns()"/>
+	
+	<s:Image source="assets/images/prevUp.png"
+			 visible="{prevable}"
+			 verticalCenter="0" left="10"
+			 width="50" height="50" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"/>
+	<s:Image source="assets/images/nextUp.png"
+			 visible="{nextable}"
+			 verticalCenter="0" right="10"
+			 width="50" height="50" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"/>
 	
 	<ct:SwapBtn upSource="assets/images/backUp.png"
 				downSource="assets/images/backDown.png"
@@ -32,6 +45,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			
+			import cn.vision.utils.LogUtil;
 			
 			import com.rubenswieringa.book.Book;
 			import com.rubenswieringa.book.Page;
@@ -71,9 +86,20 @@
 				
 				office = data as Office;
 				
+				prevable = nextable = true;
+				
 				resolveWH();
 			}
 			
+			/**
+			 * @private
+			 */
+			private function resolveBtns():void
+			{
+				prevable = myBook.prevable;
+				nextable = myBook.nextable;
+				LogUtil.log("当前页：" + myBook.currentPage, "总页数：" + myBook.pages.length, "prev:" + prevable, "next:" + nextable);
+			}
 			
 			/**
 			 * @private
