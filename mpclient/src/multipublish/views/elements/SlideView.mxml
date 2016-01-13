@@ -6,31 +6,33 @@
 				xmlns:ct="com.winonetech.controls.*">
 	<s:Rect width="100%" height="100%">
 		<s:fill>
-			<s:SolidColor color="0xff00f0"/>
+			<s:SolidColor color="0x000000" alpha=".8"/>
 		</s:fill>
 	</s:Rect>
-	<s:Group id="container" width="{width}" height="{height}"
-			 clipAndEnableScrolling="true"
+	<s:Group id="container" clipAndEnableScrolling="true"
+			 left="345" right="345" top="160" bottom="160"
 			 mouseChildren="{navigatable}"
 			 horizontalCenter="0" verticalCenter="0"/>
 	<s:Button left="10" verticalCenter="0"
-			  skinClass="multipublish.skins.SlideBackButtonSkin"/>
+			  skinClass="multipublish.skins.SlideBackButtonSkin"
+			  enabled="{!tweening}" click="back()"/>
 	<s:Button right="10" verticalCenter="-100"
-			  skinClass="multipublish.skins.PushButtonSkin"/>
+			  skinClass="multipublish.skins.PushButtonSkin"
+			  enabled="{!tweening}"/>
 	<s:Button right="10" verticalCenter="100"
 			  skinClass="multipublish.skins.ReverseButtonSkin"
-			  enabled="{!tweening}" click="back()"/>
+			  enabled="{!tweening}"/>
 	<ct:SwapBtn upSource="assets/images/prevUp.png"
 				downSource="assets/images/prevDown.png"
 				width="100" height="100"
 				visible="{navigatable &amp;&amp; navigate}"
-				verticalCenter="0" left="10"
+				verticalCenter="0" left="355"
 				enabled="{!tweening}" click="tween( width)"/>
 	<ct:SwapBtn upSource="assets/images/nextUp.png"
 				downSource="assets/images/nextDown.png"
 				width="100" height="100"
 				visible="{navigatable &amp;&amp; navigate}"
-				verticalCenter="0" right="10"
+				verticalCenter="0" right="355"
 				enabled="{!tweening}" click="tween(-width)"/>
 	<fx:Script>
 		<![CDATA[
@@ -66,7 +68,7 @@
 			
 			override protected function processStop():void
 			{
-				if (view) 
+				if (view)
 				{
 					view.removeEventListener(ControlEvent.STOP, handlerViewStop);
 					view.stop();
@@ -123,8 +125,8 @@
 					var result:DocumentView = type[t] ? new type[t] : null;
 					if (result)
 					{
-						result.width  = width;
-						result.height = height;
+						result.width  = container.width;
+						result.height = container.height;
 						result.time   = comman.time;
 						result.loop   =!automatic;
 						result.data   = c;
@@ -157,12 +159,12 @@
 						var result:DocumentView = type[t] ? new type[t] : null;
 						if (result) 
 						{
-							result.width  = width;
-							result.height = height;
+							result.width  = container.width;
+							result.height = container.height;
 							result.time   = comman.time;
 							result.loop   =!automatic;
 							result.data   = c;
-							result.x      = $side ? width : -width;
+							result.x      = $side ? container.width : -container.width;
 							container.addElement(result);
 							neigh = index;
 						}
@@ -210,8 +212,8 @@
 					{
 						var b:Number = Math.abs(d);
 						var f:Boolean = b > distance;
-						var a:Number = f ? (side ? -width : width) : 0;
-						var p:Number = b / width;
+						var a:Number = f ? (side ? -container.width : container.width) : 0;
+						var p:Number = b / container.width;
 						var t:Number = Math.max(.3, p * config.slideTweenTime);
 						if (f) tweening = true;
 						Tweener.addTween(container, {x:a, time:t, 
@@ -268,7 +270,7 @@
 						stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 						stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 					}
-					tween(-width);
+					tween(-container.width);
 				}
 			}
 			
@@ -311,7 +313,7 @@
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 					var d:Number = mouseX - start;
-					tween((Math.abs(d) > distance) ? (d > 0 ? width - d : -width - d) : d);
+					tween((Math.abs(d) > distance) ? (d > 0 ? container.width - d : -container.width - d) : d);
 				}
 			}
 			
