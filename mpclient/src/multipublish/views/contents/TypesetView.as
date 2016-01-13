@@ -70,7 +70,7 @@ package multipublish.views.contents
 				var index:int = history.length - 1 - $level;
 				if (0 <= index && index < history.length)
 				{
-					log(MPTipConsts.RECORD_TYPESET_BACK, last.data);
+					log(MPTipConsts.RECORD_TYPESET_BACK, last ? last.data : null);
 					var lasts:Array = [];
 					var l:uint = history.length;
 					for (var i:uint = l - 1; i > index; i--) lasts.push(history[i]);
