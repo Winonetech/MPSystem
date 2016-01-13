@@ -12,8 +12,6 @@
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
 	<s:Group id="container" includeIn="display"
-			 width="0" height="0"
-			 clipAndEnableScrolling="false"
 			 horizontalCenter="0" verticalCenter="0"/>
 	<fx:Script>
 		<![CDATA[
