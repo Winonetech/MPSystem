@@ -2,6 +2,75 @@
 <el:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:el="multipublish.views.elements.*">
-	
+				xmlns:el="multipublish.views.elements.*"
+				xmlns:vr="viewer.*">
+	<vr:MapViewer id="mapViewer" width="100%" height="100%"/>
+	<s:Button right="10" top="10" skinClass="multipublish.skins.MapBackButtonSkin" label="返回" click="back()"/>
+	<fx:Script>
+		<![CDATA[
+			import multipublish.core.MPCView;
+			import multipublish.views.contents.TypesetView;
+			
+			import spark.components.Group;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				father = parent as Group;
+				view.application.addElement(this);
+				view.main.visible = false;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				view.application.removeElement(this);
+				view.main.visible = true;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function get typeset():TypesetView
+			{
+				return father.parent.parent.parent as TypesetView;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function get view():MPCView
+			{
+				return MPCView.instance;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var father:Group;
+			
+		]]>
+	</fx:Script>
 </el:ElementView>

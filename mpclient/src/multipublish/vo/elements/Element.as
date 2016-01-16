@@ -144,15 +144,6 @@ package multipublish.vo.elements
 		
 		
 		/**
-		 * 
-		 * 是否颠倒
-		 * 
-		 */
-		
-		public var reverse:Boolean;
-		
-		
-		/**
 		 * @private
 		 */
 		mp var id:String;

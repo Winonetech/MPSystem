@@ -68,6 +68,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.WEBSITE  ] = handlerWebsite;
 			type[ElementTypeConsts.OFFICE   ] = handlerOffice;
 			type[ElementTypeConsts.SLIDE    ] = handlerSlide;
+			type[ElementTypeConsts.MAP      ] = handlerMap;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -161,7 +162,19 @@ package multipublish.commands.steps
 		private function handlerSlide($data:ArrangeIcon, $xml:XML):Element
 		{
 			$data.parse($xml);
-			return $data.element = new Slide($data.raw);
+			var slide:Slide = new Slide($data.raw);
+			slide.reverse = $data.reverse;
+			$data.element = slide;
+			return $data.element;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerMap($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new Elecmap($data.raw);
 		}
 		
 		

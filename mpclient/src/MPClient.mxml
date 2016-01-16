@@ -3,6 +3,7 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx"
 					xmlns:ct="com.winonetech.controls.*"
+					backgroundAlpha="0"
 					creationComplete="init()">
 	<fx:Script>
 		<![CDATA[

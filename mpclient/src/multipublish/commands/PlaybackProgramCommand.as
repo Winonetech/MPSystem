@@ -8,6 +8,13 @@ package multipublish.commands
 	 */
 	
 	
+	import cn.vision.utils.LogUtil;
+	
+	import com.winonetech.tools.LogSQLite;
+	
+	import multipublish.consts.EventConsts;
+	import multipublish.consts.MPTipConsts;
+	import multipublish.consts.TypeConsts;
 	import multipublish.tools.MPService;
 	
 	
@@ -56,7 +63,18 @@ package multipublish.commands
 		 */
 		private function playbackProgram():void
 		{
-			send ? config.service.program(type) : view.main.playbackProgram(type);
+			if (send)
+			{
+				LogUtil.logTip(MPTipConsts.RECORD_PROGRAM_TYPE_PUSH, type);
+				
+				config.service.program(type);
+			}
+			else
+			{
+				LogUtil.logTip(MPTipConsts.RECORD_PROGRAM_TYPE_PLAY, type);
+				
+				view.main.playbackProgram(type);
+			}
 		}
 		
 		

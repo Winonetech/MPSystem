@@ -12,9 +12,7 @@
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
 	<s:Group id="container" includeIn="display"
-			 width="0" height="0"
-			 clipAndEnableScrolling="false"
-			 horizontalCenter="0" verticalCenter="0"/>
+			 clipAndEnableScrolling="false"/>
 	<fx:Script>
 		<![CDATA[
 			import cn.vision.utils.ClassUtil;
@@ -23,8 +21,9 @@
 			
 			import multipublish.consts.MPTipConsts;
 			import multipublish.core.mp;
+			import multipublish.views.elements.MapView;
 			import multipublish.views.elements.WebsiteView;
-			import multipublish.vo.elements.Element;
+			import multipublish.vo.elements.*;
 			
 			import mx.events.FlexEvent;
 			
@@ -81,9 +80,6 @@
 				if (view)
 				{
 					view.reset();
-					/* if (container.containsElement(view)) 
-						container.removeElement(view);
-					view = null; */
 				}
 			}
 			
@@ -123,8 +119,7 @@
 					view.width  = width;
 					view.height = height;
 					view.data   = data;
-					view.horizontalCenter = 0;
-					view.verticalCenter = 0;
+					checkReverse();
 					playing && processPlay();
 				}
 			}
@@ -134,10 +129,12 @@
 			 */
 			private function checkReverse():void
 			{
-				if (view && view.data && view.data is Element)
+				if (view && view.data && view.data is Slide)
 				{
-					var element:Element = view.data as Element;
-					view.rotation = element.reverse ? 180 : 0;
+					view.transformX = .5 * width;
+					view.transformY = .5 * height;
+					var slide:Slide = view.data as Slide;
+					view.rotation = slide.reverse ? 180 : 0;
 				}
 			}
 			
@@ -235,6 +232,7 @@
 			 * @private
 			 */
 			private var view:MPView;
+			
 			
 			/**
 			 * @private

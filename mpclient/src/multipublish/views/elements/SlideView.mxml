@@ -9,19 +9,21 @@
 			<s:SolidColor color="0x000000" alpha=".8"/>
 		</s:fill>
 	</s:Rect>
-	<s:Group id="container" clipAndEnableScrolling="true"
-			 left="345" right="345" top="160" bottom="160"
-			 mouseChildren="{navigatable}"
-			 horizontalCenter="0" verticalCenter="0"/>
-	<s:Button left="10" verticalCenter="0"
+	<s:Group id="content" left="345" right="345" top="160" bottom="160"
+			 clipAndEnableScrolling="true">
+		<s:Group width="{content.width}" height="{content.height}"
+				 id="container" clipAndEnableScrolling="false"
+				 mouseChildren="{navigatable}"/>
+	</s:Group>
+	<s:Button left="20" verticalCenter="0" buttonMode="true"
 			  skinClass="multipublish.skins.SlideBackButtonSkin"
 			  enabled="{!tweening}" click="back()"/>
-	<s:Button right="10" verticalCenter="-100"
+	<s:Button right="150" verticalCenter="-100" buttonMode="true"
 			  skinClass="multipublish.skins.PushButtonSkin"
-			  enabled="{!tweening}"/>
-	<s:Button right="10" verticalCenter="100"
+			  enabled="{!tweening}" click="push()"/>
+	<s:Button right="150" verticalCenter="100" buttonMode="true"
 			  skinClass="multipublish.skins.ReverseButtonSkin"
-			  enabled="{!tweening}"/>
+			  enabled="{!tweening}" click="reverse()"/>
 	<ct:SwapBtn upSource="assets/images/prevUp.png"
 				downSource="assets/images/prevDown.png"
 				width="100" height="100"
@@ -36,16 +38,54 @@
 				enabled="{!tweening}" click="tween(-width)"/>
 	<fx:Script>
 		<![CDATA[
-			
 			import caurina.transitions.Tweener;
 			
 			import com.winonetech.events.ControlEvent;
 			
 			import multipublish.consts.DocumentTypeConsts;
+			import multipublish.core.MPCPresenter;
 			import multipublish.core.mp;
 			import multipublish.views.documents.*;
 			import multipublish.vo.documents.Document;
+			import multipublish.vo.documents.ImageDocument;
 			import multipublish.vo.elements.Comman;
+			
+			import spark.effects.Rotate;
+			
+			
+			/**
+			 * 
+			 * 颠倒。
+			 * 
+			 * @param $tween:Boolean 相关提示。
+			 * @param $meta:* (default = null) 相关数据。
+			 * 
+			 */
+			
+			public function reverse($tween:Boolean = true):void
+			{
+				transformX = .5 * width;
+				transformY = .5 * height;
+				aimRotation = rotation == 0 ? 180 : 0;
+				if ($tween)
+				{
+					if (rotate)
+					{
+						rotate.stop();
+						rotate = null;
+					}
+					rotate = new Rotate;
+					rotate.target = this;
+					rotate.angleFrom = rotation;
+					rotate.angleTo = aimRotation;
+					rotate.duration = config.zoomTweenTime  * 500;
+					rotate.play();
+				}
+				else
+				{
+					rotation = aimRotation;
+				}
+			}
 			
 			
 			/**
@@ -125,8 +165,8 @@
 					var result:DocumentView = type[t] ? new type[t] : null;
 					if (result)
 					{
-						result.width  = container.width;
-						result.height = container.height;
+						result.width  = width  - 345 * 2;
+						result.height = height - 160 * 2;
 						result.time   = comman.time;
 						result.loop   =!automatic;
 						result.data   = c;
@@ -159,12 +199,12 @@
 						var result:DocumentView = type[t] ? new type[t] : null;
 						if (result) 
 						{
-							result.width  = container.width;
-							result.height = container.height;
+							result.width  = width  - 345 * 2;
+							result.height = height - 160 * 2;
 							result.time   = comman.time;
 							result.loop   =!automatic;
 							result.data   = c;
-							result.x      = $side ? container.width : -container.width;
+							result.x      = $side ? result.width : -result.width;
 							container.addElement(result);
 							neigh = index;
 						}
@@ -214,13 +254,25 @@
 						var f:Boolean = b > distance;
 						var a:Number = f ? (side ? -container.width : container.width) : 0;
 						var p:Number = b / container.width;
-						var t:Number = Math.max(.3, p * config.slideTweenTime);
+						var t:Number = Math.max(.3, p * config.slideTweenTime * .75);
 						if (f) tweening = true;
 						Tweener.addTween(container, {x:a, time:t, 
 							onComplete:callbackTweenOver, 
 							onCompleteParams:[f]});
 					} else tweening = false;
 				} else tweening = false;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function push():void
+			{
+				if (view && view.data && view.data is ImageDocument)
+				{
+					var image:ImageDocument = view.data as ImageDocument;
+					presenter.playProgram(image.expansion, true);
+				}
 			}
 			
 			
@@ -365,6 +417,14 @@
 				}
 			}
 			
+			/**
+			 * @private
+			 */
+			private function get presenter():MPCPresenter
+			{
+				return MPCPresenter.instance;
+			}
+			
 			
 			/**
 			 * 
@@ -434,6 +494,16 @@
 			 * @private
 			 */
 			private var next:DocumentView;
+			
+			/**
+			 * @private
+			 */
+			private var aimRotation:Number = 0;
+			
+			/**
+			 * @private
+			 */
+			private var rotate:Rotate;
 			
 			/**
 			 * @private

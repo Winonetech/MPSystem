@@ -279,6 +279,24 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 播放产品相关节目。
+		 * 
+		 */
+		
+		public static const RECORD_PROGRAM_TYPE_PUSH:Tip = new Tip("推送节目类型：{$self}", 2);
+		
+		
+		/**
+		 * 
+		 * 播放产品相关节目。
+		 * 
+		 */
+		
+		public static const RECORD_PROGRAM_TYPE_PLAY:Tip = new Tip("播放节目类型：{$self}", 2);
+		
+		
+		/**
+		 * 
 		 * 设定节目记录。
 		 * 
 		 */

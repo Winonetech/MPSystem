@@ -29,15 +29,15 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 相册格式。
+		 * flash动画格式。
 		 * 
 		 * @default flash
 		 * 
-		 * @see com.winonetech.vo.contents.Gallery
+		 * @see com.winonetech.vo.contents.Cartoon
 		 * 
 		 */
 		
-		public static const GALLERY:String = "flash";
+		public static const CARTOON:String = "flash";
 		
 		
 		/**

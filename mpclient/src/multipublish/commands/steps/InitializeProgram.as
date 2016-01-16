@@ -66,7 +66,7 @@ package multipublish.commands.steps
 			temp = {};
 			
 			type = {};
-			type[ContentTypeConsts.GALLERY] = Gallery;
+			type[ContentTypeConsts.CARTOON] = Cartoon;
 			type[ContentTypeConsts.MARQUEE] = Marquee;
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;

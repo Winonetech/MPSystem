@@ -69,15 +69,18 @@ package multipublish.views
 		
 		public function playbackProgram($type:String):void
 		{
-			var program:Program = view ? view.data as Program : null;
-			if(!program || program.expansion != $type)
+			if ($type != "0")
 			{
-				var flag:int = indexOfType($type);
-				if (flag != -1)
+				var program:Program = view ? view.data as Program : null;
+				if(!program || program.expansion != $type)
 				{
-					index = flag;
-					
-					viewProgram();
+					var flag:int = indexOfType($type);
+					if (flag != -1)
+					{
+						index = flag;
+						
+						viewProgram();
+					}
 				}
 			}
 		}
@@ -167,12 +170,13 @@ package multipublish.views
 		 */
 		private function indexOfType($type:String):int
 		{
-			var index:int = -1;
-			for (var i:uint = 0; i < schedule.programs.length; i++)
+			var l:uint = schedule.programs.length;
+			for (var i:uint = 0; i < l; i++)
 			{
-				
+				var program:Program = schedule.programs[i] as Program;
+				if (program && program.expansion == $type) return i;
 			}
-			return index;
+			return -1;
 		}
 		/**
 		 * @private
@@ -202,6 +206,8 @@ package multipublish.views
 			}
 			else
 			{
+				processStop();
+				
 				if (next)
 				{
 					if (containsElement(next))
@@ -235,18 +241,17 @@ package multipublish.views
 		{
 			var l:uint = schedule.programs.length;
 			neigh ++;
-			if (neigh != index)
-			{
-				var program:Program = schedule.programs[neigh];
-				var result:ProgramView = new ProgramView;
-				result.width   = application.width;
-				result.height  = application.height;
-				result.data    = program;
-				result.visible = false;
-				addElementAt(result, 0);
-				index = neigh;
-			}
-			if(!result && neigh != index) result = generateNext();
+			
+			var program:Program = schedule.programs[neigh];
+			var result:ProgramView = new ProgramView;
+			result.width   = application.width;
+			result.height  = application.height;
+			result.data    = program;
+			result.visible = false;
+			addElementAt(result, 0);
+			index = neigh;
+			
+			if(!result) result = generateNext();
 			return result;
 		}
 		
@@ -334,6 +339,7 @@ package multipublish.views
 			view.reset();
 			view = next;
 			next = generateNext();
+			view.addEventListener(ControlEvent.STOP, handlerEnd);
 			view.play();
 		}
 		

@@ -3,12 +3,12 @@ package multipublish.vo.elements
 	
 	/**
 	 * 
-	 * 幻灯片元素数据结构。
+	 * 地图元素。
 	 * 
 	 */
 	
 	
-	public final class Slide extends Comman
+	public class Elecmap extends Element
 	{
 		
 		/**
@@ -19,19 +19,10 @@ package multipublish.vo.elements
 		 * 
 		 */
 		
-		public function Slide($data:Object=null)
+		public function Elecmap($data:Object = null)
 		{
 			super($data);
 		}
-		
-		
-		/**
-		 * 
-		 * 是否颠倒
-		 * 
-		 */
-		
-		public var reverse:Boolean;
 		
 	}
 }

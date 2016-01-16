@@ -24,5 +24,17 @@ package multipublish.vo.documents
 			super($data);
 		}
 		
+		
+		/**
+		 * 
+		 * 对应产品。
+		 * 
+		 */
+		
+		public function get expansion():String
+		{
+			return getProperty("expansion");
+		}
+		
 	}
 }
