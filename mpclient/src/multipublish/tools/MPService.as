@@ -12,6 +12,7 @@ package multipublish.tools
 	import cn.vision.utils.DebugUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
+	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.tools.Service;
 	
@@ -78,7 +79,7 @@ package multipublish.tools
 		
 		/**
 		 * 
-		 * 向服务端上报文件进度。
+		 * 向服务端上报日志上传完毕。
 		 * 
 		 * @param $success:String (default = true) 是否上传成功。
 		 * 
@@ -162,7 +163,27 @@ package multipublish.tools
 			super.handlerSocketData($e);
 			
 			DebugUtil.execute(read, false);
-			while (datas.length)
+			var temp:String = datas.join("");
+			var list:Array = temp.split("\n");
+			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
+			{
+				return !StringUtil.isEmpty($item.substr(0, 5));
+			};
+			list = list.filter(filter, null);
+			while (list.length)
+			{
+				var data:String = ArrayUtil.shift(list);
+				
+				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
+				
+				if (data)
+				{
+					var cmd:String = data.substr(0, 5);
+					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
+				}
+			}
+			datas.length = 0;
+			/*while (datas.length)
 			{
 				var data:String = ArrayUtil.shift(datas);
 				
@@ -173,7 +194,7 @@ package multipublish.tools
 					var cmd:String = data.substr(0, 5);
 					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
 				}
-			}
+			}*/
 		}
 		
 		

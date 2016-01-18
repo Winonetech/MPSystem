@@ -164,8 +164,8 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 地址推送。<br>
-		 * 默认值为“UPSC:”。
+		 * 时间同步。<br>
+		 * 默认值为“SYTI:”。
 		 * 
 		 */
 		
