@@ -37,7 +37,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const CARTOON:String = "flash";
+		public static const GALLERY:String = "gallery";
 		
 		
 		/**
@@ -77,6 +77,19 @@ package multipublish.consts
 		 */
 		
 		public static const RECORD:String = "video";
+		
+		
+		/**
+		 * 
+		 * 视频格式。
+		 * 
+		 * @default video
+		 * 
+		 * @see com.winonetech.vo.contents.Video
+		 * 
+		 */
+		
+		public static const CARTOON:String = "flash";
 		
 	}
 }

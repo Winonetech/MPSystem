@@ -71,6 +71,7 @@ package multipublish.commands.steps
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;
 			type[ContentTypeConsts.RECORD ] = Record;
+			type[ContentTypeConsts.CARTOON] = Cartoon;
 			
 			queue = new ParallelQueue;
 			queue.addEventListener(QueueEvent.STEP_END, stepHandler);

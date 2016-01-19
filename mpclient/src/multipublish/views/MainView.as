@@ -260,14 +260,22 @@ package multipublish.views
 		 */
 		private function tween():void
 		{
-			if (view && next)
+			if (view)
 			{
 				view.stop();
-				next.x = width;
-				next.visible = true;
-				Tweener.addTween(view, {x:-width, time:config.slideTweenTime,
-					onComplete:callbackTweenOver});
-				Tweener.addTween(next, {x:0, time:config.slideTweenTime});
+				if (next)
+				{
+					next.x = width;
+					next.visible = true;
+					Tweener.addTween(view, {x:-width, time:config.slideTweenTime,
+						onComplete:callbackTweenOver});
+					Tweener.addTween(next, {x:0, time:config.slideTweenTime});
+				}
+				else
+				{
+					view.addEventListener(ControlEvent.STOP, handlerEnd);
+					view.play();
+				}
 			}
 			else
 			{

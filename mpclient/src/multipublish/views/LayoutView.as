@@ -125,7 +125,7 @@ package multipublish.views
 					if (type[content.type])
 					{
 						if (content.type == ContentTypeConsts.PICTURE || 
-							content.type == ContentTypeConsts.RECORD || 
+							content.type == ContentTypeConsts.RECORD ||
 							content.type == ContentTypeConsts.CARTOON)
 						{
 							var cache:CacheView = new CacheView;
@@ -174,7 +174,7 @@ package multipublish.views
 						if (type[content.type])
 						{
 							if (content.type == ContentTypeConsts.PICTURE || 
-								content.type == ContentTypeConsts.RECORD || 
+								content.type == ContentTypeConsts.RECORD ||
 								content.type == ContentTypeConsts.CARTOON)
 							{
 								var cache:CacheView = new CacheView;
@@ -224,6 +224,7 @@ package multipublish.views
 				type[ContentTypeConsts.PICTURE] = PictureView;
 				type[ContentTypeConsts.TYPESET] = TypesetView;
 				type[ContentTypeConsts.RECORD ] = RecordView;
+				type[ContentTypeConsts.CARTOON] = CartoonView;
 			}
 		}
 		
