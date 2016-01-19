@@ -132,7 +132,7 @@ package multipublish.commands
 				Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
 			}
 			
-			if (cmd != "false" && cmd != "null")
+			if (cmd != "null" && cmd.indexOf("false") < 0)
 			{
 				var t1:Array = cmd.split(";");
 				for each (var i:String in t1)

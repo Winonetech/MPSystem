@@ -163,7 +163,7 @@ package multipublish.tools
 			super.handlerSocketData($e);
 			
 			DebugUtil.execute(read, false);
-			var temp:String = datas.join("");
+			var temp:String = datas.join("\n");
 			var list:Array = temp.split("\n");
 			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 			{
@@ -183,18 +183,6 @@ package multipublish.tools
 				}
 			}
 			datas.length = 0;
-			/*while (datas.length)
-			{
-				var data:String = ArrayUtil.shift(datas);
-				
-				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
-				
-				if (data)
-				{
-					var cmd:String = data.substr(0, 5);
-					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
-				}
-			}*/
 		}
 		
 		
