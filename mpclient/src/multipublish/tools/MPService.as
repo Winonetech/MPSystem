@@ -181,8 +181,8 @@ package multipublish.tools
 			super.handlerSocketData($e);
 			
 			DebugUtil.execute(read, false);
-			var temp:String = datas.join("\n");
-			var list:Array = temp.split("\n");
+			var temp:String = datas.join(StringUtil.lineEnding);
+			var list:Array = temp.split(StringUtil.lineEnding);
 			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 			{
 				return !StringUtil.isEmpty($item.substr(0, 5));

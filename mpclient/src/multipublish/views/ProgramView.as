@@ -38,7 +38,6 @@ package multipublish.views
 		}
 		
 		
-		
 		/**
 		 * 
 		 * 自适应父容器尺寸。
