@@ -42,6 +42,19 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 向服务端发送上线指令。
+		 * 
+		 */
+		
+		public function online($value:String):void
+		{
+			socket.writeUTF(ServiceConsts.FORWARD_ON_LINE + $value);
+			socket.flush();
+		}
+		
+		
+		/**
+		 * 
 		 * 向服务端发送离线指令。
 		 * 
 		 */
@@ -167,8 +180,7 @@ package multipublish.tools
 			
 			super.handlerSocketConnected($e);
 			
-			socket.writeUTF(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
-			socket.flush();
+			online(config.terminalNO);
 			handlerTimerHeartbeat();
 			createTimer(config.heartbeatTime || 30, handlerTimerHeartbeat);
 		}
