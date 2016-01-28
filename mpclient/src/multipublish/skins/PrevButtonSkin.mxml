@@ -31,7 +31,7 @@
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s ="library://ns.adobe.com/flex/spark" 
 		xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-		alpha.disabled="0.5">
+		width="50" height="50" alpha.disabled="0.5">
 	
 	<!-- host component -->
 	<fx:Metadata>
@@ -51,7 +51,11 @@
 		<s:State name="disabled" />
 	</s:states>
 	
-	<s:Image smooth="true" width="100%" height="100%" visible="true"  visible.down="false" source="assets/images/prevUp.png"/>
-	<s:Image smooth="true" width="100%" height="100%" visible="false" visible.down="true"  source="assets/images/prevDown.png"/>
+	<s:Image horizontalCenter="0" verticalCenter="0"
+			 visible="true"  visible.down="false"
+			 smooth="true" source="assets/images/prevUp.png"/>
+	<s:Image horizontalCenter="0" verticalCenter="0"
+			 visible="false" visible.down="true" 
+			 smooth="true" source="assets/images/prevDown.png"/>
 	
 </s:Skin>
