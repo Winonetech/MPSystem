@@ -4,31 +4,32 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:el="multipublish.views.elements.*"
 				xmlns:ct="com.winonetech.controls.*">
+	
 	<s:Rect width="100%" height="100%">
 		<s:fill>
-			<s:SolidColor color="0xff00f0"/>
+			<s:SolidColor color="0x999999"/>
 		</s:fill>
 	</s:Rect>
-	<s:Group id="container" width="100%" height="100%"
+	
+	<s:Group id="container" clipAndEnableScrolling="false"
 			 mouseChildren="{navigatable}"/>
-	<ct:SwapBtn upSource="assets/images/prevUp.png"
-				downSource="assets/images/prevDown.png"
-				width="100" height="100"
-				visible="{navigatable &amp;&amp; navigate}"
-				verticalCenter="0" left="10"
-				enabled="{!tweening}" click="tween( width)"/>
-	<ct:SwapBtn upSource="assets/images/nextUp.png"
-				downSource="assets/images/nextDown.png"
-				width="100" height="100"
-				visible="{navigatable &amp;&amp; navigate}"
-				verticalCenter="0" right="10"
-				enabled="{!tweening}" click="tween(-width)"/>
-	<ct:SwapBtn upSource="assets/images/backUp.png"
-				downSource="assets/images/backDown.png"
-				width="100" height="100"
-				right="10" top="10" 
-				visible="{navigatable}"
-				enabled="{!tweening}" click="back()"/>
+	
+	<s:Button skinClass="multipublish.skins.PrevButtonSkin"
+			  width="100" height="100"
+			  verticalCenter="0" left="10"
+			  visible="{navigatable &amp;&amp; navigate}"
+			  enabled="{!tweening}" click="tween( width)"/>
+	<s:Button skinClass="multipublish.skins.NextButtonSkin"
+			  width="100" height="100"
+			  verticalCenter="0" right="10"
+			  visible="{navigatable &amp;&amp; navigate}"
+			  enabled="{!tweening}" click="tween(-width)"/>
+	<s:Button skinClass="multipublish.skins.BackButtonSkin"
+			  width="100" height="100"
+			  right="10" top="10"
+			  visible="{navigatable}"
+			  enabled="{!tweening}" click="back()"/>
+	
 	<fx:Script>
 		<![CDATA[
 			

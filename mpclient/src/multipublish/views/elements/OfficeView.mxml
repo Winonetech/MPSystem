@@ -5,8 +5,7 @@
 				xmlns:el="multipublish.views.elements.*"
 				xmlns:qs="qs.controls.*"
 				xmlns:ct="com.winonetech.controls.*"
-				xmlns:rs="com.rubenswieringa.book.*"
-				initialize="initializeType()">
+				xmlns:rs="com.rubenswieringa.book.*">
 	
 	<s:Rect width="100%" height="100%">
 		<s:fill>
@@ -21,23 +20,22 @@
 			 pageTurned="resolveBtns()"/>
 	
 	<s:Image source="assets/images/prevUp.png"
-			 visible="{prevable}"
+			 visible="{prevable}" alpha=".5"
 			 verticalCenter="0" left="10"
-			 width="50" height="50" alpha=".5"
 			 mouseEnabled="false" mouseChildren="false"/>
 	<s:Image source="assets/images/nextUp.png"
-			 visible="{nextable}"
+			 visible="{nextable}" alpha=".5"
 			 verticalCenter="0" right="10"
-			 width="50" height="50" alpha=".5"
 			 mouseEnabled="false" mouseChildren="false"/>
 	
-	<ct:SwapBtn upSource="assets/images/backUp.png"
-				downSource="assets/images/backDown.png"
-				width="100" height="100" right="10" top="10" 
-				click="back()"/>
+	<s:Button skinClass="multipublish.skins.BackButtonSkin"
+			  width="100" height="100" right="10" top="10"
+			  click="back()"/>
+	
 	
 	<fx:Script>
 		<![CDATA[
+			
 			import cn.vision.utils.LogUtil;
 			
 			import com.rubenswieringa.book.Book;
@@ -131,20 +129,6 @@
 				}
 			}
 			
-			/**
-			 * @private
-			 */
-			private function initializeType():void
-			{
-				if(!type)
-				{
-					type = {};
-					type[DocumentTypeConsts.IMAGE] = ImageDocumentView;
-					type[DocumentTypeConsts.VIDEO] = VideoDocumentView;
-					type[DocumentTypeConsts.FLASH] = FlashDocumentView;
-				}
-			}
-			
 			
 			/**
 			 * @private
@@ -185,11 +169,6 @@
 			 * @private
 			 */
 			private var office:Office;
-			
-			/**
-			 * @private
-			 */
-			private var type:Object;
 			
 			/**
 			 * @private

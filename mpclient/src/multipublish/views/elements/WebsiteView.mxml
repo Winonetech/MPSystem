@@ -13,30 +13,29 @@
 				htmlDOMInitialize="handlerBrowserInitialize(event)"
 				complete="handlerBrowserComplete(event)"/>
 	
-	<ct:SwapBtn upSource="assets/images/backwardUp.png"
-				downSource="assets/images/backwardDown.png"
-				left="10" top="10" id="backwardBtn" enabled="false"
-				click="browser.historyBack()"/>
-	<ct:SwapBtn upSource="assets/images/forwardUp.png"
-				downSource="assets/images/forwardDown.png"
-				left="90" top="10" id="forwardBtn" enabled="false"
-				click="browser.historyForward()"/>
-	<ct:SwapBtn upSource="assets/images/refreshUp.png"
-				downSource="assets/images/refreshDown.png"
-				left="170" top="10" enabled="{browser.location != null}"
-				click="browser.reload()"/>
-	<ct:SwapBtn upSource="assets/images/homepageUp.png"
-				downSource="assets/images/homepageDown.png"
-				left="250" top="10" enabled="{browser.home != null}"
-				click="browser.location = browser.home"/>
+	<s:HGroup left="10" top="10" gap="30">
+		<s:Button skinClass="multipublish.skins.BackwardButtonSkin"
+				  enabled="false" id="backwardBtn"
+				  click="browser.historyBack()"/>
+		<s:Button skinClass="multipublish.skins.ForwardButtonSkin"
+				  enabled="false" id="forwardBtn"
+				  click="browser.historyForward()"/>
+		<s:Button skinClass="multipublish.skins.RefreshButtonSkin"
+				  enabled="{browser.location != null}"
+				  click="browser.reload()"/>
+		<s:Button skinClass="multipublish.skins.HomepageButtonSkin"
+				  enabled="{browser.home != null}"
+				  click="browser.location = browser.home"/>
+	</s:HGroup>
 	
-	<ct:SwapBtn upSource="assets/images/backUp.png"
-				downSource="assets/images/backDown.png"
-				right="10" top="10" click="back()"/>
+	<s:Button skinClass="multipublish.skins.BackButtonSkin"
+			  width="100" height="100" right="10" top="10" click="back()"/>
+	
 	<fx:Declarations>
 		<s:Fade id="fadeIn"  alphaFrom="0" alphaTo="1" duration="500"/>
 		<s:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="500"/>
 	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
 			import cn.vision.utils.HTTPUtil;

@@ -12,6 +12,7 @@ package multipublish.tools
 	import cn.vision.utils.DebugUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
+	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.tools.Service;
 	
@@ -36,6 +37,19 @@ package multipublish.tools
 		public function MPService()
 		{
 			super();
+		}
+		
+		
+		/**
+		 * 
+		 * 向服务端发送上线指令。
+		 * 
+		 */
+		
+		public function online($value:String):void
+		{
+			socket.writeUTF(ServiceConsts.FORWARD_ON_LINE + $value);
+			socket.flush();
 		}
 		
 		
@@ -78,7 +92,7 @@ package multipublish.tools
 		
 		/**
 		 * 
-		 * 向服务端上报文件进度。
+		 * 向服务端上报日志上传完毕。
 		 * 
 		 * @param $success:String (default = true) 是否上传成功。
 		 * 
@@ -148,8 +162,7 @@ package multipublish.tools
 			
 			super.handlerSocketConnected($e);
 			
-			socket.writeUTF(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
-			socket.flush();
+			online(config.terminalNO);
 			handlerTimerHeartbeat();
 			createTimer(config.heartbeatTime || 30, handlerTimerHeartbeat);
 		}
@@ -162,9 +175,16 @@ package multipublish.tools
 			super.handlerSocketData($e);
 			
 			DebugUtil.execute(read, false);
-			while (datas.length)
+			var temp:String = datas.join("\n");
+			var list:Array = temp.split("\n");
+			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 			{
-				var data:String = ArrayUtil.shift(datas);
+				return !StringUtil.isEmpty($item.substr(0, 5));
+			};
+			list = list.filter(filter, null);
+			while (list.length)
+			{
+				var data:String = ArrayUtil.shift(list);
 				
 				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
 				
@@ -174,6 +194,7 @@ package multipublish.tools
 					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
 				}
 			}
+			datas.length = 0;
 		}
 		
 		

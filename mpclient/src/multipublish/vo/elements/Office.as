@@ -1,12 +1,5 @@
 package multipublish.vo.elements
 {
-	import cn.vision.utils.StringUtil;
-	
-	import com.winonetech.consts.PathConsts;
-	import com.winonetech.core.wt;
-	import com.winonetech.utils.CacheUtil;
-	
-	import multipublish.core.mp;
 	
 	/**
 	 * 
@@ -15,7 +8,16 @@ package multipublish.vo.elements
 	 */
 	
 	
-	public final class Office extends Element
+	import cn.vision.utils.StringUtil;
+	
+	import com.winonetech.consts.PathConsts;
+	import com.winonetech.core.wt;
+	import com.winonetech.utils.CacheUtil;
+	
+	import multipublish.core.mp;
+	
+	
+	public class Office extends Element
 	{
 		
 		/**
