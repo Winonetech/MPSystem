@@ -67,6 +67,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.GENERAL  ] = handlerComman;
 			type[ElementTypeConsts.WEBSITE  ] = handlerWebsite;
 			type[ElementTypeConsts.OFFICE   ] = handlerOffice;
+			type[ElementTypeConsts.NEWSPAPER] = handlerNewspaper;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -143,6 +144,15 @@ package multipublish.commands.steps
 		{
 			$data.parse($xml);
 			return $data.element = new Office($data.raw);
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerNewspaper($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new NewsPaper($data.raw);
 		}
 		
 		/**

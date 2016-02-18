@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 mouseEnabled="false" mouseChildren="false"
+		 width="610" height="610">
+	<s:Rect width="610" height="610"
+			radiusX="10" radiusY="10"
+			horizontalCenter="0" verticalCenter="0">
+		<s:fill>
+			<s:SolidColor color="0x999999"/>
+		</s:fill>
+		<s:filters>
+			<s:DropShadowFilter distance="2" blurX="2" blurY="2"/>
+		</s:filters>
+	</s:Rect>
+	<s:Group horizontalCenter="0" verticalCenter="0"
+			 width="600" height="600">
+		<s:filters>
+			<s:GlowFilter blurX="10" blurY="10" strength="3" color="0xFFFFFF"/>
+		</s:filters>
+		<s:Image width="600" height="600"
+				 id="image" mask="{cover}"/>
+		<s:Graphic id="cover" horizontalCenter="0" verticalCenter="0"
+				   width="600" height="600">
+			<s:Rect width="600" height="600"
+					radiusX="12" radiusY="12">
+				<s:fill>
+					<s:SolidColor color="0xCCCCCC"/>
+				</s:fill>
+			</s:Rect>
+		</s:Graphic>
+	</s:Group>
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.MathUtil;
+			
+			public function zoom(target:DisplayObject):void
+			{
+				var rx:Number = MathUtil.clamp(target.mouseX - 300 / scale, 0, target.width  - 300);
+				var ry:Number = MathUtil.clamp(target.mouseY - 300 / scale, 0, target.height - 300);
+				var rec:Rectangle = new Rectangle(0, 0, 600, 600);
+				var bmd:BitmapData = new BitmapData(600, 600, false);
+				var mat:Matrix = new Matrix;
+				mat.translate(-rx, -ry);
+				mat.scale(2, 2);
+				bmd.draw(target, mat, null, null, rec);
+				image.source = bmd;
+			}
+			
+			private var scale:Number = 2;
+			
+		]]>
+	</fx:Script>
+</s:Group>

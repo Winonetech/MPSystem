@@ -48,6 +48,17 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 办公文档模式。
+		 * 
+		 * @default 5
+		 * 
+		 */
+		
+		public static const NEWSPAPER:uint = 10;
+		
+		
+		/**
+		 * 
 		 * 普通播放模式，视频，图片，SWF混播。
 		 * 
 		 * @default 1

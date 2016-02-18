@@ -351,6 +351,7 @@ package multipublish.views.contents
 			type[ElementTypeConsts.ARRANGE  ] = ArrangeView;
 			type[ElementTypeConsts.GENERAL  ] = CommanView;
 			type[ElementTypeConsts.OFFICE   ] = OfficeView;
+			type[ElementTypeConsts.NEWSPAPER] = NewsPaperView;
 			//type[ElementTypeConsts.POPWINDOW] = PopWindowView;
 			//type[ElementTypeConsts.THUMBNAIL] = ThumbnailView;
 			//type[ElementTypeConsts.TIMELINE ] = TimelineView;
