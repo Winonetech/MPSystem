@@ -289,7 +289,6 @@ package multipublish.views.contents
 				main.width  = width;
 				main.height = height;
 				main.data   = typeset.arrange;
-				setArrange(main);
 				history.push(main);
 				
 				if (typeset.arrange.advertise)
