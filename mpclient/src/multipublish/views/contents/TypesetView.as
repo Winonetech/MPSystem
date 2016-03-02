@@ -8,8 +8,6 @@ package multipublish.views.contents
 	 */
 	
 	
-	import cn.vision.collections.Map;
-	import cn.vision.utils.ClassUtil;
 	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.tools.LogSQLite;
@@ -192,7 +190,6 @@ package multipublish.views.contents
 						{
 							main.alpha = 1;
 							main.play();
-							trace(main.x, main.y)
 							history.push(main);
 						};
 						
