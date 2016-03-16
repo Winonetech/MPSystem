@@ -192,7 +192,6 @@ package multipublish.views.contents
 						{
 							main.alpha = 1;
 							main.play();
-							trace(main.x, main.y)
 							history.push(main);
 						};
 						
@@ -243,7 +242,6 @@ package multipublish.views.contents
 		
 		override protected function processStop():void
 		{
-			//zoomer.stop();
 			main && main.stop(false);
 			advertise && advertise.stop(false);
 			timer && timer.stop();
