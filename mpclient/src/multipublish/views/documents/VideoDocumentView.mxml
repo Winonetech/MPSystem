@@ -4,16 +4,17 @@
 				 xmlns:mx="library://ns.adobe.com/flex/mx" 
 				 xmlns:dc="multipublish.views.documents.*">
 	<s:VideoPlayer id="video" loop="{loop}"
-				   scaleMode="zoom" autoPlay="false"
-				   autoRewind="false"
-				   autoDisplayFirstFrame="true"
+				   scaleMode="zoom" autoPlay="true"
+				   mediaPlayerStateChange="video_mediaPlayerStateChangeHandler(event)"
 				   width="100%" height="100%"
 				   source="{media.path}" complete="stop()"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"/>
 	<fx:Script>
 		<![CDATA[
-			
 			import multipublish.vo.documents.Document;
+			
+			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.media.MediaPlayerState;
 			
 			
 			/**
@@ -47,6 +48,18 @@
 			override protected function processStop():void
 			{
 				video && video.stop();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			protected function video_mediaPlayerStateChangeHandler(event:MediaPlayerStateChangeEvent):void
+			{
+				if (event.state == MediaPlayerState.PLAYING)
+				{
+					if(!playing) video.stop();
+				}
 			}
 			
 		]]>

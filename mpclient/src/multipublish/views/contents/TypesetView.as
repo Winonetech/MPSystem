@@ -78,7 +78,6 @@ package multipublish.views.contents
 					var temp:CacheView = main;
 					main = last;
 					last = temp;
-					setArrange(main);
 					
 					var fadeOutStart:Function = function():void
 					{
@@ -153,7 +152,6 @@ package multipublish.views.contents
 						lasts = check($data);
 						last = main;
 						main = createElement($data);
-						setArrange(main)
 						if (lasts)
 						{
 							history.length -= lasts.length;
@@ -208,13 +206,10 @@ package multipublish.views.contents
 						}
 						else
 						{
-							var handler:Function = function():void
-							{
+							TimerUtil.callLater(250, function():void{
 								fadeInStart();
 								fadeInEnd();
-							};
-							TimerUtil.callLater(250, handler);
-							
+							});
 						}
 					}
 				}
@@ -247,7 +242,6 @@ package multipublish.views.contents
 		
 		override protected function processStop():void
 		{
-			//zoomer.stop();
 			main && main.stop(false);
 			advertise && advertise.stop(false);
 			timer && timer.stop();
@@ -293,7 +287,6 @@ package multipublish.views.contents
 				main.width  = width;
 				main.height = height;
 				main.data   = typeset.arrange;
-				setArrange(main);
 				history.push(main);
 				
 				if (typeset.arrange.advertise)
@@ -364,6 +357,7 @@ package multipublish.views.contents
 		private function createElement(item:ArrangeIcon):CacheView
 		{
 			var temp:CacheView = new CacheView;
+			var arrange:CacheView = getArrangeViewFromHistory(item);
 			//判断$data的排版类型，应用不同布局
 			switch (item.layoutType)
 			{
@@ -402,6 +396,26 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
+		private function getArrangeViewFromHistory(item:ArrangeIcon):CacheView
+		{
+			var arrange:Arrange = item.element as Arrange;
+			if (arrange)
+			{
+				for (var i:int = history.length - 1; i >= 0; i--)
+				{
+					if (arrange == history[i].data)
+					{
+						var result:CacheView = history[i];
+						break;
+					}
+				}
+			}
+			return result;
+		}
+		
+		/**
+		 * @private
+		 */
 		private function check($data:ArrangeIcon):Array
 		{
 			if (history.length)
@@ -423,14 +437,6 @@ package multipublish.views.contents
 				}
 			}
 			return result;
-		}
-		
-		/**
-		 * @private
-		 */
-		private function setArrange($view:CacheView):void
-		{
-			if ($view.data is Arrange) arrange = $view;
 		}
 		
 		/**
@@ -644,11 +650,6 @@ package multipublish.views.contents
 		 * @private
 		 */
 		private var typeset:Typeset;
-		
-		/**
-		 * @private
-		 */
-		private var arrange:CacheView;
 		
 		/**
 		 * @private
