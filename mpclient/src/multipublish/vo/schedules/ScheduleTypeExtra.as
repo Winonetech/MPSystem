@@ -55,6 +55,7 @@ package multipublish.vo.schedules
 					FUNC[ScheduleRepeatTypeConsts.MONTH] = resolveMonth;
 					FUNC[ScheduleRepeatTypeConsts.YEAR ] = resolveYear;
 				}
+				
 				var array:Array = $extra.split(" ");
 				resolveRepeatType(array);
 				FUNC[repeatType](array);

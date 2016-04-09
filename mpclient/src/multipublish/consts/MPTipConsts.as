@@ -211,7 +211,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_LOAD_FAILURE_SCHEDULE:Tip = new Tip("加载服务端排期数据出错，排期不存在！", 1);
+		public static const RECORD_LOAD_FAILURE_SCHEDULE:Tip = new Tip("加载服务端排期数据出错，请检查排期地址是否正确，或排期数据格式是否正确！", 1);
 		
 		
 		/**
@@ -220,7 +220,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_LOAD_FAILURE_PROGRAM:Tip = new Tip("加载服务端节目数据出错，请检查网络连接或与相关工作人员联系！", 1);
+		public static const RECORD_LOAD_FAILURE_PROGRAM:Tip = new Tip("加载服务端节目数据出错，请检查节目地址是否正确，或节目数据格式是否正确！", 1);
 		
 		
 		/**

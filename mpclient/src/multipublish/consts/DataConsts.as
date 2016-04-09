@@ -29,7 +29,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const PATH_PROGRAM:String = "cache/program/program";
+		public static const PATH_PROGRAM:String = "cache/program/program.xml";
 		
 		
 		/**

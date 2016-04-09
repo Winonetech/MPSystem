@@ -9,6 +9,7 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
+	import cn.vision.utils.LogUtil;
 	
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
@@ -18,10 +19,12 @@ package multipublish.tools
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import flash.net.Socket;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.net.URLRequestMethod;
 	import flash.utils.Timer;
 	
-	import multipublish.consts.ServiceConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.MPCView;
 	
@@ -51,14 +54,14 @@ package multipublish.tools
 		
 		public function start($delay:uint = 10):void
 		{
-			//计数为了防止2个人在看截图时，一个关闭窗口后，另外一个窗口不刷新的截图问题。
-			count++;
-			w = view.application.width  * scale;
-			h = view.application.height * scale;
-			rectange = new Rectangle(0, 0, w, h);
-			bmd = new BitmapData(w, h, false, 0);
-			cmd = ServiceConsts.SEND_SHOTCUT + config.terminalNO;
-			
+			LogUtil.log("开始截图：" + $delay);
+			if(!rectangle)
+			{
+				var w:Number = view.application.width  * scale;
+				var h:Number = view.application.height * scale;
+				rectangle = new Rectangle(0, 0, w, h);
+				bmd = new BitmapData(rectangle.width, rectangle.height, false);
+			}
 			if(!timer)
 			{
 				timer = new Timer($delay * 1000, 49);
@@ -71,7 +74,8 @@ package multipublish.tools
 			}
 			timer.reset();
 			timer.start();
-			createSocket();
+			
+			shotcut();
 		}
 		
 		
@@ -83,11 +87,12 @@ package multipublish.tools
 		
 		public function stop():void
 		{
-			count--;
-			if (count <= 0 && timer)
+			LogUtil.log("停止截图。");
+			if (timer)
 			{
-				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, handlerTimer);
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				timer.stop();
 				timer = null;
 			}
 		}
@@ -96,37 +101,37 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
+		private function shotcut():void
+		{
+			bmd.draw(view.application, matrix);
+			
+			request.data = bmd.encode(rectangle, jpgOption);
+			request.url = "http://" + config.httpHost + ":" + config.httpPort + "/" + config.shotcutURL + "?terminalId=" + config.terminalNO;
+			LogUtil.log("上传截图：" + request.url);
+			if (loading) loader.close();
+			loading = true;
+			loader.load(request);
+		}
+		
+		/**
+		 * @private
+		 */
 		private function initialize():void
 		{
 			scale = 1 / 3;
 			jpgOption = new JPEGEncoderOptions(50);
+			
 			matrix = new Matrix;
 			matrix.scale(scale, scale);
-		}
-		
-		/**
-		 * @private
-		 */
-		private function createSocket():void
-		{
-			var socket:Socket = new Socket;
-			socket.addEventListener(Event.CONNECT, handlerDefault);
-			socket.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
-			socket.connect(config.socketHost, config.capturePort);
-		}
-		
-		/**
-		 * @private
-		 */
-		private function shotcutPlayer(socket:Socket):void
-		{
-			bmd.draw(view.application, matrix);
-			socket.writeInt(cmd.length);
-			socket.writeUTFBytes(cmd);
-			socket.writeBytes(bmd.encode(rectange, jpgOption));
-			socket.flush();
-			socket.close();
+			
+			request = new URLRequest;
+			request.method = URLRequestMethod.POST;
+			var header:URLRequestHeader = new URLRequestHeader("Content-type", "application/octet-stream");
+			request.requestHeaders.push(header);
+			loader = new URLLoader;
+			loader.addEventListener(Event.COMPLETE, handlerDefault);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
 		}
 		
 		
@@ -135,7 +140,7 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			createSocket();
+			shotcut();
 		}
 		
 		/**
@@ -143,19 +148,22 @@ package multipublish.tools
 		 */
 		private function handlerTimerComplete($e:TimerEvent):void
 		{
-			count = 0;
+			stop();
 		}
 		
-		/**
-		 * @private
-		 */
+		
 		private function handlerDefault($e:Event):void
 		{
-			var socket:Socket = $e.target as Socket;
-			socket.addEventListener(Event.CONNECT, handlerDefault);
-			socket.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
-			if ($e.type == Event.CONNECT) shotcutPlayer(socket);
+			loading = false;
+			switch ($e.type)
+			{
+				case Event.COMPLETE:
+					LogUtil.log("截图上传成功！");
+					break;
+				default:
+					LogUtil.log("截图上传失败，" + ($e as Object).text);
+					break;
+			}
 		}
 		
 		
@@ -184,12 +192,12 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var cmd:String;
+		private var scale:Number;
 		
 		/**
 		 * @private
 		 */
-		private var scale:Number;
+		private var bmd:BitmapData;
 		
 		/**
 		 * @private
@@ -204,27 +212,22 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var rectange:Rectangle;
+		private var rectangle:Rectangle;
 		
 		/**
 		 * @private
 		 */
-		private var bmd:BitmapData;
+		private var request:URLRequest;
 		
 		/**
 		 * @private
 		 */
-		private var w:Number;
+		private var loader:URLLoader;
 		
 		/**
 		 * @private
 		 */
-		private var h:Number;
-		
-		/**
-		 * @private
-		 */
-		private var count:int;
+		private var loading:Boolean;
 		
 	}
 }

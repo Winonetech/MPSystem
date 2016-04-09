@@ -8,8 +8,12 @@ package multipublish.commands
 	 */
 	
 	
+	import cn.vision.utils.JSONUtil;
+	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.XMLUtil;
+	
+	import com.winonetech.tools.Cache;
 	
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
@@ -21,7 +25,6 @@ package multipublish.commands
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.URLConsts;
-	import com.winonetech.tools.Cache;
 	import multipublish.utils.DataUtil;
 	import multipublish.views.InstallerView;
 	import multipublish.vo.Language;
@@ -95,7 +98,7 @@ package multipublish.commands
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, defaultHandler);
 			
 			var request:URLRequest = new URLRequest;
-			request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80)+ URLConsts.GET_TERNIMAL_NO;
+			request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80) + "/" + config.requestTem;
 			var variables:URLVariables = new URLVariables;
 			variables.corpId  = config.companyID;
 			variables.code    = config.deviceNO;
@@ -105,6 +108,8 @@ package multipublish.commands
 			variables.screenResolutionWidth  = config.width;
 			variables.screenResolutionHeight = config.height;
 			request.data = variables;
+			
+			LogUtil.log("申请终端：" + request.url);
 			
 			loader.load(request);
 		}
@@ -135,8 +140,10 @@ package multipublish.commands
 			
 			if ($e.type == Event.COMPLETE)
 			{
-				var xml:XML = XMLUtil.convert($e.target.data, XML);
-				config.terminalNO = XMLUtil.convert(xml.terminalNo);
+				var json:Object = JSON.parse($e.target.data as String);
+				//var xml:XML = XMLUtil.convert($e.target.data, XML);
+				//config.terminalNO = XMLUtil.convert(xml.terminalNo);
+				config.terminalNO = json.terminalNo;
 				if(uint(config.terminalNO) > 0)
 				{
 					view.installer.onSubmit = save;

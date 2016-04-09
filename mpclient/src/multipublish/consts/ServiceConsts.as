@@ -15,12 +15,21 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 地址推送。<br>
+		 * 排期推送。<br>
 		 * 默认值为“UPSC:”。
 		 * 
 		 */
 		
-		public static const RECEIVE_DATA_PUSH:String = "UPSC:";
+		public static const RECEIVE_SCEDULE:String = "UPSC:";
+		
+		/**
+		 * 
+		 * 节目推送。<br>
+		 * 默认值为“UPSC:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_PROGRAM:String = "UPPR:";
 		
 		
 		/**

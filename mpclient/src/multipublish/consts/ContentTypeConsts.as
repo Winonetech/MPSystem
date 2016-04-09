@@ -1,4 +1,4 @@
-package multipublish.consts
+﻿package multipublish.consts
 {
 	
 	/**
@@ -31,7 +31,7 @@ package multipublish.consts
 		 * 
 		 * 相册格式。
 		 * 
-		 * @default flash
+		 * @default gallery
 		 * 
 		 * @see com.winonetech.vo.contents.Gallery
 		 * 
@@ -57,7 +57,7 @@ package multipublish.consts
 		 * 
 		 * 图片格式。
 		 * 
-		 * @default iamge
+		 * @default image
 		 * 
 		 * @see com.winonetech.vo.contents.Picture
 		 * 
@@ -81,11 +81,11 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 视频格式。
+		 * FLASH格式。
 		 * 
-		 * @default video
+		 * @default flash
 		 * 
-		 * @see com.winonetech.vo.contents.Video
+		 * @see com.winonetech.vo.contents.Cartoon
 		 * 
 		 */
 		

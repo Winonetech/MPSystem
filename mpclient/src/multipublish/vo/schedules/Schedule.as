@@ -15,6 +15,7 @@ package multipublish.vo.schedules
 	import multipublish.consts.ScheduleTypeConsts;
 	import multipublish.core.mp;
 	import multipublish.utils.ScheduleUtil;
+	import multipublish.vo.programs.Program;
 	
 
 	public final class Schedule extends VO
@@ -38,13 +39,33 @@ package multipublish.vo.schedules
 		
 		/**
 		 * 
-		 * 清除所有的Program。
+		 * 添加节目。
 		 * 
 		 */
 		
-		public function removeAllPrograms():void
+		public function addProgram($program:Program):void
 		{
-			mp::programs = new Map;
+			programs[programs.length] = $program;
+		}
+		
+		
+		/**
+		 * 
+		 * 获取节目。
+		 * 
+		 */
+		
+		public function getProgram($id:String):Program
+		{
+			for each (var program:Program in programs)
+			{
+				if (program.id == $id) 
+				{
+					var result:Program = program;
+					break;
+				}
+			}
+			return result;
 		}
 		
 		
@@ -53,7 +74,7 @@ package multipublish.vo.schedules
 		 */
 		private function initialize():void
 		{
-			mp::programs = new Map;
+			mp::programs = new Vector.<Program>;
 		}
 		
 		/**
@@ -75,7 +96,7 @@ package multipublish.vo.schedules
 		
 		public function get allDay():Boolean
 		{
-			return getProperty("allday", Boolean);
+			return getProperty("allDay", Boolean);
 		}
 		
 		
@@ -87,7 +108,19 @@ package multipublish.vo.schedules
 		
 		public function get dateEnd():Date
 		{
-			return getProperty("endcron", Date);
+			return getProperty("endDate", Date);
+		}
+		
+		
+		/**
+		 * 
+		 * 开始日期。
+		 * 
+		 */
+		
+		public function get dateStart():Date
+		{
+			return getProperty("startDate", Date);
 		}
 		
 		
@@ -100,18 +133,6 @@ package multipublish.vo.schedules
 		public function get extra():ScheduleTypeExtra
 		{
 			return mp::extra || (mp::extra = resolveExtra());
-		}
-		
-		
-		/**
-		 * 
-		 * 开始日期。
-		 * 
-		 */
-		
-		public function get dateStart():Date
-		{
-			return getProperty("startcron", Date);
 		}
 		
 		
@@ -151,7 +172,7 @@ package multipublish.vo.schedules
 		}
 		
 		
-		public function get programs():Map
+		public function get programs():Vector.<Program>
 		{
 			return mp::programs;
 		}
@@ -164,17 +185,20 @@ package multipublish.vo.schedules
 		
 		public function get timeEnd():Date
 		{
-			if (type == ScheduleTypeConsts.SPOTS)
+			if(!mp::timeEnd)
 			{
-				var start:Date = getProperty("start", Date);
-				var end  :Date = getProperty("end"  , Date);
-				var date :Date = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
+				if (type == ScheduleTypeConsts.SPOTS)
+				{
+					var start:Date = getProperty("startTime", Date);
+					var end  :Date = getProperty("endTime"  , Date);
+					mp::timeEnd = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
+				}
+				else
+				{
+					mp::timeEnd = getProperty("endTime"  , Date);
+				}
 			}
-			else
-			{
-				date = getProperty("end"  , Date);
-			}
-			return date;
+			return mp::timeEnd;
 		}
 		
 		
@@ -186,7 +210,7 @@ package multipublish.vo.schedules
 		
 		public function get timeModify():Date
 		{
-			return getProperty("modifydt", Date);
+			return getProperty("modifyDate", Date);
 		}
 		
 		
@@ -198,11 +222,14 @@ package multipublish.vo.schedules
 		
 		public function get timeStart():Date
 		{
-			if (type == ScheduleTypeConsts.SPOTS)
-				mp::time = mp::time || new Date;
-			else
-				mp::time = getProperty("start", Date);
-			return mp::time;
+			if(!mp::timeStart)
+			{
+				if (type == ScheduleTypeConsts.SPOTS)
+					mp::timeStart = mp::timeStart || new Date;
+				else
+					mp::timeStart = getProperty("startTime", Date);
+			}
+			return mp::timeStart;
 		}
 		
 		
@@ -245,7 +272,12 @@ package multipublish.vo.schedules
 		/**
 		 * @private
 		 */
-		mp var time:Date;
+		mp var timeStart:Date;
+		
+		/**
+		 * @private
+		 */
+		mp var timeEnd:Date;
 		
 		/**
 		 * @private
@@ -260,7 +292,7 @@ package multipublish.vo.schedules
 		/**
 		 * @private
 		 */
-		mp var programs:Map;
+		mp var programs:Vector.<Program>;
 		
 		
 		/**

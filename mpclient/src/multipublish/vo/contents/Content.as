@@ -41,9 +41,21 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
+		public function get summary():String
+		{
+			return getProperty("contentsName");
+		}
+		
+		
+		/**
+		 * 
+		 * 内容时长，秒。
+		 * 
+		 */
+		
 		public function get duration():uint
 		{
-			return getProperty("timelength", uint);
+			return getProperty("timeLength", uint);
 		}
 		
 		
@@ -55,7 +67,7 @@ package multipublish.vo.contents
 		
 		public function get type():String
 		{
-			return getProperty("fileproterty");
+			return getProperty("fileProterty");
 		}
 		
 		
@@ -67,7 +79,43 @@ package multipublish.vo.contents
 		
 		public function get content():String
 		{
-			return getProperty("getcontents");
+			return getProperty("gainContents");
+		}
+		
+		
+		/**
+		 * 
+		 * 排期ID。
+		 * 
+		 */
+		
+		public function get scheduleID():String
+		{
+			return getProperty("scheduleId");
+		}
+		
+		
+		/**
+		 * 
+		 * 节目ID。
+		 * 
+		 */
+		
+		public function get programID():String
+		{
+			return getProperty("programId");
+		}
+		
+		
+		/**
+		 * 
+		 * 布局ID。
+		 * 
+		 */
+		
+		public function get layoutID():String
+		{
+			return getProperty("layoutId");
 		}
 		
 	}

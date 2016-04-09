@@ -115,6 +115,24 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 初始化排期和节目。
+		 * 
+		 */
+		
+		public static const INIT_SCPR:String = "初始化排期和节目。";
+		
+		
+		/**
+		 * 
+		 * 初始化节目内容。
+		 * 
+		 */
+		
+		public static const INIT_PRCT:String = "初始化节目内容。";
+		
+		
+		/**
+		 * 
 		 * 初始化服务。
 		 * 
 		 */

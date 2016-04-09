@@ -52,23 +52,31 @@ package multipublish.utils
 				'\t<!-- 网络协议 -->' + e + 
 				e + 
 				'\t<!-- HTTP主机IP -->' + e + 
-				'\t<httpHost>' + config.httpHost       + '</httpHost>' + e + 
+				'\t<httpHost>'   + config.httpHost       + '</httpHost>'   + e + 
 				'\t<!-- HTTP主机端口 -->' + e + 
-				'\t<httpPort>' +(config.httpPort || 80)+ '</httpPort>' + e + 
+				'\t<httpPort>'   +(config.httpPort || 80)+ '</httpPort>'   + e + 
+				'\t<!-- 终端申请地址 -->' + e + 
+				'\t<requestTem>' + config.requestTem     + '</requestTem>' + e + 
 				e + 
 				'\t<!-- SOCKET -->' + e + 
 				e + 
+				/*
 				'\t<!-- SOCKET主机IP -->' + e + 
 				'\t<socketHost>'    + config.socketHost            + '</socketHost>'    + e + 
 				'\t<!-- SOCKET主机端口 -->' + e + 
 				'\t<messagePort>'   +(config.messagePort   || 6666)+ '</messagePort>'   + e + 
 				'\t<!-- SOCKET截图端口 -->' + e + 
 				'\t<capturePort>'   +(config.capturePort   || 6668)+ '</capturePort>'   + e + 
-				'\t<!-- SOCKET心跳间隔时长 -->' + e + 
+				*/
+				'\t<!-- 通讯地址 -->' + e + 
+				'\t<serviceURL>'    + config.serviceURL            + '</serviceURL>'    + e + 
+				'\t<!-- 截图上传地址 -->' + e + 
+				'\t<shotcutURL>'    + config.shotcutURL            + '</shotcutURL>'    + e + 
+				'\t<!-- 心跳间隔时长 -->' + e + 
 				'\t<heatbeatTime>'  +(config.heartbeatTime || 30  )+ '</heatbeatTime>'  + e + 
-				'\t<!-- SOCKET等待推送时长 -->' + e + 
+				'\t<!-- 等待推送时长 -->' + e + 
 				'\t<pushWaitTime>'  +(config.pushwaitTime  ||  5  )+ '</pushWaitTime>'  + e + 
-				'\t<!-- SOCKET断开后重连时长 -->' + e + 
+				'\t<!-- 断开后重连时长 -->' + e + 
 				'\t<reconnectTime>' +(config.reconnectTime || 60  )+ '</reconnectTime>' + e + 
 				e + 
 				'\t<!-- FTP服务 -->' + e + 

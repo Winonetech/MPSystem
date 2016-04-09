@@ -83,16 +83,10 @@ package multipublish.utils
 		
 		public static function validateScheduleAvailable($schedule:Schedule):Boolean
 		{
-			if(!TYPE[Consts.INIT])
-			{
-				TYPE[Consts.INIT] = true;
-				TYPE[ScheduleTypeConsts.DEFAULT] = validateDefault;
-				TYPE[ScheduleTypeConsts.TURN   ] = validateTurn;
-				TYPE[ScheduleTypeConsts.DEMAND ] = validateDemand;
-				TYPE[ScheduleTypeConsts.REPEAT ] = validateRepeat;
-				TYPE[ScheduleTypeConsts.SPOTS  ] = validateSpots;
-			}
-			return $schedule.hasProgram ? TYPE[$schedule.type]($schedule, new Date) : false;
+			initializeTypes();
+			
+			return (TYPE[$schedule.type] && $schedule.hasProgram)
+				? TYPE[$schedule.type]($schedule, new Date) : false;
 		}
 		
 		
@@ -246,6 +240,22 @@ package multipublish.utils
 			result.minutes  = $date1.minutes  - $date2.minutes;
 			result.seconds  = $date1.seconds  - $date2.seconds;
 			return result;
+		}
+		
+		/**
+		 * @private
+		 */
+		private static function initializeTypes():void
+		{
+			if(!TYPE[Consts.INIT])
+			{
+				TYPE[Consts.INIT] = true;
+				TYPE[ScheduleTypeConsts.DEFAULT] = validateDefault;
+				TYPE[ScheduleTypeConsts.TURN   ] = validateTurn;
+				TYPE[ScheduleTypeConsts.DEMAND ] = validateDemand;
+				TYPE[ScheduleTypeConsts.REPEAT ] = validateRepeat;
+				TYPE[ScheduleTypeConsts.SPOTS  ] = validateSpots;
+			}
 		}
 		
 		

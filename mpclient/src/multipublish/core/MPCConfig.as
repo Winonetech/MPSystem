@@ -20,7 +20,7 @@ package multipublish.core
 	import multipublish.tools.Reporter;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
-
+	
 	
 	[Bindable]
 	public final class MPCConfig extends Config
@@ -221,16 +221,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public function get terminalNO():String
-		{
-			return mp::terminalNO;
-		}
-		
-		public function set terminalNO($value:String):void
-		{
-			mp::terminalNO = $value;
-			//LogSaver.terminalNO = $value;
-		}
+		public var terminalNO:String;
 		
 		
 		/**
@@ -258,6 +249,33 @@ package multipublish.core
 		 */
 		
 		public var socketHost:String = "127.0.0.1";
+		
+		
+		/**
+		 * 
+		 * HTTP通讯地址。
+		 * 
+		 */
+		
+		public var serviceURL:String = "terminal/heartBeat";
+		
+		
+		/**
+		 * 
+		 * 终端申请地址。
+		 * 
+		 */
+		
+		public var requestTem:String = "terminal/apply";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var shotcutURL:String = "terminal/jpgUpload";
 		
 		
 		/**
@@ -486,6 +504,15 @@ package multipublish.core
 		
 		
 		/**
+		 * 
+		 * 数据存储。
+		 * 
+		 */
+		
+		public var datas:Object = {};
+		
+		
+		/**
 		 * @private
 		 */
 		mp var controller:Controller;
@@ -513,7 +540,12 @@ package multipublish.core
 		/**
 		 * @private
 		 */
-		mp var terminalNO:String;
+		mp var scheduled:Boolean;
+		
+		/**
+		 * @private
+		 */
+		mp var programed:Boolean;
 		
 		
 		/**

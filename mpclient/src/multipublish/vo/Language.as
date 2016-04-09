@@ -149,6 +149,15 @@ package multipublish.vo
 		 * 
 		 */
 		
+		public var requestTem:String = "终端申请地址：";
+		
+		
+		/**
+		 * 
+		 * HTTP 地址。
+		 * 
+		 */
+		
 		public var httpHost:String = "HTTP 地址：";
 		
 		
@@ -173,7 +182,25 @@ package multipublish.vo
 		 * 
 		 */
 		
-		public var socket:String = "Socket 服务";
+		public var socket:String = "通讯服务";
+		
+		
+		/**
+		 * 
+		 * 通讯地址。
+		 * 
+		 */
+		
+		public var serviceURL:String = "通讯地址：";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var shotcutURL:String = "截图上传地址：";
 		
 		
 		/**
@@ -544,8 +571,11 @@ package multipublish.vo
 			http    :"HTTP 服务",
 			httpHost:"HTTP 地址：",
 			httpPort:"HTTP 端口：",
+			requestTem:"终端申请地址:",
 			
 			socket       :"Socket 服务",
+			serviceURL   :"通讯地址：",
+			shotcutURL   :"截图上传地址：",
 			socketHost   :"Socket 地址：",
 			messagePort  :"推送端口：",
 			capturePort  :"截图端口：",
@@ -608,8 +638,11 @@ package multipublish.vo
 			http    :"HTTP Service",
 			httpHost:"HTTP host:",
 			httpPort:"HTTP port:",
+			requestTem:"Apply Terminal Address:",
 			
 			socket       :"Socket Service",
+			serviceURL   :"Service address:",
+			shotcutURL   :"Screenshot upload address:",
 			socketHost   :"Socket host:",
 			messagePort  :"Message port:",
 			capturePort  :"Capture port:",

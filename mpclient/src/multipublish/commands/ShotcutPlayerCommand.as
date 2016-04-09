@@ -59,12 +59,6 @@ package multipublish.commands
 		 */
 		private function shotcutPlayer():void
 		{
-			if (time > 0)
-			{
-				LogSQLite.log(TypeConsts.NETWORK, 
-					EventConsts.EVENT_TAKE_SCREENSHOT,
-					LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHOTCUT));
-			}
 			time > 0
 				? config.shotcuter.start(time)
 				: config.shotcuter.stop();

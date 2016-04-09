@@ -57,7 +57,7 @@ package multipublish.commands
 			{
 				//注册每天0:00执行函数，日期可以为任意日期。
 				controller.registControlBroadcast(new Date(2000, 0, 1), presenter.broadcastProgram);
-				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5, null, true);
+				controller.registControlUsecache(presenter.initializeScheduleProgram, config.pushwaitTime || 5, null, true);
 			}
 			else
 			{
@@ -72,11 +72,13 @@ package multipublish.commands
 		{
 			if (config.exportData)
 			{
-				service.registHandler(ServiceConsts.RECEIVE_DATA_PUSH, presenter.exportData);
+				service.registHandler(ServiceConsts.RECEIVE_SCEDULE, presenter.exportData);
+				service.registHandler(ServiceConsts.RECEIVE_PROGRAM, presenter.exportData);
 			}
 			else
 			{
-				service.registHandler(ServiceConsts.RECEIVE_DATA_PUSH, presenter.initializeModule);
+				service.registHandler(ServiceConsts.RECEIVE_SCEDULE  , presenter.initializeSchedule);
+				service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
 				service.registHandler(ServiceConsts.LOCK_TIME        , presenter.lockTime);
 				service.registHandler(ServiceConsts.RESTART_PLAYER   , presenter.restartPlayer);
 				service.registHandler(ServiceConsts.REBOOT_TERMINAL  , presenter.rebootTerminal);
@@ -87,7 +89,8 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
 			}
-			service.connect(config.socketHost, config.messagePort || 6666);
+			service.frequency = config.heartbeatTime;
+			service.online();
 			
 			application.onClosing = service.offline;
 		}

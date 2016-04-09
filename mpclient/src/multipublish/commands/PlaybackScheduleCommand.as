@@ -13,6 +13,7 @@ package multipublish.commands
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.ScheduleRepeatTypeConsts;
 	import multipublish.consts.ScheduleTypeConsts;
+	import multipublish.core.mp;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ScheduleUtil;
 	import multipublish.vo.schedules.Schedule;
@@ -43,12 +44,15 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			if (config.importData || 
-				config.loadable || 
-				config.cache)
+			if (config.mp::scheduled && config.mp::programed)
 			{
-				noteSchedule();
-				playbackSchedule();
+				if (config.importData || 
+					config.loadable || 
+					config.cache)
+				{
+					noteSchedule();
+					playbackSchedule();
+				}
 			}
 			
 			commandEnd();
@@ -70,7 +74,7 @@ package multipublish.commands
 		{
 			if (note)
 			{
-				var schedules:Map = store.retrieveMap(Schedule);
+				var schedules:Object = config.datas;
 				for each (var schedule:Schedule in schedules)
 				{
 					if (ScheduleUtil.validateScheduleInArchive(schedule))
@@ -96,7 +100,7 @@ package multipublish.commands
 		{
 			config.cache = false;
 			//获取排期
-			var schedules:Map = store.retrieveMap(Schedule);
+			var schedules:Object = config.datas;
 			for each (var schedule:Schedule in schedules)
 			{
 				if (ScheduleUtil.validateScheduleAvailable(schedule) && 

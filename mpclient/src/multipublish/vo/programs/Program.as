@@ -8,6 +8,8 @@ package multipublish.vo.programs
 	 */
 	
 	
+	import cn.vision.collections.Map;
+	
 	import com.winonetech.core.VO;
 	
 	import multipublish.core.mp;
@@ -42,8 +44,7 @@ package multipublish.vo.programs
 		{
 			layout.program = this;
 			
-			if (mp::layouts.indexOf(layout) == -1)
-				mp::layouts[(mp::layouts).length] = layout;
+			mp::layouts[layout.id] = layout;
 		}
 		
 		
@@ -52,7 +53,7 @@ package multipublish.vo.programs
 		 */
 		private function initialize():void
 		{
-			mp::layouts = new Vector.<Layout>;
+			mp::layouts = new Map;
 		}
 		
 		
@@ -86,7 +87,7 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function get layouts():Vector.<Layout>
+		public function get layouts():Map
 		{
 			return mp::layouts;
 		}
@@ -107,7 +108,7 @@ package multipublish.vo.programs
 		/**
 		 * @private
 		 */
-		mp var layouts:Vector.<Layout>;
+		mp var layouts:Map;
 		
 	}
 }
