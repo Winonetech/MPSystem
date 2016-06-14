@@ -12,6 +12,7 @@ package multipublish.views.contents
 	import cn.vision.utils.ClassUtil;
 	import cn.vision.utils.TimerUtil;
 	
+	import com.winonetech.core.VO;
 	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.MouseEvent;
@@ -474,7 +475,7 @@ package multipublish.views.contents
 		{
 			if (advertise)
 			{
-				if (advertise.data.ready)
+				if ((advertise.data as VO).ready)
 				{
 					LogSQLite.log(
 						TypeConsts.FILE,
