@@ -8,7 +8,7 @@
 		<s:State name="loading"/>
 		<s:State name="display"/>
 	</vw:states>
-	<cp:ProgressView id="progress" includeIn="loading" data="{vo.caches}"
+	<cp:ProgressView id="progress" includeIn="loading" data="{data.caches}"
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
 	<s:Group id="container" includeIn="display"
@@ -35,7 +35,7 @@
 			{
 				if (data)
 				{
-					if (vo.ready)
+					if (data.ready)
 					{
 						view && view.play();
 					}
@@ -59,7 +59,7 @@
 			{
 				if (data)
 				{
-					vo.ready
+					data.ready
 						? (view && view.stop())
 						: (progress && progress.stop());
 				}
@@ -71,10 +71,10 @@
 			 */
 			override protected function processReset():void
 			{
-				if (vo)
+				if (data)
 				{
-					if (vo.hasEventListener(ControlEvent.READY))
-						vo.removeEventListener(ControlEvent.READY, handlerReady);
+					if (data.hasEventListener(ControlEvent.READY))
+						data.removeEventListener(ControlEvent.READY, handlerReady);
 				}
 				if (view)
 				{
@@ -133,9 +133,9 @@
 			 */
 			private function callbackData():void
 			{
-				if (vo) 
+				if (data) 
 				{
-					var ready:Boolean = vo.ready;
+					var ready:Boolean = data.ready;
 					currentState = ready ? "display" : "loading";
 					if (ready)
 						prepareView();

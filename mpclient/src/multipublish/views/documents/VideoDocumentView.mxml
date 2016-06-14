@@ -36,7 +36,7 @@
 				if (video)
 				{
 					video.source = null;
-					System.gc();
+					//System.gc();
 				}
 			}
 			
