@@ -43,7 +43,7 @@ package multipublish.vo.contents
 		
 		public function get summary():String
 		{
-			return getProperty("contentsName");
+			return getProperty("contentsname");
 		}
 		
 		
@@ -55,7 +55,7 @@ package multipublish.vo.contents
 		
 		public function get duration():uint
 		{
-			return getProperty("timeLength", uint);
+			return getProperty("timelength", uint);
 		}
 		
 		
@@ -67,7 +67,7 @@ package multipublish.vo.contents
 		
 		public function get type():String
 		{
-			return getProperty("fileProterty");
+			return getProperty("fileproterty");
 		}
 		
 		
@@ -79,7 +79,7 @@ package multipublish.vo.contents
 		
 		public function get content():String
 		{
-			return getProperty("gainContents");
+			return getProperty("getcontents");
 		}
 		
 		

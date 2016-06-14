@@ -37,6 +37,12 @@ package multipublish.vo.schedules
 		}
 		
 		
+		public function removeAllPrograms():void
+		{
+			programs.length = 0;
+		}
+		
+		
 		/**
 		 * 
 		 * 添加节目。

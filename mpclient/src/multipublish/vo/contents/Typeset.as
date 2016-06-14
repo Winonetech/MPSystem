@@ -32,8 +32,12 @@ package multipublish.vo.contents
 		 */
 		private function resolveID():String
 		{
-			var arr:Array = content.split("=");
-			return content.split("=").pop();
+			if (content)
+			{
+				var arr:Array = content.split("=");
+				var r:String = arr.pop();
+			}
+			return r;
 		}
 		
 		

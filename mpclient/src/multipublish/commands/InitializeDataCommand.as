@@ -96,10 +96,10 @@ package multipublish.commands
 			queue = new SequenceQueue;
 			queue.addEventListener(QueueEvent.QUEUE_END, queueEndHandler);
 			
-			/*queue.execute(new InitializeSchedule);
+			queue.execute(new InitializeSchedule);
 			queue.execute(new InitializeProgram);
 			queue.execute(new InitializeTypeset);
-			queue.execute(new InitializeDocument);*/
+			queue.execute(new InitializeDocument);
 		}
 		
 		
