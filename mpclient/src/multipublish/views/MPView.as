@@ -56,5 +56,13 @@ package multipublish.views
 			return MPCConfig.instance;
 		}
 		
+		/**
+		 * @private
+		 */
+		protected function get vo():VO
+		{
+			return data as VO;
+		}
+		
 	}
 }
