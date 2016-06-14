@@ -14,8 +14,6 @@ package multipublish.core
 	import cn.vision.pattern.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
-	import multipublish.commands.steps.InitializeProgramContent;
-	import multipublish.commands.steps.InitializeScheduleProgram;
 	
 	import spark.components.WindowedApplication;
 	
@@ -64,7 +62,6 @@ package multipublish.core
 			config.cache = true;
 			
 			execute(new ImportDataCommand);
-			
 			execute(new InitializeDataCommand);
 			execute(new PlaybackScheduleCommand);
 		}
@@ -89,56 +86,19 @@ package multipublish.core
 		
 		/**
 		 * 
-		 * 初始化排期。
+		 * 初始化模块。
 		 * 
 		 * @param $push:String 推送地址。
 		 * @param $cache:Boolean 是否使用缓存。
 		 * 
 		 */
 		
-		public function initializeSchedule($push:String = null, $cache:Boolean = false):void
+		public function initializeModule($push:String = null, $cache:Boolean = false):void
 		{
 			config.cache  = $cache;
-			execute(new InitializeScheduleProgram($push));
 			
-			broadcastProgram();
-		}
-		
-		
-		/**
-		 * 
-		 * 初始化节目。
-		 * 
-		 * @param $push:String 推送地址。
-		 * @param $cache:Boolean 是否使用缓存。
-		 * 
-		 */
-		
-		public function initializeProgram($push:String = null, $cache:Boolean = false):void
-		{
-			config.cache = $cache;
-			execute(new InitializeProgramContent($push));
-			
-			broadcastProgram();
-		}
-		
-		
-		/**
-		 * 
-		 * 初始化排期节目。
-		 * 
-		 * @param $push:String 推送地址。
-		 * @param $cache:Boolean 是否使用缓存。
-		 * 
-		 */
-		
-		public function initializeScheduleProgram($push:String = null, $cache:Boolean = false):void
-		{
-			config.cache = $cache;
-			execute(new InitializeScheduleProgram($push));
-			execute(new InitializeProgramContent($push));
-			
-			broadcastProgram();
+			execute(new InitializeDataCommand($push));
+			execute(new PlaybackScheduleCommand);
 		}
 		
 		
