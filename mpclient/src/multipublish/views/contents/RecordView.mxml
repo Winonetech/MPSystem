@@ -4,8 +4,8 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx"
 				xmlns:ct="multipublish.views.contents.*">
 	<s:VideoPlayer id="video" width="100%" height="100%"
-				   autoRewind="false" autoPlay="false" loop="false"
-				   source="{content.content}" scaleMode="zoom"
+				   autoPlay="false" loop="false"
+				   source="{content.content}" scaleMode="letterbox"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
 				   mediaPlayerStateChange="handlerMediaStateChange(event)"
 				   complete="stop()" creationComplete="ready = true;"/>

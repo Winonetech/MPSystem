@@ -18,6 +18,8 @@ package multipublish.commands
 	import multipublish.utils.ScheduleUtil;
 	import multipublish.vo.schedules.Schedule;
 	
+	import spark.components.VideoPlayer;
+	
 	
 	public final class PlaybackScheduleCommand extends _InternalCommand
 	{

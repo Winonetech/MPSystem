@@ -15,6 +15,7 @@
 			 horizontalCenter="0" verticalCenter="0"/>
 	<fx:Script>
 		<![CDATA[
+			
 			import cn.vision.utils.ClassUtil;
 			
 			import com.winonetech.events.ControlEvent;
