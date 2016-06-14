@@ -12,6 +12,7 @@ package multipublish.views
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
 	
+	import com.winonetech.core.VO;
 	import com.winonetech.core.View;
 	
 	import multipublish.core.MPCConfig;
@@ -53,6 +54,14 @@ package multipublish.views
 		protected function get config():MPCConfig
 		{
 			return MPCConfig.instance;
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function get vo():VO
+		{
+			return data as VO;
 		}
 		
 	}

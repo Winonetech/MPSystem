@@ -9,7 +9,7 @@ package multipublish.vo.documents
 	
 	
 	import com.winonetech.consts.PathConsts;
-	import com.winonetech.core.VO;
+	import com.winonetech.core.WO;
 	import com.winonetech.core.wt;
 	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
@@ -65,7 +65,7 @@ package multipublish.vo.documents
 		 * @inheritDoc
 		 */
 		
-		override public function set parent($value:VO):void
+		override public function set parent($value:WO):void
 		{
 			super.parent = $value;
 			
