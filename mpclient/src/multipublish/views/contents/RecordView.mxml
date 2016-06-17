@@ -42,11 +42,9 @@
 			 */
 			private function handlerMediaStateChange($e:MediaPlayerStateChangeEvent):void
 			{
-				trace("state changed:" + $e.state)
 				if (playing && video.source && (
 					$e.state == MediaPlayerState.PAUSED || 
-					$e.state == MediaPlayerState.READY))
-					video.play();
+					$e.state == MediaPlayerState.READY)) video.play();
 			}
 			
 			
