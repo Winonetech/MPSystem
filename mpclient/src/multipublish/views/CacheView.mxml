@@ -11,8 +11,7 @@
 	<cp:ProgressView id="progress" includeIn="loading" data="{data.caches}"
 					 horizontalCenter="0" verticalCenter="0"
 					 skinClass="multipublish.skins.MPPanelSkin"/>
-	<s:Group id="container" includeIn="display"
-			 horizontalCenter="0" verticalCenter="0"/>
+	<s:Group id="container" includeIn="display"/>
 	<fx:Script>
 		<![CDATA[
 			
@@ -121,8 +120,8 @@
 					view.width  = width;
 					view.height = height;
 					view.data   = data;
-					view.horizontalCenter = 0;
-					view.verticalCenter = 0;
+					//view.horizontalCenter = 0;
+					//view.verticalCenter = 0;
 					playing && processPlay();
 				}
 			}

@@ -40,7 +40,7 @@ package multipublish.vo.contents
 		{
 			super.parse($data);
 			
-			var url:String = getProperty("gainContents");
+			var url:String = getProperty("getcontents");
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
 			wt::registCache(url);
 		}
@@ -48,7 +48,7 @@ package multipublish.vo.contents
 		
 		override public function get id():String
 		{
-			return getProperty("materialId");
+			return getProperty("materialid");
 		}
 		
 		

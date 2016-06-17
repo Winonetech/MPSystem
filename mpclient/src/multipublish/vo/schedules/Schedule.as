@@ -102,7 +102,7 @@ package multipublish.vo.schedules
 		
 		public function get allDay():Boolean
 		{
-			return getProperty("allDay", Boolean);
+			return getProperty("allday", Boolean);
 		}
 		
 		
@@ -114,7 +114,7 @@ package multipublish.vo.schedules
 		
 		public function get dateEnd():Date
 		{
-			return getProperty("endDate", Date);
+			return getProperty("endcron", Date);
 		}
 		
 		
@@ -126,7 +126,7 @@ package multipublish.vo.schedules
 		
 		public function get dateStart():Date
 		{
-			return getProperty("startDate", Date);
+			return getProperty("startcron", Date);
 		}
 		
 		
@@ -195,13 +195,13 @@ package multipublish.vo.schedules
 			{
 				if (type == ScheduleTypeConsts.SPOTS)
 				{
-					var start:Date = getProperty("startTime", Date);
-					var end  :Date = getProperty("endTime"  , Date);
+					var start:Date = getProperty("start", Date);
+					var end  :Date = getProperty("end"  , Date);
 					mp::timeEnd = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
 				}
 				else
 				{
-					mp::timeEnd = getProperty("endTime"  , Date);
+					mp::timeEnd = getProperty("end"  , Date);
 				}
 			}
 			return mp::timeEnd;
@@ -216,7 +216,7 @@ package multipublish.vo.schedules
 		
 		public function get timeModify():Date
 		{
-			return getProperty("modifyDate", Date);
+			return getProperty("modifydt", Date);
 		}
 		
 		
@@ -233,7 +233,7 @@ package multipublish.vo.schedules
 				if (type == ScheduleTypeConsts.SPOTS)
 					mp::timeStart = mp::timeStart || new Date;
 				else
-					mp::timeStart = getProperty("startTime", Date);
+					mp::timeStart = getProperty("start", Date);
 			}
 			return mp::timeStart;
 		}

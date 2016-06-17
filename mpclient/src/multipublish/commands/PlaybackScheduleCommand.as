@@ -46,15 +46,13 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			if (config.mp::scheduled && config.mp::programed)
+			
+			if (config.importData || 
+				config.loadable || 
+				config.cache)
 			{
-				if (config.importData || 
-					config.loadable || 
-					config.cache)
-				{
-					noteSchedule();
-					playbackSchedule();
-				}
+				noteSchedule();
+				playbackSchedule();
 			}
 			
 			commandEnd();
@@ -102,7 +100,8 @@ package multipublish.commands
 		{
 			config.cache = false;
 			//获取排期
-			var schedules:Object = config.datas;
+			//var schedules:Object = config.datas;
+			var schedules:Object = store.retrieveMap(Schedule);
 			for each (var schedule:Schedule in schedules)
 			{
 				if (ScheduleUtil.validateScheduleAvailable(schedule) && 

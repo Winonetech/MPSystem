@@ -67,7 +67,7 @@ package multipublish.vo.contents
 		
 		public function get type():String
 		{
-			return getProperty("fileproterty");
+			return getProperty("fileproperty");
 		}
 		
 		
@@ -89,10 +89,10 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function get scheduleID():String
+		/*public function get scheduleID():String
 		{
 			return getProperty("scheduleId");
-		}
+		}*/
 		
 		
 		/**
@@ -101,10 +101,10 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function get programID():String
+		/*public function get programID():String
 		{
 			return getProperty("programId");
-		}
+		}*/
 		
 		
 		/**
@@ -113,10 +113,10 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function get layoutID():String
+		/*public function get layoutID():String
 		{
 			return getProperty("layoutId");
-		}
+		}*/
 		
 	}
 }

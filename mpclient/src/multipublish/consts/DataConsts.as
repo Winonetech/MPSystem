@@ -38,7 +38,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const PATH_SCHEDULE:String = "cache/schedule/schedule.xml";
+		public static const PATH_SCHEDULE:String = "cache/schedule/schedule.dat";
 		
 		
 		/**

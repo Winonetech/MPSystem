@@ -250,7 +250,12 @@ package multipublish.views
 					Tweener.addTween(container, {x:a, time:t, 
 						onComplete:callbackTweenOver, 
 						onCompleteParams:[f]});
-				} else tweening = false;
+				}
+				else 
+				{
+					tweening = false;
+					processPlay();
+				}
 			} else tweening = false;
 		}
 		
@@ -291,17 +296,16 @@ package multipublish.views
 		private function handlerViewStop($e:ControlEvent):void
 		{
 			if (view) view.removeEventListener(ControlEvent.STOP, handlerViewStop);
+			if (index >= source.contents.length - 1) stop();
 			
 			if (down)
 			{
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 			}
+			
 			tween(-width);
-			if (index >= source.contents.length - 1)
-			{
-				stop();
-			}
+			
 		}
 		
 		

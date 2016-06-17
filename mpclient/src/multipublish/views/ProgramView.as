@@ -148,8 +148,8 @@ package multipublish.views
 		private function initializeEnvironment():void
 		{
 			addElement(container = new Group);
-			container.horizontalCenter = 0;
-			container.verticalCenter   = 0;
+			//container.horizontalCenter = 0;
+			//container.verticalCenter   = 0;
 		}
 		
 		

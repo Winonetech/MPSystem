@@ -4,7 +4,7 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx"
 				xmlns:ct="multipublish.views.contents.*">
 	<s:VideoPlayer id="video" width="100%" height="100%"
-				   autoPlay="false" loop="false"
+				   autoPlay="false" loop="false" 
 				   source="{content.content}" scaleMode="letterbox"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
 				   mediaPlayerStateChange="handlerMediaStateChange(event)"
@@ -42,8 +42,10 @@
 			 */
 			private function handlerMediaStateChange($e:MediaPlayerStateChangeEvent):void
 			{
-				if (playing && video.source && 
-					$e.state == MediaPlayerState.PAUSED)
+				trace("state changed:" + $e.state)
+				if (playing && video.source && (
+					$e.state == MediaPlayerState.PAUSED || 
+					$e.state == MediaPlayerState.READY))
 					video.play();
 			}
 			
@@ -70,6 +72,7 @@
 			 * @private
 			 */
 			mp var ready:Boolean;
+			
 			
 		]]>
 	</fx:Script>
