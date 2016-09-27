@@ -89,8 +89,32 @@ package multipublish.vo.schedules
 		private function resolveExtra():ScheduleTypeExtra
 		{
 			if (type == ScheduleTypeConsts.REPEAT)
-				var extra:ScheduleTypeExtra = new ScheduleTypeExtra(getProperty("cronexpression"));
+				var extra:ScheduleTypeExtra = new ScheduleTypeExtra(getProperty("dateExpression"));
 			return  extra;
+		}
+		
+		
+		/**
+		 * 
+		 * 摘要。
+		 * 
+		 */
+		
+		public function get summary():String
+		{
+			return getProperty("summary");
+		}
+		
+		
+		/**
+		 * 
+		 * 排期类型，可以是默认，轮播，点播，重复，插播。
+		 * 
+		 */
+		
+		public function get type():uint
+		{
+			return getProperty("type", uint);
 		}
 		
 		
@@ -102,19 +126,7 @@ package multipublish.vo.schedules
 		
 		public function get allDay():Boolean
 		{
-			return getProperty("allday", Boolean);
-		}
-		
-		
-		/**
-		 * 
-		 * 结束日期。
-		 * 
-		 */
-		
-		public function get dateEnd():Date
-		{
-			return getProperty("endcron", Date);
+			return getProperty("allDay", Boolean);
 		}
 		
 		
@@ -126,7 +138,89 @@ package multipublish.vo.schedules
 		
 		public function get dateStart():Date
 		{
-			return getProperty("startcron", Date);
+			return getProperty("dateStart", Date);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set dateStart($value:Date):void
+		{
+			setProperty("dateStart", $value.toString());
+		}
+		
+		
+		/**
+		 * 
+		 * 结束日期。
+		 * 
+		 */
+		
+		public function get dateEnd():Date
+		{
+			return getProperty("dateEnd", Date);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set dateEnd($value:Date):void
+		{
+			setProperty("dateEnd", $value.toString());
+		}
+		
+		
+		/**
+		 * 
+		 * 开始时间。
+		 * 
+		 */
+		
+		public function get timeStart():Date
+		{
+			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
+			
+			mp::timeStart = bool ? new Date
+				: ( mp::timeStart || getProperty("timeStart", Date) );
+			
+			return mp::timeStart;
+		}
+		
+		
+		/**
+		 * 
+		 * 结束时间。
+		 * 
+		 */
+		
+		public function get timeEnd():Date
+		{
+			if(!mp::timeEnd)
+			{
+				if (type == ScheduleTypeConsts.SPOTS)
+				{
+					var start:Date = getProperty("timeStart", Date);
+					var end  :Date = getProperty("timeEnd", Date);
+					mp::timeEnd = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
+				}
+				else
+				{
+					mp::timeEnd = getProperty("timeEnd", Date);
+				}
+			}
+			return mp::timeEnd;
+		}
+		
+		
+		/**
+		 * 
+		 * 修改时间。
+		 * 
+		 */
+		
+		public function get timeModify():Date
+		{
+			return getProperty("modifyDate", Date);
 		}
 		
 		
@@ -181,85 +275,6 @@ package multipublish.vo.schedules
 		public function get programs():Vector.<Program>
 		{
 			return mp::programs;
-		}
-		
-		/**
-		 * 
-		 * 结束时间。
-		 * 
-		 */
-		
-		public function get timeEnd():Date
-		{
-			if(!mp::timeEnd)
-			{
-				if (type == ScheduleTypeConsts.SPOTS)
-				{
-					var start:Date = getProperty("start", Date);
-					var end  :Date = getProperty("end"  , Date);
-					mp::timeEnd = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
-				}
-				else
-				{
-					mp::timeEnd = getProperty("end"  , Date);
-				}
-			}
-			return mp::timeEnd;
-		}
-		
-		
-		/**
-		 * 
-		 * 修改时间。
-		 * 
-		 */
-		
-		public function get timeModify():Date
-		{
-			return getProperty("modifydt", Date);
-		}
-		
-		
-		/**
-		 * 
-		 * 开始时间。
-		 * 
-		 */
-		
-		public function get timeStart():Date
-		{
-			if(!mp::timeStart)
-			{
-				if (type == ScheduleTypeConsts.SPOTS)
-					mp::timeStart = mp::timeStart || new Date;
-				else
-					mp::timeStart = getProperty("start", Date);
-			}
-			return mp::timeStart;
-		}
-		
-		
-		/**
-		 * 
-		 * 摘要。
-		 * 
-		 */
-		
-		public function get summary():String
-		{
-			return getProperty("summary");
-		}
-		
-		
-		/**
-		 * 
-		 * 排期类型，可以是默认，轮播，点播，重复，插播。
-		 * 
-		 */
-		
-		public function get type():uint
-		{
-			return getProperty("type", uint);
 		}
 		
 		

@@ -21,7 +21,7 @@ package multipublish.commands.steps
 	import multipublish.core.mp;
 	
 	
-	internal final class Model extends Step
+	public final class Model extends Step
 	{
 		
 		/**
@@ -102,6 +102,10 @@ package multipublish.commands.steps
 			{
 				mp::data = $e.target.data;
 				if (type) store.registRaw(data, type);
+			}
+			else
+			{
+				LogUtil.log("加载数据出错：" + url);
 			}
 			commandEnd();
 		}

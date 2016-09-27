@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wt:Vessel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s ="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:wt="com.winonetech.core.*"
+		   xmlns:ct="com.winonetech.controls.*"
+		   height="130" mouseEnabled="false">
+	
+	<s:Rect width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="0xCCCCCC"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<ct:MultiTouchScroller left="5" top="5" right="5" bottom="5"
+						   horizontalScrollPolicy="off"
+						   verticalTouchScrollEnabled="false"
+						   measuredSizeIncludesScrollBars="false"
+						   skinClass="multipublish.skins.ScrollerSkin"
+						   id="scroll" scroll="updateIcons()">
+		
+		<s:HGroup id="container" height="100%" mouseEnabled="false" gap="5"/>
+		
+	</ct:MultiTouchScroller>
+	
+	<s:Image verticalCenter="0" left="10" visible="{prevable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source="assets/images/prevUp.png"/>
+	
+	<s:Image verticalCenter="0" right="10" visible="{nextable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source="assets/images/nextUp.png"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.core.mp;
+			
+			/**
+			 * 
+			 * 恢复
+			 * 
+			 */
+			
+			public function resume():void
+			{
+				if (scroll) 
+				{
+					scroll.stopScrollTweening();
+					scroll.horizontalScrollPosition = 0;
+					updateIcons();
+				}
+			}
+			
+			/**
+			 * 
+			 * 重置
+			 * 
+			 */
+			
+			public function reset():void
+			{
+				data = null;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function updateIcons():void
+			{
+				if (scroll && scroll.viewport)
+				{
+					prevable = scroll.leftScrollable;
+					nextable = scroll.rightScrollable;
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = container && scroll;
+				if (result)
+				{
+					container.removeAllElements();
+					
+					var count:uint = 0;
+					for each (var child:* in data)
+					{
+						count++;
+						var item:ImageItem = new ImageItem;
+						item.data = child;
+						container.addElement(item);
+					}
+					
+					resume();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</wt:Vessel>

@@ -3,19 +3,26 @@ package multipublish.vo.contents
 	
 	/**
 	 * 
-	 * 内容数据结构，可以是以下类型：<br>
+	 * 内容数据结构基类，可以是以下类型：<br>
 	 * 1.自由排版格式；<br>
 	 * 2.相册格式；<br>
 	 * 3.跑马灯格式；<br>
 	 * 4.图片格式；<br>
 	 * 5.视频格式。
 	 * 
-	 * @see com.winonetech.consts.ContentTypeConsts
-	 * 
 	 */
 	
 	
+	import cn.vision.utils.StringUtil;
+	
+	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.VO;
+	import com.winonetech.core.wt;
+	import com.winonetech.utils.CacheUtil;
+	
+	import multipublish.core.mp;
+	
+	use namespace wt;
 	
 	
 	public class Content extends VO
@@ -36,26 +43,47 @@ package multipublish.vo.contents
 		
 		
 		/**
-		 * 
-		 * 内容类型。
-		 * 
+		 * @inheritDoc
 		 */
 		
-		public function get summary():String
+		override public function parse($data:Object):void
 		{
-			return getProperty("contentsname");
+			super.parse($data);
+			
+			mp::background = getProperty("background");
+			if(!StringUtil.isEmpty(mp::background))
+			{
+				wt::registCache(mp::background);
+				mp::background = CacheUtil.extractURI(mp::background, PathConsts.PATH_FILE);
+			}
+			
+			mp::backgroundAlpha = getProperty("backgroundAlpha", Number);
+			if (mp::backgroundAlpha > 1)
+				mp::backgroundAlpha = mp::backgroundAlpha * .01;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override public function set parent($value:VO):void
+		{
+			if (parent) parent.wt::delChild(this);
+			wt::parent = $value;
+			if (parent) parent.wt::addChild(this);
 		}
 		
 		
 		/**
 		 * 
-		 * 内容时长，秒。
+		 * 内容名称。
 		 * 
 		 */
 		
-		public function get duration():uint
+		public function get title():String
 		{
-			return getProperty("timelength", uint);
+			return getProperty("contentName") || "";
 		}
 		
 		
@@ -67,56 +95,91 @@ package multipublish.vo.contents
 		
 		public function get type():String
 		{
-			return getProperty("fileproperty");
+			return getProperty("contentType");
 		}
 		
 		
 		/**
 		 * 
-		 * 具体内容，不同类型对应的内容格式不同。
+		 * 引用该内容的组件ID。
 		 * 
 		 */
 		
-		public function get content():String
+		public function get componentID():String
 		{
-			return getProperty("getcontents");
+			return getProperty("componentId");
 		}
 		
 		
 		/**
 		 * 
-		 * 排期ID。
+		 * 链接的页面ID。
 		 * 
 		 */
 		
-		/*public function get scheduleID():String
+		public function get pageID():String
 		{
-			return getProperty("scheduleId");
-		}*/
+			return getProperty("pageId");
+		}
 		
 		
 		/**
 		 * 
-		 * 节目ID。
+		 * 链接的页面ID。
 		 * 
 		 */
 		
-		/*public function get programID():String
+		public function set pageID($value:String):void
 		{
-			return getProperty("programId");
-		}*/
+			return setProperty("pageId", $value);
+		}
 		
 		
 		/**
 		 * 
-		 * 布局ID。
+		 * 链接的页面ID。
 		 * 
 		 */
 		
-		/*public function get layoutID():String
+		public function get background():String
 		{
-			return getProperty("layoutId");
-		}*/
+			return mp::background;
+		}
+		
+		
+		/**
+		 * 
+		 * 背景透明度。
+		 * 
+		 */
+		
+		public function get backgroundAlpha():Number
+		{
+			return mp::backgroundAlpha;
+		}
+		
+		
+		/**
+		 * 
+		 * 背景颜色。
+		 * 
+		 */
+		
+		public function get backgroundColor():uint
+		{
+			return getProperty("backgroundColor", uint);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		mp var background:String;
+		
+		/**
+		 * @private
+		 */
+		mp var backgroundAlpha:Number;
 		
 	}
 }

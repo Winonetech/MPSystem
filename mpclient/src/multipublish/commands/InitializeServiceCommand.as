@@ -79,6 +79,7 @@ package multipublish.commands
 			{
 				//service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
 				service.registHandler(ServiceConsts.RECEIVE_SCEDULE  , presenter.initializeModule);
+				service.registHandler(ServiceConsts.RECEIVE_LEDTEXT  , presenter.sendLed);
 				service.registHandler(ServiceConsts.LOCK_TIME        , presenter.lockTime);
 				service.registHandler(ServiceConsts.RESTART_PLAYER   , presenter.restartPlayer);
 				service.registHandler(ServiceConsts.REBOOT_TERMINAL  , presenter.rebootTerminal);
@@ -88,11 +89,12 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REPORT_FILE_END  , presenter.reportProgressEnd);
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
+				service.registHandler(ServiceConsts.FILE_DOWNLOAD    , presenter.downloadFiles);
 			}
 			service.frequency = config.heartbeatTime;
-			service.online();
+			service.communicationStart();
 			
-			application.onClosing = service.offline;
+			application.onClosing = service.communicationStop;
 		}
 		
 		

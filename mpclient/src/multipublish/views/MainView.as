@@ -118,7 +118,7 @@ package multipublish.views
 			{
 				view = generateView();
 				next = generateNext();
-				play();
+				delay(1, play);
 			}
 			else
 			{
@@ -160,6 +160,7 @@ package multipublish.views
 		 */
 		private function initializeEnvironment():void
 		{
+			mouseEnabled = false;
 			verticalCenter = horizontalCenter = 0;
 			var handlerAddedToStage:Function = function($e:Event):void
 			{

@@ -25,6 +25,7 @@ package multipublish.tools
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCConfig;
+	import multipublish.utils.ReportUtil;
 	
 	
 	public final class Reporter extends VSObject
@@ -96,19 +97,22 @@ package multipublish.tools
 		private function handlerCacheStart($e:QueueEvent):void
 		{
 			var cache:Cache = $e.command as Cache;
-			REPORTABLE[cache] =!cache.exist;
-			if (REPORTABLE[cache])
+			if (ReportUtil.responsable(cache))
 			{
-				var name:String = cache.saveURL.split("/").pop();
-				var data:String = name + ";2";
-				var memo:String = name + (cache.reloadCount == 0 ? "开始下载" : "再次下载");
-				
-				LogSQLite.log(
-					TypeConsts.FILE, 
-					EventConsts.EVENT_DOWNLOADING_START, name,
-					RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
-				
-				service.report(data);//发送2，开始下载。
+				REPORTABLE[cache] =!cache.exist;
+				if (REPORTABLE[cache])
+				{
+					var name:String = cache.saveURL.split("/").pop();
+					var data:String = name + ";2";
+					var memo:String = name + (cache.reloadCount == 0 ? "开始下载" : "再次下载");
+					
+					LogSQLite.log(
+						TypeConsts.FILE, 
+						EventConsts.EVENT_DOWNLOADING_START, name,
+						RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
+					
+					service.report(data);//发送2，开始下载。
+				}
 			}
 		}
 		
@@ -119,19 +123,30 @@ package multipublish.tools
 		{
 			var cache:Cache = $e.command as Cache;
 			
-			var exist:Boolean = cache.exist;
-			var name:String = cache.saveURL.split("/").pop();
-			var data:String = name + (exist ? ";3" : ";4");
-			var memo:String = name + (exist ? " 下载完成" : " 下载失败");
-			if(!exist) memo += "，" + cache.message;
-			
-			LogSQLite.log(
-				TypeConsts.FILE,
-				EventConsts.EVENT_DOWNLOADING_END, name,
-				RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
-			
-			service.report(data);//发送3,4，完成下载。
-			delete REPORTABLE[cache];
+			//两种情况不需要上报进度
+			//1.报纸文件，且已经下载过的。
+			//2.不存在的报纸文件。
+			if (ReportUtil.responsable(cache) || 
+				(cache.exist && REPORTABLE[cache]))
+			{
+				var exist:Boolean = cache.exist;
+				var name:String = cache.saveURL.split("/").pop();
+				var data:String = name + (exist ? ";3" : ";4");
+				var memo:String = name + (exist ? " 下载完成" : " 下载失败");
+				if(!exist) 
+				{
+					memo += "，" + cache.message;
+					data += ";" + cache.code + ";" + cache.message;
+				}
+				
+				LogSQLite.log(
+					TypeConsts.FILE,
+					EventConsts.EVENT_DOWNLOADING_END, name,
+					RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
+				
+				service.report(data);//发送3,4，完成下载。
+				delete REPORTABLE[cache];
+			}
 		}
 		
 		/**
@@ -141,10 +156,13 @@ package multipublish.tools
 		{
 			for each (var cache:Cache in Cache.executingCaches)
 			{
-				var s:Number = .01 * uint(100 * cache.speed);
-				var p:Number = .01 * uint(100 * cache.percent);
-				var n:String = cache.saveURL.split("/").pop();
-				service.report(n + "," + p + "," + s + "kb/s", false);
+				if(!(cache.extra && cache.extra.response == false))
+				{
+					var s:Number = .01 * uint(100 * cache.speed);
+					var p:Number = .01 * uint(100 * cache.percent);
+					var n:String = cache.saveURL.split("/").pop();
+					service.report(n + "," + p + "," + s + "kb/s", false);
+				}
 			}
 		}
 		

@@ -3,26 +3,32 @@ package multipublish.views
 	
 	/**
 	 * 
-	 * 布局视图。
+	 * 排版视图。
 	 * 
 	 */
 	
 	
-	import caurina.transitions.Tweener;
+	import cn.vision.utils.ArrayUtil;
+	import cn.vision.utils.TimerUtil;
 	
+	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
 	import flash.events.MouseEvent;
-	import flash.system.System;
+	import flash.events.TimerEvent;
+	import flash.geom.Rectangle;
+	import flash.utils.Timer;
 	
-	import multipublish.consts.ContentTypeConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.core.mp;
-	import multipublish.views.contents.*;
-	import multipublish.vo.contents.Content;
+	import multipublish.utils.EffectUtil;
+	import multipublish.views.contents.ButtonView;
+	import multipublish.views.contents.MarqueeView;
 	import multipublish.vo.programs.Layout;
+	import multipublish.vo.programs.Page;
 	
-	import spark.components.Group;
+	import mx.effects.Effect;
+	import mx.effects.Sequence;
+	import mx.events.EffectEvent;
 	
 	
 	public final class LayoutView extends MPView
@@ -30,7 +36,7 @@ package multipublish.views
 		
 		/**
 		 * 
-		 * <code>LayoutView</code>构造函数。
+		 * 构造函数。
 		 * 
 		 */
 		
@@ -38,7 +44,189 @@ package multipublish.views
 		{
 			super();
 			
-			initializeEnvironment();
+			sequence = new Sequence;
+			sequence.duration = config.zoomTweenTime * 250;
+			addEventListener(MouseEvent.CLICK, button_clickHandler);
+		}
+		
+		
+		/**
+		 * 
+		 * 返回首页。
+		 * 
+		 */
+		
+		public function home($play:Boolean = true, $rect:Rectangle = null, $force:Boolean = false):void
+		{
+			var level:int = history.length;
+			if (level > 0) back(level - 1, $play, $rect, $force);
+		}
+		
+		
+		/**
+		 * 
+		 * 返回上页。
+		 * 
+		 */
+		
+		public function back($level:int, $play:Boolean = true, $rect:Rectangle = null, $force:Boolean = false):void
+		{
+			if(!tweening)
+			{
+				var index:int = history.length - 1 - $level;
+				if (0 <= index && index < history.length)
+				{
+					var lasts:Array = [];
+					var l:uint = history.length;
+					for (var i:uint = l - 1; i > index; i--) lasts.push(history[i]);
+					last = history[index];
+					
+					log(MPTipConsts.RECORD_TYPESET_BACK, last ? last.data : null);
+					
+					var temp:CacheView = main;
+					main = last;
+					last = temp;
+					
+					if (main == last)
+					{
+						$play ? main.play(false) : main.stop(false, $rect, $force);
+					}
+					else
+					{
+						wt::tweening = true;
+						var effectOutStart:Function = function():void
+						{
+							for each (var item:CacheView in lasts) item.stop(false, $rect, $force);
+						};
+						var effectOutEnd:Function = function():void
+						{
+							for each (var item:CacheView in lasts)
+							{
+								if (containsElement(item))
+									removeElement(item);
+								item.reset();
+							}
+							
+							$play ? main.play(false) : main.stop(false, null, $force);
+							last = index > 0 ? history[index - 1] : null;
+							history.length -= lasts.length;
+							wt::tweening = false;
+						};
+						
+						if ((main.data as Page).tweenable)
+						{
+							effectOut = getEffectOut(last, main);
+							onEffectOutStart = effectOutStart;
+							onEffectOutEnd = effectOutEnd;
+							effectOut.targets = lasts;
+							sequence.children = [effectOut];
+							sequence.play();
+						}
+						else
+						{
+							effectOutStart();
+							effectOutEnd();
+						}
+					}
+				}
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 进入子页面。
+		 * 
+		 */
+		
+		public function view($page:Page, $button:ButtonView = null):void
+		{
+			if ($page && $page!= main.data && !tweening)
+			{
+				var index:int = indexOfHistory($page);
+				if (index == -1)
+				{
+					wt::tweening = true;
+					//新页面在历史记录中不存在，打开新页面。
+					log(MPTipConsts.RECORD_TYPESET_VIEW, $page);
+					
+					var effects:Array = [];
+					var lasts:Array = checkOfHistory($page);
+					var layoutView:LayoutView = this;
+					last = main;
+					main = createPage($page, true);
+					
+					var handler:Function = function(e:ControlEvent):void
+					{
+						main.removeEventListener(ControlEvent.READY, handler);
+						
+						if (lasts) history.length -= lasts.length;
+						
+						//显示新页面
+						var effectInStart:Function = function():void
+						{
+							//for each (var item:CacheView in lasts) item.stop();
+							if (last.playing)
+							{
+								var father:Page = main.data is Page ? (main.data as Page).father : null;
+								if (father)
+								{
+									var rect:Rectangle = new Rectangle;
+									rect.x = main.x;
+									rect.y = main.y;
+									rect.width = main.width;
+									rect.height = main.height;
+								}
+								last.stop(false, rect);
+							}
+						};
+						var resetLasts:Function = function():void
+						{
+							history.push(main);
+							wt::tweening = false;
+							for each (var item:CacheView in lasts) 
+							{
+								if (containsElement(item)) removeElement(item);
+								item.reset();
+							}
+						}
+						var effectInEnd:Function = function():void
+						{
+							main.play();
+							last.resume();
+							if (lasts)
+								TimerUtil.callLater(500, resetLasts);
+							else
+								resetLasts();
+						};
+						
+						if ($page.tweenable)
+						{
+							effectIn  = getEffectIn (last, main);
+							onEffectInStart = effectInStart;
+							onEffectInEnd = effectInEnd;
+							effectIn.target = main;
+							
+							effects.push(effectIn);
+							sequence.children = effects;
+							sequence.play();
+						}
+						else
+						{
+							effectInStart();
+							effectInEnd();
+						}
+					};
+					main.addEventListener(ControlEvent.READY, handler);
+				}
+				else
+				{
+					if (index == 0)
+						home();
+					else if (index < history.length - 1)
+						back(history.length - 1 - index);
+				}
+			}
 		}
 		
 		
@@ -48,15 +236,9 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			if (view) 
-			{
-				view.addEventListener(ControlEvent.STOP, handlerViewStop);
-				view.play(false);
-			}
-			else
-			{
-				stop();
-			}
+			main && main.play();
+			
+			timerCreate();
 		}
 		
 		
@@ -66,11 +248,11 @@ package multipublish.views
 		
 		override protected function processStop():void
 		{
-			if (view)
-			{
-				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
-				view.stop();
-			}
+			main && main.stop(false);
+			
+			adStop();
+			
+			timerDelete();
 		}
 		
 		
@@ -80,10 +262,20 @@ package multipublish.views
 		
 		override protected function processReset():void
 		{
-			container.removeAllElements();
-			view  = next   = null;
-			type  = source = null;
-			index = neigh  = 0;
+			history.length = 0;
+			removeAllElements();
+			
+			if (main)
+			{
+				main.reset();
+				main = null;
+			}
+			if (last) 
+			{
+				last.reset();
+				last = null;
+			}
+			source = null;
 		}
 		
 		
@@ -94,19 +286,23 @@ package multipublish.views
 		override protected function resolveData():void
 		{
 			source = data as Layout;
-			if (source)
+			
+			if (source.home && 
+				source.pagesArr.length)
 			{
-				log(MPTipConsts.RECORD_LAYOUT_DATA, source);
+				main = createPage(source.home, true);
 				
-				width  = source.width;
-				height = source.height;
-				navigatable = source.dragable && source.contents.length > 1;
-				x = source.x;
-				y = source.y;
-				initializeType();
-				view = generateView();
-				fore = generateNext();
-				last = generateNext(false);
+				history.push(main);
+			}
+			
+			if (source.ad && 
+				source.ad.enabled && 
+				source.ad.waitTime)
+			{
+				ad = new ADView;
+				ad.data = source.ad;
+				ad.x = source.ad.x;
+				ad.y = source.ad.y;
 			}
 		}
 		
@@ -114,236 +310,261 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function generateView():MPView
+		private function createPage($page:Page, $visible:Boolean = false):CacheView
 		{
-			var l:uint = source.contents.length;
-			if (l)
+			var page:CacheView = new CacheView;
+			page.refer = PageView;
+			page.width  = $page.w;
+			page.height = $page.h;
+			page.x = $page.x;
+			page.y = $page.y;
+			page.data = $page;
+			addElement(page).visible = $visible;
+			return page;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function indexOfHistory($page:Page):int
+		{
+			if (history.length && $page)
 			{
-				var content:Content = source.contents[index];
-				if (content)
+				for (var i:int = history.length - 1; i >= 0; i--)
+					if (history[i].data == $page) return i;
+			}
+			return -1;
+		}
+		
+		/**
+		 * 根据当前要显示的页面检测历史中所有需要关闭的页面，并返回一个数组。
+		 * @private
+		 */
+		private function checkOfHistory($page:Page):Array
+		{
+			var l:int = history.length - 2;
+			if (history.length)
+			{
+				var flag:int = l;
+				var result:Array;
+				
+				if ($page.father)
 				{
-					if (type[content.type])
-					{
-						if (content.type == ContentTypeConsts.PICTURE || 
-							content.type == ContentTypeConsts.RECORD ||
-							content.type == ContentTypeConsts.CARTOON)
+					//如果当前显示页有父级，则遍历历史页面数组，找到与该页面父级相同的元素
+					/*while ($page.father)
+					{*/
+						while (flag >= 0)
 						{
-							var cache:CacheView = new CacheView;
-							cache.refer  = type[content.type];
-							var result:MPView = cache;
+							trace("check:", $page.father.label, history[flag].data.label, "same:" + ($page.father == history[flag].data))
+							if ($page.father == history[flag].data)
+							{
+								for (var i:int = l + 1; i > flag; i--)
+								{
+									result = result || [];
+									ArrayUtil.push(result, history[i]);
+								}
+								break;
+							}
+							flag--;
+						}
+						/*if (result)
+						{
+							break;
 						}
 						else
 						{
-							result = new type[content.type];
-						}
-					}
-				}
-				
-				if (result)
-				{
-					result.width  = width;
-					result.height = height;
-					result.data   = content;
-					container.addElement(result);
-					neigh = index;
+							flag = l;
+							$page = $page.father;
+						}*/
+					/*}*/
 				}
 				else
 				{
-					index ++;
-					if (index != neigh)
-						result = generateView();
-				}
-			}
-			return result;
-		}
-		
-		/**
-		 * @private
-		 */
-		private function generateNext($side:Boolean = true):MPView
-		{
-			var l:uint = source.contents.length;
-			if (l)
-			{
-				$side ? neigh ++ : neigh --;
-				if (neigh != index)
-				{
-					var content:Content = source.contents[neigh];
-					if (content)
+					//如果当前显示页面没有父级，则需要隐藏所有历史
+					if (history.length)
 					{
-						if (type[content.type])
-						{
-							if (content.type == ContentTypeConsts.PICTURE || 
-								content.type == ContentTypeConsts.RECORD ||
-								content.type == ContentTypeConsts.CARTOON)
-							{
-								var cache:CacheView = new CacheView;
-								cache.refer  = type[content.type];
-								var result:MPView = cache;
-							}
-							else
-							{
-								result = new type[content.type];
-							}
-						}
-						if (result) 
-						{
-							result.data    = content;
-							result.width   = width;
-							result.height  = height;
-							result.x       = $side ? width : -width;
-							container.addElement(result);
-							neigh = index;
-						}
+						result = history.concat();
+						result.reverse();
 					}
 				}
-				if(!result && neigh != index) result = generateNext($side);
 			}
+			
 			return result;
 		}
 		
 		/**
 		 * @private
 		 */
-		private function initializeEnvironment():void
+		private function getEffectIn($last:CacheView, $main:CacheView):Effect
 		{
-			addElement(container = new Group);
-			container.addEventListener(MouseEvent.MOUSE_DOWN, handlerMouseDown);
+			var effect:Effect = EffectUtil.getEffectIn($last.data as Page, $main.data as Page, source);
+			effect.addEventListener(EffectEvent.EFFECT_START, effectIn_startHandler);
+			effect.addEventListener(EffectEvent.EFFECT_END, effectIn_endHandler);
+			return effect;
 		}
 		
 		/**
 		 * @private
 		 */
-		private function initializeType():void
+		private function getEffectOut($last:CacheView, $main:CacheView):Effect
 		{
-			if(!type)
+			var effect:Effect = EffectUtil.getEffectOut($last.data as Page, $main.data as Page, source);
+			effect.addEventListener(EffectEvent.EFFECT_START, effectOut_startHandler);
+			effect.addEventListener(EffectEvent.EFFECT_END, effectOut_endHandler);
+			return effect;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function timerCreate():void
+		{
+			if(!timer && ad)
 			{
-				type = {};
-				//type[ContentTypeConsts.GALLERY] = GalleryView;
-				//type[ContentTypeConsts.MARQUEE] = MarqueeView;
-				type[ContentTypeConsts.PICTURE] = PictureView;
-				type[ContentTypeConsts.TYPESET] = TypesetView;
-				type[ContentTypeConsts.RECORD ] = RecordView;
-				type[ContentTypeConsts.CARTOON] = CartoonView;
+				timer = new Timer(1000, ad.waitTime);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, timer_completeHandler);
+				timer.start();
 			}
 		}
 		
 		/**
 		 * @private
 		 */
-		private function tween($distance:Number):void
+		private function timerDelete():void
 		{
-			var d:Number = $distance;
-			if (d)
+			if (timer)
 			{
-				side = d < 0;
-				prev = view;
-				next = side ? fore : last;
-				if (prev && next)
-				{
-					var b:Number = Math.abs(d);
-					var f:Boolean = b > distance;
-					var a:Number = f ? (side ? -width : width) : 0;
-					var p:Number = b / width;
-					var t:Number = Math.max(.3, p * config.slideTweenTime);
-					if (f) tweening = true;
-					Tweener.addTween(container, {x:a, time:t, 
-						onComplete:callbackTweenOver, 
-						onCompleteParams:[f]});
-				}
-				else 
-				{
-					tweening = false;
-					processPlay();
-				}
-			} else tweening = false;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function callbackTweenOver($generate:Boolean = false):void
-		{
-			if ($generate)
-			{
-				container.x = 0;
-				container.removeElement(side ? last : fore);
-				container.removeElement(view);
-				var gcable:Boolean = (view.data as Content).type == ContentTypeConsts.RECORD;
-				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
-				view.reset();
-				view = next;
-				view.x = 0;
-				view.addEventListener(ControlEvent.STOP, handlerViewStop);
-				view.play();
-				index += side ? 1 : -1;
-				neigh = index;
-				fore = generateNext();
-				last = generateNext(false);
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timer_completeHandler);
+				timer.stop();
+				timer = null;
 				
-				next = prev = null;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function timerReset():void
+		{
+			if (timer)
+			{
+				timer.reset();
+				timer.start();
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function adPlay():void
+		{
+			if (ad)
+			{
+				containsElement(ad) && removeElement(ad);
 				
-				if (gcable) System.gc();
+				addElement(ad);
+				
+				ad.play(false);
+				
+				var rect:Rectangle = new Rectangle(ad.x, ad.y, ad.width, ad.height);
+				
+				home(true, rect, true);
 			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function adStop():void
+		{
+			if (ad)
+			{
+				containsElement(ad) && removeElement(ad);
+				
+				ad.stop(false);
+				
+				if (main) main.play();
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function timer_completeHandler($e:TimerEvent):void
+		{
+			(ad && ad.data) ? (ad.data.ready ? adPlay() : timerReset()) : timerDelete();
+		}
+		
+		/**
+		 * @private
+		 */
+		private function effectIn_startHandler($e:EffectEvent):void
+		{
+			effectIn.removeEventListener(EffectEvent.EFFECT_START, effectIn_startHandler);
 			
-			tweening = false;
+			if (onEffectInStart!= null)
+			{
+				onEffectInStart();
+				onEffectInStart = null;
+			}
 		}
 		
 		/**
 		 * @private
 		 */
-		private function handlerViewStop($e:ControlEvent):void
+		private function effectIn_endHandler($e:EffectEvent):void
 		{
-			if (view) view.removeEventListener(ControlEvent.STOP, handlerViewStop);
-			if (index >= source.contents.length - 1) stop();
+			effectIn.removeEventListener(EffectEvent.EFFECT_END, effectIn_endHandler);
 			
-			if (down)
+			if (onEffectInEnd!= null)
 			{
-				stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
-				stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
+				onEffectInEnd();
+				onEffectInEnd = null;
 			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function effectOut_startHandler($e:EffectEvent):void
+		{
+			effectOut.removeEventListener(EffectEvent.EFFECT_START, effectOut_startHandler);
 			
-			tween(-width);
+			if (onEffectOutStart!= null)
+			{
+				onEffectOutStart();
+				onEffectOutStart = null;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function effectOut_endHandler($e:EffectEvent):void
+		{
+			effectOut.removeEventListener(EffectEvent.EFFECT_END, effectOut_endHandler);
 			
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function handlerMouseDown($e:MouseEvent):void
-		{
-			if(navigatable && !tweening)
+			if (onEffectOutEnd!= null)
 			{
-				down = true;
-				tweening = true;
-				stage.addEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
-				stage.addEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
-				start = mouseX;
+				onEffectOutEnd();
+				onEffectOutEnd = null;
 			}
 		}
 		
 		/**
 		 * @private
 		 */
-		private function handlerMouseMove($e:MouseEvent):void
+		private function button_clickHandler($e:MouseEvent):void
 		{
-			container.x = mouseX - start;
-		}
-		
-		/**
-		 * @private
-		 */
-		private function handlerMouseUp($e:MouseEvent):void
-		{
-			if (navigatable && tweening)
+			timerReset();
+			adStop();
+			
+			if ($e.target is ButtonView || $e.target is MarqueeView)
 			{
-				down = false;
-				stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
-				stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
-				var d:Number = mouseX - start;
-				tween((Math.abs(d) > distance) ? (d > 0 ? width - d : -width - d) : d);
+				var button:* = $e.target.data;
+				var page:Page = source.pagesTol[button.pageID];
+				if (page) view(page, $e.target as ButtonView);
 			}
 		}
 		
@@ -351,129 +572,67 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function get index():int
-		{
-			return mp::index;
-		}
+		private var effectIn:Effect;
 		
 		/**
 		 * @private
 		 */
-		private function set index($value:int):void
-		{
-			var l:uint = source ? source.contents.length : 0;
-			if (l)
-			{
-				if ($value>= l) $value = 0;
-				if ($value < 0) $value = l - 1;
-				mp::index = $value;
-			}
-		}
-		
+		private var effectOut:Effect;
 		
 		/**
 		 * @private
 		 */
-		private function get neigh():int
-		{
-			return mp::neigh;
-		}
+		private var sequence:Sequence;
 		
 		/**
 		 * @private
 		 */
-		private function set neigh($value:int):void
-		{
-			var l:uint = source ? source.contents.length : 0;
-			if (l)
-			{
-				if ($value>= l) $value = 0;
-				if ($value < 0) $value = l - 1;
-				mp::neigh = $value;
-			}
-		}
-		
+		private var onEffectInStart:Function;
 		
 		/**
 		 * @private
 		 */
-		private var distance:Number = 150;
+		private var onEffectInEnd:Function;
 		
 		/**
 		 * @private
 		 */
-		private var start:Number;
+		private var onEffectOutStart:Function;
 		
 		/**
 		 * @private
 		 */
-		private var navigatable:Boolean;
+		private var onEffectOutEnd:Function;
 		
 		/**
 		 * @private
 		 */
-		private var tweening:Boolean;
+		private var timer:Timer;
 		
 		/**
 		 * @private
 		 */
-		private var down:Boolean;
+		private var history:Array = [];
 		
 		/**
 		 * @private
 		 */
-		private var side:Boolean;
+		private var main:CacheView;
+		
+		/**
+		 * @private
+		 */
+		private var last:CacheView;
+		
+		/**
+		 * @private
+		 */
+		private var ad:ADView;
 		
 		/**
 		 * @private
 		 */
 		private var source:Layout;
-		
-		/**
-		 * @private
-		 */
-		private var type:Object;
-		
-		/**
-		 * @private
-		 */
-		private var last:MPView;
-		
-		/**
-		 * @private
-		 */
-		private var fore:MPView;
-		
-		/**
-		 * @private
-		 */
-		private var prev:MPView;
-		
-		/**
-		 * @private
-		 */
-		private var next:MPView;
-		
-		/**
-		 * @private
-		 */
-		private var view:MPView;
-		
-		/**
-		 * @private
-		 */
-		private var container:Group;
-		
-		
-		/**
-		 * @private
-		 */
-		mp var index:int;
-		
-		/**
-		 * @private
-		 */
-		mp var neigh:int;
 		
 	}
 }

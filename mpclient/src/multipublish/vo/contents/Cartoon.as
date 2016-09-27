@@ -9,11 +9,12 @@ package multipublish.vo.contents
 	
 	
 	import com.winonetech.consts.PathConsts;
+	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
 	import multipublish.core.mp;
-	import multipublish.interfaces.IThumbnail;
+	import multipublish.utils.VOUtil;
 	
 	
 	public final class Cartoon extends Content
@@ -21,7 +22,7 @@ package multipublish.vo.contents
 		
 		/**
 		 * 
-		 * <code>Picture</code>构造函数。
+		 * 构造函数。
 		 * 
 		 * @param $data:Object (default = null) 初始化的数据，可以是XML，JSON格式的数据，或Object。
 		 * 
@@ -41,9 +42,35 @@ package multipublish.vo.contents
 		{
 			super.parse($data);
 			
-			var url:String = getProperty("getcontents");
-			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			setProperty("contentType", "flash");
+			
+			var url:String = getProperty("contentSource");
 			wt::registCache(url);
+			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override public function set parent(value:VO):void
+		{
+			super.parent = value;
+			
+			VOUtil.registCacheParent(parent, content as String);
+		}
+		
+		
+		/**
+		 * 
+		 * 内容时长，秒。
+		 * 
+		 */
+		
+		public function get duration():uint
+		{
+			return getProperty("timeLength", uint);
 		}
 		
 		
@@ -53,21 +80,9 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		override public function get content():String
+		public function get content():String
 		{
 			return mp::content;
-		}
-		
-		
-		/**
-		 * 
-		 * 时间长度。
-		 * 
-		 */
-		
-		public function get time():uint
-		{
-			return getProperty("timelength", uint);
 		}
 		
 		

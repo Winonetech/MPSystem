@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 mouseEnabled="false">
+	
+	<s:Group width="100%" height="100%"
+			 mouseEnabled="false" id="container"/>
+	
+	<s:Button verticalCenter="0" left="10" visible="{prevable}"
+			  skinClass="multipublish.skins.PrevButtonSkin"
+			  click="updatePage(pageCurrent - 1)"/>
+	
+	<s:Button verticalCenter="0" right="10" visible="{nextable}"
+			  skinClass="multipublish.skins.NextButtonSkin"
+			  click="updatePage(pageCurrent + 1)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.core.mp;
+			
+			import spark.layouts.TileLayout;
+			
+			
+			/**
+			 * 
+			 * 页数重置。
+			 * 
+			 */
+			
+			public function reset():void
+			{
+				updatePage(0);
+			}
+			
+			
+			/**
+			 * 
+			 * 更新数据。
+			 * 
+			 */
+			
+			public function update():void
+			{
+				callbackData();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				//update layout
+				if (lastWidth != unscaledWidth || lastHeight!= unscaledHeight)
+				{
+					lastWidth  = unscaledWidth;
+					lastHeight = unscaledHeight;
+					
+					layoutTile();
+					
+					callbackData();
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function createChildren():void
+			{
+				super.createChildren();
+				
+				//callback data
+				callbackData();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function layoutTile():void
+			{
+				containerLayout = true;
+				
+				var hCount:uint = Math.max(1, lastWidth  / itemWidth);
+				var vCount:uint = Math.max(1, lastHeight / itemHeight);
+				
+				var tile:TileLayout = new TileLayout;
+				
+				var hGap:Number = (lastWidth  - itemWidth  * hCount) / (hCount + 1) - 1;
+				var vGap:Number = (lastHeight - itemHeight * vCount) / (vCount + 1) - 1;
+				
+				var padding:Number = tile.horizontalGap;
+				
+				tile.paddingLeft = tile.paddingRight = tile.horizontalGap = hGap;
+				tile.paddingTop = tile.paddingBottom = tile.verticalGap = vGap;;
+				
+				pageCount = hCount * vCount;
+				
+				container.layout = tile;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function updatePage($page:int = 0, $force:Boolean = false):void
+			{
+				$page = MathUtil.clamp($page, 0, Math.max(0, pageTotal - 1));
+				if (pageCurrent!= $page || $force)
+				{
+					pageCurrent = $page
+					
+					prevable = pageCurrent > 0;
+					nextable = pageCurrent < pageTotal - 1;
+					
+					container.removeAllElements();
+					
+					var start:uint = pageCurrent * pageCount;
+					var end:uint = Math.min((pageCurrent + 1) * pageCount, itemTotal);
+					
+					for (var i:uint = start; i < end; i++)
+					{
+						var paper:PaperRackItem = new PaperRackItem;
+						paper.data = data[i];
+						container.addElement(paper);
+					}
+				}
+				
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				callbackData();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = containerLayout && container && data;
+				if (result) 
+				{
+					itemTotal = data.length;
+					pageTotal = (itemTotal % pageCount == 0) 
+						? itemTotal / pageCount 
+						: itemTotal / pageCount + 1;
+					
+					updatePage(0, true);
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private const itemWidth:Number = 280;
+			
+			/**
+			 * @private
+			 */
+			private const itemHeight:Number = 420;
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			private var pageCount:uint;
+			
+			/**
+			 * @private
+			 */
+			private var rowCount:uint;
+			
+			/**
+			 * @private
+			 */
+			private var pageCurrent:uint;
+			
+			/**
+			 * @private
+			 */
+			private var pageTotal:uint;
+			
+			/**
+			 * @private
+			 */
+			private var itemTotal:uint;
+			
+			/**
+			 * @private
+			 */
+			private var lastWidth:Number;
+			
+			/**
+			 * @private
+			 */
+			private var lastHeight:Number;
+			
+			/**
+			 * @private
+			 */
+			private var containerLayout:Boolean;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

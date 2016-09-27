@@ -1,0 +1,125 @@
+package multipublish.commands
+{
+	
+	/**
+	 * 
+	 * 发送LED
+	 * 
+	 */
+	
+	
+	import cn.vision.system.VSFile;
+	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.RegexpUtil;
+	import cn.vision.utils.StringUtil;
+	
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	
+	import multipublish.consts.URLConsts;
+	import multipublish.utils.DataUtil;
+	
+	
+	public final class SendLedCommand extends _InternalCommand
+	{
+		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
+		
+		public function SendLedCommand($data:String = null)
+		{
+			super();
+			
+			data = $data == null ? config.sled : $data;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override public function execute():void
+		{
+			commandStart();
+			
+			sendLed();
+			
+			commandEnd();
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function sendLed():void
+		{
+			if (!StringUtil.isEmpty(data))
+			{
+				try
+				{
+					if (config.sled!= data)
+					{
+						config.sled = data;
+						
+						var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG));
+						var stream:FileStream = new FileStream;
+						stream.open(file, FileMode.WRITE);
+						stream.writeUTFBytes(DataUtil.getConfig());
+						stream.close();
+					}
+					writeData(RegexpUtil.replaceTag(DATA, config.sled));
+				} catch(e:Error) { }
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function writeData(str:String):void
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.LED_DATA));
+			var stream:FileStream = new FileStream;
+			stream.open(file, FileMode.WRITE);
+			stream.writeUTFBytes(str);
+			stream.close();
+		}
+		
+		/**
+		 * @private
+		 */
+		private function readData():String
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.LED_DATA));
+			var stream:FileStream = new FileStream;
+			stream.open(file, FileMode.READ);
+			var temp:String = stream.readUTFBytes(stream.bytesAvailable);
+			stream.close();
+			return temp;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private static const DATA:String = 
+			"﻿<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+			"<rss columnname=\"滚动字幕\" sendtime=\"2014-10-11 14:18:34\" starttime=\"2014-10-11 08:00:00\" endtime=\"2014-10-11 18:00:00\" type=\"1\" playCount=\"\">\n" + 
+			"<item title=\"\" content=\"{$self}\" />\n" + 
+			"<cliplist title=\"\">\n" + 
+			"<clip content=\"111\" />\n" + 
+			"<clip content=\"222\" />\n" + 
+			"</cliplist>\n" + 
+			"</rss>";
+		
+		
+		/**
+		 * @private
+		 */
+		private var data:String;
+		
+	}
+}

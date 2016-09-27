@@ -9,10 +9,12 @@ package multipublish.vo.contents
 	
 	
 	import com.winonetech.consts.PathConsts;
+	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
 	import multipublish.core.mp;
+	import multipublish.utils.VOUtil;
 	
 	
 	public final class Record extends Content
@@ -40,15 +42,46 @@ package multipublish.vo.contents
 		{
 			super.parse($data);
 			
-			var url:String = getProperty("getcontents");
+			setProperty("contentType", "video");
+				
+			var url:String = getProperty("contentSource");
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			
 			wt::registCache(url);
 		}
 		
 		
-		override public function get id():String
+		/**
+		 * @inheritDoc
+		 */
+		
+		override public function set parent(value:VO):void
 		{
-			return getProperty("materialid");
+			super.parent = value;
+		}
+		
+		
+		/**
+		 * 
+		 * 内容时长，秒。
+		 * 
+		 */
+		
+		public function get duration():uint
+		{
+			return getProperty("timeLength", uint);
+		}
+		
+		
+		/**
+		 * 
+		 * 播放次数。
+		 * 
+		 */
+		
+		public function get playTimes():uint
+		{
+			return getProperty("playTimes", uint);
 		}
 		
 		
@@ -58,7 +91,7 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		override public function get content():String
+		public function get content():String
 		{
 			return mp::content;
 		}

@@ -9,10 +9,10 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
+	import cn.vision.utils.BitmapUtil;
 	import cn.vision.utils.LogUtil;
 	
 	import flash.display.BitmapData;
-	import flash.display.JPEGEncoderOptions;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
@@ -103,11 +103,12 @@ package multipublish.tools
 		 */
 		private function shotcut():void
 		{
-			bmd.draw(view.application, matrix);
+			if (view.main)
+				bmd.draw(view.main, matrix);
 			
-			request.data = bmd.encode(rectangle, jpgOption);
+			request.data = BitmapUtil.encodeJPG(bmd);
 			request.url = "http://" + config.httpHost + ":" + config.httpPort + "/" + config.shotcutURL + "?terminalId=" + config.terminalNO;
-			LogUtil.log("上传截图：" + request.url);
+			LogUtil.log("上传截图：" + request.url, bmd.width, bmd.height);
 			if (loading) loader.close();
 			loading = true;
 			loader.load(request);
@@ -119,7 +120,6 @@ package multipublish.tools
 		private function initialize():void
 		{
 			scale = 1 / 3;
-			jpgOption = new JPEGEncoderOptions(50);
 			
 			matrix = new Matrix;
 			matrix.scale(scale, scale);
@@ -198,11 +198,6 @@ package multipublish.tools
 		 * @private
 		 */
 		private var bmd:BitmapData;
-		
-		/**
-		 * @private
-		 */
-		private var jpgOption:JPEGEncoderOptions;
 		
 		/**
 		 * @private

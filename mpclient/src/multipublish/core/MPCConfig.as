@@ -169,6 +169,14 @@ package multipublish.core
 		
 		public var debug:Boolean;
 		
+		/**
+		 * 
+		 * 跑马灯信息。
+		 * 
+		 */
+		
+		public var sled:String;
+		
 		
 		/**
 		 * 
@@ -239,7 +247,16 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var httpPort:uint = 80;
+		public var httpPort:uint = 9000;
+		
+		
+		/**
+		 * 
+		 * 终端升级端口。
+		 * 
+		 */
+		
+		public var updtPort:uint = 9000;
 		
 		
 		/**
@@ -276,6 +293,15 @@ package multipublish.core
 		 */
 		
 		public var shotcutURL:String = "terminal/jpgUpload";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var updateURL:String = "setting/version/upgrade";
 		
 		
 		/**
@@ -325,6 +351,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 是否禁用base64加密。
+		 * 
+		 */
+		
+		//public var base64Disabled:Boolean;
+		
+		
+		/**
+		 * 
 		 * FTP host。
 		 * 
 		 */
@@ -347,7 +382,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var ftpUserName:String = "ftp";
+		public var ftpUserName:String = "ftpuser";
 		
 		
 		/**
@@ -356,7 +391,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var ftpPassWord:String = "FTPmedia";
+		public var ftpPassWord:String = "ftpuser";
 		
 		
 		/**
@@ -457,6 +492,14 @@ package multipublish.core
 		
 		public var loadable:Boolean;
 		
+		/**
+		 * 
+		 * 是否替换当前播放内容。
+		 * 
+		 */
+		
+		public var replacable:Boolean;
+		
 		
 		/**
 		 * 
@@ -474,6 +517,15 @@ package multipublish.core
 		 */
 		
 		public var version:String;
+		
+		
+		/**
+		 * 
+		 * 版本号。
+		 * 
+		 */
+		
+		public var remoteVersion:String;
 		
 		
 		/**
@@ -510,6 +562,23 @@ package multipublish.core
 		 */
 		
 		public var datas:Object = {};
+		
+		
+		/**
+		 * 
+		 * 原始数据。
+		 * 
+		 */
+		
+		public var raw:Object ={};
+		
+		/**
+		 * 
+		 * 数据存储。
+		 * 
+		 */
+		
+		public var ori:Object = {};
 		
 		
 		/**

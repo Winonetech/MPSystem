@@ -49,6 +49,35 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 开始通讯。
+		 * 
+		 */
+		
+		public function communicationStart():void
+		{
+			timer.reset();
+			timer.start();
+			
+			online();
+		}
+		
+		
+		/**
+		 * 
+		 * 停止通讯。
+		 * 
+		 */
+		
+		public function communicationStop():void
+		{
+			offline();
+			
+			timer.stop();
+		}
+		
+		
+		/**
+		 * 
 		 * 向服务端发送上线指令。
 		 * 
 		 */
@@ -163,6 +192,7 @@ package multipublish.tools
 		{
 			loader = new URLLoader;
 			request = new URLRequest;
+			request.contentType = "text/xml; charset=utf-8";
 			timer = new Timer(30000);
 			loader.addEventListener(Event.COMPLETE, handlerDefault);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
@@ -182,25 +212,23 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private function timerStart():void
+		private function connect():void
 		{
 			if(!connected)
 			{
 				mp::connected = true;
-				timer.start();
 			}
 		}
 		
 		/**
 		 * @private
 		 */
-		private function timerStop():void
+		private function disconnect():void
 		{
 			if (connected)
 			{
 				mp::connected = false;
-				timer.reset();
-				timer.stop();
+				LogUtil.log("与服务端断开连接。");
 			}
 		}
 		
@@ -245,11 +273,12 @@ package multipublish.tools
 			switch ($e.type)
 			{
 				case Event.COMPLETE:
-					offsend ? timerStop() : timerStart();
+					offsend ? disconnect() : connect();
 					readCMD(loader.data as String);
 					break;
 				case IOErrorEvent.IO_ERROR:
 				case SecurityErrorEvent.SECURITY_ERROR:
+					disconnect();
 					mp::message = ($e as Object).text;
 					break;
 				default:
@@ -263,7 +292,9 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			heartbeat();
+			connected
+				? heartbeat()
+				: online();
 		}
 		
 		/**

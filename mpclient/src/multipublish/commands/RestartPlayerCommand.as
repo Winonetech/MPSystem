@@ -56,7 +56,7 @@ package multipublish.commands
 		{
 			LogUtil.logTip(MPTipConsts.RECORD_SOCKET_OFFLINE); 
 			
-			config.service.offline();
+			config.service.communicationStop();
 			
 			LogSQLite.log(
 				TypeConsts.NETWORK,

@@ -3,19 +3,48 @@
 				xmlns:s ="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
 				xmlns:ct="multipublish.views.contents.*">
-	<s:VideoPlayer id="video" width="100%" height="100%"
-				   autoPlay="false" loop="false" 
-				   source="{content.content}" scaleMode="letterbox"
+	
+	<s:VideoPlayer source="{(content as Record).content}" id="video"
+				   width="100%" height="100%"
+				   autoDisplayFirstFrame="true" scaleMode="letterbox"
+				   autoPlay="false" autoRewind="true" loop="false"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
-				   mediaPlayerStateChange="handlerMediaStateChange(event)"
-				   complete="stop()" creationComplete="ready = true;"/>
+				   mediaPlayerStateChange="media_stateChangeHandler(event)"
+				   complete="video_completeHandler(event)"/>
+	
 	<fx:Script>
 		<![CDATA[
 			
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
+			import multipublish.vo.contents.Record;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.events.TimeEvent;
 			import org.osmf.media.MediaPlayerState;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateBackground():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function createChildren():void
+			{
+				super.createChildren();
+				
+				timer = new Timer(1000);
+				if (playing) processPlay();
+			}
+			
 			
 			/**
 			 * @inheritDoc
@@ -23,7 +52,7 @@
 			
 			override protected function processPlay():void
 			{
-				if (video && video.source && ready) video.play();
+				videoPlay();
 			}
 			
 			
@@ -33,44 +62,194 @@
 			
 			override protected function processStop():void
 			{
+				videoStop();
+				timerStop();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				if (video) 
+				{
+					if (containsElement(video))
+						removeElement(video);
+					video.source = null;
+					video = null;
+					if (++gcCount >= 5)
+					{
+						System.gc();
+						gcCount = 0;
+					}
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				if (content)
+					time = (content as Record).duration;
+				else
+					dispatchReady();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function videoPlay():void
+			{
+				if (video && video.source) 
+				{
+					video.play();
+					
+					timerPlay();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function videoStop():void
+			{
 				if (video && video.playing) video.stop();
 			}
 			
+			/**
+			 * @private
+			 */
+			private function timerPlay($check:Boolean = true):void
+			{
+				if ($check) time = time || ContentConsts.CONTENT_TIME_DEFAUALT;
+				if (time)
+				{
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, timer_completeHandler);
+					
+					timer.reset();
+					timer.start();
+				}
+			}
 			
 			/**
 			 * @private
 			 */
-			private function handlerMediaStateChange($e:MediaPlayerStateChangeEvent):void
+			private function timerStop():void
 			{
-				if (playing && video.source && (
-					$e.state == MediaPlayerState.PAUSED || 
-					$e.state == MediaPlayerState.READY)) video.play();
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timer_completeHandler);
+					timer.stop();
+				}
 			}
 			
 			
 			/**
 			 * @private
 			 */
-			private function get ready():Boolean
+			private function timer_completeHandler($e:TimerEvent):void
 			{
-				return Boolean(mp::ready);
+				stop();
 			}
 			
 			/**
 			 * @private
 			 */
-			private function set ready($value:Boolean):void
+			private function media_stateChangeHandler($e:MediaPlayerStateChangeEvent):void
 			{
-				mp::ready = $value;
-				if (playing) processPlay();
+				if ($e.state == MediaPlayerState.PAUSED || 
+					$e.state == MediaPlayerState.READY)
+				{
+					if (playing) video.play();
+					dispatchReady();
+				}
+				else if ($e.state == MediaPlayerState.PLAYBACK_ERROR)
+				{
+					dispatchReady();
+					stop();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function video_completeHandler(event:TimeEvent):void
+			{
+				var total:uint = (content as Record).playTimes;
+				(total > 1 && ++count < total) ? video.play() : stop();
+			}
+			
+			
+			/**
+			 * 
+			 * 文件播放时间。
+			 * 
+			 */
+			
+			public function get time():uint
+			{
+				return mp::time;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				applyCallback(callbackTime);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackTime():Boolean
+			{
+				var result:Boolean = Boolean(timer);
+				if (result) 
+				{
+					timer.repeatCount = time;
+					if (timer.running)
+					{
+						timer.reset();
+						timer.start();
+					}
+				}
+				return result;
 			}
 			
 			
 			/**
 			 * @private
 			 */
-			mp var ready:Boolean;
+			private var timer:Timer;
 			
+			/**
+			 * @private
+			 */
+			private var count:uint;
+			
+			
+			/**
+			 * @private
+			 */
+			private static var gcCount:uint;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
 			
 		]]>
 	</fx:Script>

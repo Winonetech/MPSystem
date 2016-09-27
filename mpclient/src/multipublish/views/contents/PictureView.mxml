@@ -3,8 +3,155 @@
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:ct="multipublish.views.contents.*">
+	
 	<s:Image width="100%" height="100%" smooth="true"
 			 horizontalAlign="center" verticalAlign="middle"
 			 fillMode="scale" scaleMode="zoom" id="image"
-			 source="{content.content}"/>
+			 source="{(content as Picture).content}" 
+			 ioError="image_defaultHandler(event)"
+			 ready="image_defaultHandler(event)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.ContentConsts;
+			import multipublish.core.mp;
+			import multipublish.vo.contents.Picture;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateBackground():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				timerPlay();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				timerStop();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				if (content)
+				{
+					time = (content as Picture).duration || ContentConsts.CONTENT_TIME_DEFAUALT;
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay():void
+			{
+				if(!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function image_defaultHandler(e:Event):void
+			{
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * 
+			 * 文件播放时间。
+			 * 
+			 */
+			
+			public function get time():uint
+			{
+				return mp::time;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var timer:Timer;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+			
+		]]>
+	</fx:Script>
+	
 </ct:ContentView>

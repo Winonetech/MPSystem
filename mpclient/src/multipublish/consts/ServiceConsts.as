@@ -24,6 +24,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 发送LED显示内容。<br>
+		 * 默认值为“SLED:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_LEDTEXT:String = "SLED:";
+		
+		/**
+		 * 
 		 * 节目推送。<br>
 		 * 默认值为“UPSC:”。
 		 * 
@@ -70,6 +79,16 @@ package multipublish.consts
 		 */
 		
 		public static const UPLOAD_LOG:String = "UPLG:";
+		
+		
+		/**
+		 * 
+		 * 上传报表。
+		 * 默认值为“UPRT:”。
+		 * 
+		 */
+		
+		public static const UPLOAD_REPORT:String = "UPRT:";
 		
 		
 		/**

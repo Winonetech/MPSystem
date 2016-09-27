@@ -13,9 +13,11 @@ package multipublish.commands
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.ScheduleRepeatTypeConsts;
 	import multipublish.consts.ScheduleTypeConsts;
+	import multipublish.core.MDProvider;
 	import multipublish.core.mp;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ScheduleUtil;
+	import multipublish.utils.ViewUtil;
 	import multipublish.vo.schedules.Schedule;
 	
 	import spark.components.VideoPlayer;
@@ -46,13 +48,15 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			
-			if (config.importData || 
-				config.loadable || 
-				config.cache)
+			if (config.replacable)
 			{
-				noteSchedule();
-				playbackSchedule();
+				if (config.importData || 
+					config.loadable || 
+					config.cache)
+				{
+					noteSchedule();
+					playbackSchedule();
+				}
 			}
 			
 			commandEnd();
@@ -74,7 +78,7 @@ package multipublish.commands
 		{
 			if (note)
 			{
-				var schedules:Object = config.datas;
+				var schedules:Object = provider.schedulesMap;
 				for each (var schedule:Schedule in schedules)
 				{
 					if (ScheduleUtil.validateScheduleInArchive(schedule))
@@ -101,7 +105,7 @@ package multipublish.commands
 			config.cache = false;
 			//获取排期
 			//var schedules:Object = config.datas;
-			var schedules:Object = store.retrieveMap(Schedule);
+			var schedules:Object = provider.schedulesMap;
 			for each (var schedule:Schedule in schedules)
 			{
 				if (ScheduleUtil.validateScheduleAvailable(schedule) && 
@@ -110,11 +114,8 @@ package multipublish.commands
 			}
 			if (current) 
 			{
-				if (view.guild && view.application.contains(view.guild))
-				{
-					view.application.removeElement(view.guild);
-					view.guild = null;
-				}
+				ViewUtil.guild(false);
+				
 				if (view.installer && view.application.contains(view.installer))
 				{
 					view.application.removeElement(view.installer);
@@ -139,6 +140,14 @@ package multipublish.commands
 		private function get controller():Controller
 		{
 			return config.controller;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function get provider():MDProvider
+		{
+			return MDProvider.instance;
 		}
 		
 		

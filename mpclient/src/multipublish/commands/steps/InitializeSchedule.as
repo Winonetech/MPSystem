@@ -64,7 +64,7 @@ package multipublish.commands.steps
 		private function load():void
 		{
 			model = new Model;
-			model.url = config.cache ? DataConsts.PATH_SCHEDULE : config.source;
+			model.url = config.cache ? DataConsts.PATH_CHANNEL : config.source;
 			model.addEventListener(CommandEvent.COMMAND_END, modelHandler);
 			model.execute();
 		}
@@ -125,7 +125,7 @@ package multipublish.commands.steps
 		private function modelHandler($e:CommandEvent):void
 		{
 			var xml:Object = ObjectUtil.convert(model.data, Object);
-			var url:String = DataConsts.PATH_SCHEDULE;
+			var url:String = DataConsts.PATH_CHANNEL;
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
 			if (xml)
 			{
@@ -147,7 +147,7 @@ package multipublish.commands.steps
 					LogSQLite.log(
 						TypeConsts.FILE,
 						EventConsts.EVENT_LOAD_ERROR, model.extra.tmp,
-						LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_SCHEDULE));
+						LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_CHANNEL));
 					
 					commandEnd();
 				}

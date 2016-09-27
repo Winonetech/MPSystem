@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:ep="multipublish.views.contents.epaper.*">
+	
+	<ep:PaperRack id="rack" data="{epaper.papers}"
+				  width="{width}" height="{height}"
+				  click="item_clickHandler(event)"/>
+	
+	<ep:PaperSheets id="sheets" visible="false" 
+					width="{width}" height="{height}"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.views.contents.epaper.PaperRackItem;
+			import multipublish.vo.contents.EPaper;
+			
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processResume():void
+			{
+				if (rack) rack.reset();
+				if (sheets) sheets.sheetHide();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				rack.visible = false;
+				
+				super.processReset();
+				
+				removeTimer();
+				
+				if (epaper)
+				{
+					epaper.removeEventListener(ControlEvent.READY, epaper_readyHandler);
+					epaper = null;
+				}
+				
+				if (sheets) sheets.sheetHide();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				epaper = data as EPaper;
+				
+				if (epaper)
+				{
+					epaper.addEventListener(ControlEvent.READY, epaper_readyHandler);
+					
+					createTimer(1, 0, epaper_updateHandler);
+					
+					applyCallback(callbackData);
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = rack && epaper && epaper.ready;
+				if (result)
+				{
+					rack.update();
+					
+					if (sheets) sheets.sheetHide();
+					
+					dispatchReady();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function item_clickHandler(e:MouseEvent):void
+			{
+				if (e.target is PaperRackItem)
+				{
+					sheets.sheetShow(e.target.data.sheets);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function epaper_readyHandler(e:ControlEvent):void
+			{
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function epaper_updateHandler(e:TimerEvent):void
+			{
+				if (epaper) epaper.update();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var epaper:EPaper;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

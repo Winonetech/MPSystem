@@ -67,7 +67,7 @@ package multipublish.commands.steps
 			temp = {};
 			
 			type = {};
-			type[ContentTypeConsts.GALLERY] = Gallery;
+			type[ContentTypeConsts.GALLERY] = Gallary;
 			type[ContentTypeConsts.MARQUEE] = Marquee;
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;
@@ -142,7 +142,7 @@ package multipublish.commands.steps
 									content = typeset;
 								else
 									store.registData(content);
-								var arr:Array = content.content.split("=");
+								var arr:Array = content.title.split("=");
 								var ls:uint = arr.length - 1;
 								var id:String = arr[ls];
 								arr[ls] = "";

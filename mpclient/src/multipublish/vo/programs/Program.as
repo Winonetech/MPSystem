@@ -110,5 +110,14 @@ package multipublish.vo.programs
 		 */
 		mp var layouts:Map;
 		
+		
+		/**
+		 * 
+		 * 布局引用。
+		 * 
+		 */
+		
+		public var layout:Layout;
+		
 	}
 }

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:wt="com.winonetech.controls.*">
+	
+	
+	<wt:Browser id="browser" left="0" right="0" top="0" bottom="60"
+				paintsDefaultBackground="false"
+				location="about:blank"
+				htmlDOMInitialize="handlerBrowserInitialize(event)"
+				complete="handlerBrowserComplete(event)"/>
+	
+	<s:HGroup bottom="5" horizontalCenter="0">
+		
+		<s:Button skinClass="multipublish.skins.BackwardButtonSkin"
+				  enabled="false" id="backwardBtn"
+				  click="browser.historyBack()"/>
+		<s:Button skinClass="multipublish.skins.ForwardButtonSkin"
+				  enabled="false" id="forwardBtn"
+				  click="browser.historyForward()"/>
+		<s:Button skinClass="multipublish.skins.RefreshButtonSkin"
+				  enabled="{browser.location != 'about:blank'}"
+				  click="browser.reload()"/>
+		<s:Button skinClass="multipublish.skins.HomepageButtonSkin"
+				  enabled="{browser.home != null}" id="homeBtn"
+				  click="home()"/>
+		
+	</s:HGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.LogUtil;
+			
+			import input.Input;
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.vo.contents.HTMLWeb;
+			
+			
+			private function home():void
+			{
+				if (browser.location != browser.home)
+				{
+					browser.location = browser.home;
+				}
+				
+				var complete:Function = function(e:TimerEvent):void
+				{
+					removeTimer();
+					
+					if (homeBtn) homeBtn.enabled = true;
+				};
+				
+				if (homeBtn) homeBtn.enabled = false;
+				
+				createTimer(1, 5, null, complete, true);
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				website = data as HTMLWeb;
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				if (website && website.content)
+				{
+					LogUtil.log("访问地址：" + website.content);
+						
+					browser.location = browser.home = website.content;
+				}
+				browser.soundTransform.volume = 100;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				browser.cancelLoad();
+				browser.location = "about:blank";
+				browser.soundTransform.volume = 0;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerBrowserInitialize(event:Event):void
+			{
+				log(MPTipConsts.RECORD_WEBSITE_OPEN, browser);
+				
+				backwardBtn.enabled = browser.historyBackwardable;
+				forwardBtn .enabled = browser.historyForwardable;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerBrowserComplete(event:Event):void
+			{
+				log(MPTipConsts.RECORD_WEBSITE_COMP, browser);
+				
+				for each (var item:* in browser.inputs)
+				{
+					try
+					{
+						item.onclick = function(o:*):void
+						{
+							Input.open(o.srcElement, "value");
+						};
+					}
+					catch (o:Error) {}
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var website:HTMLWeb;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s ="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ep="multipublish.views.contents.epaper.*"
+		 mouseEnabled="false">
+	
+	<s:Image width="100%" height="100%"
+			 fillMode="scale" scaleMode="zoom"
+			 source="assets/images/paperViewBg.png"/>
+	
+	<ep:SheetCanvas left="0" right="85" height="100%" id="canvas"
+					mouseDown="obj_mouseDownHandler(event)"
+					click="canvas_clickHandler(event)"/>
+	
+	<s:Group right="20" verticalCenter="0">
+		
+		<s:Image horizontalCenter="0" height="{vg.height}"
+				 scaleMode="stretch" source="assets/images/btnsBg.png"/>
+		
+		<s:VGroup horizontalCenter="0" id="vg" gap="25"
+				  paddingLeft="5" paddingRight="5"
+				  paddingBottom="5" paddingTop="5">
+			
+			<s:Button skinClass="multipublish.skins.ButtonBackRack"
+					  click="back_clickHandler(event)"/>
+			
+			<s:Button skinClass="multipublish.skins.ButtonPrevPage"
+					  enabled="{prevable}" click="prev()"/>
+			
+			<s:Button skinClass="multipublish.skins.ButtonNextPage"
+					  enabled="{nextable}" click="next()"/>
+			
+			<s:Group>
+				
+				<s:Button skinClass="multipublish.skins.ButtonZoomIn"
+						  id="zoomIn" click="zoom_clickHandler(event)"/>
+				
+				<s:Button skinClass="multipublish.skins.ButtonZoomOut"
+						  visible="false" id="zoomOut"
+						  click="zoom_clickHandler(event)"/>
+				
+			</s:Group>
+			
+			<s:Button skinClass="multipublish.skins.ButtonViewPage"
+					  click="sheets_clickHandler(event)"/>
+			
+		</s:VGroup>
+		
+	</s:Group>
+	
+	<ep:SheetsList verticalCenter="0" right="100"
+				   maxHeight="{height * .6}" visible="false"
+				   data="{data}" id="list"
+				   mouseDown="obj_mouseDownHandler(event)"
+				   click="list_clickHandler(event)"/>
+	
+	<ep:ArticleInfo id="info" visible="false" width="{width}" height="{height}"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.core.mp;
+			
+			
+			/**
+			 * 
+			 * 显示信息。
+			 * 
+			 */
+			
+			public function showInfo(data:Object):void
+			{
+				if (info && !info.visible)
+				{
+					info.path = canvas.data.path;
+					info.data = data;
+					info.visible = true;
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, info_hideHandler);
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 隐藏信息。
+			 * 
+			 */
+			
+			public function hideInfo():void
+			{
+				if (info && info.visible)
+				{
+					info.visible = false;
+					if (data[0])
+					{
+						info.path = data[0].path;
+					}
+					stage.removeEventListener(MouseEvent.MOUSE_DOWN, info_hideHandler);
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 显示版面。
+			 * 
+			 */
+			
+			public function sheetShow($data:Object):void
+			{
+				if(!visible)
+				{
+					data = $data;
+					visible = true;
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 隐藏版面。
+			 * 
+			 */
+			
+			public function sheetHide():void
+			{
+				if (visible) 
+				{
+					visible = false;
+					
+					zoomReset();
+					
+					hideInfo();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function next():void
+			{
+				try
+				{
+					var index:int = data.indexOf(canvas.data);
+					if (index != -1)
+					{
+						var nextIndex:int = index + 1;
+						if (nextIndex >= data.length) nextIndex = 0;
+						
+						canvas.data = data[nextIndex];
+						
+						zoomReset();
+					}
+				}
+				catch (e:Error){}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function prev():void
+			{
+				try
+				{
+					var index:int = data.indexOf(canvas.data);
+					if (index != -1)
+					{
+						var prevIndex:int = index - 1;
+						if (prevIndex < 0) prevIndex = data.length - 1;
+						
+						canvas.data = data[prevIndex];
+						
+						zoomReset();
+					}
+				}
+				catch (e:Error){}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function listShow():void
+			{
+				if(!list.visible)
+				{
+					list.visible = true;
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, sheets_hideHandler);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function listHide():void
+			{
+				if (list.visible)
+				{
+					list.visible = false;
+					list.reset();
+					stage.removeEventListener(MouseEvent.MOUSE_DOWN, sheets_hideHandler);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function zoomReset():void
+			{
+				if (zoomIn && zoomOut) zoomIn.visible = !(zoomOut.visible = false);
+				zoom = true;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function canvas_clickHandler(e:MouseEvent):void
+			{
+				if (!moved && e.target is SheetContentItem)
+				{
+					showInfo(e.target.data);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function sheets_clickHandler(event:MouseEvent):void
+			{
+				list.visible ? listHide() : listShow();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function sheets_hideHandler(e:MouseEvent):void
+			{
+				if (list.mouseX < 0 || list.mouseX > list.width || 
+					list.mouseY < 0 || list.mouseY > list.height) listHide();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function info_hideHandler(e:MouseEvent):void
+			{
+				if (info.mouseX < info.width  * .15 || info.mouseX > info.width  * .85 || 
+					info.mouseY < info.height * .1 || info.mouseY > info.height * .9) hideInfo();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function back_clickHandler(e:MouseEvent):void
+			{
+				sheetHide();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function zoom_clickHandler(e:MouseEvent):void
+			{
+				if (canvas && canvas.zoomer)
+				{
+					zoom = !zoom;
+					
+					zoomOut.visible = !(zoomIn.visible = zoom);
+					
+					canvas.zoomer.scaleTo(zoom ? canvas.zoomer.minScale : canvas.zoomer.maxScale, true);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function list_clickHandler(e:MouseEvent):void
+			{
+				if (!moved && e.target is SheetListItem)
+				{
+					info.path = e.target.data.path;
+					canvas.data = e.target.data;
+					
+					zoomReset();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function obj_mouseDownHandler(e:MouseEvent):void
+			{
+				moved = false;
+				down = new Point(mouseX, mouseY);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function list_mouseMoveHandler(e:MouseEvent):void
+			{
+				if (!moved && Point.distance(new Point(mouseX, mouseY), down) > 5) moved = true;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function list_mouseUpHandler(e:MouseEvent):void
+			{
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			[Bindable]
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				prevable = list.numElements > 0;
+				nextable = list.numElements > 0;
+				
+				if (data && data[0])
+				{
+					if (info) info.path = data[0].path;
+					if (canvas) canvas.data = data[0];
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			private var zoom:Boolean = true;
+			
+			/**
+			 * @private
+			 */
+			private var moved:Boolean;
+			
+			/**
+			 * @private
+			 */
+			private var down:Point;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

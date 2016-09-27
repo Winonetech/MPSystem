@@ -4,6 +4,9 @@
 					xmlns:mx="library://ns.adobe.com/flex/mx"
 					xmlns:ct="com.winonetech.controls.*"
 					creationComplete="init()">
+	
+	<fx:Style source="style.css"/>
+	
 	<fx:Script>
 		<![CDATA[
 			

@@ -107,7 +107,18 @@ package multipublish.commands
 				EventConsts.EVENT_PC_SHUTDOWN,
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN));
 			
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
+			config.service.communicationStop();
+			
+			try
+			{
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
+			}
+			catch (e:Error)
+			{
+				LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/shutdown.exe没有被其他安全软件隔离删除。");
+			}
+			
 		}
 		
 		/** 
@@ -116,8 +127,7 @@ package multipublish.commands
 		private function shutdownCheckweek():void
 		{
 			var date:Date = new Date;
-			if (date.day == Number(cmd))
-				shutdownDirectly();
+			if (date.day == Number(cmd)) shutdownDirectly();
 		}
 		
 		/**
@@ -129,7 +139,7 @@ package multipublish.commands
 			{
 				config.shutdown = cmd;
 				
-				Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
 			}
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)

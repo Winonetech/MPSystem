@@ -97,7 +97,8 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
-			execute(new InitializeDataCommand($push));
+			execute(new LoadChannelCommand($push));
+			execute(new InitDataCommand);
 			execute(new PlaybackScheduleCommand);
 		}
 		
@@ -116,6 +117,18 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 发送LED信息。
+		 * 
+		 */
+		
+		public function sendLed($value:String):void
+		{
+			execute(new SendLedCommand($value));
+		}
+		
+		
+		/**
+		 * 
 		 * 时间同步
 		 * 
 		 */
@@ -123,6 +136,30 @@ package multipublish.core
 		public function lockTime($value:String):void
 		{
 			execute(new LockTimeCommand($value));
+		}
+		
+		
+		/**
+		 * 
+		 * 下载文件
+		 * 
+		 */
+		
+		public function downloadFiles($data:String):void
+		{
+			execute(new ReloadFilesCommand($data));
+		}
+		
+		
+		/**
+		 * 
+		 * 获取报纸
+		 * 
+		 */
+		
+		public function refreshEpaper($data:String):void
+		{
+			execute(new ReloadEPaperCommand($data));
 		}
 		
 		
@@ -267,6 +304,7 @@ package multipublish.core
 			execute(new ClientUpdateCommand);
 			execute(new InitializeViewCommand);
 			execute(new InitializeServiceCommand);
+			execute(new SendLedCommand);
 		}
 		
 		

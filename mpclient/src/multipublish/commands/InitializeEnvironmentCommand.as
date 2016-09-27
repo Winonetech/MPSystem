@@ -10,20 +10,30 @@ package multipublish.commands
 	 */
 	
 	
+	import cn.vision.system.VSFile;
 	import cn.vision.utils.ApplicationUtil;
+	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
+	import cn.vision.utils.ScreenUtil;
 	
 	import flash.desktop.NativeApplication;
-	import flash.display.Screen;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.geom.Rectangle;
 	import flash.net.NetworkInfo;
 	import flash.net.NetworkInterface;
+	import flash.utils.ByteArray;
 	
 	import input.Input;
 	
 	import multipublish.consts.ClientStateConsts;
+	import multipublish.consts.URLConsts;
+	import multipublish.utils.ViewUtil;
 	import multipublish.views.GuildView;
 	
 	import mx.binding.utils.BindingUtils;
+	import mx.controls.Alert;
 	
 	import spark.components.WindowedApplication;
 	
@@ -55,6 +65,7 @@ package multipublish.commands
 			
 			initializeNetInfo();
 			initializeWindow();
+			initializeLed();
 			
 			commandEnd();
 		}
@@ -100,26 +111,71 @@ package multipublish.commands
 			window.showStatusBar = false;
 			//window.alwaysInFront = true;
 			
-			var r:Rectangle = Screen.mainScreen.bounds;
+			var r:Rectangle = getDebug() ? ScreenUtil.getMainScreenBounds() : ScreenUtil.getScreensBounds();
+			
 			if (config.exportData || config.updateVersion)
 			{
 				window.nativeWindow.width  = 610;
 				window.nativeWindow.height = 458;
-				window.nativeWindow.x = .5 * (r.width  - window.nativeWindow.width );
+				window.nativeWindow.x = .5 * (r.width  - window.nativeWindow.width);
 				window.nativeWindow.y = .5 * (r.height - window.nativeWindow.height);
 			}
 			else
 			{
+				LogUtil.log("获取屏幕尺寸：" + r);
 				window.nativeWindow.width  = config.width  = r.width;
 				window.nativeWindow.height = config.height = r.height;
-				window.nativeWindow.x = window.nativeWindow.y = 0;
+				window.nativeWindow.x = 0;
+				window.nativeWindow.y = 0;
 			}
 			
-			
 			//add guild view
-			window.addElement(view.guild    = new GuildView);
+			ViewUtil.guild(true);
 			window.addElement(view.keyboard = new Input);
 			BindingUtils.bindProperty(view.keyboard, "title", config, "support");
+		}
+		
+		/**
+		 * @private
+		 */
+		private function initializeLed():void
+		{
+			try
+			{
+				ApplicationUtil.execute(
+					FileUtil.resolvePathApplication(URLConsts.LED_LAUNCH),
+					FileUtil.resolvePathApplication(URLConsts.LED_PATH)
+				);
+			}
+			catch(e:Error)
+			{
+				LogUtil.log("LED程序启动不成功，请检查路径 " + URLConsts.LED_LAUNCH);
+			}
+		}
+		
+		private function getDebug():Boolean
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication("config.ini"));
+			if (file.exists)
+			{
+				var stream:FileStream = new FileStream;
+				stream.open(file, FileMode.READ);
+				try
+				{
+					var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+					
+				}
+				catch (o:Error)
+				{
+					Alert.show("读取配置文件出错！");
+				}
+				stream.close();
+				if (xml)
+				{
+					return ObjectUtil.convert(xml.debug, Boolean);
+				}
+			}
+			return false;
 		}
 		
 	}

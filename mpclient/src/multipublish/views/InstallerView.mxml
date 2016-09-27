@@ -4,8 +4,7 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   xmlns:vw="multipublish.views.*"
 		   xmlns:ct="com.winonetech.controls.*"
-		   horizontalCenter="0" verticalCenter="0"
-		   width="600" height="420"
+		   width="600" height="550"
 		   click="handlerInputClick(event)">
 	<s:Panel title="{language.setting}"
 			 width="100%" height="100%"
@@ -46,11 +45,11 @@
 					<s:FormItem label="{language.deviceNO}">
 						<s:helpContent>
 							<s:VGroup>
-								<s:Label text="{language.integer}"/>
+								<s:Label color="0xFF0000" text="{language.required}"/>
 							</s:VGroup>
 						</s:helpContent>
 						<ct:Field text="{config.deviceNO}" name="deviceNO"
-										textAlign="left" restrict="0-9"
+										textAlign="left" 
 										change="textinput_changeHandler(event)"/>
 					</s:FormItem>
 					<s:FormItem label="{language.terminalNO}">
@@ -94,6 +93,7 @@
 										textAlign="left" restrict="0-9"
 										change="textinput_changeHandler(event)"/>
 					</s:FormItem>
+					
 					<s:FormItem label="{language.requestTem}">
 						<s:helpContent>
 							<s:VGroup>
@@ -104,46 +104,7 @@
 								  textAlign="left" 
 								  change="textinput_changeHandler(event)"/>
 					</s:FormItem>
-				</s:Form>
-			</s:NavigatorContent>
-			<s:NavigatorContent width="100%" height="100%" label="{language.socket}">
-				<s:layout>
-					<s:VerticalLayout horizontalAlign="center"/>
-				</s:layout>
-				<s:Form textAlign="right">
-					<s:layout>
-						<s:FormLayout horizontalAlign="left"/>
-					</s:layout>
-					<!--<s:FormItem label="{language.socketHost}">
-						<s:helpContent>
-							<s:VGroup>
-								<s:Label color="0xFF0000" text="{language.ipRequired}"/>
-							</s:VGroup>
-						</s:helpContent>
-						<ct:Field text="{config.socketHost}" name="socketHost"
-										textAlign="left" restrict="0-9."
-										change="textinput_changeHandler(event)"/>
-					</s:FormItem>
-					<s:FormItem label="{language.messagePort}">
-						<s:helpContent>
-							<s:VGroup>
-								<s:Label text="{language.defaultPort6666}"/>
-							</s:VGroup>
-						</s:helpContent>
-						<ct:Field text="{config.messagePort}" name="messagePort"
-										textAlign="left" restrict="0-9"
-										change="textinput_changeHandler(event)"/>
-					</s:FormItem>
-					<s:FormItem label="{language.capturePort}">
-						<s:helpContent>
-							<s:VGroup>
-								<s:Label text="{language.defaultPort6668}"/>
-							</s:VGroup>
-						</s:helpContent>
-						<ct:Field text="{config.capturePort}" name="capturePort"
-										textAlign="left" restrict="0-9"
-										change="textinput_changeHandler(event)"/>
-					</s:FormItem>-->
+					
 					<s:FormItem label="{language.serviceURL}">
 						<s:helpContent>
 							<s:VGroup>
@@ -154,6 +115,7 @@
 								  textAlign="left" 
 								  change="textinput_changeHandler(event)"/>
 					</s:FormItem>
+					
 					<s:FormItem label="{language.shotcutURL}">
 						<s:helpContent>
 							<s:VGroup>
@@ -164,6 +126,40 @@
 								  textAlign="left" 
 								  change="textinput_changeHandler(event)"/>
 					</s:FormItem>
+					
+					<s:FormItem label="{language.updtPort}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultPort80}"/>
+							</s:VGroup>
+						</s:helpContent>
+						<ct:Field text="{config.updtPort}" name="updtPort"
+								  textAlign="left" restrict="0-9"
+								  change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					
+					<s:FormItem label="{language.updateURL}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label color="0xFF0000" text="{language.required}"/>
+							</s:VGroup>
+						</s:helpContent>
+						<ct:Field text="{config.updateURL}" name="updateURL"
+								  textAlign="left" 
+								  change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					
+				</s:Form>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="{language.socket}">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Form textAlign="right">
+					<s:layout>
+						<s:FormLayout horizontalAlign="left"/>
+					</s:layout>
+					
 					<s:FormItem label="{language.heartbeatTime}">
 						<s:helpContent>
 							<s:VGroup>

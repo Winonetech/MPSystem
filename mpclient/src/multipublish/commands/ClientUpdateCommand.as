@@ -8,26 +8,28 @@ package multipublish.commands
 	 */
 	
 	
-	import cn.vision.events.TimeoutEvent;
 	import cn.vision.net.FTPLoader;
 	import cn.vision.net.FTPRequest;
-	import cn.vision.net.URILoader;
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.ApplicationUtil;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.XMLUtil;
 	
+	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
 	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.net.URLRequest;
-	import flash.net.URLVariables;
 	
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.URLConsts;
+	import multipublish.utils.DataUtil;
+	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 	
 	
 	public final class ClientUpdateCommand extends _InternalCommand
@@ -43,7 +45,7 @@ package multipublish.commands
 		{
 			super();
 			
-			initialize($path);
+			path = $path;
 		}
 		
 		
@@ -64,35 +66,51 @@ package multipublish.commands
 		/**
 		 * @private
 		 */
-		private function initialize($path:String):void
+		private function clientUpdate():void
 		{
-			path = $path;
+			modelog(ClientStateConsts.UPDATE_CHECK);
+			
+			var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+			if (config.remoteVersion && updater.exists)
+			{
+				if (compareVersion(config.remoteVersion))
+				{
+					//升级包下载完毕，退出并调用升级程序。
+					LogUtil.log("升级包下载完毕，退出并调用升级程序");
+					ApplicationUtil.exit();
+					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+				}
+				else
+				{
+					LogUtil.log("升级完毕，删除更新包");
+					updater.deleteFile();
+					config.remoteVersion = null;
+					Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+				}
+			}
+			else
+			{
+				LogUtil.log("连接服务端自动更新检测：", config.version, config.terminalNO);
+				
+				requestData(defaultHandler, {
+					"code": config.version,
+					"number": config.terminalNO
+				});
+			}
 		}
 		
 		/**
 		 * @private
 		 */
-		private function clientUpdate():void
+		private function requestData($handler:Function, $data:Object):void
 		{
-			modelog(ClientStateConsts.UPDATE_CHECK);
-			
-			var loader:URILoader = new URILoader;
-			loader.timeout = 5;
-			loader.addEventListener(Event.COMPLETE, handlerLoadDefault);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerLoadDefault);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerLoadDefault);
-			loader.addEventListener(TimeoutEvent.TIMEOUT, handlerLoadDefault);
-			
-			var request:URLRequest = new URLRequest;
-			request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80)+ URLConsts.GET_CLIENT_INFO;
-			var variables:URLVariables = new URLVariables;
-			variables.terminalNumber = config.terminalNO;
-			variables.versionNumber  = config.version;
-			request.data = variables;
-			
-			LogUtil.log("连接服务端自动更新检测：" + request.url, variables.terminalNumber, variables.versionNumber);
-			
-			loader.load(request);
+			http = new HTTPService;
+			http.addEventListener(ResultEvent.RESULT, $handler);
+			http.addEventListener(FaultEvent.FAULT, $handler);
+			http.method = "POST";
+			http.contentType = "application/json";
+			http.url = url = "http://" + config.httpHost + ":" +(config.updtPort || 80)+ "/" + config.updateURL;
+			http.send(JSON.stringify($data));
 		}
 		
 		/**
@@ -115,62 +133,69 @@ package multipublish.commands
 		/**
 		 * @private
 		 */
-		private function handlerLoadDefault($e:Event):void
+		private function defaultHandler($e:Event):void
 		{
-			var loader:URILoader = $e.target as URILoader;
-			loader.removeEventListener(Event.COMPLETE, handlerLoadDefault);
-			loader.removeEventListener(IOErrorEvent.IO_ERROR, handlerLoadDefault);
-			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerLoadDefault);
-			loader.removeEventListener(TimeoutEvent.TIMEOUT, handlerLoadDefault);
-			loader.close();
+			http.removeEventListener(ResultEvent.RESULT, defaultHandler);
+			http.removeEventListener(FaultEvent.FAULT, defaultHandler);
 			
-			if ($e.type == Event.COMPLETE)
+			if ($e.type == ResultEvent.RESULT)
 			{
-				var xml:XML = XMLUtil.convert($e.target.data, XML);
-				
-				LogUtil.log("检测版本 " + "服务端：" + xml.version + "本地：" + config.version);
-				var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
-				if (compareVersion(xml.version))
+				var data:* = ($e as ResultEvent).result;
+				if (data is String) data = JSON.parse(data);
+				if (data.result == "success" && data.dataObj)
 				{
-					if (updater.exists)
+					downID = data.downId;
+					data = data.dataObj;
+					var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+					LogUtil.log("远程版本：" + data.code + "，本地版本：" + config.version);
+					if (compareVersion(data.code))
 					{
-						//升级包下载完毕，退出并调用升级程序。
-						LogUtil.log("升级包下载完毕，退出并调用升级程序");
-						ApplicationUtil.exit();
-						ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+						config.remoteVersion = data.code;
+						Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+						if (updater.exists)
+						{
+							//升级包下载完毕，退出并调用升级程序。
+							LogUtil.log("升级包下载完毕，退出并调用升级程序");
+							ApplicationUtil.exit();
+							ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+						}
+						else
+						{
+							//下载更新包。
+							LogUtil.log("下载更新包：" + data.fpath);
+							var ftp:FTPLoader = new FTPLoader;
+							ftp.timeout = 10;
+							ftp.addEventListener(Event.COMPLETE, handlerFTPDefault);
+							ftp.addEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
+							ftp.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
+							var loadURL:String = CacheUtil.extractURI(XMLUtil.convert(data.fpath));
+							var saveURL:String = FileUtil.resolvePathApplication(URLConsts.UPDATER);
+							var request:FTPRequest = new FTPRequest(
+								config.ftpHost,
+								config.ftpUserName,
+								config.ftpPassWord,
+								config.ftpPort || 21,
+								loadURL, saveURL);
+							ftp.load(request);
+						}
 					}
 					else
 					{
-						//下载更新包。
-						LogUtil.log("下载更新包：" + xml.file);
-						var ftp:FTPLoader = new FTPLoader;
-						ftp.timeout = 10;
-						ftp.addEventListener(Event.COMPLETE, handlerFTPDefault);
-						ftp.addEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
-						ftp.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
-						var loadURL:String = CacheUtil.extractURI(XMLUtil.convert(xml.file));
-						var saveURL:String = FileUtil.resolvePathApplication(URLConsts.UPDATER);
-						var request:FTPRequest = new FTPRequest(
-							config.ftpHost,
-							config.ftpUserName,
-							config.ftpPassWord,
-							config.ftpPort || 21,
-							loadURL, saveURL);
-						ftp.load(request);
+						if (updater.exists) 
+						{
+							LogUtil.log("升级完毕，删除更新包");
+							updater.deleteFile();
+						}
 					}
 				}
 				else
 				{
-					if (updater.exists) 
-					{
-						LogUtil.log("升级完毕，删除更新包");
-						updater.deleteFile();
-					}
+					LogUtil.log("已是最新版本，无需升级");
 				}
 			}
 			else
 			{
-				LogUtil.log("获取新的客户端版本失败！");
+				LogUtil.log("获取新的客户端版本失败，URL:" + url);
 			}
 		}
 		
@@ -190,16 +215,43 @@ package multipublish.commands
 			else
 			{
 				LogUtil.log("下载更新包成功，退出执行升级程序！");
-				ApplicationUtil.exit();
-				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+				requestData(handlerDownDefault, {"downId":downID});
+				
 			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function handlerDownDefault(e:Event):void
+		{
+			http.removeEventListener(ResultEvent.RESULT, defaultHandler);
+			http.removeEventListener(FaultEvent.FAULT, defaultHandler);
+			
+			ApplicationUtil.exit();
+			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
 		}
 		
 		
 		/**
 		 * @private
 		 */
+		private var downID:String;
+		
+		/**
+		 * @private
+		 */
+		private var url:String;
+		
+		/**
+		 * @private
+		 */
 		private var path:String;
+		
+		/**
+		 * @private
+		 */
+		private var http:HTTPService;
 		
 	}
 }

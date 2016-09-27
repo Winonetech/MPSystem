@@ -32,6 +32,23 @@ package multipublish.commands
 		
 		/**
 		 * 
+		 * 标记并保存文件。
+		 * 
+		 * @param $data:* 要保存的数据。
+		 * @param $saveURL:String 文件存储路径。
+		 * 
+		 */
+		
+		protected function flagSave($loadURL:String, $saveURL:String, $data:*):void
+		{
+			$loadURL!= $saveURL
+				? save($saveURL, $data)
+				: flag($saveURL);
+		}
+		
+		
+		/**
+		 * 
 		 * 保存文件。
 		 * 
 		 * @param $data:* 要保存的数据。

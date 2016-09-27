@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:supportWeather="multipublish.components.supportWeather.*"
+		 fontFamily="微软雅黑" fontWeight="bold"
+		 clipAndEnableScrolling="true"
+		 creationComplete="application1_creationCompleteHandler(event)">
+	
+	<supportWeather:TimeView id="time"/>
+	
+	<supportWeather:WeatherView id="weather"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.components.supportWeather.WeatherWithJson;
+			import multipublish.components.supportWeather.vo.LayoutStyle;
+			
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			private var data:String;
+			private var isInitData:Boolean = false;
+			
+			
+			private function updateDisplay($value:String):void
+			{
+				removeAllElements();
+				
+				var temp:Array = validateDisplay($value).split(",");
+				
+				for each (var item:String in temp)
+					if (this[item] && this[item] is UIComponent) addElement(this[item]);
+			}
+			
+			private function validateDisplay($value:String):String
+			{
+				if ($value)
+				{
+					$value = StringUtil.replace($value, " ", "");
+					if(AVAILABLE_DISPLAY.indexOf($value) == -1) $value = AVAILABLE_DISPLAY[0];
+				}
+				else
+				{
+					$value = AVAILABLE_DISPLAY[0];
+				}
+				return $value;
+			}
+			
+			
+			public function get layoutStyle():LayoutStyle
+			{
+				return _layoutStyle;
+			}
+			
+			public function set layoutStyle($value:LayoutStyle):void
+			{
+				$value = $value || new LayoutStyle;
+				
+				_layoutStyle = $value;
+				if (layoutStyle.layout == "vertical")
+				{
+					var v:VerticalLayout = new VerticalLayout;
+					v.gap = layoutStyle.gap;
+					v.horizontalAlign = layoutStyle.horizontalAlign;
+					v.verticalAlign = layoutStyle.verticalAlign;
+					v.paddingBottom = v.paddingLeft = v.paddingRight = v.paddingTop = layoutStyle.padding;
+					layout = v;
+				}
+				else
+				{
+					var h:HorizontalLayout = new HorizontalLayout;
+					h.gap = layoutStyle.gap;
+					h.horizontalAlign = layoutStyle.horizontalAlign;
+					h.verticalAlign = layoutStyle.verticalAlign;
+					h.paddingBottom = h.paddingLeft = h.paddingRight = h.paddingTop = layoutStyle.padding;
+					layout = h;
+				}
+				
+				updateDisplay(layoutStyle.display);
+				
+				invalidateDisplayList();
+			}
+			
+			private var _layoutStyle:LayoutStyle;
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				initData();
+			}
+			
+			
+			/**
+			 * 
+			 * 初始化数据。
+			 * 
+			 */
+			
+			public function initData(json:String = null):void
+			{
+				data = json;
+				if(data && weather && !isInitData)
+				{
+					ws = ws || new WeatherWithJson;
+					
+					ws.initData(data, this);
+					
+					isInitData = true;
+				}
+			}
+			
+			private var ws:WeatherWithJson;
+			
+			private static const AVAILABLE_DISPLAY:Array = 
+			[
+				"time,weather",
+				"weather,time",
+				"time",
+				"weather"
+			];
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

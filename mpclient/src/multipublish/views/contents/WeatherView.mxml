@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:cp="multipublish.components.*">
+	
+	<cp:WeatherComponent id="component"
+						 horizontalCenter="0" verticalCenter="0"
+						 resize="component_resizeHandler(event)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.vo.contents.Weather;
+			
+			import mx.events.ResizeEvent;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateBackground():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				removeTimer();
+				
+				if (weather)
+				{
+					weather.removeEventListener(ControlEvent.READY, weather_readyHandler);
+					weather = null;
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				weather = data as Weather;
+				
+				if (weather)
+				{
+					weather.addEventListener(ControlEvent.READY, weather_readyHandler);
+					
+					createTimer(weather.updateFrequency, 0, weather_updateHandler);
+					
+					applyCallback(callbackData);
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = Boolean(component);
+				if (result)
+				{
+					if(weather && weather.weatherData)
+						component.initData(weather.weatherData);
+					
+					dispatchReady();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function weather_updateHandler(e:TimerEvent):void
+			{
+				if (weather) weather.update();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function weather_readyHandler(e:ControlEvent):void
+			{
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function component_resizeHandler(e:ResizeEvent):void
+			{
+				var ww:Number = width;
+				var wh:Number = height;
+				var cw:Number = component.width;
+				var ch:Number = component.height;
+				var ss:Number = ww / wh < cw / ch ? ww / cw : wh / ch;
+				component.scaleX = component.scaleY = ss;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var weather:Weather;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

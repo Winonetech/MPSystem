@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wt:Vessel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s ="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:cp="com.winonetech.components.*"
+		   xmlns:wt="com.winonetech.core.*"
+		   width="90" mouseEnabled="false" xmlns:controls="com.winonetech.controls.*">
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xCCCCCC"/>
+		</s:fill>
+	</s:Rect>
+	
+	<controls:MultiTouchScroller left="5" top="5" right="5" bottom="5"
+						   maxHeight="{maxHeight}" id="scroll"
+						   verticalScrollPolicy="off"
+						   horizontalTouchScrollEnabled="false"
+						   measuredSizeIncludesScrollBars="false"
+						   skinClass="multipublish.skins.ScrollerSkin"
+						   scroll="updateIcons()">
+		
+		<s:VGroup id="container" mouseEnabled="false" gap="5"/>
+		
+	</controls:MultiTouchScroller>
+	
+	<s:Image horizontalCenter="0" top="10" visible="{prevable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source="assets/images/arrowUp.png"/>
+	
+	<s:Image horizontalCenter="0" bottom="10" visible="{nextable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source="assets/images/arrowDown.png"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.core.mp;
+			
+			
+			/**
+			 * 
+			 * 重置
+			 * 
+			 */
+			
+			public function reset():void
+			{
+				if (scroll) 
+				{
+					scroll.stopScrollTweening();
+					scroll.verticalScrollPosition = 0;
+					updateIcons();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function updateIcons():void
+			{
+				if (scroll && scroll.viewport)
+				{
+					prevable = scroll.leftScrollable;
+					nextable = scroll.rightScrollable;
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = container && scroll;
+				if (result)
+				{
+					container.removeAllElements();
+					
+					var count:uint = 0;
+					for each (var vo:* in data)
+					{
+						count++;
+						var item:SheetListItem = new SheetListItem;
+						item.data = vo;
+						container.addElement(item);
+					}
+					
+					height = Math.min(125 * count + 5, maxHeight);
+					
+					reset();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</wt:Vessel>

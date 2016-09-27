@@ -2,28 +2,40 @@
 <ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:ct="multipublish.views.contents.*"
-				initialize="initializeEnvironment()">
-	<s:SWFLoader id="loader" width="100%" height="100%" autoLoad="false"
-				 verticalAlign="middle" horizontalAlign="center"
-				 scaleContent="true" maintainAspectRatio="true"
-				 smoothBitmapContent="true" mask="{cover}"/>
-	<s:Graphic id="cover" width="{scaledWidth}" height="{scaledHeight}"
-			   horizontalCenter="0" verticalCenter="0">
-		<s:Rect width="{scaledWidth}" height="{scaledHeight}">
-			<s:fill>
-				<s:SolidColor color="0"/>
-			</s:fill>
-		</s:Rect>
-	</s:Graphic>
+				xmlns:ct="multipublish.views.contents.*">
+	
+	<s:Group horizontalCenter="0" verticalCenter="0"
+			 width="{scaledWidth}" height="{scaledHeight}"
+			 clipAndEnableScrolling="true">
+		
+		<s:SWFLoader id="loader" width="100%" height="100%"
+					 verticalAlign="middle" horizontalAlign="center"
+					 scaleContent="true" autoLoad="false"
+					 maintainAspectRatio="true"
+					 smoothBitmapContent="true"/>
+		
+	</s:Group>
+	
 	<fx:Script>
 		<![CDATA[
-			import com.winonetech.tools.LogSQLite;
 			
-			import multipublish.consts.EventConsts;
-			import multipublish.consts.MPTipConsts;
-			import multipublish.consts.TypeConsts;
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.ContentConsts;
+			import multipublish.core.mp;
 			import multipublish.vo.contents.Cartoon;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function createChildren():void
+			{
+				super.createChildren();
+				
+				timer = new Timer(1000);
+			}
 			
 			
 			/**
@@ -34,22 +46,7 @@
 			{
 				super.processPlay();
 				
-				LogSQLite.log(
-					TypeConsts.FILE,
-					EventConsts.EVENT_START_PLAYING,
-					swfct.content.split("/").pop(),
-					log(MPTipConsts.RECORD_CONTENT_PLAY, swfct));
-				
-				movieEnd = timerEnd = false;
-				
-				if (loader && swfct)
-				{
-					loader.addEventListener(Event.COMPLETE, handlerDefault);
-					loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-					loader.load(swfct.content);
-				}
-				
-				timer.start();
+				loaderPlay();
 			}
 			
 			
@@ -59,15 +56,9 @@
 			
 			override protected function processStop():void
 			{
-				if (movie) 
-				{
-					movie.removeEventListener(Event.ENTER_FRAME, handlerEnterFrame);
-					movie.stop();
-				}
-				if (loader) loader.unloadAndStop(true);
-				
-				timer.reset();
-				timer.stop();
+				timerStop();
+				movieStop();
+				loaderStop();
 			}
 			
 			
@@ -80,7 +71,6 @@
 				super.processReset();
 				
 				movie = null;
-				swfct = null;
 			}
 			
 			
@@ -92,27 +82,10 @@
 			{
 				super.resolveData();
 				
-				swfct = data as Cartoon;
-				time = swfct.time;
-			}
-			
-			
-			/**
-			 * @private
-			 */
-			private function initializeEnvironment():void
-			{
-				timer = new Timer(1000);
-				timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
-			}
-			
-			/**
-			 * @private
-			 */
-			private function completeTime():void
-			{
-				timerEnd = true;
-				completeCheck();
+				if (data)
+					time = (data as Cartoon).duration;
+				else
+					dispatchReady();
 			}
 			
 			
@@ -121,19 +94,6 @@
 			 */
 			private function analyzeContent():void
 			{
-				if (loader.content is MovieClip)
-				{
-					movie = loader.content as MovieClip;
-					movie.addEventListener(Event.ENTER_FRAME, handlerEnterFrame);
-					var mtime:uint = movie.totalFrames / config.stage.frameRate;
-					time = Math.min(mtime, time);
-					movie.play();
-				}
-				else
-				{
-					movieEnd = true;
-				}
-				
 				var cw:Number = loader.content.loaderInfo.width;
 				var ch:Number = loader.content.loaderInfo.height;
 				var pw:Number = width;
@@ -141,30 +101,84 @@
 				var cs:Number =(cw / ch < pw / ph) ? ph / ch : pw / cw;
 				scaledWidth  = cs * cw;
 				scaledHeight = cs * ch;
+				
+				movie = loader.content as MovieClip;
+				
+				movie && movie.totalFrames ? moviePlay() : timerPlay();
 			}
 			
 			/**
 			 * @private
 			 */
-			private function completeCheck():void
+			private function loaderPlay():void
 			{
-				if (movieEnd && timerEnd) stop();
+				if (loader && content)
+				{
+					loader.addEventListener(Event.COMPLETE, handlerDefault);
+					loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+					loader.load((content as Cartoon).content);
+				}
 			}
-			
 			
 			/**
 			 * @private
 			 */
-			private function handlerEnterFrame($e:Event):void
+			private function loaderStop():void
 			{
-				if (movie.currentFrame == movie.totalFrames)
+				if (loader) loader.unloadAndStop(true);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function moviePlay():void
+			{
+				movie.addEventListener(Event.ENTER_FRAME, handlerEnterFrame);
+				movie.play();
+				
+				timerPlay(false);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function movieStop():void
+			{
+				if (movie) 
 				{
 					movie.removeEventListener(Event.ENTER_FRAME, handlerEnterFrame);
 					movie.stop();
-					movieEnd = true;
-					completeCheck();
+					movie = null;
 				}
 			}
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay($check:Boolean = true):void
+			{
+				if ($check) time = time || ContentConsts.CONTENT_TIME_DEFAUALT;
+				if (time)
+				{
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+				}
+			}
+			
 			
 			/**
 			 * @private
@@ -173,14 +187,18 @@
 			{
 				loader.removeEventListener(Event.COMPLETE, handlerDefault);
 				loader.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-				if ($e.type == Event.COMPLETE)
-				{
-					analyzeContent();
-				}
-				else
-				{
-					stop();
-				}
+				
+				$e.type == Event.COMPLETE ? analyzeContent() : timerPlay();
+				
+				dispatchReady();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerEnterFrame($e:Event):void
+			{
+				if (movie.currentFrame == movie.totalFrames) stop();
 			}
 			
 			/**
@@ -188,7 +206,7 @@
 			 */
 			private function handlerTimerComplete($e:TimerEvent):void
 			{
-				completeTime();
+				stop();
 			}
 			
 			
@@ -200,7 +218,7 @@
 			
 			public function get time():uint
 			{
-				return timer.repeatCount;
+				return mp::time;
 			}
 			
 			/**
@@ -208,8 +226,27 @@
 			 */
 			public function set time($value:uint):void
 			{
-				if ($value > config.maxDurationTime) $value = config.maxDurationTime;
-				if ($value!= time) timer.repeatCount = $value;
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				applyCallback(callbackTime);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackTime():Boolean
+			{
+				var result:Boolean = Boolean(timer);
+				if (result) 
+				{
+					timer.repeatCount = time;
+					if (timer.running)
+					{
+						timer.reset();
+						timer.start();
+					}
+				}
+				return result;
 			}
 			
 			
@@ -221,23 +258,8 @@
 			/**
 			 * @private
 			 */
-			[Bindable]
-			private var swfct:Cartoon;
-			
-			/**
-			 * @private
-			 */
 			private var movie:MovieClip;
 			
-			/**
-			 * @private
-			 */
-			private var movieEnd:Boolean;
-			
-			/**
-			 * @private
-			 */
-			private var timerEnd:Boolean;
 			
 			/**
 			 * @private
@@ -250,6 +272,12 @@
 			 */
 			[Bindable]
 			private var scaledHeight:Number = 0;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
 			
 		]]>
 	</fx:Script>

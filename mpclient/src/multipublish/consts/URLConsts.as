@@ -35,6 +35,33 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * led启动。
+		 * 
+		 */
+		
+		public static const LED_LAUNCH:String = "led/launchLED.exe";
+		
+		
+		/**
+		 * 
+		 * led程序。
+		 * 
+		 */
+		
+		public static const LED_PATH:String = "led/LedSendNew.exe";
+		
+		
+		/**
+		 * 
+		 * led数据。
+		 * 
+		 */
+		
+		public static const LED_DATA:String = "led/playbill/LED滚动字幕.bill";
+		
+		
+		/**
+		 * 
 		 * 多线程绘图工具路径。
 		 * 
 		 */
@@ -49,15 +76,6 @@ package multipublish.consts
 		 */
 		
 		public static const GET_TERNIMAL_NO:String = "/wos/terminals/getAndroidlNoAction.action";
-		
-		
-		/**
-		 * 
-		 * 获取终端路径。
-		 * 
-		 */
-		
-		public static const GET_CLIENT_INFO:String = "/wos/versions/updateVersionAction.action";
 		
 		
 		/**

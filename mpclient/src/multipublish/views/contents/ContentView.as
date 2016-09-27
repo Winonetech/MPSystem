@@ -8,6 +8,8 @@ package multipublish.views.contents
 	 */
 	
 	
+	import cn.vision.utils.StringUtil;
+	
 	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.TimerEvent;
@@ -18,6 +20,15 @@ package multipublish.views.contents
 	import multipublish.consts.TypeConsts;
 	import multipublish.views.MPView;
 	import multipublish.vo.contents.Content;
+	
+	import mx.core.IVisualElement;
+	import mx.graphics.BitmapFillMode;
+	import mx.graphics.BitmapScaleMode;
+	import mx.graphics.SolidColor;
+	
+	import spark.components.Group;
+	import spark.components.Image;
+	import spark.primitives.Rect;
 	
 	
 	public class ContentView extends MPView
@@ -41,32 +52,11 @@ package multipublish.views.contents
 		
 		override protected function processPlay():void
 		{
-			LogSQLite.log(
-				TypeConsts.FILE,
-				EventConsts.EVENT_START_PLAYING,
-				content.content.split("/").pop(),
-				log(MPTipConsts.RECORD_CONTENT_PLAY, content));
-			
-			if(!timer && content.duration)
+			if (content)
 			{
-				timer = new Timer(1000, content.duration);
-				timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
-				timer.start();
-			}
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		
-		override protected function processStop():void
-		{
-			if (timer)
-			{
-				timer.stop();
-				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
-				timer = null;
+				LogSQLite.log(TypeConsts.FILE,
+					EventConsts.EVENT_START_PLAYING, content.title,
+					log(MPTipConsts.RECORD_CONTENT_PLAY, content));
 			}
 		}
 		
@@ -87,16 +77,121 @@ package multipublish.views.contents
 		
 		override protected function resolveData():void
 		{
+			log(MPTipConsts.RECORD_CONTENT_DATA, data);
+			
 			content = data as Content;
+			
+			updateBackground();
 		}
 		
 		
 		/**
-		 * @private
+		 * 
+		 * 创建timer处理
+		 * 
 		 */
-		private function handlerTimerComplete($e:TimerEvent):void
+		
+		protected function createTimer($delay:uint, $repeat:uint = 0, $timer:Function = null, $complete:Function = null, $start:Boolean = true):void
 		{
-			stop();
+			if(!timer && $delay && ($timer!= null || $complete!= null))
+			{
+				timer = new Timer($delay * 1000, $repeat);
+				if ($timer!= null)
+				{
+					timerHandler = $timer;
+					timer.addEventListener(TimerEvent.TIMER, timerHandler);
+				}
+				if ($repeat && $complete!= null)
+				{
+					timerCompleteHandler = $complete;
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+				}
+				if ($start) timer.start();
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 重置timer
+		 * 
+		 */
+		
+		protected function resetTimer():void
+		{
+			if (timer) timer.reset();
+		}
+		
+		
+		/**
+		 * 
+		 * 移除timer处理
+		 * 
+		 */
+		
+		protected function removeTimer():void
+		{
+			if (timer)
+			{
+				if (timerHandler!= null)
+				{
+					timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+					timerHandler = null;
+				}
+				
+				if (timerCompleteHandler!== null)
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+					timerCompleteHandler = null;
+				}
+				timer.stop();
+				timer = null;
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 更新背景
+		 * 
+		 */
+		
+		protected function updateBackground():void
+		{
+			if (content)
+			{
+				var component:IVisualElement, rect:Rect, image:Image;
+				
+				if(!background)
+				{
+					addElementAt(background = new Group, 0);
+					background.mouseEnabled = background.mouseChildren = false;
+					background.percentHeight = 100;
+					background.percentWidth  = 100;
+				}
+				
+				background.alpha = content.backgroundAlpha;
+				background.removeAllElements();
+				if (StringUtil.isEmpty(content.background))
+				{
+					component = rect = new Rect;
+					rect.percentHeight = 100;
+					rect.percentWidth  = 100;
+					rect.fill = new SolidColor(content.backgroundColor);
+				}
+				else
+				{
+					component = image = new Image;
+					image.percentHeight = 100;
+					image.percentWidth  = 100;
+					image.fillMode = BitmapFillMode.SCALE;
+					image.scaleMode = BitmapScaleMode.ZOOM;
+					image.source = content.background;
+					background.addElement(image);
+				}
+				
+				background.addElement(component);
+			}
 		}
 		
 		
@@ -110,7 +205,22 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
+		private var background:Group;
+		
+		/**
+		 * @private
+		 */
 		private var timer:Timer;
+		
+		/**
+		 * @private
+		 */
+		private var timerHandler:Function;
+		
+		/**
+		 * @private
+		 */
+		private var timerCompleteHandler:Function;
 		
 	}
 }

@@ -8,6 +8,7 @@ package multipublish.core
 	 */
 	
 	
+	import cn.vision.collections.Map;
 	import cn.vision.core.VSObject;
 	import cn.vision.errors.SingleTonError;
 	

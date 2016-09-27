@@ -14,8 +14,6 @@ package multipublish.views
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
-	import multipublish.core.mp;
-	import multipublish.vo.programs.Layout;
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
@@ -38,7 +36,6 @@ package multipublish.views
 		}
 		
 		
-		
 		/**
 		 * 
 		 * 自适应父容器尺寸。
@@ -48,10 +45,11 @@ package multipublish.views
 		public function autofitScale():void
 		{
 			container.scaleX = container.scaleY = 
-				( container.width > 0 && container.height > 0)
-				?(container.width / container.height < width / height 
-					? height / container.height
-					: width  / container.width) : 1;
+				 (container.width > 0 && container.height > 0)
+					?(container.width / container.height < width / height 
+						? height / container.height
+						: width  / container.width) 
+					: 1;
 		}
 		
 		
@@ -66,13 +64,10 @@ package multipublish.views
 				EventConsts.EVENT_START_PLAYING, program.summary,
 				log(MPTipConsts.RECORD_PROGRAM_PLAY, program));
 			
-			if (layouts.length)
+			if (view)
 			{
-				for each (var layout:LayoutView in layouts)
-				{
-					layout.addEventListener(ControlEvent.STOP, handlerLayoutEnd, false, 0, true);
-					layout.play();
-				}
+				view.addEventListener(ControlEvent.STOP, handlerLayoutEnd);
+				view.play();
 			}
 			else
 			{
@@ -87,11 +82,10 @@ package multipublish.views
 		
 		override protected function processStop():void
 		{
-			count = 0;
-			for each (var layout:LayoutView in layouts)
+			if (view)
 			{
-				layout.removeEventListener(ControlEvent.STOP, handlerLayoutEnd);
-				layout.stop();
+				view.removeEventListener(ControlEvent.STOP, handlerLayoutEnd);
+				view.stop();
 			}
 		}
 		
@@ -103,7 +97,11 @@ package multipublish.views
 		override protected function processReset():void
 		{
 			container.removeAllElements();
-			layouts.length = count = 0;
+			if (view) 
+			{
+				view.reset();
+				view = null;
+			}
 			program = null;
 		}
 		
@@ -120,14 +118,13 @@ package multipublish.views
 				
 				container.width  = program.width;
 				container.height = program.height;
+				
 				autofitScale();
-				for each (var child:Layout in program.layouts)
-				{
-					var layout:LayoutView = new LayoutView;
-					layout.data = child;
-					layouts.push(layout);
-					container.addElement(layout);
-				}
+				
+				container.addElement(view = new LayoutView);
+				view.width  = program.width;
+				view.height = program.height;
+				view.data   = program.layout;
 			}
 		}
 		
@@ -137,8 +134,7 @@ package multipublish.views
 		 */
 		private function handlerLayoutEnd($e:ControlEvent):void
 		{
-			layout.removeEventListener(ControlEvent.STOP, handlerLayoutEnd);
-			if (++count >= layouts.length) stop();
+			stop();
 		}
 		
 		
@@ -147,22 +143,13 @@ package multipublish.views
 		 */
 		private function initializeEnvironment():void
 		{
+			mouseEnabled = false;
 			addElement(container = new Group);
+			container.mouseEnabled = false;
 			//container.horizontalCenter = 0;
-			//container.verticalCenter   = 0;
+			container.verticalCenter = 0;
 		}
 		
-		
-		/**
-		 *  
-		 * 布局视图集合。
-		 * 
-		 */
-		
-		private function get layouts():Vector.<LayoutView>
-		{
-			return mp::layouts || (mp::layouts = new Vector.<LayoutView>);
-		}
 		
 		
 		/**
@@ -178,13 +165,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var count:uint;
-		
-		
-		/**
-		 * @private
-		 */
-		mp var layouts:Vector.<LayoutView>;
+		private var view:LayoutView;
 		
 	}
 }

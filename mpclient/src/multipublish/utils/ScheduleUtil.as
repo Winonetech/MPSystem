@@ -22,6 +22,15 @@ package multipublish.utils
 	public final class ScheduleUtil extends NoInstance
 	{
 		
+		
+		public static function validateTurnSchedusConflit($schedule1:Schedule, $schedule2:Schedule):Boolean
+		{
+			return !(
+				DateUtil.compareDate($schedule1.timeEnd, $schedule2.timeStart) == -1 || 
+				DateUtil.compareDate($schedule2.timeEnd, $schedule1.timeStart) == -1
+			);
+		}
+		
 		/**
 		 * 
 		 * 验证排期当前排期是否需要被另一排期替换。
@@ -35,7 +44,7 @@ package multipublish.utils
 		
 		public static function compareSchedules($current:Schedule, $replace:Schedule):Boolean
 		{
-			return (!$current || 
+			return(!$current || 
 					 $current.priority   < $replace.priority || 
 					($current.priority  == $replace.priority && 
 					 $current.timeModify < $replace.timeModify));
@@ -223,8 +232,16 @@ package multipublish.utils
 		 */
 		private static function resolveYear($schedule:Schedule, $now:Date):Boolean
 		{
-			return  $now.month == $schedule.extra.yearMonth && 
-					$now.date  == $schedule.extra.yearMonthDay;
+			if(!$schedule.extra.yearMonthType)
+			{
+				return $now.month == $schedule.extra.yearMonth && 
+						$now.date  == $schedule.extra.yearMonthDay;
+			}
+			else
+			{
+				
+				return false;
+			}
 		}
 		
 		/**

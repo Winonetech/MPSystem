@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:ns="multipublish.views.contents.news.*"
+				mouseEnabled="false">
+	
+	<ct:states>
+		<s:State name="normal"/>
+		<s:State name="nonews"/>
+	</ct:states>
+	
+	<ns:NewsList id="list" includeIn="normal"
+				 width="100%" height="100%"
+				 click="item_clickHandler(event)"/>
+	
+	<ns:NewsInfo width="100%" height="100%"
+				 id="info" includeIn="normal"/>
+	
+	<s:Label includeIn="nonews" text="没有内容"
+			 fontSize="30" color="0x000000"
+			 horizontalCenter="0" verticalCenter="0"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.views.contents.news.NewsItem;
+			import multipublish.vo.contents.News;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processResume():void
+			{
+				if (list) list.gotoPage();
+				if (info) info.hide();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				removeTimer();
+				
+				if (news)
+				{
+					news.removeEventListener(ControlEvent.READY, news_readyHandler);
+					news = null;
+				}
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				news = data as News;
+				
+				if (news)
+				{
+					news.addEventListener(ControlEvent.READY, news_readyHandler);
+					
+					createTimer(news.updateFrequency, 0, news_updateHandler);
+					
+					applyCallback(callbackData);
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				currentState = news && news.list.length ? "normal" : "nonews";
+				
+				var result:Boolean = (currentState == "normal" && list && 
+					info && news && news.ready) || currentState == "nonews";
+				if (result)
+				{
+					if (currentState == "normal")
+					{
+						list.data = news.list;
+						
+						if (info) info.hide();
+					}
+					
+					dispatchReady();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function news_updateHandler($e:TimerEvent):void
+			{
+				if (news) news.update();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function news_readyHandler($e:ControlEvent):void
+			{
+				applyCallback(callbackData);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function item_clickHandler($e:MouseEvent):void
+			{
+				if ($e.target is NewsItem) info.show($e.target.data);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var news:News;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

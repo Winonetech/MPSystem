@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WOS Player"
-#define MyAppVersion "18.7.3"
+#define MyAppVersion "18.9.20"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -12,15 +12,16 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F0A09664-0CE5-434B-8521-03C7AF7FF6B2}
+AppId={{F0A09664-0CE5-434B-8521-03C7AF7FF6B2}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
+;AppVersion=LoadValueFromXML(MPClient\META-INF\AIR\application.xml, //application/versionNumber)
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\MPClient
+DefaultDirName={sd}\MPClient
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputBaseFilename=WOS Player
@@ -41,7 +42,6 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 
 [Files]
-
 Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -51,6 +51,7 @@ Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "led\*"; DestDir: "{app}\led"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPCExporter\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -79,6 +80,31 @@ begin
     if CurUninstallStep = usUninstall then
       //删除 {app} 文件夹及其中所有文件
       DelTree(ExpandConstant('{app}'), True, True, True);
+end;
+
+function LoadValueFromXML(const AFileName, APath: string): string;
+var
+  XMLNode: Variant;
+  XMLDocument: Variant;  
+begin
+  Result := '';
+  XMLDocument := CreateOleObject('Msxml2.DOMDocument.6.0');
+  try
+    XMLDocument.async := False;
+    XMLDocument.load(AFileName);
+    if (XMLDocument.parseError.errorCode <> 0) then
+      MsgBox('The XML file could not be parsed. ' + 
+        XMLDocument.parseError.reason, mbError, MB_OK)
+    else
+    begin
+      XMLDocument.setProperty('SelectionLanguage', 'XPath');
+      XMLNode := XMLDocument.selectSingleNode(APath);
+      MsgBox(XMLNode.text, mbError, MB_OK);
+      Result := XMLNode.text;
+    end;
+  except
+    MsgBox('An error occured!' + #13#10 + GetExceptionMessage, mbError, MB_OK);
+  end;
 end;
 
 [/code]
