@@ -146,6 +146,7 @@ package multipublish.tools
 		
 		/**
 		 * @private
+		 * 监控函数。每隔一秒对对其进行检测 当满足条件时运行对应功能
 		 */
 		private function handlerComman($e:TimerEvent):void
 		{
@@ -156,6 +157,8 @@ package multipublish.tools
 				broadcast.handler.apply(null, broadcast.args);
 			
 			note = getNote(now, true);
+			
+			//判定是否到达对应的时间点
 			var shutdown:Object = shutdownCache ? shutdownCache[note] : null;
 			if (shutdown && shutdown.handler)
 				shutdown.handler.apply(null, shutdown.args);

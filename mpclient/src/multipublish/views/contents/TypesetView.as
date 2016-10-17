@@ -604,7 +604,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var tweening:Boolean;
+//		private var tweening:Boolean;
 		
 		/**
 		 * @private

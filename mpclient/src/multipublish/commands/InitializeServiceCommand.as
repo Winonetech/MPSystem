@@ -22,6 +22,10 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeServiceCommand</code>构造函数。
+		 * <br>初始化服务。
+		 * <br>1、初始化自动关机功能。
+		 * <br>2、初始化Socket。
+		 * 
 		 * 
 		 */
 		
@@ -50,6 +54,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 初始化自动关机类。
 		 */
 		private function initializeController():void
 		{

@@ -8,7 +8,7 @@
 				   source="{content.content}" scaleMode="letterbox"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
 				   mediaPlayerStateChange="handlerMediaStateChange(event)"
-				   complete="stop()" creationComplete="ready = true;"/>
+				   complete="stop()"/>
 	<fx:Script>
 		<![CDATA[
 			
@@ -23,7 +23,7 @@
 			
 			override protected function processPlay():void
 			{
-				if (video && video.source && ready) video.play();
+				if (video && video.source) video.play();
 			}
 			
 			
@@ -51,10 +51,10 @@
 			/**
 			 * @private
 			 */
-			private function get ready():Boolean
-			{
-				return Boolean(mp::ready);
-			}
+//			private function get ready():Boolean
+//			{
+//				return Boolean(mp::ready);
+//			}
 			
 			/**
 			 * @private

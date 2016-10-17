@@ -24,6 +24,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeViewCommand</code>构造函数。
+		 * <br>初始化视图  & 快捷键设置
 		 * 
 		 */
 		

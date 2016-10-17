@@ -27,6 +27,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeConfigCommand</code>构造函数。
+		 * <br>根据config.ini(如果存在)以对其进行配置，不存在则不做任何事。
 		 * 
 		 */
 		
@@ -68,7 +69,7 @@ package multipublish.commands
 					XMLUtil.map(xml, config);
 					config.language.data = XMLUtil.convert(xml["languageData"]);
 					
-					applySettings();
+					applySettings();   //保存设置到缓存内
 				}
 				reader.close();
 				reader = null;
@@ -93,7 +94,7 @@ package multipublish.commands
 			
 			Cache.timeout = config.netTimeoutTime;
 			
-			view.application.alwaysInFront =!config.debug;
+			view.application.alwaysInFront =! config.debug;
 		}
 		
 	}
