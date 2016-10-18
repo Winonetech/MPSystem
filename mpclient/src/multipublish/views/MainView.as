@@ -299,6 +299,7 @@ package multipublish.views
 			view.reset();
 			view = next;
 			next = generateNext();
+			view.addEventListener(ControlEvent.STOP, handlerEnd);
 			view.play();
 		}
 		

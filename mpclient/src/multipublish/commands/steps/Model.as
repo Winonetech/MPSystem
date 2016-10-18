@@ -64,6 +64,7 @@ package multipublish.commands.steps
 		
 		/**
 		 * @private
+		 * 将获取到的数据作为值、传入的type作为键存在Store中。
 		 */
 		private function load():void
 		{
