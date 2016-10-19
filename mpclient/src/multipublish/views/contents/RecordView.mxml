@@ -38,6 +38,21 @@
 			
 			
 			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				if (video)
+				{
+					if (video.playing) video.stop();
+					video.source = null;
+				}
+				
+			}
+			
+			
+			/**
 			 * @private
 			 */
 			private function handlerMediaStateChange($e:MediaPlayerStateChangeEvent):void

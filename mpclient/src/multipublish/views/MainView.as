@@ -3,7 +3,7 @@ package multipublish.views
 	
 	/**
 	 * 
-	 * 主界面视图。
+	 * 主界面视图。(排期视图)
 	 * 
 	 */
 	

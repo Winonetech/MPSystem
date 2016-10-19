@@ -8,12 +8,14 @@ package multipublish.commands
 	 */
 	
 	
-	import com.winonetech.controls.MainApplication;
-	
-	import multipublish.consts.ClientStateConsts;
-	import multipublish.consts.ServiceConsts;
-	import multipublish.tools.Controller;
-	import multipublish.tools.MPService;
+import com.winonetech.controls.MainApplication;
+
+import multipublish.consts.ClientStateConsts;
+import multipublish.consts.ServiceConsts;
+import multipublish.tools.Controller;
+import multipublish.tools.MPService;
+import multipublish.tools.NativeService;
+
 	
 	
 	public final class InitializeServiceCommand extends _InternalCommand
@@ -48,9 +50,21 @@ package multipublish.commands
 			initializeController();
 			initializeSocket();
 			
+			initializeNativeService();
+			
 			commandEnd();
 		}
 		
+		private function initializeNativeService():void
+		{
+			if (config.isCommunicate)
+			{
+				nts.start();
+			}
+		}
+
+		
+		private var nts:NativeService = config.nativeService;
 		
 		/**
 		 * @private

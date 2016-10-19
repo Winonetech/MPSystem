@@ -97,6 +97,8 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
+			if ($push && config.times <= 1) config.times++;
+			
 			execute(new InitializeDataCommand($push));
 			execute(new PlaybackScheduleCommand);
 		}

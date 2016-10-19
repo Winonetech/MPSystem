@@ -89,6 +89,13 @@ package multipublish.vo
 		
 		/**
 		 * 
+		 * 是否与服务端通讯。
+		 * 
+		 */
+		public var isCommunicate:String = "是否与服务端通讯：";
+		
+		/**
+		 * 
 		 * 公司ID。
 		 * 
 		 */
@@ -533,13 +540,14 @@ package multipublish.vo
 		{
 			setting  :"设置",
 			
-			terminal   :"终端设置",
-			language   :"语言",
-			companyID  :"公司ID：",
-			deviceNO   :"设备编号：",
-			terminalNO :"终端编号：",
-			packageData:"数据包：",
-			labelImport:"导入",
+			terminal   		:"终端设置",
+			isCommunicate	:"是否与服务端通讯：",
+			language  		:"语言",
+			companyID  		:"公司ID：",
+			deviceNO  		:"设备编号：",
+			terminalNO 		:"终端编号：",
+			packageData		:"数据包：",
+			labelImport		:"导入",
 			
 			http    :"HTTP 服务",
 			httpHost:"HTTP 地址：",
@@ -597,13 +605,14 @@ package multipublish.vo
 		{
 			setting   :"Setting",
 			
-			terminal   :"Ternimal Setting",
-			language   :"Language",
-			companyID  :"Company ID",
-			deviceNO   :"Device NO.:",
-			terminalNO :"Ternimal NO.:",
-			packageData:"Data Package：",
-			labelImport:"Import",
+			terminal   		:"Ternimal Setting",
+			language   		:"Language",
+			isCommunicate	:"Communicate with server:",
+			companyID  		:"Company ID",
+			deviceNO   		:"Device NO.:",
+			terminalNO 		:"Ternimal NO.:",
+			packageData		:"Data Package：",
+			labelImport		:"Import",
 			
 			http    :"HTTP Service",
 			httpHost:"HTTP host:",

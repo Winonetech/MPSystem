@@ -49,6 +49,8 @@ package multipublish.utils
 				'\t<shutdown>'     + config.shutdown      + '</shutdown>'      + e + 
 				getDebug() + e + 
 				e + 
+				'\t<!-- 是否与服务端通讯 -->' + e +
+				'\t<isCommunicate>' 	  + config.isCommunicate + '</isCommunicate>' + e +
 				'\t<!-- 网络协议 -->' + e + 
 				e + 
 				'\t<!-- HTTP主机IP -->' + e + 
