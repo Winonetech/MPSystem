@@ -10,6 +10,7 @@ package multipublish.commands
 	
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.ObjectUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.tools.Cache;
 	
@@ -70,7 +71,10 @@ package multipublish.commands
 				
 				initSchedule(config.raw["channel"]);
 				
-				Cache.start();
+				
+				//随机延时30秒内的时间，避免同时访问服务端FTP造成的服务端压力过大
+				TimerUtil.callLater(Math.random() * 180000, Cache.start);
+				//Cache.start();
 			}
 		}
 		

@@ -8,7 +8,7 @@ package multipublish.utils
 		/**
 		 * 
 		 * 存入临时数组。
-		 * 注意，存入的数组不能是Array。
+		 * 注意，存入的数据不能是Array。
 		 * 
 		 * @param $data:* 要保存的数据。
 		 * @param $saveURL:String 文件存储路径。

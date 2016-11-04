@@ -4,20 +4,102 @@ package multipublish.utils
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.DateUtil;
 	import cn.vision.utils.FileUtil;
-	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	
 	import com.coltware.airxzip.ZipEntry;
 	import com.coltware.airxzip.ZipFileReader;
+	import com.rubenswieringa.book.Book;
 	
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
 	
+	import multipublish.consts.URLConsts;
 	import multipublish.core.mp;
 
 	public class EPaperUtil
 	{
+		
+		/**
+		 * 
+		 * 检测报纸文件是否标记在服务器上不存在。
+		 * 
+		 * @param $path:String 报纸文件路径。
+		 * 
+		 * @return Boolean true为已标记不存在，false为未标记不存在。
+		 * 
+		 */
+		
+		mp static function checkArchiveUnloadable($path:String):Boolean
+		{
+			var cacheObj:Object = getEpaperCache();
+			var bool:Boolean = cacheObj && cacheObj[$path];
+			if (bool)
+			{
+				//如果本地标记了服务端不存在该报纸文件，检测报纸的日期是否为今天的，如果是今天的，还需要重新连接服务端检测一次，返回false。
+				try
+				{
+					var date:String = ObjectUtil.convert(new Date, String, "YYYY-MM-DD");
+					var temp:String = $path.split("/").pop();
+					var save:String = temp.split(".")[0];
+					bool = !(save == date);
+				}
+				catch(e:Error) {}
+			}
+			return bool;
+		}
+		
+		/**
+		 * 
+		 * 标记报纸文件在服务器上不存在。
+		 * 
+		 * @param $path:String 报纸文件路径。
+		 * 
+		 */
+		
+		mp static function flagArchiveUnloadable($path:String):void
+		{
+			var cacheObj:Object = getEpaperCache() || {};
+			cacheObj[$path] = true;
+			setEpaperCache(cacheObj);
+		}
+		
+		/**
+		 * @private
+		 */
+		private static function getEpaperCache():Object
+		{
+			epaperFile = epaperFile || new VSFile(FileUtil.resolvePathApplication(URLConsts.EPAPER_CACHE));
+			if (epaperFile.exists)
+			{
+				epaperStream.open(epaperFile, FileMode.READ);
+				var temp:String = epaperStream.readUTFBytes(epaperStream.bytesAvailable);
+				epaperStream.close();
+			}
+			try
+			{
+				if (temp) var result:Object = JSON.parse(temp);
+			} catch(e:Error){}
+			return result;
+		}
+		
+		/**
+		 * @private
+		 */
+		private static function setEpaperCache($value:Object):void
+		{
+			try
+			{
+				var temp:String = JSON.stringify($value);
+			} catch(e:Error) {}
+			if (temp)
+			{
+				epaperStream.open(epaperFile, FileMode.WRITE);
+				epaperStream.writeUTFBytes(temp);
+				epaperStream.close();
+			}
+		}
 		
 		/**
 		 * 
@@ -333,6 +415,16 @@ package multipublish.utils
 			return temp.join("/") + "/";
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private static var epaperFile:VSFile;
+		
+		/**
+		 * @private
+		 */
+		private static var epaperStream:FileStream = new FileStream;
 		
 	}
 }

@@ -6,7 +6,7 @@
 		   xmlns:ct="com.winonetech.controls.*"
 		   width="600" height="550"
 		   click="handlerInputClick(event)">
-	<s:Panel title="{language.setting}"
+	<s:Panel title="{language.setting + ' ' + config.version}"
 			 width="100%" height="100%"
 			 skinClass="multipublish.skins.MPPanelSkin">
 		<s:layout>

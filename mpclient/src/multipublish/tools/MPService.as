@@ -8,7 +8,6 @@ package multipublish.tools
 	 */
 	
 	
-	import cn.vision.core.VSObject;
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.DebugUtil;
 	import cn.vision.utils.LogUtil;
@@ -193,7 +192,7 @@ package multipublish.tools
 			loader = new URLLoader;
 			request = new URLRequest;
 			request.contentType = "text/xml; charset=utf-8";
-			timer = new Timer(30000);
+			timer = new Timer(1000);
 			loader.addEventListener(Event.COMPLETE, handlerDefault);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
@@ -253,7 +252,6 @@ package multipublish.tools
 				requesting = true;
 				var variables:URLVariables = new URLVariables;
 				variables.cmd = cmds.shift();
-				//request.url = "message.txt";
 				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				request.data = variables;
 				
@@ -292,9 +290,21 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			connected
-				? heartbeat()
-				: online();
+			///
+			if (heartbeatTotal == 0)
+			{
+				heartbeatTotal = Math.random() * frequency + 15;
+				heartbeatCount = 0;
+			}
+			else
+			{
+				if (++heartbeatCount >= heartbeatTotal)
+				{
+					heartbeatTotal = Math.random() * frequency + 15;
+					heartbeatCount = 0;
+					connected ? heartbeat() : online();
+				}
+			}
 		}
 		
 		/**
@@ -320,31 +330,6 @@ package multipublish.tools
 					var cmd:String = data.substr(0, 5);
 					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
 				}
-			}
-		}
-		
-		
-		/**
-		 * 
-		 * 心跳频率。
-		 * 
-		 */
-		
-		public function get frequency():uint
-		{
-			return timer.delay * .001;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set frequency($value:uint):void
-		{
-			timer.delay = $value * 1000;
-			if (connected)
-			{
-				timer.reset();
-				timer.start();
 			}
 		}
 		
@@ -380,6 +365,15 @@ package multipublish.tools
 		{
 			return MPCConfig.instance;
 		}
+		
+		
+		/**
+		 * 
+		 * 心跳频率。
+		 * 
+		 */
+		
+		public var frequency:uint = 30;
 		
 		
 		/**
@@ -421,6 +415,16 @@ package multipublish.tools
 		 * @private
 		 */
 		private var offsend:Boolean;
+		
+		/**
+		 * @private
+		 */
+		private var heartbeatCount:uint = 0;
+		
+		/**
+		 * @private
+		 */
+		private var heartbeatTotal:uint = 0;
 		
 		
 		/**

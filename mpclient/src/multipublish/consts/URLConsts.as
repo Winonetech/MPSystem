@@ -26,11 +26,20 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 程序调用接口。
+		 * 
+		 */
+		
+		public static const EXECUTOR:String = "assets/tools/executor.exe";
+		
+		
+		/**
+		 * 
 		 * 升级程序。
 		 * 
 		 */
 		
-		public static const UPDATER:String = "update.exe";
+		public static const UPDATER:String = "update.zip";
 		
 		
 		/**
@@ -62,15 +71,6 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 多线程绘图工具路径。
-		 * 
-		 */
-		
-		public static const DRAW_WORKER:String = "assets/tools/DrawWorker.swf";
-		
-		
-		/**
-		 * 
 		 * 获取终端路径。
 		 * 
 		 */
@@ -85,6 +85,15 @@ package multipublish.consts
 		 */
 		
 		public static const NATIVE_CONFIG:String = "config.ini";
+		
+		
+		/**
+		 * 
+		 * 报纸记录。
+		 * 
+		 */
+		
+		public static const EPAPER_CACHE:String = "cache/epaper/epapers";
 		
 		
 		/**

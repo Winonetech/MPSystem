@@ -2,11 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WOS Player"
-#define MyAppVersion "18.9.20"
+#define MyAppToolName "MPCExporter" 
+#define MyAppVersion "18.9.26"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
-#define MyAppExeName "MPClient.exe"
-#define MyAppToolName "MPCExporter.exe"
+#define MyAppExeName "JRShell.exe"
+#define MyAppToolExeName "MPCExporter.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -49,6 +50,8 @@ Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\JRShell.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\JRShell.cfg.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "led\*"; DestDir: "{app}\led"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -58,7 +61,7 @@ Source: "MPCExporter\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{#MyAppToolName}"; Filename: "{app}\{#MyAppToolName}"
+Name: "{group}\{#MyAppToolName}"; Filename: "{app}\{#MyAppToolExeName}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon

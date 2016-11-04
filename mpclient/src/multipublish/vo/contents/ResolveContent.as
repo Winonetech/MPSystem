@@ -8,6 +8,7 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
@@ -130,6 +131,8 @@ package multipublish.vo.contents
 				{
 					if (http.url!= localURL)
 						FileUtil.saveUTF(FileUtil.resolvePathApplication(localURL), $data);
+					
+					$data = Base64Util.decode($data);
 					
 					var data:Object = $data is String ? JSON.parse($data) : $data;
 				}

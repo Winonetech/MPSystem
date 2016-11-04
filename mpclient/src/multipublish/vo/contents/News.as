@@ -118,7 +118,9 @@ package multipublish.vo.contents
 						ext != FileTypeConsts.MP4 && 
 						ext != FileTypeConsts.FLV)
 					{
-						item.image = (item.media is Array) ? item.media[0] : item.media;
+						
+						//item.image = (item.media is Array) ? item.media[0] : item.media;
+						item.image = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
 					}
 					else
 					{

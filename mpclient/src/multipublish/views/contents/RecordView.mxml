@@ -14,8 +14,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
+			import cn.vision.system.VSFile;
+			import cn.vision.utils.FileUtil;
 			import cn.vision.utils.MathUtil;
+			import cn.vision.utils.TimerUtil;
 			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
@@ -52,7 +54,7 @@
 			
 			override protected function processPlay():void
 			{
-				videoPlay();
+				exist ? videoPlay() : TimerUtil.callLater(100, stop);
 			}
 			
 			
@@ -97,6 +99,10 @@
 			override protected function resolveData():void
 			{
 				super.resolveData();
+				
+				var file:VSFile = new VSFile(FileUtil.resolvePathApplication((content as Record).content));
+				exist = file.exists;
+				file = null;
 				
 				if (content)
 					time = (content as Record).duration;
@@ -238,6 +244,11 @@
 			 * @private
 			 */
 			private var count:uint;
+			
+			/**
+			 * @private
+			 */
+			private var exist:Boolean;
 			
 			
 			/**

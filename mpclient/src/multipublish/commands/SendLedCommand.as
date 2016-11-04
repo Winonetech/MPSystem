@@ -9,6 +9,7 @@ package multipublish.commands
 	
 	
 	import cn.vision.system.VSFile;
+	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.RegexpUtil;
 	import cn.vision.utils.StringUtil;
@@ -33,7 +34,9 @@ package multipublish.commands
 		{
 			super();
 			
-			data = $data == null ? config.sled : $data;
+			$data = Base64Util.decode($data);
+			
+			data = ($data == null) ? config.sled : $data;
 		}
 		
 		
@@ -64,13 +67,11 @@ package multipublish.commands
 					{
 						config.sled = data;
 						
-						var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG));
-						var stream:FileStream = new FileStream;
-						stream.open(file, FileMode.WRITE);
-						stream.writeUTFBytes(DataUtil.getConfig());
-						stream.close();
+						FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+						
+						writeData(RegexpUtil.replaceTag(DATA, config.sled));
 					}
-					writeData(RegexpUtil.replaceTag(DATA, config.sled));
+					
 				} catch(e:Error) { }
 			}
 		}
@@ -86,19 +87,6 @@ package multipublish.commands
 			stream.open(file, FileMode.WRITE);
 			stream.writeUTFBytes(str);
 			stream.close();
-		}
-		
-		/**
-		 * @private
-		 */
-		private function readData():String
-		{
-			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.LED_DATA));
-			var stream:FileStream = new FileStream;
-			stream.open(file, FileMode.READ);
-			var temp:String = stream.readUTFBytes(stream.bytesAvailable);
-			stream.close();
-			return temp;
 		}
 		
 		

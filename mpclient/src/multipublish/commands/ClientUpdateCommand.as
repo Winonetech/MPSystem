@@ -26,6 +26,7 @@ package multipublish.commands
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.utils.DataUtil;
+	import multipublish.utils.ZipUtil;
 	
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -62,6 +63,17 @@ package multipublish.commands
 			commandEnd();
 		}
 		
+		private function updateTest():void
+		{
+			var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+			if (updater.exists)
+			{
+				uncomporess();
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
+			}
+		}
+		
 		
 		/**
 		 * @private
@@ -77,8 +89,9 @@ package multipublish.commands
 				{
 					//升级包下载完毕，退出并调用升级程序。
 					LogUtil.log("升级包下载完毕，退出并调用升级程序");
+					uncomporess();
 					ApplicationUtil.exit();
-					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
 				}
 				else
 				{
@@ -111,6 +124,16 @@ package multipublish.commands
 			http.contentType = "application/json";
 			http.url = url = "http://" + config.httpHost + ":" +(config.updtPort || 80)+ "/" + config.updateURL;
 			http.send(JSON.stringify($data));
+		}
+		
+		/**
+		 * @private
+		 */
+		private function uncomporess():void
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+			ZipUtil.unzipFile(file);
+			file.deleteFile();
 		}
 		
 		/**
@@ -152,15 +175,7 @@ package multipublish.commands
 					{
 						config.remoteVersion = data.code;
 						Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
-						if (updater.exists)
-						{
-							//升级包下载完毕，退出并调用升级程序。
-							LogUtil.log("升级包下载完毕，退出并调用升级程序");
-							ApplicationUtil.exit();
-							ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
-						}
-						else
-						{
+						
 							//下载更新包。
 							LogUtil.log("下载更新包：" + data.fpath);
 							var ftp:FTPLoader = new FTPLoader;
@@ -177,13 +192,14 @@ package multipublish.commands
 								config.ftpPort || 21,
 								loadURL, saveURL);
 							ftp.load(request);
-						}
+						
 					}
 					else
 					{
+						LogUtil.log("已是最新版本，无需升级");
 						if (updater.exists) 
 						{
-							LogUtil.log("升级完毕，删除更新包");
+							LogUtil.log("删除更新包");
 							updater.deleteFile();
 						}
 					}
@@ -228,8 +244,9 @@ package multipublish.commands
 			http.removeEventListener(ResultEvent.RESULT, defaultHandler);
 			http.removeEventListener(FaultEvent.FAULT, defaultHandler);
 			
+			uncomporess();
 			ApplicationUtil.exit();
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.UPDATER));
+			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
 		}
 		
 		

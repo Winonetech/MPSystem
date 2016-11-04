@@ -26,7 +26,6 @@ package multipublish.vo.contents
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.utils.getTimer;
 	
 	import multipublish.core.mp;
 	import multipublish.tools.ImageCompare;
@@ -87,6 +86,7 @@ package multipublish.vo.contents
 				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);
 				var fzip:String = FileUtil.resolvePathApplication(saveURL);
 				var path:String = EPaperUtil.mp::getPathByZipFile(fzip);
+				
 				var file:VSFile = new VSFile(fzip);
 				ArrayUtil.push(days, path);
 				
@@ -102,7 +102,7 @@ package multipublish.vo.contents
 						}
 						catch (e:Error)
 						{
-							LogUtil.log(title + "：解压报纸文件出错，文件已损坏。");
+							LogUtil.log(title + "：解压报纸文件出错，文件已损坏，路径：" + fzip);
 						}
 						if (errors)
 						{
@@ -113,13 +113,21 @@ package multipublish.vo.contents
 					else
 					{
 						LogUtil.log(title + "：报纸压缩包不存在，" + fzip);
-						var cache:Cache = (item is String) ? Cache.cache(item) : item;
-						if (!cach[cache.saveURL])
+						
+						if (EPaperUtil.mp::checkArchiveUnloadable(saveURL))
 						{
-							cache.extra = cache.extra || {};
-							cache.extra.response = (i == 0);
-							cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
-							cach[cache.saveURL] = cache;
+							LogUtil.log(title + "：报纸文件在服务器上不存在，" + fzip);
+						}
+						else
+						{
+							var cache:Cache = (item is String) ? Cache.cache(item) : item;
+							if (!cach[cache.saveURL])
+							{
+								cache.extra = cache.extra || {};
+								cache.extra.response = (i == 0);
+								cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+								cach[cache.saveURL] = cache;
+							}
 						}
 					}
 				}
@@ -129,6 +137,7 @@ package multipublish.vo.contents
 					if (file.exists) file.deleteFile();
 				}
 			}
+			
 		}
 		
 		
@@ -319,6 +328,7 @@ package multipublish.vo.contents
 				if (cache.code == "530")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
+					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
 					cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
 				}
 				else
@@ -401,6 +411,11 @@ package multipublish.vo.contents
 		 * @private
 		 */
 		private var reslvd:Object = {};
+		
+		/**
+		 * @private
+		 */
+		private var temp:Map = new Map;
 		
 		
 		/**
