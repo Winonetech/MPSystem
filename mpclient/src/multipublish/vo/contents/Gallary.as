@@ -21,6 +21,7 @@ package multipublish.vo.contents
 	
 	import flash.utils.getTimer;
 	
+	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
 	import multipublish.utils.URLUtil;
 	
@@ -46,7 +47,7 @@ package multipublish.vo.contents
 		
 		override public function update(...$args):void
 		{
-			loadContent(content);
+			loadContent(content + "&terminalId=" + config.terminalNO);
 		}
 		
 		
@@ -171,6 +172,11 @@ package multipublish.vo.contents
 		 * @private
 		 */
 		private var time:int;
+		
+		/**
+		 * @private
+		 */
+		private var config:MPCConfig = MPCConfig.instance;
 		
 		
 		/**

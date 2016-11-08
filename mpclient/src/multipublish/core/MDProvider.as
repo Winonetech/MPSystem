@@ -107,6 +107,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 样式。
+		 * 
+		 */
+		
+		public var style:Object;
+		
+		
+		/**
+		 * 
 		 * 单例引用。
 		 * 
 		 */

@@ -51,6 +51,14 @@ package multipublish.vo.contents
 			super($data);
 		}
 		
+		override public function parse($data:Object):void
+		{
+			super.parse($data);
+			
+			//css
+			getCss();
+		}
+		
 		
 		/**
 		 * @inheritDoc
@@ -140,6 +148,23 @@ package multipublish.vo.contents
 			
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private function getCss():void
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication("css.ini"));
+			if (file.exists)
+			{
+				var stream:FileStream = new FileStream;
+				stream.open(file, FileMode.READ);
+				var temp:String = stream.readUTFBytes(stream.bytesAvailable);
+				var obj:Object = ObjectUtil.convert(temp, Object);
+				style = obj ? obj.epaper : null;
+				stream.close();
+			}
+		}
 		
 		/**
 		 * @private
@@ -381,6 +406,15 @@ package multipublish.vo.contents
 		{
 			return getProperty("contentSource");
 		}
+		
+		
+		/**
+		 * 
+		 * 样式。
+		 * 
+		 */
+		
+		public var style:Object;
 		
 		
 		/**

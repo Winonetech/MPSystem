@@ -10,7 +10,8 @@
 				  click="item_clickHandler(event)"/>
 	
 	<ep:PaperSheets id="sheets" visible="false" 
-					width="{width}" height="{height}"/>
+					width="{width}" height="{height}"
+					currentState="{toolBarPosition}"/>
 	
 	<fx:Script>
 		<![CDATA[
@@ -72,6 +73,8 @@
 				
 				epaper = data as EPaper;
 				
+				toolBarPosition = (epaper.style && epaper.style.toolBarPosition == "bottom") ? "listBottom" : "listRight";
+				
 				if (epaper)
 				{
 					epaper.addEventListener(ControlEvent.READY, epaper_readyHandler);
@@ -131,6 +134,12 @@
 				if (epaper) epaper.update();
 			}
 			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var toolBarPosition:String = "listRight";
 			
 			/**
 			 * @private

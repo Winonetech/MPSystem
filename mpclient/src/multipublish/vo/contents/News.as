@@ -22,6 +22,7 @@ package multipublish.vo.contents
 	
 	import flash.utils.getTimer;
 	
+	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
 	import multipublish.utils.DicUtil;
 	import multipublish.utils.URLUtil;
@@ -60,7 +61,7 @@ package multipublish.vo.contents
 		
 		override protected function resolveContentSource($content:*):void
 		{
-			loadContent(content);
+			loadContent(content + "&terminalId=" + config.terminalNO);
 		}
 		
 		
@@ -120,7 +121,7 @@ package multipublish.vo.contents
 					{
 						
 						//item.image = (item.media is Array) ? item.media[0] : item.media;
-						item.image = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+						item.image = CacheUtil.extractURI(item.url, PathConsts.PATH_FILE);
 					}
 					else
 					{
@@ -218,6 +219,11 @@ package multipublish.vo.contents
 		 * @private
 		 */
 		private var time:int;
+		
+		/**
+		 * @private
+		 */
+		private var config:MPCConfig = MPCConfig.instance;
 		
 		
 		/**

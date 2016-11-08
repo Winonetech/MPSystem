@@ -17,7 +17,7 @@
 	</s:Rect>
 	
 	<s:Image left="0" right="0" top="0" bottom="0" smooth="true"
-			 fillMode="scale" scaleMode="zoom" source="{data.image}"
+			 fillMode="scale" scaleMode="letterbox" source="{data.image}"
 			 skinClass="multipublish.skins.ImageBrokenSkin"/>
 	
 	<s:Group left="0" right="0" height="30" bottom="10">

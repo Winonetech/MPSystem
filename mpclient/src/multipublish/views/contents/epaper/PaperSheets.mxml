@@ -5,22 +5,46 @@
 		 xmlns:ep="multipublish.views.contents.epaper.*"
 		 mouseEnabled="false">
 	
+	<fx:Declarations>
+		<s:VerticalLayout id="listVertical" gap="25"
+						  paddingLeft="5" paddingRight="5"
+						  paddingBottom="5" paddingTop="5"/>
+		<s:HorizontalLayout id="listHorizontal" gap="25"
+							paddingLeft="5" paddingRight="5"
+							paddingBottom="5" paddingTop="5"/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="listRight"/>
+		<s:State name="listBottom"/>
+	</s:states>
+	
 	<s:Image width="100%" height="100%"
 			 fillMode="scale" scaleMode="zoom"
 			 source="assets/images/paperViewBg.png"/>
 	
-	<ep:SheetCanvas left="0" right="85" height="100%" id="canvas"
+	<ep:SheetCanvas id="canvas" left="0" top="0"
+					right.listRight="85" right.listBottom="0"
+					bottom.listRight="0" bottom.listBottom="125"
 					mouseDown="obj_mouseDownHandler(event)"
 					click="canvas_clickHandler(event)"/>
 	
-	<s:Group right="20" verticalCenter="0">
+	<s:Group right.listRight="20"
+			 verticalCenter.listRight="0"
+			 bottom.listBottom="20"
+			 horizontalCenter.listBottom="0">
 		
-		<s:Image horizontalCenter="0" height="{vg.height}"
-				 scaleMode="stretch" source="assets/images/btnsBg.png"/>
+		<s:Image scaleMode="stretch"
+				 horizontalCenter.listRight="0"
+				 width="{vg.width}"
+				 height="{vg.height}"
+				 source="assets/images/btnsBg.png"/>
 		
-		<s:VGroup horizontalCenter="0" id="vg" gap="25"
-				  paddingLeft="5" paddingRight="5"
-				  paddingBottom="5" paddingTop="5">
+		<s:Group id="vg"
+				 layout.listRight="{listVertical}"
+				 layout.listBottom="{listHorizontal}"
+				 horizontalCenter.listRight="0"
+				 verticalCenter.listBottom="0">
 			
 			<s:Button skinClass="multipublish.skins.ButtonBackRack"
 					  click="back_clickHandler(event)"/>
@@ -45,13 +69,19 @@
 			<s:Button skinClass="multipublish.skins.ButtonViewPage"
 					  click="sheets_clickHandler(event)"/>
 			
-		</s:VGroup>
+		</s:Group>
 		
 	</s:Group>
 	
-	<ep:SheetsList verticalCenter="0" right="100"
-				   maxHeight="{height * .6}" visible="false"
-				   data="{data}" id="list"
+	<ep:SheetsList visible="false" data="{data}" id="list"
+				   currentState.listRight="vertical"
+				   currentState.listBottom="horizontal"
+				   verticalCenter.listRight="0"
+				   horizontalCenter.listBottom="0"
+				   right.listRight="100"
+				   bottom.listBottom="140"
+				   maxHeight.listRight="{height * .6}"
+				   maxWidth.listBottom="{width * .8}"
 				   mouseDown="obj_mouseDownHandler(event)"
 				   click="list_clickHandler(event)"/>
 	

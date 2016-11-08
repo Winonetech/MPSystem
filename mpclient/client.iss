@@ -3,7 +3,7 @@
 
 #define MyAppName "WOS Player"
 #define MyAppToolName "MPCExporter" 
-#define MyAppVersion "18.9.26"
+#define MyAppVersion "18.9.28"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "JRShell.exe"
@@ -47,6 +47,7 @@ Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recur
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
+Source: "MPClient\css.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -76,14 +77,38 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [code]
- 
-//删除所有配置文件以达到干净卸载的目的 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var appWnd: HWND;
 begin
-    if CurUninstallStep = usUninstall then
-      //删除 {app} 文件夹及其中所有文件
-      DelTree(ExpandConstant('{app}'), True, True, True);
-end;
+   // 检查JRShell.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('WindowsForms10.Window.8.app.0.33c0d9d');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+   // 检查MPClient.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('ApolloRuntimeContentWindow');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   // 检查MPClient.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('CabinetWClass');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+   // 检查LedSendNew.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByWindowName('LedSendNew');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+end;   
+
 
 function LoadValueFromXML(const AFileName, APath: string): string;
 var
