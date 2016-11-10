@@ -94,7 +94,8 @@ package multipublish.utils
 			"button" : Button,
 			"weather": Weather,
 			"gallary" : Gallary,
-			"marquee" : Marquee
+			"marquee" : Marquee,
+			"qrCode"  : QRCode
 		};
 		
 		/**
@@ -114,7 +115,8 @@ package multipublish.utils
 			"button" : ButtonView,
 			"weather" : WeatherView,
 			"gallary" : GallaryView,
-			"marquee" : MarqueeView
+			"marquee" : MarqueeView,
+			"qrCode"  : QRCodeView
 		};
 		
 	}

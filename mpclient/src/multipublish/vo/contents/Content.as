@@ -8,7 +8,8 @@ package multipublish.vo.contents
 	 * 2.相册格式；<br>
 	 * 3.跑马灯格式；<br>
 	 * 4.图片格式；<br>
-	 * 5.视频格式。
+	 * 5.视频格式；<br>
+	 * 6.二维码格式。
 	 * 
 	 */
 	

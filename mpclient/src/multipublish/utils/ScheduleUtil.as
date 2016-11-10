@@ -149,7 +149,7 @@ package multipublish.utils
 			//验证开始与截至日期部分与轮播相同，直接套用。
 			var bool:Boolean = validateTurn($schedule, $now);
 			//首先日期合法；
-			if(!$schedule.allDay)
+			if(!$schedule.repeatWholeDay)
 			{
 				//非全天点播时，需要检测时段。
 				var v1:Boolean = DateUtil.validate($schedule.timeStart);

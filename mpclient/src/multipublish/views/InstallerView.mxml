@@ -40,7 +40,7 @@
 						</s:helpContent>
 						<ct:Field text="{config.companyID}" name="companyID"
 										textAlign="left" restrict="0-9"
-										change="textinput_changeHandler(event)"/>
+										change="nameLimit_changeHandler(event)"/>
 					</s:FormItem>
 					<s:FormItem label="{language.deviceNO}">
 						<s:helpContent>
@@ -364,6 +364,19 @@
 			}
 			
 			/**
+			 * 
+			 * 处理公司ID不能为数字以外的输入。
+			 * 
+			 */
+			private function nameLimit_changeHandler(event:TextOperationEvent):void
+			{
+				var field:Field = Field(event.currentTarget);
+				if (!int(field.text)) field.text = field.text.substr(0, field.text.length - 1);
+				DebugUtil.execute(setProperty, false, field.name, field.text);
+			}
+			
+			
+			/**
 			 * @private
 			 */
 			private function language_changeHandler(event:Event):void
@@ -466,6 +479,8 @@
 			
 			[Bindable]
 			public var labelCancel:String = "取消";
+			
+			
 			
 		]]>
 	</fx:Script>

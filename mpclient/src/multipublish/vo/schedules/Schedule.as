@@ -124,9 +124,9 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get allDay():Boolean
+		public function get repeatWholeDay():Boolean
 		{
-			return getProperty("allDay", Boolean);
+			return getProperty("repeatWholeDay", Boolean);
 		}
 		
 		

@@ -87,7 +87,7 @@ package multipublish.commands
 							(schedule.type == ScheduleTypeConsts.SPOTS)  || 
 							(schedule.type == ScheduleTypeConsts.REPEAT  && 
 							(schedule.extra.repeatType == ScheduleRepeatTypeConsts.DAY) && 
-							!schedule.allDay))
+							!schedule.repeatWholeDay))
 						{
 							controller.registControlBroadcast(schedule.timeStart, presenter.broadcastProgram);
 							controller.registControlBroadcast(schedule.timeEnd  , presenter.broadcastProgram);
