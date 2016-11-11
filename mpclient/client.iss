@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WOS Player"
-#define MyAppVersion "18.7.3"
+#define MyAppVersion "18.7.4"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -51,7 +51,6 @@ Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "MPCExporter\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 
