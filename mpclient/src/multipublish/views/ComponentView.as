@@ -360,7 +360,7 @@ package multipublish.views
 				tempStage = stage;
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				stage.addEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
-				start = direction ? mouseX : mouseY;
+				start = direction ? mouseX : mouseY;   //上下为 false 左右为 true。
 			}
 		}
 		
@@ -447,6 +447,7 @@ package multipublish.views
 		
 		/**
 		 * @private
+		 * 上下为false 左右为true。
 		 */
 		private function get direction():Boolean
 		{

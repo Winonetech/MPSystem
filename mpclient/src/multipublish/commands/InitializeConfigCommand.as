@@ -27,6 +27,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeConfigCommand</code>构造函数。
+		 * <br>解析 config并映射到 MDConfig中。
 		 * 
 		 */
 		
@@ -93,7 +94,7 @@ package multipublish.commands
 			
 			Cache.timeout = config.netTimeoutTime;
 			
-			view.application.alwaysInFront =!config.debug;
+			view.application.alwaysInFront = !config.debug;
 		}
 		
 	}

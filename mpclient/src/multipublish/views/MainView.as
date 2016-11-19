@@ -110,7 +110,7 @@ package multipublish.views
 		
 		override protected function resolveData():void
 		{
-			log(MPTipConsts.RECORD_SCHEDULE_DATA, data);
+			log(MPTipConsts.RECORD_SCHEDULE_DATA, data);  //此处的 data为排期。
 			
 			schedule = data as Schedule;
 			
@@ -180,7 +180,7 @@ package multipublish.views
 			var result:ProgramView = new ProgramView;
 			result.width  = application.width;
 			result.height = application.height;
-			result.data = program;
+			result.data = program;   //此处关联至 ProgramView的 resolveData。
 			addElementAt(result, 0);
 			neigh = index;
 			return result;

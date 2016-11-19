@@ -44,6 +44,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeEnvironmentCommand</code>构造函数。
+		 * <br>包括初始化网络配置，初始化窗口和初始化LED。
 		 * 
 		 */
 		

@@ -46,6 +46,14 @@
 			import spark.components.Image;
 			
 			
+			
+			/**
+			 * 
+			 * 该组件为下载至缓存时调出的进程弹窗。
+			 * 
+			 */
+			
+			
 			/**
 			 * @inheritDoc
 			 */
@@ -167,7 +175,7 @@
 			 */
 			private function callbackData():Boolean
 			{
-				var result:Boolean = data && progress;
+				var result:Boolean = data && progress;   //此处的 data是 Page。
 				
 				if (result) 
 				{

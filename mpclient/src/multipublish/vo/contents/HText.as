@@ -3,7 +3,7 @@ package multipublish.vo.contents
 	
 	/**
 	 * 
-	 * 跑马灯格式。
+	 * 文本格式。
 	 * 
 	 */
 	

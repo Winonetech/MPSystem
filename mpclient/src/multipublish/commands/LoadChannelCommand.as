@@ -60,8 +60,7 @@ package multipublish.commands
 			config.loadable = true;
 			
 			config.controller.removeControlUsecache();
-			
-			model = new Model;
+			model = new Model;    //执行 url并存储数据。
 			model.url = config.cache ? DataConsts.PATH_CHANNEL : url;
 			model.addEventListener(CommandEvent.COMMAND_END, model_commandEndHandler);
 			model.execute();
@@ -72,9 +71,10 @@ package multipublish.commands
 		 */
 		private function model_commandEndHandler($e:CommandEvent):void
 		{
+			//判定是否与上一次的排期相等
 			if (config.ori["channel"]!= model.data)
 			{
-				config.ori["channel"] = model.data;
+				config.ori["channel"] = model.data;  
 				config.replacable = true;
 				var dat:Object = ObjectUtil.convert(model.data, Object);
 				var url:String = DataConsts.PATH_CHANNEL;
@@ -91,6 +91,7 @@ package multipublish.commands
 				}
 				else
 				{
+					//如果后端接收不到数据，则接收本地缓存。
 					if (model.url!= url)
 					{
 						model.url = url;

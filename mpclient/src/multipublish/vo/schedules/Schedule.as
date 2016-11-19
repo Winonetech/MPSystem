@@ -136,17 +136,17 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get dateStart():Date
+		public function get startDate():Date
 		{
-			return getProperty("dateStart", Date);
+			return getProperty("startDate", Date);
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set dateStart($value:Date):void
+		public function set startDate($value:Date):void
 		{
-			setProperty("dateStart", $value.toString());
+			setProperty("startDate", $value.toString());
 		}
 		
 		
@@ -156,17 +156,17 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get dateEnd():Date
+		public function get endDate():Date
 		{
-			return getProperty("dateEnd", Date);
+			return getProperty("endDate", Date);
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set dateEnd($value:Date):void
+		public function set endDate($value:Date):void
 		{
-			setProperty("dateEnd", $value.toString());
+			setProperty("endDate", $value.toString());
 		}
 		
 		
@@ -176,14 +176,14 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get timeStart():Date
+		public function get startTime():Date
 		{
 			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
 			
-			mp::timeStart = bool ? new Date
-				: ( mp::timeStart || getProperty("timeStart", Date) );
+			mp::startTime = bool ? new Date
+				: ( mp::startTime || getProperty("startTime", Date) );
 			
-			return mp::timeStart;
+			return mp::startTime;
 		}
 		
 		
@@ -193,22 +193,22 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get timeEnd():Date
+		public function get endTime():Date
 		{
-			if(!mp::timeEnd)
+			if(!mp::endTime)
 			{
 				if (type == ScheduleTypeConsts.SPOTS)
 				{
-					var start:Date = getProperty("timeStart", Date);
-					var end  :Date = getProperty("timeEnd", Date);
-					mp::timeEnd = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
+					var start:Date = getProperty("startTime", Date);
+					var end  :Date = getProperty("endTime", Date);
+					mp::endTime = ScheduleUtil.modifySpotScheduleDate(startTime, start, end);
 				}
 				else
 				{
-					mp::timeEnd = getProperty("timeEnd", Date);
+					mp::endTime = getProperty("endTime", Date);
 				}
 			}
-			return mp::timeEnd;
+			return mp::endTime;
 		}
 		
 		
@@ -293,12 +293,12 @@ package multipublish.vo.schedules
 		/**
 		 * @private
 		 */
-		mp var timeStart:Date;
+		mp var startTime:Date;
 		
 		/**
 		 * @private
 		 */
-		mp var timeEnd:Date;
+		mp var endTime:Date;
 		
 		/**
 		 * @private

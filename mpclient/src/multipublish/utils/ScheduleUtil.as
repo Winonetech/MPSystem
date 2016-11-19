@@ -26,14 +26,17 @@ package multipublish.utils
 		public static function validateTurnSchedusConflit($schedule1:Schedule, $schedule2:Schedule):Boolean
 		{
 			return !(
-				DateUtil.compareDate($schedule1.timeEnd, $schedule2.timeStart) == -1 || 
-				DateUtil.compareDate($schedule2.timeEnd, $schedule1.timeStart) == -1
+				DateUtil.compareDate($schedule1.endTime, $schedule2.startTime) == -1 || 
+				DateUtil.compareDate($schedule2.endTime, $schedule1.startTime) == -1
 			);
 		}
 		
 		/**
 		 * 
 		 * 验证排期当前排期是否需要被另一排期替换。
+		 * 
+		 * <br>判定规则：优先级低的被替换。
+		 * <br>优先级相等则最先修改的被替换。
 		 * 
 		 * @param $current:Schedule 当前的排期。
 		 * @param $replace:Schedule 用于替换的排期。
@@ -131,13 +134,13 @@ package multipublish.utils
 		private static function validateTurn($schedule:Schedule, $now:Date):Boolean
 		{
 			//首先日期合法；
-			var v1:Boolean = DateUtil.validate($schedule.dateStart);
-			var v2:Boolean = DateUtil.validate($schedule.dateEnd);
+			var v1:Boolean = DateUtil.validate($schedule.startDate);
+			var v2:Boolean = DateUtil.validate($schedule.endDate);
 			//其次当前时间晚于排期结束时间，或当前时间早于节目起始时间，都处于不在档状态。
 			return v1 && v2
-				?  (DateUtil.compareDate($now, $schedule.dateStart)>= 0 && 
-					DateUtil.compareDate($now, $schedule.dateEnd  )<= 0)
-				: (v1 ? DateUtil.compareDate($now, $schedule.dateStart)>= 0 : false);
+				?  (DateUtil.compareDate($now, $schedule.startDate)>= 0 && 
+					DateUtil.compareDate($now, $schedule.endDate  )<= 0)
+				: (v1 ? DateUtil.compareDate($now, $schedule.startDate)>= 0 : false);
 		}
 		
 		/**
@@ -152,12 +155,12 @@ package multipublish.utils
 			if(!$schedule.repeatWholeDay)
 			{
 				//非全天点播时，需要检测时段。
-				var v1:Boolean = DateUtil.validate($schedule.timeStart);
-				var v2:Boolean = DateUtil.validate($schedule.timeEnd);
+				var v1:Boolean = DateUtil.validate($schedule.startTime);
+				var v2:Boolean = DateUtil.validate($schedule.endTime);
 				bool = (v1 && v2)
-					?  (DateUtil.compareTime($now, $schedule.timeStart)>= 0 && 
-						DateUtil.compareTime($now, $schedule.timeEnd  ) < 0)
-					: (v1 ? DateUtil.compareTime($now, $schedule.timeStart)>= 0 : false);
+					?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
+						DateUtil.compareTime($now, $schedule.endTime  ) < 0)
+					: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
 			}
 			return bool;
 		}
@@ -198,12 +201,12 @@ package multipublish.utils
 			var bool:Boolean = validateTurn($schedule, $now);
 			
 			//非全天点播时，需要检测时段。
-			var v1:Boolean = DateUtil.validate($schedule.timeStart);
-			var v2:Boolean = DateUtil.validate($schedule.timeEnd);
+			var v1:Boolean = DateUtil.validate($schedule.startTime);
+			var v2:Boolean = DateUtil.validate($schedule.endTime);
 			bool = (v1 && v2)
-				?  (DateUtil.compareTime($now, $schedule.timeStart)>= 0 && 
-					DateUtil.compareTime($now, $schedule.timeEnd  ) < 0)
-				: (v1 ? DateUtil.compareTime($now, $schedule.timeStart)>= 0 : false);
+				?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
+					DateUtil.compareTime($now, $schedule.endTime  ) < 0)
+				: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
 			return bool;
 		}
 		

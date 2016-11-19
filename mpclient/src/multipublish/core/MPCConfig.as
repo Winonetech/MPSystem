@@ -186,6 +186,13 @@ package multipublish.core
 		
 		public var shutdown:String;
 		
+		/**
+		 * 
+		 * 自动截图指令。
+		 * 
+		 */
+		
+		public var shotcut:String;
 		
 		/**
 		 * 
@@ -495,6 +502,7 @@ package multipublish.core
 		/**
 		 * 
 		 * 是否替换当前播放内容。
+		 * <br>判定是否与上一排期相同。
 		 * 
 		 */
 		
@@ -616,6 +624,7 @@ package multipublish.core
 		 */
 		mp var programed:Boolean;
 		
+		public var shotcutName:Object = {};
 		
 		/**
 		 * 

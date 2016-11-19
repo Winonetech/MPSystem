@@ -55,8 +55,9 @@ package multipublish.commands
 		{
 			if(!config.exportData)
 			{
-				//注册每天0:00执行函数，日期可以为任意日期。
+				//注册每天 00:00执行函数，日期可以为任意日期。
 				controller.registControlBroadcast(new Date(2000, 0, 1), presenter.broadcastProgram);
+				//设定 n秒后执行加载频道排期。
 				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5, null, true);
 			}
 			else

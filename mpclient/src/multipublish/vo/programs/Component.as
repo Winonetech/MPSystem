@@ -291,6 +291,7 @@ package multipublish.vo.programs
 		/**
 		 * 
 		 * 获取过渡方式，左右过渡或上下过渡。
+		 * 上下为false 左右为true。
 		 * 
 		 */
 		
