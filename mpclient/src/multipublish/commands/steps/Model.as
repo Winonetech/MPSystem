@@ -3,6 +3,7 @@ package multipublish.commands.steps
 	
 	/**
 	 * 
+	 * 读取并保存排期。
 	 * 数据加载命令，加载完毕后储存在store缓存。
 	 * 
 	 */
@@ -100,8 +101,9 @@ package multipublish.commands.steps
 			}
 			if($e.type == Event.COMPLETE)
 			{
-				mp::data = $e.target.data;
-				if (type) store.registRaw(data, type);
+				mp::data = $e.target.data;   //url传输的资源。
+				
+				if (type) store.registRaw(data, type);  
 			}
 			else
 			{

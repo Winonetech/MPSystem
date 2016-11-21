@@ -87,10 +87,10 @@ package multipublish.commands
 							(schedule.type == ScheduleTypeConsts.SPOTS)  || 
 							(schedule.type == ScheduleTypeConsts.REPEAT  && 
 							(schedule.extra.repeatType == ScheduleRepeatTypeConsts.DAY) && 
-							!schedule.allDay))
+							!schedule.repeatWholeDay))
 						{
-							controller.registControlBroadcast(schedule.timeStart, presenter.broadcastProgram);
-							controller.registControlBroadcast(schedule.timeEnd  , presenter.broadcastProgram);
+							controller.registControlBroadcast(schedule.startTime, presenter.broadcastProgram);
+							controller.registControlBroadcast(schedule.endTime  , presenter.broadcastProgram);
 						}
 					}
 				}
@@ -124,7 +124,7 @@ package multipublish.commands
 				if (view.main)
 				{
 					view.main.enabled = true;
-					view.main.data = current;
+					view.main.data = current;  //调用 data的 setter函数 会触发其 resolveData (MainView)
 				}
 			}
 			else

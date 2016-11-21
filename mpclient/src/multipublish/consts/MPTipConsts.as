@@ -475,6 +475,25 @@ package multipublish.consts
 		public static const RECORD_LOG_UPLOAD_FAILURE:Tip = new Tip("日志文件上传失败，{$self}", 2);
 		
 		
+		
+		/**
+		 * 
+		 * 截图上传成功记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHOTCUT_UPLOAD_SUCCESS:Tip = new Tip("截图上传成功。", 2);
+		
+		
+		/**
+		 * 
+		 * 截图上传失败记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHOTCUT_UPLOAD_FAILURE:Tip = new Tip("截图上传失败，{$self}", 2);
+		
+		
 		/**
 		 * 
 		 * 调整音量记录。

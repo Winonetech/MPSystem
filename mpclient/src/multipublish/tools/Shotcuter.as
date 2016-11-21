@@ -9,24 +9,42 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
+	import cn.vision.data.Tip;
+	import cn.vision.net.FTPLoader;
+	import cn.vision.net.FTPRequest;
+	import cn.vision.net.FTPUploader;
 	import cn.vision.utils.BitmapUtil;
+	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
+	
+	import com.winonetech.tools.LogSQLite;
+	import com.winonetech.utils.CacheUtil;
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
+	import multipublish.consts.EventConsts;
+	import multipublish.consts.MPTipConsts;
+	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.MPCView;
+	import multipublish.utils.URLUtil;
+	
+	import mx.managers.PopUpManager;
 	
 	
 	public final class Shotcuter extends VSObject
@@ -48,13 +66,19 @@ package multipublish.tools
 		
 		/**
 		 * 
-		 * 开始截图。
+		 * 开始截图。每隔$delay秒进行一次截图，持续49 + 1次。
+		 * @param $delay:截图间隔时间。
+		 * @param $times:截图次数。该参数不可以为 0！
 		 * 
 		 */
 		
-		public function start($delay:uint = 10):void
+		public function start($delay:uint = 10, $isPolicy:Boolean = false, $times:uint = 50, $name:String = null):void
 		{
 			LogUtil.log("开始截图：" + $delay);
+			
+			isPolicy = $isPolicy;
+			ftpName  = $name;
+			
 			if(!rectangle)
 			{
 				var w:Number = view.application.width  * scale;
@@ -62,20 +86,24 @@ package multipublish.tools
 				rectangle = new Rectangle(0, 0, w, h);
 				bmd = new BitmapData(rectangle.width, rectangle.height, false);
 			}
-			if(!timer)
+			if (!$isPolicy)
 			{
-				timer = new Timer($delay * 1000, 49);
-				timer.addEventListener(TimerEvent.TIMER, handlerTimer);
-				timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				if(!timer)
+				{
+					timer = new Timer($delay * 1000, $times - 1 || 1);  //减一是因为第 0秒已经截图了一次了。
+					timer.addEventListener(TimerEvent.TIMER, handlerTimer);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				}
+				else 
+				{
+					timer.delay = $delay * 1000;
+				}
+				timer.reset();
+				timer.start();
 			}
-			else 
-			{
-				timer.delay = $delay * 1000;
-			}
-			timer.reset();
-			timer.start();
 			
-			shotcut();
+			
+			shotcut();   //第 0秒的截图。
 		}
 		
 		
@@ -105,7 +133,43 @@ package multipublish.tools
 		{
 			if (view.main)
 				bmd.draw(view.main, matrix);
+			isPolicy ? _ftp() : _url();
 			
+		}
+		
+		private function _ftp():void
+		{
+			var data:ByteArray = BitmapUtil.encodeJPG(bmd);
+			var path:String = FileUtil.resolvePathApplication("shotcutPic" + File.separator + config.terminalNO);
+//			var file:File = new File(path);
+//			file.createDirectory();  //创建存储不同终端截图的文件夹。
+			
+			var pic:File = new File(path + File.separator + ftpName + ".jpg");
+			var fs:FileStream = new FileStream;
+			fs.open(pic, FileMode.WRITE);
+			fs.writeBytes(data);
+			fs.close();
+			upLoadPath = config.terminalNO + "-" + ftpName + ".jpg";
+			pic.canonicalize();
+			ftpRequest = new FTPRequest(
+				config.ftpHost,
+				config.ftpUserName,
+				config.ftpPassWord,
+				config.ftpPort,
+				upLoadPath,
+				pic.nativePath);
+			ftpLoader = new FTPUploader;
+			ftpLoader.timeout = 5;
+			ftpLoader.addEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
+			ftpLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
+			ftpLoader.upload(ftpRequest);
+			
+			stop();
+		}
+		
+		private function _url():void
+		{
 			request.data = BitmapUtil.encodeJPG(bmd);
 			request.url = "http://" + config.httpHost + ":" + config.httpPort + "/" + config.shotcutURL + "?terminalId=" + config.terminalNO;
 			LogUtil.log("上传截图：" + request.url, bmd.width, bmd.height);
@@ -152,6 +216,33 @@ package multipublish.tools
 		}
 		
 		
+		private function handlerDefault_ftp($e:Event):void
+		{
+			ftpLoader.removeEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
+			ftpLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
+			
+			var success:Boolean = ($e.type == Event.COMPLETE);
+			
+			var description:Tip = success 
+				? MPTipConsts.RECORD_SHOTCUT_UPLOAD_SUCCESS
+				: MPTipConsts.RECORD_SHOTCUT_UPLOAD_FAILURE;
+			var text:String = success ? "" : ($e as IOErrorEvent).text;
+			
+			if (success) config.service.shotcutOver(true, 
+				config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
+			
+			LogSQLite.log(TypeConsts.NETWORK, 
+				EventConsts.EVENT_TAKE_SCREENSHOT,
+				LogUtil.logTip(description, text));
+			
+		}
+		
+		/**
+		 * 
+		 * Request接收处理。
+		 * 
+		 */
 		private function handlerDefault($e:Event):void
 		{
 			loading = false;
@@ -217,6 +308,16 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
+		private var ftpRequest:FTPRequest;
+		
+		/**
+		 * @private
+		 */
+		private var ftpLoader:FTPUploader;
+		
+		/**
+		 * @private
+		 */
 		private var loader:URLLoader;
 		
 		/**
@@ -224,5 +325,18 @@ package multipublish.tools
 		 */
 		private var loading:Boolean;
 		
+		/**
+		 * @private
+		 */
+		private var isPolicy:Boolean;
+		
+		/**
+		 * 
+		 * 时间戳。
+		 * 
+		 */
+		private var ftpName:String;
+		
+		private var upLoadPath:String
 	}
 }

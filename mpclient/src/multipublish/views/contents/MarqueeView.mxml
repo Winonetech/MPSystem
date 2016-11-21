@@ -171,7 +171,8 @@
 					{
 						label.x = container.width;
 						
-						if (rollingTimes > 0) if (++ rollingCount >= rollingTimes) stop();
+						if (rollingTimes > 0) if (++ rollingCount >= rollingTimes) 
+							stop();
 					}
 				}
 			}

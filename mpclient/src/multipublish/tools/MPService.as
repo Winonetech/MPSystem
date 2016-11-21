@@ -141,6 +141,21 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 向服务端上报截图上传完毕，并传递截图的地址。
+		 * 
+		 * @param $success:String (default = true) 是否上传成功。
+		 * 
+		 */
+		
+		public function shotcutOver($success:Boolean = true, $name:String = null):void
+		{
+			send(ServiceConsts.SEND_SHOTCUT + $name);
+		}
+		
+		
+		
+		/**
+		 * 
 		 * 是否已注册某个Socket命令回调。
 		 * 
 		 * @param $cmd Socket命令回调名称，参见ServiceConsts。
@@ -240,10 +255,11 @@ package multipublish.tools
 			cmds.push($value);
 			
 			requestURI();
-		}
+		} 
 		
 		/**
 		 * @private
+		 * 发送心跳。
 		 */
 		private function requestURI():void
 		{
@@ -264,6 +280,8 @@ package multipublish.tools
 		
 		/**
 		 * @private
+		 * 传给后端后执行对应的操作。
+		 * 
 		 */
 		private function handlerDefault($e:Event):void
 		{
@@ -286,11 +304,13 @@ package multipublish.tools
 		}
 		
 		/**
+		 * 
+		 * 发送心跳。
 		 * @private
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			///
+			//
 			if (heartbeatTotal == 0)
 			{
 				heartbeatTotal = Math.random() * frequency + 15;

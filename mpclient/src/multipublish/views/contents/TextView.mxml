@@ -77,7 +77,7 @@
 				
 				text = data as HText;
 				
-				time = text.duration;
+				time = text.duration || 30;
 				
 				dispatchReady();
 			}

@@ -47,6 +47,8 @@ package multipublish.utils
 				'\t<terminalNO>' + config.terminalNO + '</terminalNO>' + e + 
 				'\t<!-- 自动关机指令 -->' + e + 
 				'\t<shutdown>' + config.shutdown + '</shutdown>' + e + 
+				'\t<!-- 截图策略指令 -->' + e + 
+				'\t<shotcut>' + config.shotcut + '</shotcut>' + e + 
 				getDebug() + e + 
 				getRemote() + e + 
 				getSled() + e + 

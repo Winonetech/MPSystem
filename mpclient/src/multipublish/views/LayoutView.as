@@ -290,7 +290,7 @@ package multipublish.views
 			if (source.home && 
 				source.pagesArr.length)
 			{
-				main = createPage(source.home, true);
+				main = createPage(source.home, true); 
 				
 				history.push(main);
 			}
@@ -312,13 +312,13 @@ package multipublish.views
 		 */
 		private function createPage($page:Page, $visible:Boolean = false):CacheView
 		{
-			var page:CacheView = new CacheView;
+			var page:CacheView = new CacheView;   //Cache下载至缓存的进度条。
 			page.refer = PageView;
 			page.width  = $page.w;
 			page.height = $page.h;
 			page.x = $page.x;
 			page.y = $page.y;
-			page.data = $page;
+			page.data = $page;     //此处调用 CacheView的 resolveData。$page为主页。
 			addElement(page).visible = $visible;
 			return page;
 		}
