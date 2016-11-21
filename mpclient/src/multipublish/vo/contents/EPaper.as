@@ -273,7 +273,13 @@ package multipublish.vo.contents
 											stream.open(fileItem, FileMode.READ);
 											dataSheet = stream.readUTFBytes(stream.bytesAvailable);
 											dataSheet = EPaperUtil.mp::replaceChi2Eng(dataSheet);
-											objSheet.source = XML(dataSheet);
+											try
+											{
+												objSheet.source = XML(dataSheet);
+											}
+											catch(o:Error) {
+												LogUtil.log(title + "：解析报纸版面数据出错，可能数据格式不正确，或数据已加密，无法解析。", pathSheet);
+											}
 											stream.close();
 											break;
 									}
