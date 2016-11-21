@@ -97,7 +97,7 @@ package multipublish.commands
 				}
 				else 
 				{
-					time = cmd as uint;   //纯数字参数继续沿用老方法。
+					time = uint(cmd);   //纯数字参数继续沿用老方法。
 					shotcutByGap();
 				}
 				
@@ -132,13 +132,13 @@ package multipublish.commands
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)
 			{
-				//截图策略多加一个日期范围限制
-				var t:Array = cmd.split("&"); 
+				//截图策略多加一个日期范围限制。
+				var t:Array = cmd.split("&"); //切出日期。
 				
 				if (t.length == 2)
 				{
-					var s_eDate:Array = t[1].split(",");    //分离出时间范围。
-					cmd = t[0];  //分离出策略。
+					var s_eDate:Array = t[1].split(",");    //分离出日期范围。
+					cmd = t[0];  //分离出时间策略。
 				}
 				else return;
 				
