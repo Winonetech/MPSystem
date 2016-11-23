@@ -119,12 +119,13 @@ package multipublish.views
 				container.width  = program.width;
 				container.height = program.height;
 				
+				
 				autofitScale();
 				
 				container.addElement(view = new LayoutView);
 				view.width  = program.width;
 				view.height = program.height;
-				view.data   = program.layout;
+				view.data   = program.layout;     //此处调用至 LayoutView。
 			}
 		}
 		

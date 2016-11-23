@@ -51,6 +51,7 @@ package multipublish.utils
 		{
 			if ($content.contentType == "video")
 			{
+				//swf -> Cartoon 
 				switch (FileUtil.getFileTypeByURL($content.contentSource).toLowerCase())
 				{
 					case FileTypeConsts.MP4:
@@ -72,7 +73,7 @@ package multipublish.utils
 				classRef = VOS[$content.contentType];
 			}
 			
-			if (classRef) var content:Content = new classRef($content);
+			if (classRef) var content:Content = new classRef($content);    //实例化对应的视图。
 			return content;
 		}
 		

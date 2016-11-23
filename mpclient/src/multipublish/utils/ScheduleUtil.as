@@ -114,7 +114,8 @@ package multipublish.utils
 		
 		public static function validateScheduleInArchive($schedule:Schedule):Boolean
 		{
-			return $schedule.type == ScheduleTypeConsts.DEFAULT || validateTurn($schedule, new Date);
+			return $schedule.type == ScheduleTypeConsts.TURN || 
+				validateTurn($schedule, new Date);
 		}
 		
 		
@@ -271,7 +272,7 @@ package multipublish.utils
 			{
 				TYPE[Consts.INIT] = true;
 				TYPE[ScheduleTypeConsts.DEFAULT] = validateDefault;
-				TYPE[ScheduleTypeConsts.TURN   ] = validateTurn;
+				TYPE[ScheduleTypeConsts.TURN   ] = validateDefault;   
 				TYPE[ScheduleTypeConsts.DEMAND ] = validateDemand;
 				TYPE[ScheduleTypeConsts.REPEAT ] = validateRepeat;
 				TYPE[ScheduleTypeConsts.SPOTS  ] = validateSpots;

@@ -130,7 +130,7 @@ package multipublish.views
 				if (source.interactable)
 					buttonMode = (source.code == ContentTypeConsts.BUTTON) && Boolean(source.linkID);
 				
-				navigatable = source.interactable && source.contents.length > 1;
+				navigatable = source.interactable && source.contents.length > 1;    //是否允许交互  && 存在内容。
 				
 				updateBackground();
 				
@@ -424,7 +424,9 @@ package multipublish.views
 		}
 		
 		/**
-		 * @private
+		 * 
+		 * 下一个内容的标记。
+		 * 
 		 */
 		private function set neigh($value:int):void
 		{
@@ -446,7 +448,6 @@ package multipublish.views
 		}
 		
 		/**
-		 * @private
 		 * 上下为false 左右为true。
 		 */
 		private function get direction():Boolean
@@ -461,7 +462,9 @@ package multipublish.views
 		private var start:Number;
 		
 		/**
-		 * @private
+		 * 
+		 * 是否允许交互  && 是否存在内容。
+		 * 
 		 */
 		private var navigatable:Boolean;
 		

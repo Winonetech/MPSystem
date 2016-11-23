@@ -149,7 +149,7 @@ package multipublish.tools
 			fs.open(pic, FileMode.WRITE);
 			fs.writeBytes(data);
 			fs.close();
-			upLoadPath = config.terminalNO + "-" + ftpName + ".jpg";
+			upLoadPath = "ShotcutPic\\" + config.terminalNO + "\\" + ftpName + ".jpg";
 			pic.canonicalize();
 			ftpRequest = new FTPRequest(
 				config.ftpHost,
