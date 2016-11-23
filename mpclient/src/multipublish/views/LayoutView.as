@@ -288,7 +288,7 @@ package multipublish.views
 			source = data as Layout;
 			
 			if (source.home && 
-				source.pagesArr.length)
+				source.pagesArr.length)    //该 pagesArr为 children 即根页面集合。
 			{
 				main = createPage(source.home, true);    //增加页面并进入缓存。
 				
@@ -313,12 +313,12 @@ package multipublish.views
 		private function createPage($page:Page, $visible:Boolean = false):CacheView
 		{
 			var page:CacheView = new CacheView;   //Cache下载至缓存的进度条。
-			page.refer  = PageView;
+			page.refer  = PageView;          //refer是在 CacheView中确认实例化类型的属性。
 			page.width  = $page.w;
 			page.height = $page.h;
 			page.x = $page.x;
 			page.y = $page.y;
-			page.data = $page;     //此处调用 CacheView的 resolveData。$page为主页。
+			page.data = $page;     //此处调用 CacheView的 resolveData。
 			addElement(page).visible = $visible;
 			return page;
 		}
