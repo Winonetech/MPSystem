@@ -29,6 +29,7 @@ package multipublish.commands
 	
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.URLConsts;
+	import multipublish.tools.ScreenController;
 	import multipublish.utils.ViewUtil;
 	import multipublish.views.GuildView;
 	
@@ -107,12 +108,16 @@ package multipublish.commands
 			NativeApplication.nativeApplication.autoExit = true;
 			//get client version
 			config.version = ApplicationUtil.getVersion();
+			
+			
 			var window:WindowedApplication = view.application;
 			//hide window statusbar
 			window.showStatusBar = false;
 			//window.alwaysInFront = true;
 			
 			var r:Rectangle = getDebug() ? ScreenUtil.getMainScreenBounds() : ScreenUtil.getScreensBounds();
+			
+			config.screenController = new ScreenController;
 			
 			if (config.exportData || config.updateVersion)
 			{
@@ -124,14 +129,12 @@ package multipublish.commands
 			else
 			{
 				LogUtil.log("获取屏幕尺寸：" + r);
-				window.nativeWindow.width  = config.width  = r.width;
-				window.nativeWindow.height = config.height = r.height;
-				window.nativeWindow.x = 0;
-				window.nativeWindow.y = 0;
+				
 			}
 			
 			//add guild view
 			ViewUtil.guild(true);
+			
 			window.addElement(view.keyboard = new Input);
 			BindingUtils.bindProperty(view.keyboard, "title", config, "support");
 		}

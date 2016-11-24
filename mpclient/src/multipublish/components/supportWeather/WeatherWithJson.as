@@ -151,7 +151,6 @@ package multipublish.components.supportWeather
 		
 		private function objToView(obj:Object):void
 		{
-			
 			weatherArr = new Array;
 			var chineseToPinyin:ChineseToPinyin = new ChineseToPinyin;
 			if(obj.today)
