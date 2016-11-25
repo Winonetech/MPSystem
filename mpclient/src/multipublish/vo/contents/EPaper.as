@@ -277,7 +277,8 @@ package multipublish.vo.contents
 											{
 												objSheet.source = XML(dataSheet);
 											}
-											catch(o:Error) {
+											catch(o:Error)
+											{
 												LogUtil.log(title + "：解析报纸版面数据出错，可能数据格式不正确，或数据已加密，无法解析。", pathSheet);
 											}
 											stream.close();

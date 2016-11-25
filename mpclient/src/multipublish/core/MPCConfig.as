@@ -18,6 +18,7 @@ package multipublish.core
 	import multipublish.tools.Controller;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
+	import multipublish.tools.ScreenController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
 	
@@ -580,6 +581,7 @@ package multipublish.core
 		
 		public var raw:Object ={};
 		
+		
 		/**
 		 * 
 		 * 数据存储。
@@ -587,6 +589,24 @@ package multipublish.core
 		 */
 		
 		public var ori:Object = {};
+		
+		
+		/**
+		 * 
+		 * 屏幕控制器。
+		 * 
+		 */
+		
+		public var screenController:ScreenController;
+		
+		
+		/**
+		 * 
+		 * 存储截图数据。
+		 * 
+		 */
+		
+		public var shotcutName:Object = {};
 		
 		
 		/**
@@ -624,7 +644,6 @@ package multipublish.core
 		 */
 		mp var programed:Boolean;
 		
-		public var shotcutName:Object = {};
 		
 		/**
 		 * 

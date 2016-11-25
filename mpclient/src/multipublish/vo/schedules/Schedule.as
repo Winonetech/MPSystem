@@ -9,6 +9,7 @@ package multipublish.vo.schedules
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.core.VO;
 	
@@ -138,7 +139,7 @@ package multipublish.vo.schedules
 		
 		public function get startDate():Date
 		{
-			return getProperty("startDate", Date);
+			return getProperty("startDate", Date, DATE_FORMATER);
 		}
 		
 		/**
@@ -146,7 +147,7 @@ package multipublish.vo.schedules
 		 */
 		public function set startDate($value:Date):void
 		{
-			setProperty("startDate", $value.toString());
+			setProperty("startDate", ObjectUtil.convert($value, String, DATE_FORMATER));
 		}
 		
 		
@@ -158,7 +159,7 @@ package multipublish.vo.schedules
 		
 		public function get endDate():Date
 		{
-			return getProperty("endDate", Date);
+			return getProperty("endDate", Date, DATE_FORMATER);
 		}
 		
 		/**
@@ -166,7 +167,7 @@ package multipublish.vo.schedules
 		 */
 		public function set endDate($value:Date):void
 		{
-			setProperty("endDate", $value.toString());
+			setProperty("endDate", ObjectUtil.convert($value, String, DATE_FORMATER));
 		}
 		
 		
@@ -181,7 +182,7 @@ package multipublish.vo.schedules
 			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
 			
 			mp::startTime = bool ? new Date
-				: ( mp::startTime || getProperty("startTime", Date) );
+				: ( mp::startTime || getProperty("startTime", Date, TIME_FORMATER) );
 			
 			return mp::startTime;
 		}
@@ -199,13 +200,13 @@ package multipublish.vo.schedules
 			{
 				if (type == ScheduleTypeConsts.SPOTS)
 				{
-					var start:Date = getProperty("startTime", Date);
-					var end  :Date = getProperty("endTime", Date);
+					var start:Date = getProperty("startTime", Date, TIME_FORMATER);
+					var end  :Date = getProperty("endTime", Date, TIME_FORMATER);
 					mp::endTime = ScheduleUtil.modifySpotScheduleDate(startTime, start, end);
 				}
 				else
 				{
-					mp::endTime = getProperty("endTime", Date);
+					mp::endTime = getProperty("endTime", Date, TIME_FORMATER);
 				}
 			}
 			return mp::endTime;
@@ -220,7 +221,7 @@ package multipublish.vo.schedules
 		
 		public function get timeModify():Date
 		{
-			return getProperty("modifyDate", Date);
+			return getProperty("modifyDate", Date, TIME_FORMATER);
 		}
 		
 		
@@ -320,6 +321,16 @@ package multipublish.vo.schedules
 		 * @private
 		 */
 		private static const PRIORITY:Object = {5:1, 1:2, 2:3, 3:4, 4:5};
+		
+		/**
+		 * @private
+		 */
+		private static const DATE_FORMATER:String = "YYYY-MM-DD HH:MI:SS";
+		
+		/**
+		 * @private
+		 */
+		private static const TIME_FORMATER:String = "YYYY-MM-DD HH:MI:SS";
 		
 	}
 }
