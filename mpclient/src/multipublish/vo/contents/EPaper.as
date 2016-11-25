@@ -67,7 +67,7 @@ package multipublish.vo.contents
 		override public function update(...$args):void
 		{
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
-			if (time == getPaperTime) updateContents();
+			if (time == getPaperTime || $args[0]) updateContents();
 		}
 		
 		
@@ -90,10 +90,10 @@ package multipublish.vo.contents
 			var l:uint = $args ? $args.length : 0;
 			for (var i:int = 0; i < l; i++)
 			{
-				var item:* = $args[i];
-				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);
-				var fzip:String = FileUtil.resolvePathApplication(saveURL);
-				var path:String = EPaperUtil.mp::getPathByZipFile(fzip);
+				var item:* = $args[i];    //item存储下载的地址。
+				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);   //电子书相对路径。
+				var fzip:String = FileUtil.resolvePathApplication(saveURL);    //保存电子书的绝对路径。
+				var path:String = EPaperUtil.mp::getPathByZipFile(fzip);     //解压路径。
 				
 				var file:VSFile = new VSFile(fzip);
 				ArrayUtil.push(days, path);
@@ -182,7 +182,7 @@ package multipublish.vo.contents
 			retrys.clear();
 			reslvd = {};
 			
-			//获取从当天开始，往前daysKeep天的报纸
+			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
 			var urls:Array = [];
 			var pre:String = URLUtil.buildFTPURL(content);
@@ -405,6 +405,7 @@ package multipublish.vo.contents
 		/**
 		 * 
 		 * 具体内容。
+		 * 相对地址路径。
 		 * 
 		 */
 		

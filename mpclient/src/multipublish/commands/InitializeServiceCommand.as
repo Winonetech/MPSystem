@@ -78,7 +78,7 @@ package multipublish.commands
 			}
 			else
 			{
-				//service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
+//				service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
 				service.registHandler(ServiceConsts.RECEIVE_SCEDULE  , presenter.initializeModule);
 				service.registHandler(ServiceConsts.RECEIVE_LEDTEXT  , presenter.sendLed);
 				service.registHandler(ServiceConsts.LOCK_TIME        , presenter.lockTime);
@@ -91,6 +91,7 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
 				service.registHandler(ServiceConsts.FILE_DOWNLOAD    , presenter.downloadFiles);
+//				service.registHandler(ServiceConsts.EPAPER_DOWNLOAD  , presenter.downloadEPaper);
 			}
 			service.frequency = config.heartbeatTime;
 			service.communicationStart();

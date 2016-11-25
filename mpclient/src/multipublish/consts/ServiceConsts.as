@@ -71,6 +71,9 @@ package multipublish.consts
 		public static const FILE_DOWNLOAD:String = "FTPS:";
 		
 		
+		public static const EPAPER_DOWNLOAD:String = "REEP:";
+		
+		
 		/**
 		 * 
 		 * 上传日志。
