@@ -170,11 +170,11 @@ package multipublish.commands
 					var page:Page = new Page(datPage);
 					//provider.sheetsMap[page.id] = page;
 					layout.pagesTol[page.id] = page;
-					father.mp::addPage(page);
-					
+					father.mp::addPage(page);     //可能调用的方法：Page & Layout。即子页面和 Children的关系。
+				
 					initComponents(datPage["components"], page, layout);
 					
-					initPages     (datPage["pages"], layout, page);
+					initPages     (datPage["pages"], layout, page);   //初始化子页面。
 				}
 			}
 		}
@@ -214,7 +214,7 @@ package multipublish.commands
 				
 				if (content is News)
 				{
-					(content as News).noImage = component.noImage;
+					(content as News).noImage = component.noImage;   
 				}
 				
 				component.mp::addContent(content);

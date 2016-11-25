@@ -6,10 +6,8 @@
 	
 	<s:Image width="100%" height="100%" smooth="true"
 			 horizontalAlign="center" verticalAlign="middle"
-			 fillMode="scale" scaleMode="zoom" id="image"
-			 source="{(content as QRCode).content}"
-			 ready="image_defaultHandler(event)"
-			 />
+			 fillMode="scale" scaleMode="letterbox" id="image"
+			 source="{(content as QRCode).content}"/>
 	
 	<fx:Script>
 		<![CDATA[
@@ -26,11 +24,6 @@
 			{
 				super.resolveData();
 			}
-			/**
-			 * @inheritDoc
-			 */
-			
-			override protected function updateBackground():void { }
 			
 			
 			/**
@@ -40,29 +33,6 @@
 			override protected function processReset():void
 			{
 			}
-			
-			/**
-			 * @private
-			 */
-			private function image_defaultHandler(e:Event):void
-			{
-				dispatchReady();
-			}
-			
-			
-			
-			/**
-			 * @private
-			 */
-			[Bindable]
-			private var scaledWidth:Number = 0;
-			
-			/**
-			 * @private
-			 */
-			[Bindable]
-			private var scaledHeight:Number = 0;
-			
 			
 		]]>
 	</fx:Script>

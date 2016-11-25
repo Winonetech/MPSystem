@@ -116,9 +116,10 @@ package multipublish.views
 			
 			if(!view)
 			{
-				view = generateView();
-				next = generateNext();
-				delay(1, play);
+				//ProgramView不存在时进入。
+				view = generateView();     //创建当前视图。
+				next = generateNext();	  //创建下一个视图。
+				delay(1, play);  //延时回调方法。
 			}
 			else
 			{
@@ -176,7 +177,7 @@ package multipublish.views
 		 */
 		private function generateView():ProgramView
 		{
-			var program:Program = schedule.programs[index];
+			var program:Program = schedule.programs[index];   //默认播放排期内第一个节目。
 			var result:ProgramView = new ProgramView;
 			result.width  = application.width;
 			result.height = application.height;
@@ -196,13 +197,16 @@ package multipublish.views
 			if (neigh != index)
 			{
 				var program:Program = schedule.programs[neigh];
-				var result:ProgramView = new ProgramView;
-				result.width   = application.width;
-				result.height  = application.height;
-				result.data    = program;
-				result.visible = false;
-				addElementAt(result, 0);
-				index = neigh;
+				if (program) 
+				{
+					var result:ProgramView = new ProgramView;
+					result.width   = application.width;
+					result.height  = application.height;
+					result.data    = program;
+					result.visible = false;
+					addElementAt(result, 0);
+					index = neigh;
+				}
 			}
 			if(!result && neigh != index) result = generateNext();
 			return result;

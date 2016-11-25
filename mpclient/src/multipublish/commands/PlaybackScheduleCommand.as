@@ -89,6 +89,7 @@ package multipublish.commands
 							(schedule.extra.repeatType == ScheduleRepeatTypeConsts.DAY) && 
 							!schedule.repeatWholeDay))
 						{
+							//轮播是不需要注册时间的。
 							controller.registControlBroadcast(schedule.startTime, presenter.broadcastProgram);
 							controller.registControlBroadcast(schedule.endTime  , presenter.broadcastProgram);
 						}
@@ -103,7 +104,6 @@ package multipublish.commands
 		private function playbackSchedule():void
 		{
 			config.cache = false;
-			//获取排期
 			//var schedules:Object = config.datas;
 			var schedules:Object = provider.schedulesMap;
 			for each (var schedule:Schedule in schedules)

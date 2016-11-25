@@ -175,7 +175,7 @@
 			 */
 			private function callbackData():Boolean
 			{
-				var result:Boolean = data && progress;   //此处的 data是 Page。
+ 				var result:Boolean = data && progress;   //此处的 data的类型与 Cache的 refe属性有关。
 				
 				if (result) 
 				{

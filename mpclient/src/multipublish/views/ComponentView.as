@@ -130,7 +130,7 @@ package multipublish.views
 				if (source.interactable)
 					buttonMode = (source.code == ContentTypeConsts.BUTTON) && Boolean(source.linkID);
 				
-				navigatable = source.interactable && source.contents.length > 1;
+				navigatable = source.interactable && source.contents.length > 1;    //是否允许交互  && 存在内容。
 				
 				updateBackground();
 				
@@ -264,9 +264,9 @@ package multipublish.views
 				if (prev && next)
 				{
 					var b:Number = Math.abs(d);
-					tweenFliped = b > distance;
+					tweenFliped = b > distance;   //是否进行切换。
 					const property:Number = direction ? width : height;
-					var a:Number = tweenFliped ? (side ? -property : property) : 0;
+					var a:Number = tweenFliped ? (side ? -property : property) : 0;   //如果不切换 则当前移至 0 切换则向正方向则为 property。
 					var p:Number = b / property;
 					var t:Number = Math.max(.3, p * config.slideTweenTime);
 					if (tweenFliped) wt::tweening = true;
@@ -291,13 +291,14 @@ package multipublish.views
 		{
 			if (tweenFliped)
 			{
-				container.x = 0;
+				var prop:String = direction ? "x" : "y";
+				container[prop] = 0;
 				container.removeElement(side ? last : fore);
 				container.removeElement(view);
 				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
 				view.reset();
 				view = next;
-				view.x = 0;
+				view[prop] = 0;
 				view.addEventListener(ControlEvent.STOP, handlerViewStop);
 				view.play();
 				index += side ? 1 : -1;
@@ -370,9 +371,13 @@ package multipublish.views
 		private function handlerMouseMove($e:MouseEvent):void
 		{
 			if (direction)
+			{
 				container.x = mouseX - start;
+			}
 			else
+			{
 				container.y = mouseY - start;
+			}
 		}
 		
 		/**
@@ -385,8 +390,10 @@ package multipublish.views
 				down = false;
 				tempStage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				tempStage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
-				const d:Number = (direction ? mouseX : mouseY) - start;
-				const property:Number = direction ? width : height;
+				const d:Number = (direction ? mouseX : mouseY) - start;   //最后的位移。
+				const property:Number = direction ? width : height;	
+				
+				//当位移大于宽 /高的10%后，会切换。
 				tween((Math.abs(d) > distance) ? (d > 0 ? property - d : -property - d) : d);
 			}
 		}
@@ -424,7 +431,9 @@ package multipublish.views
 		}
 		
 		/**
-		 * @private
+		 * 
+		 * 下一个内容的标记。
+		 * 
 		 */
 		private function set neigh($value:int):void
 		{
@@ -442,11 +451,10 @@ package multipublish.views
 		 */
 		private function get distance():Number
 		{
-			return width * .1;
+			return (direction ? width * .1 : height * .1);
 		}
 		
 		/**
-		 * @private
 		 * 上下为false 左右为true。
 		 */
 		private function get direction():Boolean
@@ -461,7 +469,9 @@ package multipublish.views
 		private var start:Number;
 		
 		/**
-		 * @private
+		 * 
+		 * 是否允许交互  && 是否存在内容。
+		 * 
 		 */
 		private var navigatable:Boolean;
 		
