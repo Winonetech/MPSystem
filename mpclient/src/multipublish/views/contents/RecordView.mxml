@@ -19,6 +19,8 @@
 			import cn.vision.utils.MathUtil;
 			import cn.vision.utils.TimerUtil;
 			
+			import com.rubenswieringa.book.Book;
+			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
 			import multipublish.vo.contents.Record;
@@ -190,10 +192,36 @@
 			 */
 			private function video_completeHandler(event:TimeEvent):void
 			{
-				var total:uint = (content as Record).playTimes;
-				(total > 1 && ++count < total) ? video.play() : stop();
+				
+				//解决系统内部机制会调用两次改方法的BUG。
+				if (f)
+				{
+					f = !f;
+					return;
+				}
+				f = !f;  
+				
+				
+				
+ 				var total:uint = (content as Record).playTimes;
+				
+				if (total > 1 && ++count < total)
+				{
+					timerPlay();
+					video.play();
+				}
+				else
+				{
+					stop();
+				}
 			}
 			
+			/**
+			 * 
+			 *  
+			 * 
+			 */
+			private var f:Boolean;
 			
 			/**
 			 * 
@@ -215,6 +243,7 @@
 				
 				applyCallback(callbackTime);
 			}
+			
 			
 			/**
 			 * @private

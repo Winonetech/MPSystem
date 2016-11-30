@@ -135,6 +135,7 @@ package multipublish.utils
 		private static function validateTurn($schedule:Schedule, $now:Date):Boolean
 		{
 			//首先日期合法；
+		   //v2可以不合法，但是 v1必须合法。
 			var v1:Boolean = DateUtil.validate($schedule.startDate);
 			var v2:Boolean = DateUtil.validate($schedule.endDate);
 			//其次当前时间晚于排期结束时间，或当前时间早于节目起始时间，都处于不在档状态。
@@ -217,7 +218,8 @@ package multipublish.utils
 		 */
 		private static function resolveWeek($schedule:Schedule, $now:Date):Boolean
 		{
-			return $schedule.extra.weekDays.indexOf($now.day) != -1;
+			return $schedule.extra.weekDays.indexOf($now.day) != -1
+				? validateDemand($schedule, $now) : false;
 		}
 		
 		/**
@@ -225,10 +227,11 @@ package multipublish.utils
 		 */
 		private static function resolveMonth($schedule:Schedule, $now:Date):Boolean
 		{
-			return $schedule.extra.monthType == ScheduleMonthTypeConsts.DAY
+			return validateDemand($schedule, $now) && 
+				($schedule.extra.monthType == ScheduleMonthTypeConsts.DAY
 				?  $now.date == $schedule.extra.monthDay
 				:  $now.day  == $schedule.extra.monthWeekDay 
-				&& $schedule.extra.monthWeek == DateUtil.getWeekOfMonth($now);
+				&& $schedule.extra.monthWeek == DateUtil.getWeekOfMonth($now));
 		}
 		
 		/**

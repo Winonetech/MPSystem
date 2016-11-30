@@ -115,9 +115,9 @@ package multipublish.tools
 		
 		public function stop():void
 		{
-			LogUtil.log("停止截图。");
 			if (timer)
 			{
+				LogUtil.log("停止截图。");
 				timer.removeEventListener(TimerEvent.TIMER, handlerTimer);
 				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
 				timer.stop();
@@ -144,13 +144,24 @@ package multipublish.tools
 //			var file:File = new File(path);
 //			file.createDirectory();  //创建存储不同终端截图的文件夹。
 			
-			var pic:File = new File(path + File.separator + ftpName + ".jpg");
+			pic = new File(path + File.separator + ftpName + ".jpg");
 			var fs:FileStream = new FileStream;
 			fs.open(pic, FileMode.WRITE);
 			fs.writeBytes(data);
 			fs.close();
-			upLoadPath = "ShotcutPic\\" + config.terminalNO + "\\" + ftpName + ".jpg";
+			upLoadPath = "ShotcutPic" + "-" + config.terminalNO + "/" + ftpName + ".jpg";
 			pic.canonicalize();
+			upLoad();
+		}
+		
+		/**
+		 * 
+		 * 上传截图。
+		 * 
+		 */
+		
+		private function upLoad():void
+		{
 			ftpRequest = new FTPRequest(
 				config.ftpHost,
 				config.ftpUserName,
@@ -159,8 +170,9 @@ package multipublish.tools
 				upLoadPath,
 				pic.nativePath);
 			ftpLoader = new FTPUploader;
-			ftpLoader.timeout = 5;
+			ftpLoader.timeout = 150;
 			ftpLoader.addEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.addEventListener(Event.CANCEL, handlerDefault_ftp);
 			ftpLoader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
 			ftpLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
 			ftpLoader.upload(ftpRequest);
@@ -219,23 +231,27 @@ package multipublish.tools
 		private function handlerDefault_ftp($e:Event):void
 		{
 			ftpLoader.removeEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.removeEventListener(Event.CANCEL, handlerDefault_ftp);
 			ftpLoader.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
 			ftpLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
 			
-			var success:Boolean = ($e.type == Event.COMPLETE);
-			
-			var description:Tip = success 
-				? MPTipConsts.RECORD_SHOTCUT_UPLOAD_SUCCESS
-				: MPTipConsts.RECORD_SHOTCUT_UPLOAD_FAILURE;
-			var text:String = success ? "" : ($e as IOErrorEvent).text;
-			
-			if (success) config.service.shotcutOver(true, 
-				config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
-			
-			LogSQLite.log(TypeConsts.NETWORK, 
-				EventConsts.EVENT_TAKE_SCREENSHOT,
-				LogUtil.logTip(description, text));
-			
+			if ($e.type == Event.CANCEL) upLoad();
+			else
+			{
+				var success:Boolean = ($e.type == Event.COMPLETE);
+				
+				var description:Tip = success 
+					? MPTipConsts.RECORD_SHOTCUT_UPLOAD_SUCCESS
+					: MPTipConsts.RECORD_SHOTCUT_UPLOAD_FAILURE;
+				var text:String = success ? "" : ($e as IOErrorEvent).text;
+				
+				if (success) config.service.shotcutOver(true, 
+					config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
+				
+				LogSQLite.log(TypeConsts.NETWORK, 
+					EventConsts.EVENT_TAKE_SCREENSHOT,
+					LogUtil.logTip(description, text));
+			}
 		}
 		
 		/**
@@ -336,6 +352,8 @@ package multipublish.tools
 		 * 
 		 */
 		private var ftpName:String;
+		
+		private var pic:File;
 		
 		private var upLoadPath:String
 	}

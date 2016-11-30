@@ -55,9 +55,9 @@ package multipublish.core
 		 * 下载电子报。
 		 * 
 		 */
-		public function downloadEPaper():void
+		public function downloadEPaper($url:String):void
 		{
-			execute(new LoadEPaperCommand);
+			execute(new LoadEPaperCommand($url));
 		}
 		
 		

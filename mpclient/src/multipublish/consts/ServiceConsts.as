@@ -71,6 +71,14 @@ package multipublish.consts
 		public static const FILE_DOWNLOAD:String = "FTPS:";
 		
 		
+		
+		/**
+		 * 
+		 * 获取电子报。
+		 * 默认值为“REEP:”。
+		 * 
+		 */
+		
 		public static const EPAPER_DOWNLOAD:String = "REEP:";
 		
 		
