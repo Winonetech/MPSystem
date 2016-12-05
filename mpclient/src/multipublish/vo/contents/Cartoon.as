@@ -12,6 +12,8 @@ package multipublish.vo.contents
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
+	import flash.filesystem.File;
+	
 	import multipublish.core.mp;
 	import multipublish.interfaces.IThumbnail;
 	
@@ -55,7 +57,10 @@ package multipublish.vo.contents
 		
 		override public function get content():String
 		{
-			return mp::content;
+			var str:String = (mp::content as String).split("://").shift() == "file" 
+				? File.applicationDirectory.resolvePath("cache\\content\\" +
+					(mp::content as String).split("\\").pop()).nativePath : mp::content;
+			return str;
 		}
 		
 		

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WOS Player"
-#define MyAppVersion "18.7.4"
+#define MyAppVersion "18.7.5"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -22,6 +22,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
+DisableDirPage=no
 AllowNoIcons=yes
 OutputBaseFilename=WOS Player
 SetupIconFile=files\MPClient.ico

@@ -19,6 +19,7 @@ package multipublish.core
 	import multipublish.tools.MPService;
 	import multipublish.tools.NativeService;
 	import multipublish.tools.Reporter;
+	import multipublish.tools.ScheduleChangedController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
 
@@ -502,6 +503,13 @@ package multipublish.core
 		 */
 		public var times:uint;
 		
+		
+		/**
+		 * 
+		 * 排期更新检测。
+		 * 
+		 */
+		public var scc:ScheduleChangedController;
 		
 		/**
 		 * @private

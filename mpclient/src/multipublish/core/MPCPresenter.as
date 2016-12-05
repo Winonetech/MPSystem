@@ -14,6 +14,7 @@ package multipublish.core
 	import cn.vision.pattern.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
+	import multipublish.tools.ScheduleChangedController;
 	
 	import spark.components.WindowedApplication;
 	
@@ -98,9 +99,9 @@ package multipublish.core
 			config.cache  = $cache;
 			
 			if ($push && config.times <= 1) config.times++;
-			
 			execute(new InitializeDataCommand($push));
 			execute(new PlaybackScheduleCommand);
+			if (i++ == 0) config.scc = new ScheduleChangedController;
 		}
 		
 		
@@ -307,6 +308,10 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
+		/**
+		 * @private
+		 */
+		private static var i:uint = 0;
 		
 		/**
 		 * 

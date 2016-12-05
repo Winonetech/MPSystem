@@ -12,6 +12,8 @@ package multipublish.vo.contents
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
+	import flash.filesystem.File;
+	
 	import multipublish.core.mp;
 	
 	
@@ -39,9 +41,15 @@ package multipublish.vo.contents
 		override public function parse($data:Object):void
 		{
 			super.parse($data);
-			
 			var url:String = getProperty("getcontents");
-			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			var temp:String = url.split(":").shift();
+			if (temp == "file") 
+			{
+				var str:String = (url.split(":\\\\").pop() as String).split("\\").pop();
+				var temp1:String = File.applicationDirectory.resolvePath("cache\\content\\" + str).nativePath;
+			}
+			var temp2:String = (temp == "file") ? temp1 : CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			mp::content = temp2;
 			wt::registCache(url);
 		}
 		

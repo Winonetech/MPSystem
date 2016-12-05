@@ -81,7 +81,7 @@ package multipublish.commands.steps
 			{
 				var model:Model = new Model;
 				model.url = config.cache 
-					? DataConsts.PATH_PROGRAM + "-" + id + ".xml"
+					? DataConsts.PATH_PROGRAM + id
 					: config.source + id;
 				model.extra.id = id;
 				model.extra.index = config.temp[id].index;

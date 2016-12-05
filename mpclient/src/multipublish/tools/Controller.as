@@ -8,13 +8,20 @@ package multipublish.tools
 	 */
 	
 	
+	import cn.vision.collections.Map;
 	import cn.vision.core.VSObject;
+	import cn.vision.pattern.core.Presenter;
 	import cn.vision.utils.LogUtil;
+	
+	import com.winonetech.core.Store;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import multipublish.commands.steps.InitializeSchedule;
 	import multipublish.consts.MPTipConsts;
+	import multipublish.core.MPCPresenter;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	public final class Controller extends VSObject
@@ -67,6 +74,7 @@ package multipublish.tools
 		{
 			broadcastCache = {};
 		}
+		
 		
 		
 		/**
@@ -194,6 +202,11 @@ package multipublish.tools
 		 * @private
 		 */
 		private var commanTimer:Timer;
+		
+		/**
+		 * @private
+		 */
+		private var scheduleTimer:Timer;
 		
 		/**
 		 * @private
