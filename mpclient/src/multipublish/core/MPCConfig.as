@@ -341,6 +341,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 最大累积命令长度。
+		 * 
+		 */
+		
+		public var cmdLimit:uint = 3;
+		
+		
+		/**
+		 * 
 		 * 启动等待推送时长，超时则加载本地缓存。
 		 * 
 		 */

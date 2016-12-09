@@ -206,6 +206,7 @@ package multipublish.tools
 		{
 			loader = new URLLoader;
 			request = new URLRequest;
+			request.method = "POST";
 			request.contentType = "text/xml; charset=utf-8";
 			timer = new Timer(1000);
 			loader.addEventListener(Event.COMPLETE, handlerDefault);
@@ -254,7 +255,11 @@ package multipublish.tools
 		{
 			cmds.push($value);
 			
-			requestURI();
+			if (count || cmds.length >= config.cmdLimit)
+			{
+				count = false;
+				requestURI();
+			}
 		} 
 		
 		/**
@@ -263,16 +268,17 @@ package multipublish.tools
 		 */
 		private function requestURI():void
 		{
-			if(!requesting &&cmds.length)
+			if(!requesting && cmds.length)
 			{
 				requesting = true;
-				var variables:URLVariables = new URLVariables;
-				variables.cmd = cmds.shift();
+				const l:uint = cmds.length;
+				for (var i:uint = 0; i < l; i++)
+				{
+					cmddata.push({"cmd":cmds[i]});
+				}
+				cmds.length = 0;
 				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
-				request.data = variables;
-				
-				LogUtil.log("通讯：" + request.url + "，cmd:" + variables.cmd);
-				
+				request.data = JSON.parse(JSON.stringify(cmddata));
 				loader.load(request);
 			}
 		}
@@ -290,7 +296,7 @@ package multipublish.tools
 			{
 				case Event.COMPLETE:
 					offsend ? disconnect() : connect();
-					readCMD(loader.data as String);
+					readCMD(JSON.stringify(loader.data));
 					break;
 				case IOErrorEvent.IO_ERROR:
 				case SecurityErrorEvent.SECURITY_ERROR:
@@ -320,6 +326,7 @@ package multipublish.tools
 			{
 				if (++heartbeatCount >= heartbeatTotal)
 				{
+					count = true;
 					heartbeatTotal = Math.random() * frequency + 15;
 					heartbeatCount = 0;
 					connected ? heartbeat() : online();
@@ -446,6 +453,15 @@ package multipublish.tools
 		 */
 		private var heartbeatTotal:uint = 0;
 		
+		/**
+		 * @private
+		 */
+		private var cmddata:Array = [];
+		
+		/**
+		 * @private 
+		 */
+		private var count:Boolean;
 		
 		/**
 		 * @private

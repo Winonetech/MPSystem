@@ -72,7 +72,8 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				LogUtil.log("htmlType字段不存在。");
+				content = HTTPUtil.normalize(getProperty("contentSource"));
+//				LogUtil.log("htmlType字段不存在。");
 			}
 		}
 		

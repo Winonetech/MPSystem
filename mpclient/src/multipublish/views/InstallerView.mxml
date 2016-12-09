@@ -190,6 +190,16 @@
 										textAlign="left" restrict="0-9"
 										change="textinput_changeHandler(event)"/>
 					</s:FormItem>
+					<s:FormItem label="{language.cmdLimit}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultCount3}"/>
+							</s:VGroup>
+						</s:helpContent>
+						<ct:Field text="{config.cmdLimit}" name="cmdLimit"
+								  textAlign="left" restrict="0-9"
+								  change="textinput_changeHandler(event)"/>
+					</s:FormItem>
 				</s:Form>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%" label="{language.ftp}">

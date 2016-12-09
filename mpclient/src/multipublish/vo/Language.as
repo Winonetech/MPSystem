@@ -280,6 +280,14 @@ package multipublish.vo
 		public var reconnectTime:String = "断开重连时长：";
 		
 		
+		/**
+		 * 
+		 * 最大命令累积上限。
+		 * 
+		 */
+		
+		public var cmdLimit:String = "最大命令累积上限：";
+		
 		//-----------------------------------------------------------------
 		// FTP TAB
 		//-----------------------------------------------------------------
@@ -538,6 +546,14 @@ package multipublish.vo
 		public var defaultTime7200:String = "以秒为单位，默认7200秒。";
 		
 		
+		/**
+		 * 
+		 * 以个为单位，默认为3。
+		 * 
+		 */
+		
+		public var defaultCount3:String = "以个为单位，默认为3。";
+		
 		//-----------------------------------------------------------------
 		// button
 		//-----------------------------------------------------------------
@@ -607,6 +623,7 @@ package multipublish.vo
 			heartbeatTime:"心跳间隔：",
 			pushwaitTime :"等待推送时长：",
 			reconnectTime:"断开重连时长：",
+			cmdLimit     :"最大命令累积上限：",
 			
 			ftp         :"FTP 服务",
 			ftpHost     :"FTP 地址：",
@@ -638,6 +655,7 @@ package multipublish.vo
 			defaultTime30  :"以秒为单位，默认30秒。",
 			defaultTime60  :"以秒为单位，默认60秒。",
 			defaultTime7200:"以秒为单位，默认7200秒。",
+			defaultCount3  :"以个为单位，默认为3。",
 			
 			getTerminalNO:"获取终端编号",
 			cancel       :"取消",
@@ -676,6 +694,7 @@ package multipublish.vo
 			heartbeatTime:"Heartbeat interval:",
 			pushwaitTime :"Waiting time for message:",
 			reconnectTime:"Time for reconnect:",
+			cmdLimit     :"Maximum limit of command:",
 			
 			ftp        :"FTP Service",
 			ftpHost    :"FTP Host:",
@@ -706,6 +725,7 @@ package multipublish.vo
 			defaultTime30  :"In seconds, default 30.",
 			defaultTime60  :"In seconds, default 60.",
 			defaultTime7200:"In seconds, default 7200.",
+			defaultCount3  :"For a uint, default 3.",
 			
 			getTerminalNO:"Get terminal NO.",
 			cancel       :"Cancel",
