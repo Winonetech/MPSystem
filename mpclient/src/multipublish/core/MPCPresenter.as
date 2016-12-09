@@ -50,6 +50,16 @@ package multipublish.core
 			quene.execute($command);
 		}
 		
+		/**
+		 * 
+		 * 下载电子报。
+		 * 
+		 */
+		public function downloadEPaper($url:String):void
+		{
+			execute(new LoadEPaperCommand($url));
+		}
+		
 		
 		/**
 		 * 

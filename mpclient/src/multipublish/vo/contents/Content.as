@@ -78,7 +78,7 @@ package multipublish.vo.contents
 		
 		/**
 		 * 
-		 * 内容名称。
+		 * 标题名称。
 		 * 
 		 */
 		

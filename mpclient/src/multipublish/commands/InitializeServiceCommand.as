@@ -55,7 +55,7 @@ package multipublish.commands
 		{
 			if(!config.exportData)
 			{
-				//注册每天 00:00执行函数，日期可以为任意日期。
+				//注册每天 00:00监测排期。
 				controller.registControlBroadcast(new Date(2000, 0, 1), presenter.broadcastProgram);
 				//设定 n秒后执行加载频道排期。
 				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5, null, true);
@@ -78,7 +78,7 @@ package multipublish.commands
 			}
 			else
 			{
-				//service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
+//				service.registHandler(ServiceConsts.RECEIVE_PROGRAM  , presenter.initializeProgram);
 				service.registHandler(ServiceConsts.RECEIVE_SCEDULE  , presenter.initializeModule);
 				service.registHandler(ServiceConsts.RECEIVE_LEDTEXT  , presenter.sendLed);
 				service.registHandler(ServiceConsts.LOCK_TIME        , presenter.lockTime);
@@ -91,6 +91,7 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
 				service.registHandler(ServiceConsts.FILE_DOWNLOAD    , presenter.downloadFiles);
+				service.registHandler(ServiceConsts.EPAPER_DOWNLOAD  , presenter.downloadEPaper);
 			}
 			service.frequency = config.heartbeatTime;
 			service.communicationStart();

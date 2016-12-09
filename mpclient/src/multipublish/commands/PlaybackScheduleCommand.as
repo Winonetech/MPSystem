@@ -78,18 +78,18 @@ package multipublish.commands
 		{
 			if (note)
 			{
+				controller.removeControlAllBroadcast();
 				var schedules:Object = provider.schedulesMap;
 				for each (var schedule:Schedule in schedules)
 				{
-					if (ScheduleUtil.validateScheduleInArchive(schedule))
+					if (ScheduleUtil.validateScheduleInArchive(schedule))  //验证排期的日期。轮播直接返回 true。
 					{
 						if ((schedule.type == ScheduleTypeConsts.DEMAND) || 
 							(schedule.type == ScheduleTypeConsts.SPOTS)  || 
 							(schedule.type == ScheduleTypeConsts.REPEAT  && 
-							(schedule.extra.repeatType == ScheduleRepeatTypeConsts.DAY) && 
 							!schedule.repeatWholeDay))
 						{
-							//轮播是不需要注册时间的。
+							//轮播是不需要注册时间的。重复类型如果是全天播放也不需要注册时间。
 							controller.registControlBroadcast(schedule.startTime, presenter.broadcastProgram);
 							controller.registControlBroadcast(schedule.endTime  , presenter.broadcastProgram);
 						}
@@ -108,6 +108,7 @@ package multipublish.commands
 			var schedules:Object = provider.schedulesMap;
 			for each (var schedule:Schedule in schedules)
 			{
+				//PS:此处只修复了每周 每月的 BUG。如果新增加了每年请进入修改。
 				if (ScheduleUtil.validateScheduleAvailable(schedule) && 
 					ScheduleUtil.compareSchedules(current, schedule))
 					var current:Schedule = schedule;

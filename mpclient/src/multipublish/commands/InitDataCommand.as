@@ -21,6 +21,7 @@ package multipublish.commands
 	import multipublish.utils.ViewUtil;
 	import multipublish.vo.contents.Button;
 	import multipublish.vo.contents.Content;
+	import multipublish.vo.contents.EPaper;
 	import multipublish.vo.contents.Marquee;
 	import multipublish.vo.contents.News;
 	import multipublish.vo.programs.*;
@@ -68,6 +69,8 @@ package multipublish.commands
 				modelog("初始化排期，下载文件。");
 				
 				ButtonManager.clear();
+				
+				provider.ePaperMap.clear();
 				
 				initSchedule(config.raw["channel"]);
 				
@@ -215,6 +218,12 @@ package multipublish.commands
 				if (content is News)
 				{
 					(content as News).noImage = component.noImage;   
+				}
+				
+				if (content is EPaper)
+				{
+					var temp:EPaper = content as EPaper;
+					provider.ePaperMap[temp.content] = temp;
 				}
 				
 				component.mp::addContent(content);

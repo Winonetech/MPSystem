@@ -15,7 +15,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F0A09664-0CE5-434B-8521-03C7AF7FF6B2}}
 AppName={#MyAppName}
-AppVersion={#MyAppVersion}
+AppVersion={#MyAppVersion}  
 ;AppVersion=LoadValueFromXML(MPClient\META-INF\AIR\application.xml, //application/versionNumber)
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -24,6 +24,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={sd}\MPClient
 DefaultGroupName={#MyAppName}
+DisableDirPage=no
 AllowNoIcons=yes
 OutputBaseFilename=WOS Player
 SetupIconFile=files\MPClient.ico
@@ -56,7 +57,6 @@ Source: "files\JRShell.cfg.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "led\*"; DestDir: "{app}\led"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "MPCExporter\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 

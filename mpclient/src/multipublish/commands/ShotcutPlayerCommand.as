@@ -90,7 +90,7 @@ package multipublish.commands
 					else
 					{
 						//仅当传入参数时会进入。
-						controller.removeControlAllShotcut();
+						controller.removeControlAllShotcut();   //清空之前的记录。
 						config.shotcutName = {};
 						shotcutSettime();
 					}
@@ -112,6 +112,7 @@ package multipublish.commands
 			
 			var s:Date = new Date(t1);
 			var e:Date = new Date(t2);
+			e.date ++;
 			var d:Date = new Date;
 			if (s.time <= d.time && d.time <= e.time) 
 			{
