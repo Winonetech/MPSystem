@@ -172,19 +172,20 @@
 			
 			/**
 			 * @private
+			 * 这是一个被回调的函数。当progress与result被创建完成后会再次调用。
 			 */
 			private function callbackData():Boolean
 			{
  				var result:Boolean = data && progress;   //此处的 data的类型与 Cache的 refe属性有关。
-				
+				//回调之必要。
 				if (result) 
 				{
-					data.update();
-					var ready:Boolean = data.ready;
+					data.update();    //一般存在于具体组件 View内的 update方法。否则不做任何操作。
+					var ready:Boolean = data.ready;    //一般来说是根据是否存在尚需下载的内容进行判定的。
 					currentState = ready ? "display" : "loading";
 					if (ready)
 					{
-						prepareView();
+						prepareView();   
 					}
 					else
 					{
@@ -192,8 +193,9 @@
 						{
 							progress.title = data.tip.title;
 							progress.message = data.tip.message;
-						}
-						data.addEventListener(ControlEvent.READY, handlerDataReady);
+						} 
+						//接收自组件对应 VO发送的事件。
+						data.addEventListener(ControlEvent.READY, handlerDataReady);    
 						data.addEventListener(ControlEvent.PROGRESS, handlerProgress);
 						data.addEventListener(ControlEvent.ERROR, handlerProgress);
 						data.addEventListener(ControlEvent.DOWNLOAD, handlerDownload);
@@ -268,7 +270,7 @@
 			private function handlerDownload($e:ControlEvent):void
 			{
 				currentState = "loading";
-				if (progress) progress.play();
+				if (progress) progress.play();    //显示下载进程。
 			}
 			
 			

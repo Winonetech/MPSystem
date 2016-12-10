@@ -139,6 +139,31 @@ package multipublish.tools
 		}
 		
 		
+		
+		/**
+		 * 
+		 * 向服务端申请下载。
+		 * 
+		 */
+		
+		public function downloadApply():void
+		{
+			send(ServiceConsts.DL_APPLY + config.terminalNO);
+		}
+		
+		
+		/**
+		 * 
+		 * 向服务端报告下载完成。
+		 * 
+		 */
+		
+		public function downloadOver():void
+		{
+			send(ServiceConsts.DL_OVER + config.terminalNO);
+		}
+		
+		
 		/**
 		 * 
 		 * 向服务端上报截图上传完毕，并传递截图的地址。
@@ -149,10 +174,21 @@ package multipublish.tools
 		
 		public function shotcutOver($success:Boolean = true, $name:String = null):void
 		{
-			send(ServiceConsts.SEND_SHOTCUT + $name);
+			if ($success) send(ServiceConsts.SEND_SHOTCUT + $name);
 		}
 		
 		
+		/**
+		 * 
+		 * 向服务端发送LED config文件。
+		 * 
+		 */
+		
+		public function readConfigOver($config:String):void
+		{
+			send(ServiceConsts.SEND_LEDCONFIG +
+				config.terminalNO + ";" + $config);
+		}
 		
 		/**
 		 * 
@@ -263,14 +299,13 @@ package multipublish.tools
 		 */
 		private function requestURI():void
 		{
-			if(!requesting &&cmds.length)
+			if(!requesting && cmds.length)
 			{
 				requesting = true;
 				var variables:URLVariables = new URLVariables;
 				variables.cmd = cmds.shift();
 				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				request.data = variables;
-				
 				LogUtil.log("通讯：" + request.url + "，cmd:" + variables.cmd);
 				
 				loader.load(request);

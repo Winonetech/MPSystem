@@ -14,6 +14,7 @@ package multipublish.core
 	import cn.vision.pattern.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
+	import multipublish.events.DLStateEvent;
 	
 	import spark.components.WindowedApplication;
 	
@@ -55,9 +56,19 @@ package multipublish.core
 		 * 下载电子报。
 		 * 
 		 */
-		public function downloadEPaper($url:String):void
+		public function downloadEPaper($url:String = null):void
 		{
 			execute(new LoadEPaperCommand($url));
+		}
+		
+		/**
+		 * 
+		 * 发送LED配置。
+		 * 
+		 */
+		public function getLEDConfig($config:String):void
+		{
+			execute(new GetLEDConfigCommand($config));
 		}
 		
 		
@@ -107,9 +118,19 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
+			var executePlaySchedule:Function = function(e:DLStateEvent):void
+			{
+				MPCView.instance.progress.removeEventListener(
+					DLStateEvent.FINISH, executePlaySchedule);
+				
+				execute(new PlaybackScheduleCommand);
+			};
+			
+			MPCView.instance.progress.addEventListener(DLStateEvent.FINISH, executePlaySchedule);
+			if (i++ == 0) execute(new SendLEDConfigCommand);
 			execute(new LoadChannelCommand($push));
 			execute(new InitDataCommand);
-			execute(new PlaybackScheduleCommand);
+			execute(new DownLoadQueueCommand);
 		}
 		
 		
@@ -300,6 +321,19 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 回馈下载队列的状态。
+		 * 
+		 */
+		
+		public function downloadQueueHandle($cmd:String):void
+		{
+			execute(new DownLoadQueueCommand($cmd));
+		}
+		
+		
+		
+		/**
+		 * 
 		 * 启动流程。
 		 * 
 		 */
@@ -354,6 +388,8 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
+		
+		private static var i:uint;
 		
 		/**
 		 * 

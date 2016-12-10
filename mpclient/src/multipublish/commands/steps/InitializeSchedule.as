@@ -111,7 +111,7 @@ package multipublish.commands.steps
 							temp[schedule.id][ObjectUtil.convert(programs[i]["id"])] = schedule;
 						}
 						/*for (var i:int = 0; i < l; i++) 
-							push(temp, XMLUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});*/
+							push(temp, ObjectUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});*/
 					}
 				}
 			}

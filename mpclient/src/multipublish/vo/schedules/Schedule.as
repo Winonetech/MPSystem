@@ -179,10 +179,11 @@ package multipublish.vo.schedules
 		
 		public function get startTime():Date
 		{
-			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
-			
-			mp::startTime = bool ? new Date
-				: ( mp::startTime || getProperty("startTime", Date, TIME_FORMATER) );
+//			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
+//			
+//			mp::startTime = bool ? new Date
+//				: ( mp::startTime || getProperty("startTime", Date, TIME_FORMATER) );
+			mp::startTime = mp::startTime || getProperty("startTime", Date, TIME_FORMATER);
 			
 			return mp::startTime;
 		}

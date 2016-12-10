@@ -67,6 +67,8 @@ package multipublish.vo.contents
 		override public function update(...$args):void
 		{
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
+			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
+			else useCache = true;
 			if (time == getPaperTime || $args[0]) updateContents();
 		}
 		
@@ -128,7 +130,7 @@ package multipublish.vo.contents
 						}
 						else
 						{
-							var cache:Cache = (item is String) ? Cache.cache(item) : item;
+							var cache:Cache = (item is String) ? Cache.cache(item) : item;   //Cache主要存放一些下载路径和安装路径。
 							if (!cach[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
@@ -184,7 +186,7 @@ package multipublish.vo.contents
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
-			var urls:Array = [];
+			var urls:Array = [];        //根据daysKeep得到的需要天数的报纸
 			var pre:String = URLUtil.buildFTPURL(content);
 			if (pre.substr(-1) != "/") url += "/";
 			for (var i:int = 0; i < daysKeep; i++)
@@ -387,9 +389,16 @@ package multipublish.vo.contents
 		
 		public function get daysKeep():uint
 		{
-			return getProperty("daysKeep", uint);
+			return useCache ? getProperty("daysKeep", uint) : _daysKeep;
 		}
 		
+		public function set daysKeep($value:uint):void
+		{
+			useCache  = false;
+			_daysKeep = $value;
+		}
+		
+		private var useCache:Boolean = true;
 		
 		/**
 		 * 
@@ -436,6 +445,7 @@ package multipublish.vo.contents
 		
 		/**
 		 * @private
+		 * 保存电子报的绝对路径。
 		 */
 		private var days:Array = [];
 		
@@ -459,6 +469,10 @@ package multipublish.vo.contents
 		 */
 		private var temp:Map = new Map;
 		
+		/**
+		 * @private
+		 */
+		private var _daysKeep:uint;
 		
 		/**
 		 * @private

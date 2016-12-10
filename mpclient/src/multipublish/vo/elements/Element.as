@@ -15,7 +15,7 @@ package multipublish.vo.elements
 	 */
 	
 	
-	import cn.vision.utils.XMLUtil;
+	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.VO;
@@ -61,9 +61,9 @@ package multipublish.vo.elements
 				list = data["folder"];
 				if (list)
 				{
-					mp::id         = XMLUtil.convert(list["id"]);
-					mp::type       = XMLUtil.convert(list["type"], uint);
-					var tmb:String = XMLUtil.convert(list["thumbnailpath"]);
+					mp::id         = ObjectUtil.convert(list["id"]);
+					mp::type       = ObjectUtil.convert(list["type"], uint);
+					var tmb:String = ObjectUtil.convert(list["thumbnailpath"]);
 					mp::thumbnail  = CacheUtil.extractURI(tmb, PathConsts.PATH_FILE);
 					wt::registCache(tmb);
 					

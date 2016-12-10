@@ -7,12 +7,8 @@ package multipublish.commands
 	 * 
 	 */
 	
-	
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.ObjectUtil;
-	import cn.vision.utils.TimerUtil;
-	
-	import com.winonetech.tools.Cache;
 	
 	import multipublish.core.MDProvider;
 	import multipublish.core.mp;
@@ -76,7 +72,7 @@ package multipublish.commands
 				
 				
 				//随机延时30秒内的时间，避免同时访问服务端FTP造成的服务端压力过大
-				TimerUtil.callLater(Math.random() * 180000, Cache.start);
+//				TimerUtil.callLater(Math.random() * 180000, Cache.start);
 				//Cache.start();
 			}
 		}
@@ -109,9 +105,12 @@ package multipublish.commands
 				delete rawProgram.layout;
 				var program:Program = new Program(rawProgram);
 				schedule.addProgram(program);
-				initLayout(datProgram["layout"], program);
+				program.moduleType
+				? initModuleContent(datProgram["contents"], program)
+				: initLayout(datProgram["layout"], program);
 			}
 		}
+		
 		
 		/**
 		 * @private
@@ -199,6 +198,18 @@ package multipublish.commands
 			
 			sheet.mp::updateComponentsOrder();
 		}
+		
+		
+		private function initModuleContent(dataContent:*, program:Program):void
+		{
+			for each (var tempContent:Object in dataContent)
+			{
+				var tempData:Object = ObjectUtil.clone(tempContent);
+				var content:Content = new (ContentUtil.getModuleVO(program.moduleType))(tempData);
+				program.mp::addContent(content);
+			}
+		}
+		
 		
 		/**
 		 * @private

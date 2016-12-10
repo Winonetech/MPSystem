@@ -91,7 +91,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var progress:ProgressView;
+		public var progress:ProgressView = new ProgressView;
 		
 		
 		/**

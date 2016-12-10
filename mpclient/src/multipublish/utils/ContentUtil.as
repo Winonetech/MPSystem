@@ -11,9 +11,17 @@ package multipublish.utils
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.FileUtil;
 	
-	import multipublish.views.CacheView;
+	import com.winonetech.tools.Cache;
+	
+	import multipublish.views.LayoutView;
 	import multipublish.views.contents.*;
+	import multipublish.views.moduleContents.AskPaperView;
+	import multipublish.views.moduleContents.EmergencyBroadView;
+	import multipublish.views.moduleContents.NoticeView;
 	import multipublish.vo.contents.*;
+	import multipublish.vo.moduleContents.AskPaper;
+	import multipublish.vo.moduleContents.EmergencyBroad;
+	import multipublish.vo.moduleContents.Notice;
 	
 	
 	public final class ContentUtil extends NoInstance
@@ -25,20 +33,22 @@ package multipublish.utils
 		 * 
 		 */
 		
-		public static function getContentView($content:Content):CacheView
+		public static function getContentView($content:Content):*
 		{
 			if ($content)
 			{
 				var refer:Class = VIEWS[$content.type];
 				if (refer) 
 				{
-					var content:CacheView = new CacheView;
-					content.refer = refer;
+					var content:* = new refer;
 					content.data  = $content;
 				}
 			}
 			return content;
 		}
+		
+		
+		
 		
 		
 		/**
@@ -77,6 +87,44 @@ package multipublish.utils
 			return content;
 		}
 		
+		
+		
+		public static function getModuleVO($index:int):Class
+		{
+			return MVOS[$index];
+		}
+		
+		
+		public static function getModuleView($index:int):Class
+		{
+			return MVIEWS[$index];
+		}
+		
+		/**
+		 * 
+		 * 模块类型字典。     <br>
+		 * 0 -> 其他模块。<br>
+		 * 1 -> 民意调查。<br>
+		 * 2 -> 应急播报。<br>
+		 * 3 -> 公告通知。
+		 * 
+		 */
+		
+		private static const MVIEWS:Object = 
+		{
+			0 : LayoutView,
+			1 : AskPaperView,
+			2 : EmergencyBroadView,
+			3 : NoticeView
+		};
+		
+		
+		private static const MVOS:Object = 
+		{
+			1 : AskPaper,
+			2 : EmergencyBroad,
+			3 : Notice
+		};
 		
 		/**
 		 * @private

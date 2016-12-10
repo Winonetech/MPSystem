@@ -9,10 +9,12 @@ package multipublish.vo.programs
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.ArrayUtil;
 	
 	import com.winonetech.core.VO;
 	
 	import multipublish.core.mp;
+	import multipublish.vo.contents.Content;
 	
 	
 	public final class Program extends VO
@@ -105,11 +107,47 @@ package multipublish.vo.programs
 		}
 		
 		
+		public function get moduleType():int
+		{
+			return getProperty("moduleType", int);
+		}
+		
+		
+		/**
+		 * 
+		 * 添加内容。
+		 * 
+		 */
+		
+		mp function addContent($content:Content):void
+		{
+			if ($content && moduleContents.indexOf($content) == -1)
+			{
+				ArrayUtil.push(moduleContents, $content);
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 内容集合。
+		 * 
+		 */
+		
+		public function get moduleContents():Vector.<Content>
+		{
+			return mp::moduleContents;
+		}
+		
 		/**
 		 * @private
 		 */
 		mp var layouts:Map;
 		
+		/**
+		 * @private
+		 */
+		mp var moduleContents:Vector.<Content> = new Vector.<Content>;
 		
 		/**
 		 * 

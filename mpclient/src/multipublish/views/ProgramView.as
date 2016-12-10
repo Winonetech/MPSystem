@@ -14,6 +14,10 @@ package multipublish.views
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
+	import multipublish.utils.ContentUtil;
+	import multipublish.views.moduleContents.AskPaperView;
+	import multipublish.views.moduleContents.EmergencyBroadView;
+	import multipublish.views.moduleContents.NoticeView;
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
@@ -122,10 +126,12 @@ package multipublish.views
 				
 				autofitScale();
 				
-				container.addElement(view = new LayoutView);
+				container.addElement(view = new (ContentUtil.getModuleView(program.moduleType)));
 				view.width  = program.width;
 				view.height = program.height;
-				view.data   = program.layout;     //此处调用至 LayoutView。
+				view.data   = program.moduleType
+					? program.moduleContents 
+					: program.layout; 
 			}
 		}
 		
@@ -151,8 +157,6 @@ package multipublish.views
 			container.verticalCenter = 0;
 		}
 		
-		
-		
 		/**
 		 * @private
 		 */
@@ -166,7 +170,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var view:LayoutView;
+		private var view:*;
 		
 	}
 }

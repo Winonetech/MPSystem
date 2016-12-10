@@ -16,6 +16,8 @@ package multipublish.commands
 	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
 	
+	import flash.utils.ByteArray;
+	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;

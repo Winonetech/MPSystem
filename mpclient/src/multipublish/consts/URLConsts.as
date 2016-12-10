@@ -125,6 +125,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * led配置文件路径。
+		 * 
+		 */
+		
+		public static const LED_CONFIG:String = "led/config/LedSend.xml";
+		
+		
+		/**
+		 * 
 		 * 设置时间工具路径。
 		 * 
 		 */

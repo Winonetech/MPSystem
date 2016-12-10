@@ -21,6 +21,7 @@ package multipublish.core
 	import multipublish.tools.ScreenController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	[Bindable]
@@ -177,6 +178,15 @@ package multipublish.core
 		 */
 		
 		public var sled:String;
+		
+		
+		/**
+		 *
+		 * 是否显示下载状态。 
+		 * 
+		 */
+		
+		public var downloadState:Boolean;
 		
 		
 		/**
@@ -599,6 +609,13 @@ package multipublish.core
 		
 		public var screenController:ScreenController;
 		
+		
+		/**
+		 * 
+		 * 最后播放的节目。
+		 * 
+		 */
+		public var latest:Schedule;
 		
 		/**
 		 * 
