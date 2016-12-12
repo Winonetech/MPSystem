@@ -32,7 +32,7 @@ package multipublish.commands
 		{
 			cmd = $cmd;
 			
-			if (view.progress.isDownloading)
+			if (view.progress.isDownloading)     //如果正在下载时收到排期 应该初始化 isDownloading。 
 			{
 				Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 				view.progress.isDownloading = false;
@@ -73,7 +73,7 @@ package multipublish.commands
 		
 		private function resolveStart($args:String):void
 		{
-			if ($args)   //不传参数表示默认用原来的 (主服务器)。
+			if ($args)   
 			{
 				var temp:Array = trimBracket($args).split(",");
 				Cache.deftp(
@@ -82,7 +82,7 @@ package multipublish.commands
 					temp[2], 
 					temp[3]);
 			}
-			else
+			else	//不传参数表示默认用原来的 (主服务器)。
 			{
 				Cache.deftp(
 					config.ftpHost, 
@@ -90,9 +90,11 @@ package multipublish.commands
 					config.ftpUserName, 
 					config.ftpPassWord);
 			}
+			//开始下载时再注册监听。
 			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 			view.progress.isDownloading = true;
 			if (config.downloadState) view.progress.stateLabel.text = "下载中...";
+			view.progress.stop();
 			view.progress.play();
 		}
 		
@@ -104,14 +106,14 @@ package multipublish.commands
 		
 		private function trimBracket($str:String):String
 		{
-			const REMOVE_B:RegExp = /^\[*/;
-			const REMOVE_E:RegExp = /\]*$/;
-			
 			$str = $str.replace(REMOVE_B, "");
 			$str = $str.replace(REMOVE_E, "");
 			
 			return $str;
 		}
+		
+		
+		
 		
 		/**
 		 * 
@@ -138,28 +140,41 @@ package multipublish.commands
 		private function send():void
 		{
 			trace(Cache.cachesLave);
-			if (Cache.cachesLave > 0)
+			Cache.close();
+			
+			if (Cache.cachesLave > 0)    
 			{
 				service.downloadApply();
 				initDLState();
 			}
-			else
+			else        
 			{
+				if(image && view.application.contains(image))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
+					view.application.removeElement(image);
+				
 				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 			}
 		}
 		
+		/**
+		 * 
+		 * 下载完毕后的处理方法。
+		 *  
+		 */
 		
 		private function handler_QueueEnd(e:QueueEvent):void
 		{
 			Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 			
 			service.downloadOver();
-
-			view.application.removeElement(image);
-			view.progress.isDownloading = false;
-			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 			
+			if(image && view.application.contains(image))
+				view.application.removeElement(image);
+			
+			view.progress.isDownloading = false;
+			
+			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+			   
 			if (view.application.contains(view.progress))
 				view.application.removeElement(view.progress);
 //			view.progress = null;
@@ -173,16 +188,21 @@ package multipublish.commands
 		
 		private function initDLState():void
 		{
-			if (!image)
+			if (!image && !view.main.data)   //当图片不存在(第一次加载)并且主页面无数据(无排期播放)时加入图片。
 			{
 				initImage(); 
 			
 				view.application.addElement(image);
 			}
+			else if (image && view.application.contains(image))
+			{
+				view.application.removeElement(image);
+			}
 			
 			if (config.downloadState) initProgress();
 			
 			ViewUtil.guild(false);
+			
 		}
 		
 		/**
@@ -213,12 +233,24 @@ package multipublish.commands
 			image.x = image.y = 0;
 			image.source = "assets/images/welcomePic.png";
 		}
+
+		private static var image:Image;
+		
+		/**
+		 * 
+		 * 一个计数器。统计发送申请的个数。只处理最后一个。
+		 * 
+		 */
+		
+		private static var count:int = 0;
+		
+		private const REMOVE_B:RegExp = /^\[*/;
+		
+		private const REMOVE_E:RegExp = /\]*$/;
 		
 		private var service:MPService = config.service;
 		
 		private var cmd:String;
-		
-		private var image:Image;
 		
 	}
 }

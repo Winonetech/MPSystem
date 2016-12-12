@@ -21,7 +21,7 @@
 		</s:fill>
 	</s:Rect>
 	
-	<cp:ProgressView includeIn="loading, loadplay"
+	<cp:ProgressWindow includeIn="loading, loadplay"
 					 data="{data.caches}" id="progress"
 					 maxWidth="{width}" maxHeight="{height}"
 					 horizontalCenter="0" verticalCenter="0"/>

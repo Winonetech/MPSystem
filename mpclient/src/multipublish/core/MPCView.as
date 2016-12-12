@@ -12,7 +12,7 @@ package multipublish.core
 	import cn.vision.core.VSObject;
 	import cn.vision.errors.SingleTonError;
 	
-	import com.winonetech.components.progress.ProgressView;
+	import com.winonetech.components.progress.ProgressWindow;
 	
 	import input.Input;
 	
@@ -91,7 +91,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var progress:ProgressView = new ProgressView;
+		public var progress:ProgressWindow = new ProgressWindow;
 		
 		
 		/**

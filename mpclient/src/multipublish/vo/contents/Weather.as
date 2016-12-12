@@ -8,6 +8,7 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.events.ControlEvent;

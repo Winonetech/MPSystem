@@ -63,7 +63,7 @@ package multipublish.commands
 			
 			config.controller.removeControlUsecache();
 			Cache.queue.commandsIdle.length = 0;    //清空未下载的队列。
-			Cache.queue.close();       //停止下载。
+			Cache.close();       //停止下载。
 			
 			model = new Model;    //执行 url并存储数据。
 			model.url = config.cache ? DataConsts.PATH_CHANNEL : url;
