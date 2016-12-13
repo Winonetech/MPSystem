@@ -76,7 +76,7 @@ package multipublish.commands
 				
 				
 				//随机延时30秒内的时间，避免同时访问服务端FTP造成的服务端压力过大
-				TimerUtil.callLater(Math.random() * 180000, Cache.start);
+//				TimerUtil.callLater(Math.random() * 180000, Cache.start);
 				//Cache.start();
 			}
 		}

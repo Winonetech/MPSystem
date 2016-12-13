@@ -121,7 +121,7 @@
 					timer.addEventListener(TimerEvent.TIMER,function settimers():void
 					{
 						var date:Date = new Date;
-						var dateString:String = ObjectUtil.convert(date, String, _timeStyle.format);
+						var dateString:String = ObjectUtil.convert(date, String, "YYYY年MM月DD日|HH:MI");
 						var arr:Array = dateString.split("|");
 						dateStr = arr[0];
 						timeStr = arr[arr.length-1];

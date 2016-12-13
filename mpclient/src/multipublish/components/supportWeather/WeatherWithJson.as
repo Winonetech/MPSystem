@@ -70,7 +70,7 @@ package multipublish.components.supportWeather
 			if(dataObj.style.loadWeather == "true")
 			{
 				url = "http://apis.baidu.com/apistore" +
-					"/weatherservice/recentweathers?cityname=" + cityName;
+					"/weatherservice/recentweathers?cityname=" + "宜宾";
 				getDataByInterface();
 			}
 			else
