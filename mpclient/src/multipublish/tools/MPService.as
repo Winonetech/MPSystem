@@ -20,6 +20,8 @@ package multipublish.tools
 	import flash.events.TimerEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.net.URLStream;
 	import flash.net.URLVariables;
 	import flash.utils.Timer;
 	
@@ -27,6 +29,11 @@ package multipublish.tools
 	import multipublish.consts.ServiceConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.vo.elements.Arrange;
+	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 	
 	
 	public final class MPService
@@ -86,9 +93,9 @@ package multipublish.tools
 			if(!connected)
 			{
 				offsend = false;
+				count = true;
 				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
 			}
-			
 		}
 		
 		
@@ -204,14 +211,13 @@ package multipublish.tools
 		 */
 		private function initialize():void
 		{
-			loader = new URLLoader;
-			request = new URLRequest;
-			request.method = "POST";
-			request.contentType = "text/xml; charset=utf-8";
+			http = new HTTPService;
+			http.contentType = "application/json";
+			http.method = "POST";
+			
 			timer = new Timer(1000);
-			loader.addEventListener(Event.COMPLETE, handlerDefault);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
+			http.addEventListener(ResultEvent.RESULT, handlerDefault);
+			http.addEventListener(FaultEvent.FAULT, handlerDefault);
 			
 			timer.addEventListener(TimerEvent.TIMER, handlerTimer);
 		}
@@ -276,10 +282,10 @@ package multipublish.tools
 				{
 					cmddata.push({"cmd":cmds[i]});
 				}
-				cmds.length = 0;
-				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
-				request.data = JSON.parse(JSON.stringify(cmddata));
-				loader.load(request);
+				cmds.splice(0, cmds.length);
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				http.send(JSON.stringify(cmddata));
+				cmddata = [];
 			}
 		}
 		
@@ -294,12 +300,11 @@ package multipublish.tools
 			requesting = false;
 			switch ($e.type)
 			{
-				case Event.COMPLETE:
+				case ResultEvent.RESULT:
 					offsend ? disconnect() : connect();
-					readCMD(JSON.stringify(loader.data));
+					readCMD(JSON.stringify(($e as ResultEvent).result));
 					break;
-				case IOErrorEvent.IO_ERROR:
-				case SecurityErrorEvent.SECURITY_ERROR:
+				case FaultEvent.FAULT:
 					disconnect();
 					mp::message = ($e as Object).text;
 					break;
@@ -316,7 +321,6 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			//
 			if (heartbeatTotal == 0)
 			{
 				heartbeatTotal = Math.random() * frequency + 15;
@@ -339,8 +343,10 @@ package multipublish.tools
 		 */
 		private function readCMD($value:String):void
 		{
-			$value = $value.split("\r").join("");
-			var list:Array = $value.split("\n");
+		    $value = JSON.parse($value) as String;
+			var arr:Object = (JSON.parse($value) as Array).shift();
+			var str:String = arr["result"];
+			var list:Array = str.split("\n");
 			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 			{
 				return !StringUtil.isEmpty($item.substr(0, 5));
@@ -426,12 +432,9 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var loader:URLLoader;
+		private var http:HTTPService;
 		
-		/**
-		 * @private
-		 */
-		private var request:URLRequest;
+		
 		
 		/**
 		 * @private
