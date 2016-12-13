@@ -139,20 +139,23 @@ package multipublish.commands
 		
 		private function send():void
 		{
-			trace(Cache.cachesLave);
-			Cache.close();
-			
-			if (Cache.cachesLave > 0)    
+			if (config.replacable)
 			{
-				service.downloadApply();
-				initDLState();
-			}
-			else        
-			{
-				if(image && view.application.contains(image))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
-					view.application.removeElement(image);
+				trace(Cache.cachesLave);
+				Cache.queue.close();
 				
-				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+				if (Cache.cachesLave > 0)    
+				{
+					service.downloadApply();
+					initDLState();
+				}
+				else        
+				{
+					if(image && view.application.contains(image))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
+						view.application.removeElement(image);
+					
+					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+				}
 			}
 		}
 		
