@@ -50,6 +50,16 @@ package multipublish.core
 			quene.execute($command);
 		}
 		
+		/**
+		 * 
+		 * 下载电子报。
+		 * 
+		 */
+		public function downloadEPaper($url:String):void
+		{
+			execute(new LoadEPaperCommand($url));
+		}
+		
 		
 		/**
 		 * 
@@ -97,7 +107,8 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
-			execute(new InitializeDataCommand($push));
+			execute(new LoadChannelCommand($push));
+			execute(new InitDataCommand);
 			execute(new PlaybackScheduleCommand);
 		}
 		
@@ -116,6 +127,18 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 发送LED信息。
+		 * 
+		 */
+		
+		public function sendLed($value:String):void
+		{
+			execute(new SendLedCommand($value));
+		}
+		
+		
+		/**
+		 * 
 		 * 时间同步
 		 * 
 		 */
@@ -123,6 +146,30 @@ package multipublish.core
 		public function lockTime($value:String):void
 		{
 			execute(new LockTimeCommand($value));
+		}
+		
+		
+		/**
+		 * 
+		 * 下载文件
+		 * 
+		 */
+		
+		public function downloadFiles($data:String):void
+		{
+			execute(new ReloadFilesCommand($data));
+		}
+		
+		
+		/**
+		 * 
+		 * 获取报纸
+		 * 
+		 */
+		
+		public function refreshEpaper($data:String):void
+		{
+			execute(new ReloadEPaperCommand($data));
 		}
 		
 		
@@ -170,7 +217,7 @@ package multipublish.core
 		
 		public function shotcutPlayer($value:String):void
 		{
-			execute(new ShotcutPlayerCommand(uint($value)));
+			execute(new ShotcutPlayerCommand($value));
 		}
 		
 		
@@ -196,6 +243,7 @@ package multipublish.core
 		{
 			execute(new InitializeShutdownCommand($value));
 		}
+		
 		
 		
 		/**
@@ -259,14 +307,15 @@ package multipublish.core
 		override protected function setup(...$args):void
 		{
 			config.exportData = $args[0];
-			
-			execute(new InitializeEnvironmentCommand);
-			execute(new InitializeConfigCommand);
-			execute(new InitializeShutdownCommand);
-			execute(new InitializeFirstStartCommand);
-			execute(new ClientUpdateCommand);
-			execute(new InitializeViewCommand);
-			execute(new InitializeServiceCommand);
+			execute(new InitializeEnvironmentCommand);    //初始化网络配置，初始化窗口和初始化LED。
+			execute(new InitializeConfigCommand);        //解析 config并映射到 MDConfig中。
+			execute(new InitializeShutdownCommand);     //初始化关机数据。
+			execute(new ShotcutPlayerCommand);         //初始化截图数据。
+			execute(new InitializeFirstStartCommand); //调出首次设置弹窗。(根据是否有终端编号以判定是否需要弹出设置窗口)
+			execute(new ClientUpdateCommand);		 //升级判定。
+			execute(new InitializeViewCommand);     //调出显示页面。
+			execute(new InitializeServiceCommand); //初始化服务。
+			execute(new SendLedCommand);          //发送 LED。
 		}
 		
 		

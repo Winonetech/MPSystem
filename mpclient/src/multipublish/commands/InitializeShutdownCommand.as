@@ -61,7 +61,7 @@ package multipublish.commands
 		 */
 		private function initialize($cmd:String):void
 		{
-			cmd = $cmd;
+			cmd = $cmd;   //关机命令参数
 			conf = (cmd == "config");
 		}
 		
@@ -73,12 +73,14 @@ package multipublish.commands
 		{
 			if (StringUtil.isEmpty(cmd))
 			{
-				shutdownDirectly();   //不存在则立即关机
+				//参数为空表示立即关机
+				shutdownDirectly();
 			}
 			else
 			{
 				if (isNaN(Number(cmd))) 
 				{
+					//仅初始化的时候进来。
 					if (cmd == "config")
 					{
 						if (config.shutdown)
@@ -89,12 +91,15 @@ package multipublish.commands
 					}
 					else
 					{
+						//非默认情况。
+						controller.removeControlAllShutdown();  //覆盖之前的策略。
 						shutdownSettime();
 					}
 				}
 				else
 				{
-					shutdownCheckweek();  
+					//仅当回调函数的时候会进来。
+					shutdownCheckweek();
 				}
 			}
 		}
@@ -110,7 +115,18 @@ package multipublish.commands
 				EventConsts.EVENT_PC_SHUTDOWN,
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN));
 			
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
+			config.service.communicationStop();
+			
+			try
+			{
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
+			}
+			catch (e:Error)
+			{
+				LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/shutdown.exe没有被其他安全软件隔离删除。");
+			}
+			
 		}
 		
 		/** 
@@ -121,8 +137,7 @@ package multipublish.commands
 		private function shutdownCheckweek():void
 		{
 			var date:Date = new Date;
-			if (date.day == Number(cmd))
-				shutdownDirectly();
+			if (date.day == Number(cmd)) shutdownDirectly();
 		}
 		
 		/**
@@ -130,28 +145,34 @@ package multipublish.commands
 		 */
 		private function shutdownSettime():void
 		{
+			//conf -> cmd == "config"
 			if (!conf)
 			{
 				config.shutdown = cmd;
 				
-				Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
 			}
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)
 			{
-				//cmd的格式:0(星期一)-12:00:00;1-12:00:00
-				var t1:Array = cmd.split(";");
+				//cmd格式：星期 -hh:mm:ss; 星期 -hh:mm:ss; ... ...
+				var t1:Array = cmd.split(";");    //分割出每个星期所对应的关机时间。
 				for each (var i:String in t1)
 				{
-					var t2:Array = i.split("-");
-					var time:String = t2[1];
+					var t2:Array = i.split("-");  //t2[0]为星期数解析。
+					var time:String = t2[1];     //t2[1]为时间解析。
 					if (time != "null")
 					{
-						var t3:Array = time.split(":");
+						var t3:Array = time.split(":");   //t3[0]为时，t3[1]为分，t3[2]为秒。
+						//2000年 1月表示特定的 日期 =星期 -2。
 						var date:Date = new Date(2000, 0, 2 + Number(t2[0]), t3[0], t3[1], t3[2]);
 						controller.registControlShutdown(date, presenter.shutdownTerminal, t2[0]);
 					}
 				}
+			}
+			else
+			{
+				controller.removeControlAllShutdown();
 			}
 		}
 		
@@ -166,12 +187,12 @@ package multipublish.commands
 		
 		
 		/**
-		 * @private
+		 * 关机命令参数。
 		 */
 		private var cmd:String;
 		
 		/**
-		 * @private
+		 * cmd是否为config（默认情况）
 		 */
 		private var conf:Boolean;
 		

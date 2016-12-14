@@ -12,13 +12,18 @@ package multipublish.vo.schedules
 	 * 5.monthWeek:uint 如果repeatType每月，且monthType为1时，该属性可用，表示每月的第几周，取值范围1-5；<br>
 	 * 6.monthWeekDay:uint 如果repeatType每月，且monthType为1时，该属性可用，表示每月第几周的第几天，取值范围0-6；<br>
 	 * 7.yearMonth:uint 如果repeatType是每年，该属性可用，表示每年的第几个月，取值范围1-12；<br>
-	 * 8.yearMonthDay:uint 如果repeatType是每年，该属性可用，表示每年的第几个月的第几天，取值范围1-31。
+	 * 8.yearMonthType:uint 如果repeatType是每年，该属性可用，值为0，表示每年的该月的第几天，值为1，表示每年的该月第几周的第几天。<br>
+	 * 9.yearMonthDay:uint 如果repeatType是每年，且yearMonthType为0时，该属性可用，表示每年的第几个月的第几天，取值范围1-31。<br>
+	 * 10.yearMonthWeek:uint 如果repeatType是每年，且yearMonthType为1时，该属性可用，表示每年的该月的第几周。<br>
+	 * 11.yearMonthWeekDay:uint 如果repeatType是每年，且yearMonthType为1时，该属性可用，表示每年的该月的第几周的第几天。<br>
 	 * </p>
 	 * 
 	 */
 	
 	
 	import cn.vision.consts.Consts;
+	import cn.vision.utils.ArrayUtil;
+	import cn.vision.utils.MathUtil;
 	import cn.vision.utils.StringUtil;
 	
 	import multipublish.consts.ScheduleRepeatTypeConsts;
@@ -55,7 +60,8 @@ package multipublish.vo.schedules
 					FUNC[ScheduleRepeatTypeConsts.MONTH] = resolveMonth;
 					FUNC[ScheduleRepeatTypeConsts.YEAR ] = resolveYear;
 				}
-				var array:Array = $extra.split(" ");
+				
+				var array:Array = $extra.split("|");
 				resolveRepeatType(array);
 				FUNC[repeatType](array);
 			}
@@ -66,13 +72,17 @@ package multipublish.vo.schedules
 		 */
 		private function resolveRepeatType($array:Array):void
 		{
-			if ($array[3] == "?" && $array[4] == "*")
+			switch($array[0])
 			{
-				repeatType = $array[5].indexOf("#") == -1 ? 1 : 2;
-			}
-			else if (!isNaN($array[3]))
-			{
-				repeatType = isNaN($array[4]) ? 2 : 3;
+				case "1":
+				case "2":
+				case "3":
+				case "0":
+					repeatType = $array[0];
+					break;
+				default:
+					repeatType = 0;
+					break;
 			}
 		}
 		
@@ -86,8 +96,10 @@ package multipublish.vo.schedules
 		 */
 		private function resolveWeek($array:Array):void
 		{
-			var temp:Array = $array[5].split(",");
-			weekDays = temp.map(function($e:*, $i:int, $a:Array):uint{return --$e});
+			var temp:Array = $array[1].split(",");
+			temp = temp.map(function($e:*, $i:int, $a:Array):uint{return MathUtil.clamp($e, 0, 6)});
+			weekDays = ArrayUtil.unique(temp);
+			weekDays.sort(Array.NUMERIC);
 		}
 		
 		/**
@@ -95,16 +107,16 @@ package multipublish.vo.schedules
 		 */
 		private function resolveMonth($array:Array):void
 		{
-			monthType = isNaN(Number($array[3])) ? 1 : 0;
+			monthType = $array[1];
+			
 			if (monthType)
 			{
-				var temp:Array = $array[5].split("#");
-				monthWeek = temp[1];
-				monthWeekDay = --temp[0];
+				monthWeek = $array[2];
+				monthWeekDay = $array[3];
 			}
 			else
 			{
-				monthDay = $array[3];
+				monthDay = $array[2];
 			}
 		}
 		
@@ -113,8 +125,17 @@ package multipublish.vo.schedules
 		 */
 		private function resolveYear($array:Array):void
 		{
-			yearMonth  = --$array[4];
-			yearMonthDay = $array[3];
+			yearMonth  = int($array[1]) - 1;
+			yearMonthType = $array[2];
+			if (yearMonthType)
+			{
+				yearMonthWeek = $array[3];
+				yearMonthWeekDay = $array[4];
+			}
+			else
+			{
+				yearMonthDay = $array[3];
+			}
 		}
 			
 		
@@ -189,11 +210,38 @@ package multipublish.vo.schedules
 		
 		/**
 		 * 
-		 * 如果repeatType是每年，该属性可用，表示每年的第几个月的第几天，取值范围1-31。
+		 * 如果repeatType是每年，该属性可用，为0，表示每年的第几个月的第几天，为1，表示每年的第几个月的第几周的第几天。
+		 * 
+		 */
+		
+		public var yearMonthType:uint;
+		
+		
+		/**
+		 * 
+		 * 如果repeatType是每年，yearMonthType为0时，该属性可用，表示每年的第几个月的第几天，取值范围1-31。
 		 * 
 		 */
 		
 		public var yearMonthDay:uint;
+		
+		
+		/**
+		 * 
+		 * 如果repeatType是每年，yearMonthType为1时，该属性可用，表示每年的第几个月的第几周，取值范围1-5。
+		 * 
+		 */
+		
+		public var yearMonthWeek:uint;
+		
+		
+		/**
+		 * 
+		 * 如果repeatType是每年，yearMonthType为1时，该属性可用，表示每年的第几个月的第几周第几天，取值范围0-6。
+		 * 
+		 */
+		
+		public var yearMonthWeekDay:uint;
 		
 		
 		/**

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ct="multipublish.views.contents.*"
+				mouseChildren="false" mouseEnabled="false">
+	
+	<s:SWFLoader mask="{cover}" id="loader"
+				 width="100%" height="100%"
+				 verticalAlign="middle"
+				 horizontalAlign="center"
+				 source="{time.content}"
+				 scaleContent="true" 
+				 maintainAspectRatio="true"
+				 smoothBitmapContent="true"
+				 securityError="loader_completeHandler(event)"
+				 ioError="loader_completeHandler(event)"
+				 complete="loader_completeHandler(event)"/>
+	
+	<s:Graphic horizontalCenter="0" verticalCenter="0" id="cover"
+			   width="{scaledWidth}" height="{scaledHeight}">
+		
+		<s:Rect width="{scaledWidth}" height="{scaledHeight}">
+			<s:fill>
+				<s:SolidColor/>
+			</s:fill>
+		</s:Rect>
+		
+	</s:Graphic>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.vo.contents.Clock;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateBackground():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				if (loader) loader.unloadAndStop();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				log(MPTipConsts.RECORD_CONTENT_DATA, data);
+				
+				time = data as Clock;
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function loader_completeHandler(e:Event):void
+			{
+				if (loader.content)
+				{
+					var cw:Number = loader.content.loaderInfo.width;
+					var ch:Number = loader.content.loaderInfo.height;
+					var pw:Number = width;
+					var ph:Number = height;
+					var cs:Number =(cw / ch < pw / ph) ? ph / ch : pw / cw;
+					scaledWidth  = cs * cw;
+					scaledHeight = cs * ch;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var scaledWidth:Number = 0;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var scaledHeight:Number = 0;
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var time:Clock;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

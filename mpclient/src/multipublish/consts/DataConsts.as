@@ -34,11 +34,20 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 排期缓存路径。
+		 * 频道数据缓存路径。
 		 * 
 		 */
 		
-		public static const PATH_SCHEDULE:String = "cache/schedule/schedule.xml";
+		public static const PATH_CHANNEL:String = "cache/channel/channel.dat";
+		
+		
+		/**
+		 * 
+		 * 内容数据缓存路径。
+		 * 
+		 */
+		
+		public static const PATH_CONTENT:String = "cache/content/content.dat";
 		
 		
 		/**

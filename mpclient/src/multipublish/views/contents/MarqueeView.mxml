@@ -2,6 +2,271 @@
 <ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:ct="multipublish.views.contents.*">
+				xmlns:ct="multipublish.views.contents.*"
+				mouseChildren="false">
+	
+	<s:Group id="container" left="10" right="10" top="10" bottom="10" clipAndEnableScrolling="true"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.MathUtil;
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.consts.ContentConsts;
+			import multipublish.core.mp;
+			import multipublish.vo.contents.Marquee;
+			
+			import spark.components.Label;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				rollingCount = 0;
+				
+				if (isStatic)
+					timerCreate(time * 1000, handlerTimerComplete);
+				else
+					timerCreate(33, label_timerHandler);
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				timerRemove();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				marquee = null;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function createChildren():void
+			{
+				super.createChildren();
+				
+				container.addElement(label = new Label);
+				label.verticalCenter = 0;
+				label.setStyle("fontSize", 30);
+				label.maxDisplayedLines = 1;
+				
+				label.x = isStatic ? 0 : container.width;
+				
+				updateLabel();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				marquee = data as Marquee;
+				
+				updateLabel();
+				
+				if (marquee.isStatic)
+				{
+					time = marquee.duration || ContentConsts.CONTENT_TIME_DEFAUALT;
+				}
+				else
+				{
+					rollingSpeed = marquee && marquee.rollingSpeed ? marquee.rollingSpeed / 33 : 1;
+					rollingTimes = marquee ? marquee.rollingTimes : 0;
+				}
+				
+				buttonMode = !StringUtil.isEmpty(marquee.pageID);
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function updateLabel():void
+			{
+				if (label)
+				{
+					if (isStatic)
+					{
+						label.percentWidth = 100;
+						label.x = 0;
+					}
+					else
+					{
+						label.x = container.width;
+						var c:uint = marquee ? marquee.fontColor : 0xFFFFFF;
+						label.setStyle("color", c);
+						label.text = marquee ? marquee.content : null;
+						
+						while(label.isTruncated) label.width += 50;
+					}
+				}
+			}
+			
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerCreate($delay:uint, $handler:Function):void
+			{
+				if (!timer)
+				{
+					timerHandler = $handler;
+					timer = new Timer($delay);
+					timer.addEventListener(TimerEvent.TIMER, timerHandler);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerRemove():void
+			{
+				if (timer)
+				{
+					timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function label_timerHandler($e:TimerEvent):void
+			{
+				if (label)
+				{
+					label.x -= rollingSpeed;
+					if (label.x < -label.width)
+					{
+						label.x = container.width;
+						
+						if (rollingTimes > 0) if (++ rollingCount >= rollingTimes) 
+							stop();
+					}
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function get isStatic():Boolean
+			{
+				return marquee ? marquee.isStatic : false;
+			}
+			
+			
+			/**
+			 * 
+			 * 文件播放时间。
+			 * 
+			 */
+			
+			public function get time():uint
+			{
+				return mp::time;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer) 
+				{
+					timer.repeatCount = time;
+					if (timer.running)
+					{
+						timer.reset();
+						timer.start();
+					}
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var timer:Timer;
+			
+			/**
+			 * @private
+			 */
+			private var timerHandler:Function;
+			
+			/**
+			 * @private
+			 */
+			private var marquee:Marquee;
+			
+			/**
+			 * @private
+			 */
+			private var label:Label;
+			
+			/**
+			 * @private
+			 */
+			private var rollingSpeed:Number;
+			
+			/**
+			 * @private
+			 */
+			private var rollingTimes:uint;
+			
+			/**
+			 * @private
+			 */
+			private var rollingCount:uint;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+			
+		]]>
+	</fx:Script>
 	
 </ct:ContentView>

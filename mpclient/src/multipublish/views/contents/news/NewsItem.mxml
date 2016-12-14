@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s ="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%" height="150"
+		  currentState="{data.noImage ? 'noImage' : 'hsImage'}"
+		  mouseChildren="false" buttonMode="true"
+		  mouseDown="item_mouseDownHandler(event)">
+	
+	<s:states>
+		<s:State name="hsImage"/>
+		<s:State name="noImage"/>
+	</s:states>
+	
+	<s:layout>
+		<s:HorizontalLayout gap="5"/>
+	</s:layout>
+	
+	<s:Group width="150" height="150" includeIn="hsImage">
+		
+		<s:Image id="bg1" left="12.5" right="12.5" top="8" bottom="17"
+				 smooth="true" source="{data.image}"
+				 fillMode="scale" scaleMode="zoom"
+				 skinClass="multipublish.skins.ImageBrokenSkin"/>
+		
+	</s:Group>
+	
+	<s:Group width="100%" height="100%">
+		
+		<s:Image id="bg2" width="100%" height="100%" smooth="true"
+				 scaleMode="stretch" source="@Embed(source='assets/images/newsItemBg.png')"/>
+		
+		<s:VGroup width="100%" verticalCenter="0" gap="15" left="15" right="15" id="titleGroup">
+			
+			<s:Label fontSize="40" color="0x000000" maxDisplayedLines="1" text="{data.title}" maxWidth="{titleGroup.width}"/>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				
+				<s:Label fontSize="35" color="0x666666" maxDisplayedLines="1" text="{data.subTitle}"/>
+				
+				<s:Spacer width="100%"/>
+				
+				<s:Label fontSize="35" color="0x000000" maxWidth="{titleGroup.width * .7}" maxDisplayedLines="1" text="{data.updtimeStr}"/>
+				
+			</s:HGroup>
+			
+		</s:VGroup>
+		
+	</s:Group>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			/**
+			 * @private
+			 */
+			private function item_mouseDownHandler($e:MouseEvent):void
+			{
+				var tempStage:Stage = stage;
+				var item_mouseUpHandler:Function = function($e:MouseEvent):void
+				{
+					tempStage.removeEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+					if (bg1) bg1.alpha = 1;
+					if (bg2) bg2.alpha = 1;
+				};
+				tempStage.addEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+				if (bg1) bg1.alpha = .8;
+				if (bg2) bg2.alpha = .8;
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			[Bindable]
+			public var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

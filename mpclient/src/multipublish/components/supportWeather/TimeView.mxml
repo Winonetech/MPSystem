@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 fontFamily="{_timeStyle.fontFamily}">
+	
+	<s:Label id = "time" text="{timeStr}"
+			 fontFamily="{_timeStyle.fontFamily}"
+			 fontSize="{_timeStyle.timeSize}"
+			 color="{_timeStyle.timeColor}"/>
+	
+	<s:HGroup id = "date" gap="20">
+		
+		<s:Label text="{dateStr}"
+				 fontFamily="{_timeStyle.fontFamily}"
+				 fontSize="{_timeStyle.dateSize}"
+				 color="{_timeStyle.dateColor}"/>
+		
+		<s:Label text="{weekStr}"
+				 fontFamily="{_timeStyle.fontFamily}"
+				 fontSize="{_timeStyle.dateSize}"
+				 color="{_timeStyle.dateColor}"/>
+		
+	</s:HGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.ObjectUtil;
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.components.supportWeather.vo.LayoutStyle;
+			import multipublish.components.supportWeather.vo.TimeStyle;
+			
+			import mx.core.UIComponent;
+			
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			[Bindable]
+			private var _timeStyle:TimeStyle;
+			[Bindable]
+			private var timeStr:String;
+			[Bindable]
+			private var dateStr:String;
+			[Bindable]
+			private var weekStr:String;
+			[Bindable]
+			private var size:Number;
+			
+			private var timer:Timer;
+			
+			
+			private function updateDisplay($value:String):void
+			{
+				removeAllElements();
+				
+				var temp:Array = validateDisplay($value).split(",");
+				
+				for each (var item:String in temp)
+					if (this[item] && this[item] is UIComponent) addElement(this[item]);
+			}
+			
+			private function validateDisplay($value:String):String
+			{
+				if ($value)
+				{
+					$value = StringUtil.replace($value, " ", "");
+					if(AVAILABLE_DISPLAY.indexOf($value) == -1) $value = AVAILABLE_DISPLAY[0];
+				}
+				else
+				{
+					$value = AVAILABLE_DISPLAY[0];
+				}
+				return $value;
+			}
+			
+			
+			public function get layoutStyle():LayoutStyle
+			{
+				return _layoutStyle;
+			}
+			
+			public function set layoutStyle($value:LayoutStyle):void
+			{
+				$value = $value || new LayoutStyle;
+				
+				_layoutStyle = $value;
+				if (layoutStyle.layout == "horizontal")
+				{
+					var h:HorizontalLayout = new HorizontalLayout;
+					h.gap = layoutStyle.gap;
+					h.horizontalAlign = layoutStyle.horizontalAlign;
+					h.verticalAlign = layoutStyle.verticalAlign;
+					layout = h;
+				}
+				else
+				{
+					var v:VerticalLayout = new VerticalLayout;
+					v.gap = layoutStyle.gap;
+					v.horizontalAlign = layoutStyle.horizontalAlign;
+					v.verticalAlign = layoutStyle.verticalAlign;
+					layout = v;
+				}
+				
+				updateDisplay(_layoutStyle.display);
+				
+				invalidateDisplayList();
+			}
+			
+			private var _layoutStyle:LayoutStyle;
+			
+			
+			public function set timeStyle($value:TimeStyle):void
+			{
+				_timeStyle = $value;
+				//循环更新
+				if(!timer)
+				{
+					timer = new Timer(1000);
+					timer.addEventListener(TimerEvent.TIMER,function settimers():void
+					{
+						var date:Date = new Date;
+						var dateString:String = ObjectUtil.convert(date, String, _timeStyle.format);
+						var arr:Array = dateString.split("|");
+						dateStr = arr[0];
+						timeStr = arr[arr.length-1];
+						weekStr = "星期" + WEEK[date.day];
+					});
+					timer.start();
+				}
+				
+				layoutStyle = _timeStyle.layout;
+			}
+			
+			private static const AVAILABLE_DISPLAY:Array = 
+			[
+				"time,date",
+				"date,time",
+				"time",
+				"date"
+			];
+			
+			private static const WEEK:Array = ["日", "一", "二", "三", "四", "五", "六"]
+			
+		]]>
+	</fx:Script>
+</s:Group>

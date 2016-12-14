@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 x="{_style.x}" y="{_style.y}"
+		 fontFamily="{_style.fontFamily}"
+		 fontSize="{_style.fontSize}"  >
+	
+	<s:Image source="{_weather.image}" id="icon"
+			 width="{_style.iconW}" height="{_style.iconH}" 
+			 scaleMode="stretch" smooth="true" fillMode="scale"
+			 x="{_style.iconX}" y="{_style.iconY}"/>
+	
+	<s:VGroup gap="10" id="desc">
+		
+		<s:Label id="wea" text="{_weather.weather + '   ' + _weather.wind}" color="{_style.fontColor}"/>
+			
+		<s:Label id="tem" text="{_weather.temperature}" color="{_style.fontColor}"/>
+		
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.components.supportWeather.vo.LayoutStyle;
+			import multipublish.components.supportWeather.vo.WeatherStyle;
+			import multipublish.components.supportWeather.vo.WeatherVo;
+			
+			import mx.core.UIComponent;
+			
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			
+			private function updateDisplay($value:String):void
+			{
+				removeAllElements();
+				
+				var temp:Array = validateDisplay($value).split(",");
+				
+				for each (var item:String in temp)
+					if (this[item] && this[item] is UIComponent) addElement(this[item]);
+			}
+			
+			private function validateDisplay($value:String):String
+			{
+				if ($value)
+				{
+					$value = StringUtil.replace($value, " ", "");
+					if(AVAILABLE_DISPLAY.indexOf($value) == -1) $value = AVAILABLE_DISPLAY[0];
+				}
+				else
+				{
+					$value = AVAILABLE_DISPLAY[0];
+				}
+				return $value;
+			}
+			
+			public function get layoutStyle():LayoutStyle
+			{
+				return _layoutStyle;
+			}
+			
+			public function set layoutStyle($value:LayoutStyle):void
+			{
+				$value = $value || new LayoutStyle;
+				_layoutStyle = $value;
+				
+				if (layoutStyle.layout == "horizontal")
+				{
+					var h:HorizontalLayout = new HorizontalLayout;
+					h.gap = layoutStyle.gap;
+					h.horizontalAlign = layoutStyle.horizontalAlign;
+					h.verticalAlign = layoutStyle.verticalAlign;
+					layout = h;
+				}
+				else
+				{
+					var v:VerticalLayout = new VerticalLayout;
+					v.gap = layoutStyle.gap;
+					v.horizontalAlign = layoutStyle.horizontalAlign;
+					v.verticalAlign = layoutStyle.verticalAlign;
+					layout = v;
+				}
+				
+				updateDisplay(_layoutStyle.display);
+				
+				invalidateDisplayList();
+			}
+			
+			private var _layoutStyle:LayoutStyle;
+			
+			[Bindable]
+			private var _pm:String;
+			[Bindable]
+			private var _weather:WeatherVo;
+			[Bindable]
+			private var _style:WeatherStyle;
+			
+			public function setData($wea:WeatherVo,$sty:WeatherStyle):void
+			{
+				_weather = $wea;
+				_style = $sty;
+				
+				layoutStyle = _style.itemLayout;
+			}
+			
+			private static const AVAILABLE_DISPLAY:Array = 
+				[
+					"icon,desc",
+					"desc,icon",
+					"icon",
+					"desc"
+				];
+			
+		]]>
+	</fx:Script>
+</s:Group>

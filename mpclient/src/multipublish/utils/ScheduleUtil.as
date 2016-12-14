@@ -22,9 +22,21 @@ package multipublish.utils
 	public final class ScheduleUtil extends NoInstance
 	{
 		
+		
+		public static function validateTurnSchedusConflit($schedule1:Schedule, $schedule2:Schedule):Boolean
+		{
+			return !(
+				DateUtil.compareDate($schedule1.endTime, $schedule2.startTime) == -1 || 
+				DateUtil.compareDate($schedule2.endTime, $schedule1.startTime) == -1
+			);
+		}
+		
 		/**
 		 * 
 		 * 验证排期当前排期是否需要被另一排期替换。
+		 * 
+		 * <br>判定规则：优先级低的被替换。
+		 * <br>优先级相等则最先修改的被替换。
 		 * 
 		 * @param $current:Schedule 当前的排期。
 		 * @param $replace:Schedule 用于替换的排期。
@@ -35,7 +47,7 @@ package multipublish.utils
 		
 		public static function compareSchedules($current:Schedule, $replace:Schedule):Boolean
 		{
-			return (!$current || 
+			return(!$current || 
 					 $current.priority   < $replace.priority || 
 					($current.priority  == $replace.priority && 
 					 $current.timeModify < $replace.timeModify));
@@ -83,16 +95,10 @@ package multipublish.utils
 		
 		public static function validateScheduleAvailable($schedule:Schedule):Boolean
 		{
-			if(!TYPE[Consts.INIT])
-			{
-				TYPE[Consts.INIT] = true;
-				TYPE[ScheduleTypeConsts.DEFAULT] = validateDefault;
-				TYPE[ScheduleTypeConsts.TURN   ] = validateTurn;
-				TYPE[ScheduleTypeConsts.DEMAND ] = validateDemand;
-				TYPE[ScheduleTypeConsts.REPEAT ] = validateRepeat;
-				TYPE[ScheduleTypeConsts.SPOTS  ] = validateSpots;
-			}
-			return $schedule.hasProgram ? TYPE[$schedule.type]($schedule, new Date) : false;
+			initializeTypes();
+			
+			return (TYPE[$schedule.type] && $schedule.hasProgram)
+				? TYPE[$schedule.type]($schedule, new Date) : false;
 		}
 		
 		
@@ -108,7 +114,8 @@ package multipublish.utils
 		
 		public static function validateScheduleInArchive($schedule:Schedule):Boolean
 		{
-			return $schedule.type == ScheduleTypeConsts.DEFAULT || validateTurn($schedule, new Date);
+			return $schedule.type == ScheduleTypeConsts.TURN || 
+				validateTurn($schedule, new Date);
 		}
 		
 		
@@ -128,13 +135,14 @@ package multipublish.utils
 		private static function validateTurn($schedule:Schedule, $now:Date):Boolean
 		{
 			//首先日期合法；
-			var v1:Boolean = DateUtil.validate($schedule.dateStart);
-			var v2:Boolean = DateUtil.validate($schedule.dateEnd);
+		   //v2可以不合法，但是 v1必须合法。
+			var v1:Boolean = DateUtil.validate($schedule.startDate);
+			var v2:Boolean = DateUtil.validate($schedule.endDate);
 			//其次当前时间晚于排期结束时间，或当前时间早于节目起始时间，都处于不在档状态。
 			return v1 && v2
-				?  (DateUtil.compareDate($now, $schedule.dateStart)>= 0 && 
-					DateUtil.compareDate($now, $schedule.dateEnd  )<= 0)
-				: (v1 ? DateUtil.compareDate($now, $schedule.dateStart)>= 0 : false);
+				?  (DateUtil.compareDate($now, $schedule.startDate)>= 0 && 
+					DateUtil.compareDate($now, $schedule.endDate  )<= 0)
+				: (v1 ? DateUtil.compareDate($now, $schedule.startDate)>= 0 : false);
 		}
 		
 		/**
@@ -146,15 +154,15 @@ package multipublish.utils
 			//验证开始与截至日期部分与轮播相同，直接套用。
 			var bool:Boolean = validateTurn($schedule, $now);
 			//首先日期合法；
-			if(!$schedule.allDay)
+			if(!$schedule.repeatWholeDay)
 			{
 				//非全天点播时，需要检测时段。
-				var v1:Boolean = DateUtil.validate($schedule.timeStart);
-				var v2:Boolean = DateUtil.validate($schedule.timeEnd);
+				var v1:Boolean = DateUtil.validate($schedule.startTime);
+				var v2:Boolean = DateUtil.validate($schedule.endTime);
 				bool = (v1 && v2)
-					?  (DateUtil.compareTime($now, $schedule.timeStart)>= 0 && 
-						DateUtil.compareTime($now, $schedule.timeEnd  ) < 0)
-					: (v1 ? DateUtil.compareTime($now, $schedule.timeStart)>= 0 : false);
+					?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
+						DateUtil.compareTime($now, $schedule.endTime  ) < 0)
+					: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
 			}
 			return bool;
 		}
@@ -195,12 +203,12 @@ package multipublish.utils
 			var bool:Boolean = validateTurn($schedule, $now);
 			
 			//非全天点播时，需要检测时段。
-			var v1:Boolean = DateUtil.validate($schedule.timeStart);
-			var v2:Boolean = DateUtil.validate($schedule.timeEnd);
+			var v1:Boolean = DateUtil.validate($schedule.startTime);
+			var v2:Boolean = DateUtil.validate($schedule.endTime);
 			bool = (v1 && v2)
-				?  (DateUtil.compareTime($now, $schedule.timeStart)>= 0 && 
-					DateUtil.compareTime($now, $schedule.timeEnd  ) < 0)
-				: (v1 ? DateUtil.compareTime($now, $schedule.timeStart)>= 0 : false);
+				?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
+					DateUtil.compareTime($now, $schedule.endTime  ) < 0)
+				: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
 			return bool;
 		}
 		
@@ -210,7 +218,8 @@ package multipublish.utils
 		 */
 		private static function resolveWeek($schedule:Schedule, $now:Date):Boolean
 		{
-			return $schedule.extra.weekDays.indexOf($now.day) != -1;
+			return $schedule.extra.weekDays.indexOf($now.day) != -1
+				? validateDemand($schedule, $now) : false;
 		}
 		
 		/**
@@ -218,10 +227,11 @@ package multipublish.utils
 		 */
 		private static function resolveMonth($schedule:Schedule, $now:Date):Boolean
 		{
-			return $schedule.extra.monthType == ScheduleMonthTypeConsts.DAY
+			return validateDemand($schedule, $now) && 
+				($schedule.extra.monthType == ScheduleMonthTypeConsts.DAY
 				?  $now.date == $schedule.extra.monthDay
 				:  $now.day  == $schedule.extra.monthWeekDay 
-				&& $schedule.extra.monthWeek == DateUtil.getWeekOfMonth($now);
+				&& $schedule.extra.monthWeek == DateUtil.getWeekOfMonth($now));
 		}
 		
 		/**
@@ -229,8 +239,16 @@ package multipublish.utils
 		 */
 		private static function resolveYear($schedule:Schedule, $now:Date):Boolean
 		{
-			return  $now.month == $schedule.extra.yearMonth && 
-					$now.date  == $schedule.extra.yearMonthDay;
+			if(!$schedule.extra.yearMonthType)
+			{
+				return $now.month == $schedule.extra.yearMonth && 
+						$now.date  == $schedule.extra.yearMonthDay;
+			}
+			else
+			{
+				
+				return false;
+			}
 		}
 		
 		/**
@@ -246,6 +264,22 @@ package multipublish.utils
 			result.minutes  = $date1.minutes  - $date2.minutes;
 			result.seconds  = $date1.seconds  - $date2.seconds;
 			return result;
+		}
+		
+		/**
+		 * @private
+		 */
+		private static function initializeTypes():void
+		{
+			if(!TYPE[Consts.INIT])
+			{
+				TYPE[Consts.INIT] = true;
+				TYPE[ScheduleTypeConsts.DEFAULT] = validateDefault;
+				TYPE[ScheduleTypeConsts.TURN   ] = validateDefault;   
+				TYPE[ScheduleTypeConsts.DEMAND ] = validateDemand;
+				TYPE[ScheduleTypeConsts.REPEAT ] = validateRepeat;
+				TYPE[ScheduleTypeConsts.SPOTS  ] = validateSpots;
+			}
 		}
 		
 		

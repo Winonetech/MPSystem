@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="280" height="420"
+		 buttonMode="true" mouseChildren="false"
+		 mouseDown="item_mouseDownHandler(event)">
+	
+	<fx:Declarations>
+		<s:GlowFilter id="glow" blurX="10" blurY="10" color="0xFFFFFF"/>
+	</fx:Declarations>
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Image left="0" right="0" top="0" bottom="0" smooth="true"
+			 fillMode="scale" scaleMode="letterbox" source="{data.image}"
+			 skinClass="multipublish.skins.ImageBrokenSkin"/>
+	
+	<s:Group left="0" right="0" height="30" bottom="10">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="0" alpha=".5"/>
+			</s:fill>
+		</s:Rect>
+		<s:Label color="0xFFFFFF" fontSize="20" left="10" verticalCenter="0" text="{data.date}"/>
+	</s:Group>
+	
+	<s:filters>
+		<s:DropShadowFilter id="shadow" distance="5" color="0xCCCCCC"/>
+	</s:filters>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.core.mp;
+			
+			/**
+			 * @private
+			 */
+			private function item_mouseDownHandler(e:MouseEvent):void
+			{
+				var item_mouseUpHandler:Function = function(e:MouseEvent):void
+				{
+					stage.removeEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+					filters = [shadow];
+					alpha = 1;
+				}
+				stage.addEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+				filters = [shadow, glow];
+				alpha = .8;
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			[Bindable]
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				try{
+					data.image = data.sheets[0].thumb;
+				} catch(e:Error){}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

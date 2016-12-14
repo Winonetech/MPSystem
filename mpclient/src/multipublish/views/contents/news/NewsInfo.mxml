@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wt:Vessel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s ="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:ct="com.winonetech.controls.*"
+		   xmlns:wt="com.winonetech.core.*" visible="false">
+	
+	<wt:states>
+		<s:State name="media"/>
+		<s:State name="image"/>
+	</wt:states>
+	
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xCCCCCC"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<ct:MultiTouchScroller left="50" right="50"
+						   top="50" bottom="50" id="scroll" 
+						   horizontalScrollPolicy="off"
+						   skinClass="multipublish.skins.ScrollerSkin"
+						   horizontalTouchScrollEnabled="false">
+		
+		<s:VGroup id="contentContainer" width="100%" gap="15" horizontalAlign="center">
+			
+			<s:Label fontSize="50" includeIn="media" text="{data.title}" textAlign="center" maxDisplayedLines="2" width="100%"/>
+			
+			<s:Label fontSize="30" color="0x666666" includeIn="media" text="{data.subTitle}" id="subTitleLabel"/>
+			
+			<s:HGroup includeIn="media">
+				<s:Label text="作者：{data.createdBy}"/>
+				<s:Label text="日期：{data.updtimeStr}"/>
+			</s:HGroup>
+			
+			<mx:HRule includeIn="media" width="100%"/>
+			
+			<s:VGroup id="imagesContainer" width="100%">
+			
+			</s:VGroup>
+			
+			<mx:Text paddingTop="20" fontSize="16" width="100%" htmlText="{data.content}" selectable="false" leading="2"/>
+			
+		</s:VGroup>
+		
+	</ct:MultiTouchScroller>
+	
+	<s:Button right="10" top="10" width="30" height="30"
+			  skinClass="multipublish.skins.BackButtonSkin"
+			  click="back_clickHandler(event)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.FileUtil;
+			import cn.vision.utils.ObjectUtil;
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.core.mp;
+			import multipublish.skins.VideoPlayerSkin;
+			
+			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.media.MediaPlayerState;
+			
+			import spark.components.Image;
+			import spark.components.VideoPlayer;
+			
+			
+			/**
+			 * 
+			 * 显示数据。
+			 * 
+			 */
+			
+			public function show($data:Object):void
+			{
+				data = $data;
+				visible = true;
+			}
+			
+			
+			/**
+			 * 
+			 * 隐藏。
+			 * 
+			 */
+			
+			public function hide():void
+			{
+				visible = false;
+				
+				if (video)
+				{
+					video.stop();
+					video.removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, videoStateChangeHandler);
+					video.source = null;
+					video = null;
+				}
+				
+				if (imagesContainer)
+					imagesContainer.removeAllElements();
+				
+				if (scroll && scroll.viewport)
+					scroll.viewport.verticalScrollPosition = 0;
+				
+				data = null;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function resolveMedia():void
+			{
+				imagesContainer.removeAllElements();
+				
+				if (data.media)
+				{
+					if (data.media is String)
+						resolveMediaItem(data.media);
+					else
+						for each (var item:String in data.media) resolveMediaItem(item, true);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function resolveMediaItem(item:String, ignoreVideo:Boolean = false):void
+			{
+				var ext:String = FileUtil.getFileTypeByURL(item);
+				
+				switch (ext)
+				{
+					case "png":
+					case "jpg":
+					case "jpeg":
+						var image:Image = new Image;
+						var imageHandler:Function = function(e:Event):void
+						{
+							image.removeEventListener(Event.COMPLETE, imageHandler);
+							image.removeEventListener(IOErrorEvent.IO_ERROR, imageHandler);
+							if (e.type == Event.COMPLETE)
+							{
+								var scale:Number = imagesContainer.width / image.bitmapData.width;
+								image.width  = imagesContainer.width;
+								image.height = image.bitmapData.height * imagesContainer.width / image.bitmapData.width;
+							}
+						}
+						image.addEventListener(Event.COMPLETE, imageHandler);
+						image.addEventListener(IOErrorEvent.IO_ERROR, imageHandler);
+						image.source = item;
+						imagesContainer.addElement(image);
+						break;
+					case "mp4":
+					case "flv":
+						if(!ignoreVideo)
+						{
+							video = new VideoPlayer;
+							video.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, videoStateChangeHandler);
+							video.setStyle("skinClass", multipublish.skins.VideoPlayerSkin);
+							video.autoPlay = false;
+							video.percentWidth = 100;
+							video.source = item;
+							imagesContainer.addElement(video);
+						}
+						break;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function videoStateChangeHandler(e:MediaPlayerStateChangeEvent):void
+			{
+				if (e.state == MediaPlayerState.READY || 
+					e.state == MediaPlayerState.BUFFERING ||
+					e.state == MediaPlayerState.PLAYBACK_ERROR)
+				{
+					if (video.measuredWidth && video.measuredHeight)
+						video.height = video.measuredHeight * imagesContainer.width / video.measuredWidth;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function back_clickHandler(e:MouseEvent):void
+			{
+				hide();
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源
+			 * 
+			 */
+			
+			[Bindable]
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = Boolean(imagesContainer);
+				if (result)
+				{
+					if (data)
+					{
+						currentState = ObjectUtil.convert(data.isShowTitle, Boolean) ? "media" : "image";
+						
+						if (currentState == "media")
+						{
+							if(!StringUtil.isEmpty(data.subTitle))
+							{
+								if(!contentContainer.containsElement(subTitleLabel))
+									contentContainer.addElementAt(subTitleLabel, 1);
+							}
+						}
+						
+						resolveMedia();
+						
+						if (data.content)
+							StringUtil.replace(data.content, "</p>", "</p><p></p>");
+					}
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var title:String;
+			
+			
+			/**
+			 * @private
+			 */
+			private var image:Image;
+			
+			/**
+			 * @private
+			 */
+			private var video:VideoPlayer;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</wt:Vessel>

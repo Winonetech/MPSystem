@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wt:Vessel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s ="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:wt="com.winonetech.core.*"
+		   xmlns:ct="com.winonetech.controls.*"
+		   width.vertical="90"
+		   height.horizontal="130"
+		   mouseEnabled="false">
+	
+	<fx:Declarations>
+		<s:VerticalLayout id="listVertical" gap="5"/>
+		<s:HorizontalLayout id="listHorizontal" gap="5"/>
+	</fx:Declarations>
+	
+	<wt:states>
+		<s:State name="vertical"/>
+		<s:State name="horizontal"/>
+	</wt:states>
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xCCCCCC"/>
+		</s:fill>
+	</s:Rect>
+	
+	<ct:MultiTouchScroller id="scroll"
+						   verticalScrollPolicy="off"
+						   horizontalScrollPolicy="off"
+						   left="5" top="5" right="5" bottom="5"
+						   measuredSizeIncludesScrollBars="false"
+						   horizontalTouchScrollEnabled.vertical="false"
+						   verticalTouchScrollEnabled.horizontal="false"
+						   skinClass="multipublish.skins.ScrollerSkin"
+						   scroll="updateIcons()">
+		
+		<s:Group id="container" mouseEnabled="false"
+				 height.horizontal="120" width.vertical="80"
+				 layout.vertical="{listVertical}"
+				 layout.horizontal="{listHorizontal}"/>
+		
+	</ct:MultiTouchScroller>
+	
+	<s:Image horizontalCenter.vertical="0"
+			 verticalCenter.horizontal="0"
+			 top.vertical="10"
+			 left.horizontal="10"
+			 visible="{prevable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source.vertical="assets/images/arrowUp.png"
+			 source.horizontal="assets/images/prevUp.png"/>
+	
+	<s:Image horizontalCenter.vertical="0"
+			 verticalCenter.horizontal="0"
+			 bottom.vertical="10"
+			 right.horizontal="10"
+			 visible="{nextable}"
+			 width="25" height="25" alpha=".5"
+			 mouseEnabled="false" mouseChildren="false"
+			 source.vertical="assets/images/arrowDown.png"
+			 source.horizontal="assets/images/nextUp.png"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.core.mp;
+			
+			
+			/**
+			 * 
+			 * 重置
+			 * 
+			 */
+			
+			public function reset():void
+			{
+				if (scroll) 
+				{
+					scroll.stopScrollTweening();
+					scroll.verticalScrollPosition = 0;
+					scroll.horizontalScrollPosition = 0;
+					updateIcons();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function updateIcons():void
+			{
+				if (scroll && scroll.viewport)
+				{
+					prevable = scroll.leftScrollable;
+					nextable = scroll.rightScrollable;
+				}
+			}
+			
+			override public function set currentState(value:String):void
+			{
+				super.currentState = value;
+				
+				trace("currentState:", currentState)
+				
+				
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源。
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				var result:Boolean = container && scroll;
+				if (result)
+				{
+					container.removeAllElements();
+					
+					var count:uint = 0;
+					for each (var vo:* in data)
+					{
+						count++;
+						var item:SheetListItem = new SheetListItem;
+						item.data = vo;
+						container.addElement(item);
+					}
+					
+					reset();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var prevable:Boolean;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var nextable:Boolean;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</wt:Vessel>

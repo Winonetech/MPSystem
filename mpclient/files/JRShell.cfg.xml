@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gb2312"?>
+<config>
+	<layer>中心>队长机</layer>
+	<layerindividual>中心>队长机1</layerindividual>
+	<node>组>节点</node>
+	<nodeindividual>组1>节点1</nodeindividual>
+        <monitoritems>MPClient.exe|</monitoritems>
+        <hideshow>CommService.exe|ApplicationFramework.exe|</hideshow>
+		<player>MPClient.exe</player>
+		<closemonitorplayer>CloseMonitorPlayer.exe</closemonitorplayer>
+        <macsearch></macsearch>
+        <grouppeertime>30</grouppeertime>
+        <updatetime>1</updatetime>
+        <commservicedelay>0</commservicedelay>
+        <monitortime>3000</monitortime>
+		<setforeground>0</setforeground>
+</config>

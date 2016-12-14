@@ -9,12 +9,14 @@ package multipublish.vo.schedules
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.core.VO;
 	
 	import multipublish.consts.ScheduleTypeConsts;
 	import multipublish.core.mp;
 	import multipublish.utils.ScheduleUtil;
+	import multipublish.vo.programs.Program;
 	
 
 	public final class Schedule extends VO
@@ -36,15 +38,41 @@ package multipublish.vo.schedules
 		}
 		
 		
+		public function removeAllPrograms():void
+		{
+			programs.length = 0;
+		}
+		
+		
 		/**
 		 * 
-		 * 清除所有的Program。
+		 * 添加节目。
 		 * 
 		 */
 		
-		public function removeAllPrograms():void
+		public function addProgram($program:Program):void
 		{
-			mp::programs = new Map;
+			programs[programs.length] = $program;
+		}
+		
+		
+		/**
+		 * 
+		 * 获取节目。
+		 * 
+		 */
+		
+		public function getProgram($id:String):Program
+		{
+			for each (var program:Program in programs)
+			{
+				if (program.id == $id) 
+				{
+					var result:Program = program;
+					break;
+				}
+			}
+			return result;
 		}
 		
 		
@@ -53,7 +81,7 @@ package multipublish.vo.schedules
 		 */
 		private function initialize():void
 		{
-			mp::programs = new Map;
+			mp::programs = new Vector.<Program>;
 		}
 		
 		/**
@@ -62,8 +90,32 @@ package multipublish.vo.schedules
 		private function resolveExtra():ScheduleTypeExtra
 		{
 			if (type == ScheduleTypeConsts.REPEAT)
-				var extra:ScheduleTypeExtra = new ScheduleTypeExtra(getProperty("cronexpression"));
+				var extra:ScheduleTypeExtra = new ScheduleTypeExtra(getProperty("dateExpression"));
 			return  extra;
+		}
+		
+		
+		/**
+		 * 
+		 * 摘要。
+		 * 
+		 */
+		
+		public function get summary():String
+		{
+			return getProperty("summary");
+		}
+		
+		
+		/**
+		 * 
+		 * 排期类型，可以是默认，轮播，点播，重复，插播。
+		 * 
+		 */
+		
+		public function get type():uint
+		{
+			return getProperty("type", uint);
 		}
 		
 		
@@ -73,9 +125,29 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get allDay():Boolean
+		public function get repeatWholeDay():Boolean
 		{
-			return getProperty("allday", Boolean);
+			return getProperty("repeatWholeDay", Boolean);
+		}
+		
+		
+		/**
+		 * 
+		 * 开始日期。
+		 * 
+		 */
+		
+		public function get startDate():Date
+		{
+			return getProperty("startDate", Date, DATE_FORMATER);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set startDate($value:Date):void
+		{
+			setProperty("startDate", ObjectUtil.convert($value, String, DATE_FORMATER));
 		}
 		
 		
@@ -85,9 +157,71 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function get dateEnd():Date
+		public function get endDate():Date
 		{
-			return getProperty("endcron", Date);
+			return getProperty("endDate", Date, DATE_FORMATER);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set endDate($value:Date):void
+		{
+			setProperty("endDate", ObjectUtil.convert($value, String, DATE_FORMATER));
+		}
+		
+		
+		/**
+		 * 
+		 * 开始时间。
+		 * 
+		 */
+		
+		public function get startTime():Date
+		{
+			var bool:Boolean = type == ScheduleTypeConsts.SPOTS;
+			
+			mp::startTime = bool ? new Date
+				: ( mp::startTime || getProperty("startTime", Date, TIME_FORMATER) );
+			
+			return mp::startTime;
+		}
+		
+		
+		/**
+		 * 
+		 * 结束时间。
+		 * 
+		 */
+		
+		public function get endTime():Date
+		{
+			if(!mp::endTime)
+			{
+				if (type == ScheduleTypeConsts.SPOTS)
+				{
+					var start:Date = getProperty("startTime", Date, TIME_FORMATER);
+					var end  :Date = getProperty("endTime", Date, TIME_FORMATER);
+					mp::endTime = ScheduleUtil.modifySpotScheduleDate(startTime, start, end);
+				}
+				else
+				{
+					mp::endTime = getProperty("endTime", Date, TIME_FORMATER);
+				}
+			}
+			return mp::endTime;
+		}
+		
+		
+		/**
+		 * 
+		 * 修改时间。
+		 * 
+		 */
+		
+		public function get timeModify():Date
+		{
+			return getProperty("modifyDate", Date, TIME_FORMATER);
 		}
 		
 		
@@ -100,18 +234,6 @@ package multipublish.vo.schedules
 		public function get extra():ScheduleTypeExtra
 		{
 			return mp::extra || (mp::extra = resolveExtra());
-		}
-		
-		
-		/**
-		 * 
-		 * 开始日期。
-		 * 
-		 */
-		
-		public function get dateStart():Date
-		{
-			return getProperty("startcron", Date);
 		}
 		
 		
@@ -151,82 +273,9 @@ package multipublish.vo.schedules
 		}
 		
 		
-		public function get programs():Map
+		public function get programs():Vector.<Program>
 		{
 			return mp::programs;
-		}
-		
-		/**
-		 * 
-		 * 结束时间。
-		 * 
-		 */
-		
-		public function get timeEnd():Date
-		{
-			if (type == ScheduleTypeConsts.SPOTS)
-			{
-				var start:Date = getProperty("start", Date);
-				var end  :Date = getProperty("end"  , Date);
-				var date :Date = ScheduleUtil.modifySpotScheduleDate(timeStart, start, end);
-			}
-			else
-			{
-				date = getProperty("end"  , Date);
-			}
-			return date;
-		}
-		
-		
-		/**
-		 * 
-		 * 修改时间。
-		 * 
-		 */
-		
-		public function get timeModify():Date
-		{
-			return getProperty("modifydt", Date);
-		}
-		
-		
-		/**
-		 * 
-		 * 开始时间。
-		 * 
-		 */
-		
-		public function get timeStart():Date
-		{
-			if (type == ScheduleTypeConsts.SPOTS)
-				mp::time = mp::time || new Date;
-			else
-				mp::time = getProperty("start", Date);
-			return mp::time;
-		}
-		
-		
-		/**
-		 * 
-		 * 摘要。
-		 * 
-		 */
-		
-		public function get summary():String
-		{
-			return getProperty("summary");
-		}
-		
-		
-		/**
-		 * 
-		 * 排期类型，可以是默认，轮播，点播，重复，插播。
-		 * 
-		 */
-		
-		public function get type():uint
-		{
-			return getProperty("type", uint);
 		}
 		
 		
@@ -245,7 +294,12 @@ package multipublish.vo.schedules
 		/**
 		 * @private
 		 */
-		mp var time:Date;
+		mp var startTime:Date;
+		
+		/**
+		 * @private
+		 */
+		mp var endTime:Date;
 		
 		/**
 		 * @private
@@ -260,13 +314,23 @@ package multipublish.vo.schedules
 		/**
 		 * @private
 		 */
-		mp var programs:Map;
+		mp var programs:Vector.<Program>;
 		
 		
 		/**
 		 * @private
 		 */
 		private static const PRIORITY:Object = {5:1, 1:2, 2:3, 3:4, 4:5};
+		
+		/**
+		 * @private
+		 */
+		private static const DATE_FORMATER:String = "YYYY-MM-DD HH:MI:SS";
+		
+		/**
+		 * @private
+		 */
+		private static const TIME_FORMATER:String = "YYYY-MM-DD HH:MI:SS";
 		
 	}
 }

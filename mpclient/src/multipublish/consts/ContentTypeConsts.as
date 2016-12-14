@@ -1,4 +1,4 @@
-package multipublish.consts
+﻿package multipublish.consts
 {
 	
 	/**
@@ -16,48 +16,9 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 自由排版格式。
-		 * 
-		 * @default interactive
-		 * 
-		 * @see com.winonetech.vo.contents.Typeset
-		 * 
-		 */
-		
-		public static const TYPESET:String = "interactive";
-		
-		
-		/**
-		 * 
-		 * 相册格式。
-		 * 
-		 * @default flash
-		 * 
-		 * @see com.winonetech.vo.contents.Gallery
-		 * 
-		 */
-		
-		public static const GALLERY:String = "gallery";
-		
-		
-		/**
-		 * 
-		 * 跑马灯格式。
-		 * 
-		 * @default text
-		 * 
-		 * @see com.winonetech.vo.contents.Marquee
-		 * 
-		 */
-		
-		public static const MARQUEE:String = "text";
-		
-		
-		/**
-		 * 
 		 * 图片格式。
 		 * 
-		 * @default iamge
+		 * @default image
 		 * 
 		 * @see com.winonetech.vo.contents.Picture
 		 * 
@@ -81,15 +42,89 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 视频格式。
+		 * FLASH格式。
 		 * 
-		 * @default video
-		 * 
-		 * @see com.winonetech.vo.contents.Video
+		 * @default flash
 		 * 
 		 */
 		
 		public static const CARTOON:String = "flash";
+		
+		
+		/**
+		 * 
+		 * 文本格式。
+		 * 
+		 * @default text
+		 * 
+		 */
+		
+		public static const TEXT:String = "text";
+		
+		
+		/**
+		 * 
+		 * 跑马灯格式。
+		 * 
+		 * @default marquee
+		 * 
+		 */
+		
+		public static const MARQUEE:String = "marquee";
+		
+		
+		/**
+		 * 
+		 * 电子报格式
+		 * 
+		 * @default epaper
+		 * 
+		 */
+		
+		public static const EPAPER:String = "epaper";
+		
+		
+		/**
+		 * 
+		 * 按钮格式
+		 * 
+		 * @default epaper
+		 * 
+		 */
+		
+		public static const BUTTON:String = "button";
+		
+		
+		
+		//---------------------------------------------------------
+		// 以下不再支持
+		//---------------------------------------------------------
+		
+		
+		/**
+		 * 
+		 * 自由排版格式。
+		 * 
+		 * @default interactive
+		 * 
+		 * @see com.winonetech.vo.contents.Typeset
+		 * 
+		 */
+		
+		public static const TYPESET:String = "interactive";
+		
+		
+		/**
+		 * 
+		 * 相册格式。
+		 * 
+		 * @default gallery
+		 * 
+		 * @see com.winonetech.vo.contents.Gallery
+		 * 
+		 */
+		
+		public static const GALLERY:String = "gallery";
 		
 	}
 }

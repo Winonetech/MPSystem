@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:wt="com.winonetech.controls.*"
+				mouseChildren="false" mouseEnabled="false">
+	
+	<wt:StreamPlayer id="player" width="100%" height="100%" autoPlay="false" source="{stream.content}"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.vo.contents.Stream;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				if (player) player.resume();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				super.processStop();
+				
+				if (player) player.pause();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				if (player) player.source = null;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				log(MPTipConsts.RECORD_CONTENT_DATA, data);
+				
+				stream = data as Stream;
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var stream:Stream;
+			
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

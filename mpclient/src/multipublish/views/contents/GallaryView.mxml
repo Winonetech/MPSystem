@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:ga="multipublish.views.contents.gallary.*">
+	
+	<ct:states>
+		<s:State name="normal"/>
+		<s:State name="noimage"/>
+	</ct:states>
+	
+	<s:VGroup width="100%" height="100%"
+			  gap="5" includeIn="normal"
+			  paddingLeft="5" paddingRight="5"
+			  paddingTop="5" paddingBottom="5">
+		
+		<ga:ImageInfo id="info" width="100%" height="100%"/>
+		
+		<ga:ImageList id="list" width="100%"
+					  mouseDown="list_mouseDownHandler(event)"
+					  click="item_clickHandler(event)"/>
+		
+	</s:VGroup>
+	
+	<s:Label includeIn="noimage" text="没有内容"
+			 fontSize="30" color="0x000000"
+			 horizontalCenter="0" verticalCenter="0"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import com.winonetech.events.ControlEvent;
+			
+			import multipublish.views.contents.gallary.ImageItem;
+			import multipublish.vo.contents.Gallary;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				if (info) info.stop();
+			}
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processResume():void
+			{
+				if (info && gallary) info.show(gallary.list[0]);
+				if (list) list.resume();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				removeTimer();
+				
+				if (gallary)
+				{
+					gallary.removeEventListener(ControlEvent.READY, gallary_readyHandler);
+					gallary = null;
+				}
+				if (info) info.reset();
+				if (list) list.reset();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				gallary = data as Gallary;
+				
+				if (gallary)
+				{
+					gallary.addEventListener(ControlEvent.READY, gallary_readyHandler);
+					
+					createTimer(gallary.updateFrequency, 0, gallary_updateHandler);
+					
+					applyCallback(callbackData);
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackData():Boolean
+			{
+				currentState = gallary && gallary.list.length ? "normal" : "noimage";
+				
+				var result:Boolean = (currentState == "normal" && list && 
+					info && gallary && gallary.ready) || currentState == "noimage";
+				if (result)
+				{
+					if (currentState == "normal")
+					{
+						list.data = gallary.list;
+						
+						info.show(gallary.list[0]);
+					}
+					
+					dispatchReady();
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function gallary_readyHandler($e:ControlEvent):void
+			{
+				applyCallback(callbackData);
+			}
+			
+			/**
+			 * @private
+			 */
+			private function gallary_updateHandler($e:TimerEvent):void
+			{
+				gallary.update();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function item_clickHandler($e:MouseEvent):void
+			{
+				if(!moved && $e.target is ImageItem) info.show($e.target.data);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function list_mouseDownHandler(e:MouseEvent):void
+			{
+				moved = false;
+				var down:Point = new Point(mouseX, mouseY);
+				var stage:Stage = this.stage;
+				var list_mouseMoveHandler:Function = function(e:MouseEvent):void
+				{
+					if (!moved && Point.distance(new Point(mouseX, mouseY), down) > 5) moved = true;
+				};
+				var list_mouseUpHandler:Function = function(e:MouseEvent):void
+				{
+					stage.removeEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
+					stage.removeEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
+				}
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private var gallary:Gallary;
+			
+			/**
+			 * @private
+			 */
+			private var moved:Boolean;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

@@ -56,14 +56,22 @@ package multipublish.commands
 		{
 			LogUtil.logTip(MPTipConsts.RECORD_SOCKET_OFFLINE);
 			
-			config.service.offline();
+			config.service.communicationStop();
 			
 			LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_PC_REBOOT,
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_REBOOT));
 			
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_REBOOT));
+			try
+			{
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_REBOOT));
+			}
+			catch (e:Error)
+			{
+				LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/reboot.exe没有被其他安全软件隔离删除。");
+			}
 		}
 		
 	}

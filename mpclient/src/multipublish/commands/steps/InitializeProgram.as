@@ -12,6 +12,7 @@ package multipublish.commands.steps
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.LogSQLite;
@@ -66,7 +67,7 @@ package multipublish.commands.steps
 			temp = {};
 			
 			type = {};
-			type[ContentTypeConsts.GALLERY] = Gallery;
+			type[ContentTypeConsts.GALLERY] = Gallary;
 			type[ContentTypeConsts.MARQUEE] = Marquee;
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;
@@ -77,17 +78,37 @@ package multipublish.commands.steps
 			queue.addEventListener(QueueEvent.STEP_END, stepHandler);
 			queue.addEventListener(QueueEvent.QUEUE_END, endHandler);
 			
-			for (var id:String in config.temp)
+			
+			for (var scheduleID:String in config.temp)
 			{
-				var model:Model = new Model;
-				model.url = config.cache 
-					? DataConsts.PATH_PROGRAM + "-" + id + ".xml"
-					: config.source + id;
-				model.extra.id = id;
-				model.extra.index = config.temp[id].index;
-				queue.execute(model);
+				for (var programID:String in config.temp[scheduleID])
+				{
+					var model:Model = new Model;
+					model.extra.schedule = config.temp[scheduleID][programID];
+					model.extra.scheduleID = scheduleID;
+					model.extra.programID = programID;
+					model.extra.saveURL = DataConsts.PATH_PROGRAM + "-" + scheduleID + "-" + programID + ".dat";
+					model.extra.loadURL = config.source + "?scheduleId=" + scheduleID + "&programId=" + programID;
+					model.url = config.cache ? model.extra.saveURL : model.extra.loadURL;
+					queue.execute(model);
+				}
 			}
 			
+			/*
+			for (var key:String in config.temp)
+			{
+				var schedule:Schedule = config.temp[key].schedule;
+				var model:Model = new Model;
+				model.extra.schedule = schedule;
+				model.extra.programID = key;
+				model.extra.index = config.temp[key].index;
+				model.url = config.cache 
+					? DataConsts.PATH_PROGRAM + "-" + ".xml"
+					: config.source + key;
+				
+				queue.execute(model);
+			}
+			*/
 			config.source = null;
 			if(!queue.executing) endHandler();
 		}
@@ -96,9 +117,49 @@ package multipublish.commands.steps
 		 * 解析并构建节目排版，内容。
 		 * @private
 		 */
-		private function make($xml:XML, $data:*):void
+		private function make($xml:Object, $data:*):void
 		{
-			if ($data is Array)
+			var schedule:Schedule = $data as Schedule;
+			var list:Array = $xml["programes"];
+			for each (var item:* in list)
+			{
+				var program:Program = new Program(item);
+				list = item["layout"];
+				for each (item in list)
+				{
+					var layout:Layout = new Layout(item);
+					program.addLayout(layout);
+					list = item["contents"];
+					for each (item in list)
+					{
+						var content:Content = gain(item);
+						if (content)
+						{
+							if (content.type == ContentTypeConsts.TYPESET)
+							{
+								var typeset:Content = store.retrieveData(content.id, Typeset);
+								if (typeset)
+									content = typeset;
+								else
+									store.registData(content);
+								var arr:Array = content.title.split("=");
+								var ls:uint = arr.length - 1;
+								var id:String = arr[ls];
+								arr[ls] = "";
+								config.source = config.source || arr.join("=");
+								temp[id] = content;
+							}
+							else
+							{
+								store.registData(content, Content);
+							}
+							layout.addContent(content);
+						}
+					}
+				}
+				schedule.programs.push(program);
+			}
+			/*if ($data is Array)
 			{
 				for each (var data:Object in $data) make($xml, data);
 			}
@@ -149,17 +210,17 @@ package multipublish.commands.steps
 					schedule.programs[$data.index] = program;
 				}
 				//ArrayUtil.normalize(schedule.programs);
-			}
+			}*/
 		}
 		
 		/**
 		 * 获取一个对应类型的Content。
 		 * @private
 		 */
-		private function gain($xml:XML):Content
+		private function gain($xml:Object):Content
 		{
 			//根据类型构建不同类型的数据结构
-			var refe:Class = type[XMLUtil.convert($xml["fileproterty"])];
+			var refe:Class = type[ObjectUtil.convert($xml["fileproperty"])];
 			return refe ? new refe($xml) : null;
 		}
 		
@@ -170,20 +231,22 @@ package multipublish.commands.steps
 		private function stepHandler($e:QueueEvent):void
 		{
 			var model:Model = $e.command as Model;
-			var url:String = DataConsts.PATH_PROGRAM + "-" + model.extra.id + ".xml";
-			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			model.extra.tmp = (model.extra.saveURL != model.url) ? model.url : model.extra.tmp;
+			var xml:Object = ObjectUtil.convert(model.data, Object);
 			if (xml)
 			{
-				make(xml, config.temp[model.extra.id]);
-				if (model.url != url) save(url, xml);
-				else flag(url);
+				make(xml, model.extra.schedule);
+				
+				if (model.url != model.extra.saveURL) 
+					save(model.extra.saveURL, xml);
+				else 
+					flag(model.extra.saveURL);
 			}
 			else
 			{
-				if (model.url!= url)
+				if (model.url!= model.extra.saveURL)
 				{
-					model.url = url;
+					model.url = model.extra.saveURL;
 					queue.execute(model);
 				}
 				else

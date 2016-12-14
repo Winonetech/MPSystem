@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:ct="multipublish.views.contents.*"
+				mouseChildren="false"
+				mouseDown="button_mouseDownHandler(event)">
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" alpha="{transparentAlpha}"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Image id="loaderDown" visible="false"
+			 width="100%" height="100%"
+			 source="{button.sourceDown}"
+			 verticalAlign="middle"
+			 horizontalAlign="center"
+			 fillMode="scale" scaleMode="zoom"
+			 ioError="loader_defaultHandler(event)"
+			 ready="loader_defaultHandler(event)"/>
+	
+	<s:Image id="loaderUp" visible="true"
+			 width="100%" height="100%"
+			 source="{button.sourceUp}"
+			 verticalAlign="middle"
+			 horizontalAlign="center"
+			 fillMode="scale" scaleMode="zoom"
+			 ioError="loader_defaultHandler(event)"
+			 ready="loader_defaultHandler(event)"/>
+	
+	<fx:Script>
+		
+		<![CDATA[
+			
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.consts.MPTipConsts;
+			import multipublish.core.mp;
+			import multipublish.vo.contents.Button;
+			
+			import mx.binding.utils.BindingUtils;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function updateBackground():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void { }
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				log(MPTipConsts.RECORD_CONTENT_DATA, data);
+				
+				button = data as Button;
+				
+				if (button)
+				{
+					readyTotal = 0;
+					if (StringUtil.isEmpty(button.sourceUp))   readyTotal++;
+					if (StringUtil.isEmpty(button.sourceDown)) readyTotal++;
+					BindingUtils.bindProperty(this, "selected", button, "selected");
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function loader_defaultHandler(event:Event):void
+			{
+				if (++readyCount >= readyTotal) dispatchReady();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function button_mouseDownHandler(event:MouseEvent):void
+			{
+				if(!selectable)
+				{
+					if (transparent)
+					{
+						loaderDown.visible = false;
+						loaderUp  .visible = false;
+						
+						transparentAlpha = .3;
+					}
+					else
+					{
+						loaderDown.visible = true;
+						loaderUp  .visible = false;
+					}
+					
+					var stager:Stage = stage;
+					var button_mouseUpHandler:Function = function(e:MouseEvent):void
+					{
+						stager.removeEventListener(MouseEvent.MOUSE_UP, button_mouseUpHandler);
+						
+						if (transparent)
+						{
+							loaderDown.visible = false;
+							loaderUp  .visible = false;
+							
+							transparentAlpha = 0;
+						}
+						else
+						{
+							loaderDown.visible = false;
+							loaderUp  .visible = true;
+						}
+					};
+					
+					stager.addEventListener(MouseEvent.MOUSE_UP, button_mouseUpHandler);
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 按钮所在组。
+			 * 
+			 */
+			
+			public function get transparent():Boolean
+			{
+				return button ? button.transparent : false;
+			}
+			
+			
+			/**
+			 * 
+			 * 按钮所在组。
+			 * 
+			 */
+			
+			public function get group():String
+			{
+				return button ? button.group : null;
+			}
+			
+			
+			/**
+			 * 
+			 * 是否选中。
+			 * 
+			 */
+			
+			public function get selected():Boolean
+			{
+				return mp::selected as Boolean;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set selected($value:Boolean):void
+			{
+				if (selectable && selected!= $value)
+				{
+					mp::selected = $value;
+					
+					applyCallback(callbackSelected);
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function callbackSelected():Boolean
+			{
+				var result:Boolean = Boolean(loaderDown && loaderUp);
+				if (result)
+				{
+					if (transparent)
+					{
+						loaderDown.visible = false;
+						loaderUp  .visible = false;
+						
+						transparentAlpha = selected ? .3 : 0;
+					}
+					else
+					{
+						loaderDown.visible = selected;
+						loaderUp  .visible =!selected;
+					}
+				}
+				return result;
+			}
+			
+			
+			/**
+			 * 
+			 * 能否被选中。
+			 * 
+			 */
+			
+			public function get selectable():Boolean
+			{
+				return !StringUtil.isEmpty(group);
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var button:Button;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var transparentAlpha:Number = 0;
+			
+			/**
+			 * @private
+			 */
+			private var readyCount:uint = 0;
+			
+			/**
+			 * @private
+			 */
+			private var readyTotal:uint = 0;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var selected:Boolean;
+			
+			/**
+			 * @private
+			 */
+			mp var page:*;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

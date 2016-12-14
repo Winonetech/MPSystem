@@ -18,9 +18,10 @@ package multipublish.core
 	import multipublish.tools.Controller;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
+	import multipublish.tools.ScreenController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
-
+	
 	
 	[Bindable]
 	public final class MPCConfig extends Config
@@ -169,6 +170,14 @@ package multipublish.core
 		
 		public var debug:Boolean;
 		
+		/**
+		 * 
+		 * 跑马灯信息。
+		 * 
+		 */
+		
+		public var sled:String;
+		
 		
 		/**
 		 * 
@@ -178,6 +187,13 @@ package multipublish.core
 		
 		public var shutdown:String;
 		
+		/**
+		 * 
+		 * 自动截图指令。
+		 * 
+		 */
+		
+		public var shotcut:String;
 		
 		/**
 		 * 
@@ -221,16 +237,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public function get terminalNO():String
-		{
-			return mp::terminalNO;
-		}
-		
-		public function set terminalNO($value:String):void
-		{
-			mp::terminalNO = $value;
-			//LogSaver.terminalNO = $value;
-		}
+		public var terminalNO:String;
 		
 		
 		/**
@@ -248,7 +255,16 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var httpPort:uint = 80;
+		public var httpPort:uint = 9000;
+		
+		
+		/**
+		 * 
+		 * 终端升级端口。
+		 * 
+		 */
+		
+		public var updtPort:uint = 9000;
 		
 		
 		/**
@@ -258,6 +274,42 @@ package multipublish.core
 		 */
 		
 		public var socketHost:String = "127.0.0.1";
+		
+		
+		/**
+		 * 
+		 * HTTP通讯地址。
+		 * 
+		 */
+		
+		public var serviceURL:String = "terminal/heartBeat";
+		
+		
+		/**
+		 * 
+		 * 终端申请地址。
+		 * 
+		 */
+		
+		public var requestTem:String = "terminal/apply";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var shotcutURL:String = "terminal/jpgUpload";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var updateURL:String = "setting/version/upgrade";
 		
 		
 		/**
@@ -307,6 +359,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 是否禁用base64加密。
+		 * 
+		 */
+		
+		//public var base64Disabled:Boolean;
+		
+		
+		/**
+		 * 
 		 * FTP host。
 		 * 
 		 */
@@ -329,7 +390,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var ftpUserName:String = "ftp";
+		public var ftpUserName:String = "ftpuser";
 		
 		
 		/**
@@ -338,7 +399,7 @@ package multipublish.core
 		 * 
 		 */
 		
-		public var ftpPassWord:String = "FTPmedia";
+		public var ftpPassWord:String = "ftpuser";
 		
 		
 		/**
@@ -439,6 +500,15 @@ package multipublish.core
 		
 		public var loadable:Boolean;
 		
+		/**
+		 * 
+		 * 是否替换当前播放内容。
+		 * <br>判定是否与上一排期相同。
+		 * 
+		 */
+		
+		public var replacable:Boolean;
+		
 		
 		/**
 		 * 
@@ -456,6 +526,15 @@ package multipublish.core
 		 */
 		
 		public var version:String;
+		
+		
+		/**
+		 * 
+		 * 版本号。
+		 * 
+		 */
+		
+		public var remoteVersion:String;
 		
 		
 		/**
@@ -486,6 +565,51 @@ package multipublish.core
 		
 		
 		/**
+		 * 
+		 * 数据存储。
+		 * 
+		 */
+		
+		public var datas:Object = {};
+		
+		
+		/**
+		 * 
+		 * 原始数据。
+		 * 
+		 */
+		
+		public var raw:Object ={};
+		
+		
+		/**
+		 * 
+		 * 数据存储。
+		 * 
+		 */
+		
+		public var ori:Object = {};
+		
+		
+		/**
+		 * 
+		 * 屏幕控制器。
+		 * 
+		 */
+		
+		public var screenController:ScreenController;
+		
+		
+		/**
+		 * 
+		 * 存储截图数据。
+		 * 
+		 */
+		
+		public var shotcutName:Object = {};
+		
+		
+		/**
 		 * @private
 		 */
 		mp var controller:Controller;
@@ -513,7 +637,12 @@ package multipublish.core
 		/**
 		 * @private
 		 */
-		mp var terminalNO:String;
+		mp var scheduled:Boolean;
+		
+		/**
+		 * @private
+		 */
+		mp var programed:Boolean;
 		
 		
 		/**

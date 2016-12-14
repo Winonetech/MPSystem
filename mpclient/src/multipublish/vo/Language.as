@@ -21,7 +21,12 @@ package multipublish.vo
 		private function dataChange():void
 		{
 			var d:Object = data == "中文" ? CN : EN;
-			for (var key:String in d) this[key] = d[key];
+			for (var key:String in d) 
+			{
+				try{
+					this[key] = d[key];
+				}catch(e:Error){}
+			}
 		}
 		
 		
@@ -100,7 +105,7 @@ package multipublish.vo
 		 * 设备编号。
 		 * 
 		 */
-		public var deviceNO:String = "设备编号：";
+		public var deviceNO:String = "终端名称：";
 		
 		
 		/**
@@ -149,6 +154,15 @@ package multipublish.vo
 		 * 
 		 */
 		
+		public var requestTem:String = "终端申请地址：";
+		
+		
+		/**
+		 * 
+		 * HTTP 地址。
+		 * 
+		 */
+		
 		public var httpHost:String = "HTTP 地址：";
 		
 		
@@ -159,6 +173,15 @@ package multipublish.vo
 		 */
 		
 		public var httpPort:String = "HTTP 端口：";
+		
+		
+		/**
+		 * 
+		 * HTTP 端口。
+		 * 
+		 */
+		
+		public var updtPort:String = "更新 端口：";
 		
 		
 		//-----------------------------------------------------------------
@@ -173,7 +196,34 @@ package multipublish.vo
 		 * 
 		 */
 		
-		public var socket:String = "Socket 服务";
+		public var socket:String = "通讯服务";
+		
+		
+		/**
+		 * 
+		 * 通讯地址。
+		 * 
+		 */
+		
+		public var serviceURL:String = "通讯地址：";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var shotcutURL:String = "截图上传地址：";
+		
+		
+		/**
+		 * 
+		 * 终端截图上传地址。
+		 * 
+		 */
+		
+		public var updateURL:String = "终端升级地址：";
 		
 		
 		/**
@@ -536,7 +586,7 @@ package multipublish.vo
 			terminal   :"终端设置",
 			language   :"语言",
 			companyID  :"公司ID：",
-			deviceNO   :"设备编号：",
+			deviceNO   :"终端名称：",
 			terminalNO :"终端编号：",
 			packageData:"数据包：",
 			labelImport:"导入",
@@ -544,8 +594,13 @@ package multipublish.vo
 			http    :"HTTP 服务",
 			httpHost:"HTTP 地址：",
 			httpPort:"HTTP 端口：",
+			requestTem:"终端申请地址：",
+			updtPort:"升级端口：",
+			updateURL:"升级地址：",
 			
 			socket       :"Socket 服务",
+			serviceURL   :"通讯地址：",
+			shotcutURL   :"截图上传地址：",
 			socketHost   :"Socket 地址：",
 			messagePort  :"推送端口：",
 			capturePort  :"截图端口：",
@@ -600,7 +655,7 @@ package multipublish.vo
 			terminal   :"Ternimal Setting",
 			language   :"Language",
 			companyID  :"Company ID",
-			deviceNO   :"Device NO.:",
+			deviceNO   :"Device Name:",
 			terminalNO :"Ternimal NO.:",
 			packageData:"Data Package：",
 			labelImport:"Import",
@@ -608,8 +663,13 @@ package multipublish.vo
 			http    :"HTTP Service",
 			httpHost:"HTTP host:",
 			httpPort:"HTTP port:",
+			requestTem:"Apply terminal address:",
+			updtPort:"Update port:",
+			updateURL:"Update address:",
 			
 			socket       :"Socket Service",
+			serviceURL   :"Service address:",
+			shotcutURL   :"Screenshot upload address:",
 			socketHost   :"Socket host:",
 			messagePort  :"Message port:",
 			capturePort  :"Capture port:",

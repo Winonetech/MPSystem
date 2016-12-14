@@ -51,7 +51,7 @@ limitations under the License.
 		<s:State name="disabled" />
 	</s:states>
 	
-	<s:Image top="0" right="0" smooth="true" visible="true"  visible.down="false" source="assets/images/backUp.png"/>
-	<s:Image top="0" right="0" smooth="true" visible="false" visible.down="true"  source="assets/images/backDown.png"/>
+	<s:Image left="0" bottom="0" top="0" right="0" smooth="true" visible="true"  visible.down="false" source="assets/images/backUp.png"/>
+	<s:Image left="0" bottom="0" top="0" right="0" smooth="true" visible="false" visible.down="true"  source="assets/images/backDown.png"/>
 	
 </s:Skin>

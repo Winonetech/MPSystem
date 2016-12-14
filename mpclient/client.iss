@@ -2,26 +2,29 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WOS Player"
-#define MyAppVersion "18.7.3"
+#define MyAppToolName "MPCExporter" 
+#define MyAppVersion "18.9.29"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
-#define MyAppExeName "MPClient.exe"
-#define MyAppToolName "MPCExporter.exe"
+#define MyAppExeName "JRShell.exe"
+#define MyAppToolExeName "MPCExporter.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F0A09664-0CE5-434B-8521-03C7AF7FF6B2}
+AppId={{F0A09664-0CE5-434B-8521-03C7AF7FF6B2}}
 AppName={#MyAppName}
-AppVersion={#MyAppVersion}
+AppVersion={#MyAppVersion}  
+;AppVersion=LoadValueFromXML(MPClient\META-INF\AIR\application.xml, //application/versionNumber)
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\MPClient
+DefaultDirName={sd}\MPClient
 DefaultGroupName={#MyAppName}
+DisableDirPage=no
 AllowNoIcons=yes
 OutputBaseFilename=WOS Player
 SetupIconFile=files\MPClient.ico
@@ -41,23 +44,25 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 
 [Files]
-
 Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
+Source: "MPClient\css.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\JRShell.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\JRShell.cfg.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "MPCExporter\MPCExporter.swf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "led\*"; DestDir: "{app}\led"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{#MyAppToolName}"; Filename: "{app}\{#MyAppToolName}"
+Name: "{group}\{#MyAppToolName}"; Filename: "{app}\{#MyAppToolExeName}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
@@ -72,13 +77,62 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [code]
- 
-//删除所有配置文件以达到干净卸载的目的 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var appWnd: HWND;
 begin
-    if CurUninstallStep = usUninstall then
-      //删除 {app} 文件夹及其中所有文件
-      DelTree(ExpandConstant('{app}'), True, True, True);
+   // 检查JRShell.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('WindowsForms10.Window.8.app.0.33c0d9d');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+   // 检查MPClient.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('ApolloRuntimeContentWindow');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   // 检查MPClient.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByClassName('CabinetWClass');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+   // 检查LedSendNew.exe进程是否在运行，是则关闭进程
+   appWnd := FindWindowByWindowName('LedSendNew');
+   if (appWnd <> 0) then
+   begin
+      PostMessage(appWnd, 18, 0, 0);       // quit
+   end;
+   
+end;   
+
+
+function LoadValueFromXML(const AFileName, APath: string): string;
+var
+  XMLNode: Variant;
+  XMLDocument: Variant;  
+begin
+  Result := '';
+  XMLDocument := CreateOleObject('Msxml2.DOMDocument.6.0');
+  try
+    XMLDocument.async := False;
+    XMLDocument.load(AFileName);
+    if (XMLDocument.parseError.errorCode <> 0) then
+      MsgBox('The XML file could not be parsed. ' + 
+        XMLDocument.parseError.reason, mbError, MB_OK)
+    else
+    begin
+      XMLDocument.setProperty('SelectionLanguage', 'XPath');
+      XMLNode := XMLDocument.selectSingleNode(APath);
+      MsgBox(XMLNode.text, mbError, MB_OK);
+      Result := XMLNode.text;
+    end;
+  except
+    MsgBox('An error occured!' + #13#10 + GetExceptionMessage, mbError, MB_OK);
+  end;
 end;
 
 [/code]

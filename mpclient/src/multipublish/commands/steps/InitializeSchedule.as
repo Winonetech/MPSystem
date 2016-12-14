@@ -12,6 +12,7 @@ package multipublish.commands.steps
 	import cn.vision.events.pattern.CommandEvent;
 	import cn.vision.utils.DateUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.LogSQLite;
@@ -63,7 +64,7 @@ package multipublish.commands.steps
 		private function load():void
 		{
 			model = new Model;
-			model.url = config.cache ? DataConsts.PATH_SCHEDULE : config.source;
+			model.url = config.cache ? DataConsts.PATH_CHANNEL : config.source;
 			model.addEventListener(CommandEvent.COMMAND_END, modelHandler);
 			model.execute();
 		}
@@ -71,16 +72,16 @@ package multipublish.commands.steps
 		/**
 		 * @private
 		 */
-		private function make(xml:XML, saveURL:String, loadURL:String):void
+		private function make(xml:Object, saveURL:String, loadURL:String):void
 		{
-			config.source = XMLUtil.convert(xml["url"]);
-			var list:XMLList = xml["schedule"];
+			config.source = xml["url"];
+			var list:Array = xml["schedule"];
 			var temp:Object = {};
 			var dict:Map = store.clear(Schedule);
-			for each (var item:XML in list)
+			for each (var item:* in list)
 			{
-				var type:uint    = XMLUtil.convert(item["type"], uint);
-				var spot:Boolean = XMLUtil.convert(item["spot"], Boolean);
+				var type:uint    = ObjectUtil.convert(item["type"], uint);
+				var spot:Boolean = ObjectUtil.convert(item["spot"], Boolean);
 				
 				//如果是插播类型，需要判断该spot值，是false则代表该插播节目是第一次播放。
 				if (type != ScheduleTypeConsts.SPOTS || !spot)
@@ -101,10 +102,16 @@ package multipublish.commands.steps
 							schedule.removeAllPrograms();
 						}
 						store.registData(schedule);
-						var programs:XMLList = item["program"];
-						var l:uint = programs ? programs.length() : 0;
+						var programs:Array = item["program"];
+						var l:uint = programs ? programs.length : 0;
+						
 						for (var i:int = 0; i < l; i++) 
-							push(temp, XMLUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});
+						{
+							temp[schedule.id] = temp[schedule.id] || {};
+							temp[schedule.id][ObjectUtil.convert(programs[i]["id"])] = schedule;
+						}
+						/*for (var i:int = 0; i < l; i++) 
+							push(temp, XMLUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});*/
 					}
 				}
 			}
@@ -117,8 +124,8 @@ package multipublish.commands.steps
 		 */
 		private function modelHandler($e:CommandEvent):void
 		{
-			var xml:XML = XMLUtil.convert(model.data, XML);
-			var url:String = DataConsts.PATH_SCHEDULE;
+			var xml:Object = ObjectUtil.convert(model.data, Object);
+			var url:String = DataConsts.PATH_CHANNEL;
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
 			if (xml)
 			{
@@ -140,7 +147,7 @@ package multipublish.commands.steps
 					LogSQLite.log(
 						TypeConsts.FILE,
 						EventConsts.EVENT_LOAD_ERROR, model.extra.tmp,
-						LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_SCHEDULE));
+						LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_CHANNEL));
 					
 					commandEnd();
 				}

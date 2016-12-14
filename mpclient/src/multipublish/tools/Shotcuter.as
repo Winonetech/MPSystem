@@ -9,21 +9,42 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
+	import cn.vision.data.Tip;
+	import cn.vision.net.FTPLoader;
+	import cn.vision.net.FTPRequest;
+	import cn.vision.net.FTPUploader;
+	import cn.vision.utils.BitmapUtil;
+	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.LogUtil;
+	
+	import com.winonetech.tools.LogSQLite;
+	import com.winonetech.utils.CacheUtil;
 	
 	import flash.display.BitmapData;
-	import flash.display.JPEGEncoderOptions;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import flash.net.Socket;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.net.URLRequestMethod;
+	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
-	import multipublish.consts.ServiceConsts;
+	import multipublish.consts.EventConsts;
+	import multipublish.consts.MPTipConsts;
+	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.MPCView;
+	import multipublish.utils.URLUtil;
+	
+	import mx.managers.PopUpManager;
 	
 	
 	public final class Shotcuter extends VSObject
@@ -45,33 +66,44 @@ package multipublish.tools
 		
 		/**
 		 * 
-		 * 开始截图。
+		 * 开始截图。每隔$delay秒进行一次截图，持续49 + 1次。
+		 * @param $delay:截图间隔时间。
+		 * @param $times:截图次数。该参数不可以为 0！
 		 * 
 		 */
 		
-		public function start($delay:uint = 10):void
+		public function start($delay:uint = 10, $isPolicy:Boolean = false, $times:uint = 50, $name:String = null):void
 		{
-			//计数为了防止2个人在看截图时，一个关闭窗口后，另外一个窗口不刷新的截图问题。
-			count++;
-			w = view.application.width  * scale;
-			h = view.application.height * scale;
-			rectange = new Rectangle(0, 0, w, h);
-			bmd = new BitmapData(w, h, false, 0);
-			cmd = ServiceConsts.SEND_SHOTCUT + config.terminalNO;
+			LogUtil.log("开始截图：" + $delay);
 			
-			if(!timer)
+			isPolicy = $isPolicy;
+			ftpName  = $name;
+			
+			if(!rectangle)
 			{
-				timer = new Timer($delay * 1000, 49);
-				timer.addEventListener(TimerEvent.TIMER, handlerTimer);
-				timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				var w:Number = view.application.width  * scale;
+				var h:Number = view.application.height * scale;
+				rectangle = new Rectangle(0, 0, w, h);
+				bmd = new BitmapData(rectangle.width, rectangle.height, false);
 			}
-			else 
+			if (!$isPolicy)
 			{
-				timer.delay = $delay * 1000;
+				if(!timer)
+				{
+					timer = new Timer($delay * 1000, $times - 1 || 1);  //减一是因为第 0秒已经截图了一次了。
+					timer.addEventListener(TimerEvent.TIMER, handlerTimer);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				}
+				else 
+				{
+					timer.delay = $delay * 1000;
+				}
+				timer.reset();
+				timer.start();
 			}
-			timer.reset();
-			timer.start();
-			createSocket();
+			
+			
+			shotcut();   //第 0秒的截图。
 		}
 		
 		
@@ -83,11 +115,12 @@ package multipublish.tools
 		
 		public function stop():void
 		{
-			count--;
-			if (count <= 0 && timer)
+			if (timer)
 			{
-				timer.stop();
+				LogUtil.log("停止截图。");
 				timer.removeEventListener(TimerEvent.TIMER, handlerTimer);
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+				timer.stop();
 				timer = null;
 			}
 		}
@@ -96,37 +129,85 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
+		private function shotcut():void
+		{
+			if (view.main)
+				bmd.draw(view.main, matrix);
+			isPolicy ? _ftp() : _url();
+			
+		}
+		
+		private function _ftp():void
+		{
+			var data:ByteArray = BitmapUtil.encodeJPG(bmd);
+			var path:String = FileUtil.resolvePathApplication("shotcutPic" + File.separator + config.terminalNO);
+//			var file:File = new File(path);
+//			file.createDirectory();  //创建存储不同终端截图的文件夹。
+			
+			pic = new File(path + File.separator + ftpName + ".jpg");
+			var fs:FileStream = new FileStream;
+			fs.open(pic, FileMode.WRITE);
+			fs.writeBytes(data);
+			fs.close();
+			upLoadPath = "ShotcutPic" + "-" + config.terminalNO + "/" + ftpName + ".jpg";
+			pic.canonicalize();
+			upLoad();
+		}
+		
+		/**
+		 * 
+		 * 上传截图。
+		 * 
+		 */
+		
+		private function upLoad():void
+		{
+			ftpRequest = new FTPRequest(
+				config.ftpHost,
+				config.ftpUserName,
+				config.ftpPassWord,
+				config.ftpPort,
+				upLoadPath,
+				pic.nativePath);
+			ftpLoader = new FTPUploader;
+			ftpLoader.timeout = 150;
+			ftpLoader.addEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.addEventListener(Event.CANCEL, handlerDefault_ftp);
+			ftpLoader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
+			ftpLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
+			ftpLoader.upload(ftpRequest);
+			
+			stop();
+		}
+		
+		private function _url():void
+		{
+			request.data = BitmapUtil.encodeJPG(bmd);
+			request.url = "http://" + config.httpHost + ":" + config.httpPort + "/" + config.shotcutURL + "?terminalId=" + config.terminalNO;
+			LogUtil.log("上传截图：" + request.url, bmd.width, bmd.height);
+			if (loading) loader.close();
+			loading = true;
+			loader.load(request);
+		}
+		
+		/**
+		 * @private
+		 */
 		private function initialize():void
 		{
 			scale = 1 / 3;
-			jpgOption = new JPEGEncoderOptions(50);
+			
 			matrix = new Matrix;
 			matrix.scale(scale, scale);
-		}
-		
-		/**
-		 * @private
-		 */
-		private function createSocket():void
-		{
-			var socket:Socket = new Socket;
-			socket.addEventListener(Event.CONNECT, handlerDefault);
-			socket.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
-			socket.connect(config.socketHost, config.capturePort);
-		}
-		
-		/**
-		 * @private
-		 */
-		private function shotcutPlayer(socket:Socket):void
-		{
-			bmd.draw(view.application, matrix);
-			socket.writeInt(cmd.length);
-			socket.writeUTFBytes(cmd);
-			socket.writeBytes(bmd.encode(rectange, jpgOption));
-			socket.flush();
-			socket.close();
+			
+			request = new URLRequest;
+			request.method = URLRequestMethod.POST;
+			var header:URLRequestHeader = new URLRequestHeader("Content-type", "application/octet-stream");
+			request.requestHeaders.push(header);
+			loader = new URLLoader;
+			loader.addEventListener(Event.COMPLETE, handlerDefault);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
 		}
 		
 		
@@ -135,7 +216,7 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			createSocket();
+			shotcut();
 		}
 		
 		/**
@@ -143,19 +224,53 @@ package multipublish.tools
 		 */
 		private function handlerTimerComplete($e:TimerEvent):void
 		{
-			count = 0;
+			stop();
+		}
+		
+		
+		private function handlerDefault_ftp($e:Event):void
+		{
+			ftpLoader.removeEventListener(Event.COMPLETE, handlerDefault_ftp);
+			ftpLoader.removeEventListener(Event.CANCEL, handlerDefault_ftp);
+			ftpLoader.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault_ftp);
+			ftpLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault_ftp);
+			
+			if ($e.type == Event.CANCEL) upLoad();
+			else
+			{
+				var success:Boolean = ($e.type == Event.COMPLETE);
+				
+				var description:Tip = success 
+					? MPTipConsts.RECORD_SHOTCUT_UPLOAD_SUCCESS
+					: MPTipConsts.RECORD_SHOTCUT_UPLOAD_FAILURE;
+				var text:String = success ? "" : ($e as IOErrorEvent).text;
+				
+				if (success) config.service.shotcutOver(true, 
+					config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
+				
+				LogSQLite.log(TypeConsts.NETWORK, 
+					EventConsts.EVENT_TAKE_SCREENSHOT,
+					LogUtil.logTip(description, text));
+			}
 		}
 		
 		/**
-		 * @private
+		 * 
+		 * Request接收处理。
+		 * 
 		 */
 		private function handlerDefault($e:Event):void
 		{
-			var socket:Socket = $e.target as Socket;
-			socket.addEventListener(Event.CONNECT, handlerDefault);
-			socket.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
-			if ($e.type == Event.CONNECT) shotcutPlayer(socket);
+			loading = false;
+			switch ($e.type)
+			{
+				case Event.COMPLETE:
+					LogUtil.log("截图上传成功！");
+					break;
+				default:
+					LogUtil.log("截图上传失败，" + ($e as Object).text);
+					break;
+			}
 		}
 		
 		
@@ -184,27 +299,7 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var cmd:String;
-		
-		/**
-		 * @private
-		 */
 		private var scale:Number;
-		
-		/**
-		 * @private
-		 */
-		private var jpgOption:JPEGEncoderOptions;
-		
-		/**
-		 * @private
-		 */
-		private var matrix:Matrix;
-		
-		/**
-		 * @private
-		 */
-		private var rectange:Rectangle;
 		
 		/**
 		 * @private
@@ -214,17 +309,52 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var w:Number;
+		private var matrix:Matrix;
 		
 		/**
 		 * @private
 		 */
-		private var h:Number;
+		private var rectangle:Rectangle;
 		
 		/**
 		 * @private
 		 */
-		private var count:int;
+		private var request:URLRequest;
 		
+		/**
+		 * @private
+		 */
+		private var ftpRequest:FTPRequest;
+		
+		/**
+		 * @private
+		 */
+		private var ftpLoader:FTPUploader;
+		
+		/**
+		 * @private
+		 */
+		private var loader:URLLoader;
+		
+		/**
+		 * @private
+		 */
+		private var loading:Boolean;
+		
+		/**
+		 * @private
+		 */
+		private var isPolicy:Boolean;
+		
+		/**
+		 * 
+		 * 时间戳。
+		 * 
+		 */
+		private var ftpName:String;
+		
+		private var pic:File;
+		
+		private var upLoadPath:String
 	}
 }

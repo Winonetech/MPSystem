@@ -3,7 +3,7 @@ package multipublish.tools
 	
 	/**
 	 * 
-	 * 发布系统Socket服务交互。
+	 * 发布系统HTTP服务交互。
 	 * 
 	 */
 	
@@ -14,18 +14,22 @@ package multipublish.tools
 	import cn.vision.utils.RegexpUtil;
 	import cn.vision.utils.StringUtil;
 	
-	import com.winonetech.tools.Service;
-	
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLVariables;
+	import flash.utils.Timer;
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.ServiceConsts;
 	import multipublish.core.MPCConfig;
+	import multipublish.core.mp;
 	
 	
-	public final class MPService extends Service
+	public final class MPService
 	{
 		
 		/**
@@ -37,6 +41,37 @@ package multipublish.tools
 		public function MPService()
 		{
 			super();
+			
+			initialize();
+		}
+		
+		
+		/**
+		 * 
+		 * 开始通讯。
+		 * 
+		 */
+		
+		public function communicationStart():void
+		{
+			timer.reset();
+			timer.start();
+			
+			online();
+		}
+		
+		
+		/**
+		 * 
+		 * 停止通讯。
+		 * 
+		 */
+		
+		public function communicationStop():void
+		{
+			offline();
+			
+			timer.stop();
 		}
 		
 		
@@ -46,10 +81,14 @@ package multipublish.tools
 		 * 
 		 */
 		
-		public function online($value:String):void
+		public function online():void
 		{
-			socket.writeUTF(ServiceConsts.FORWARD_ON_LINE + $value);
-			socket.flush();
+			if(!connected)
+			{
+				offsend = false;
+				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
+			}
+			
 		}
 		
 		
@@ -61,10 +100,10 @@ package multipublish.tools
 		
 		public function offline():void
 		{
-			if (socket && socket.connected)
+			if (connected)
 			{
-				socket.writeUTF(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
-				socket.flush();
+				offsend = true;
+				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
 			}
 		}
 		
@@ -80,13 +119,9 @@ package multipublish.tools
 		
 		public function report($data:String, $cmd:Boolean = true):void
 		{
-			if (socket && socket.connected)
-			{
-				socket.writeUTF($cmd
-					? ServiceConsts.FILE_DOWNLOAD + config.terminalNO + ";" + $data
-					: ServiceConsts.FILE_PROGRESS + config.terminalNO + "," + $data);
-				socket.flush();
-			}
+			send($cmd
+				? ServiceConsts.FILE_DOWNLOAD + config.terminalNO + ";" + $data
+				: ServiceConsts.FILE_PROGRESS + config.terminalNO + "," + $data);
 		}
 		
 		
@@ -100,12 +135,23 @@ package multipublish.tools
 		
 		public function logover($success:Boolean = true, $name:String = null):void
 		{
-			if (socket && socket.connected)
-			{
-				socket.writeUTF(ServiceConsts.UPLOAD_LOG + config.terminalNO + ($success ? ", " + $name : ", 0"));
-				socket.flush();
-			}
+			send(ServiceConsts.UPLOAD_LOG + config.terminalNO + ($success ? ", " + $name : ", 0"));
 		}
+		
+		
+		/**
+		 * 
+		 * 向服务端上报截图上传完毕，并传递截图的地址。
+		 * 
+		 * @param $success:String (default = true) 是否上传成功。
+		 * 
+		 */
+		
+		public function shotcutOver($success:Boolean = true, $name:String = null):void
+		{
+			send(ServiceConsts.SEND_SHOTCUT + $name);
+		}
+		
 		
 		
 		/**
@@ -156,27 +202,138 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		override protected function handlerSocketConnected($e:Event):void
+		private function initialize():void
 		{
-			LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_ONLINE));
+			loader = new URLLoader;
+			request = new URLRequest;
+			request.contentType = "text/xml; charset=utf-8";
+			timer = new Timer(1000);
+			loader.addEventListener(Event.COMPLETE, handlerDefault);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
 			
-			super.handlerSocketConnected($e);
-			
-			online(config.terminalNO);
-			handlerTimerHeartbeat();
-			createTimer(config.heartbeatTime || 30, handlerTimerHeartbeat);
+			timer.addEventListener(TimerEvent.TIMER, handlerTimer);
 		}
 		
 		/**
 		 * @private
 		 */
-		override protected function handlerSocketData($e:ProgressEvent):void
+		private function heartbeat():void
 		{
-			super.handlerSocketData($e);
+			if (connected) send(ServiceConsts.FORWARD_HEART_BEAT + config.terminalNO);
+		}
+		
+		/**
+		 * @private
+		 */
+		private function connect():void
+		{
+			if(!connected)
+			{
+				mp::connected = true;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function disconnect():void
+		{
+			if (connected)
+			{
+				mp::connected = false;
+				LogUtil.log("与服务端断开连接。");
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function send($value:String):void
+		{
+			cmds.push($value);
 			
-			DebugUtil.execute(read, false);
-			var temp:String = datas.join("\n");
-			var list:Array = temp.split("\n");
+			requestURI();
+		} 
+		
+		/**
+		 * @private
+		 * 发送心跳。
+		 */
+		private function requestURI():void
+		{
+			if(!requesting &&cmds.length)
+			{
+				requesting = true;
+				var variables:URLVariables = new URLVariables;
+				variables.cmd = cmds.shift();
+				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				request.data = variables;
+				
+				LogUtil.log("通讯：" + request.url + "，cmd:" + variables.cmd);
+				
+				loader.load(request);
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 * 传给后端后执行对应的操作。
+		 * 
+		 */
+		private function handlerDefault($e:Event):void
+		{
+			requesting = false;
+			switch ($e.type)
+			{
+				case Event.COMPLETE:
+					offsend ? disconnect() : connect();
+					readCMD(loader.data as String);
+					break;
+				case IOErrorEvent.IO_ERROR:
+				case SecurityErrorEvent.SECURITY_ERROR:
+					disconnect();
+					mp::message = ($e as Object).text;
+					break;
+				default:
+					break;
+			}
+			requestURI();
+		}
+		
+		/**
+		 * 
+		 * 发送心跳。
+		 * @private
+		 */
+		private function handlerTimer($e:TimerEvent):void
+		{
+			//
+			if (heartbeatTotal == 0)
+			{
+				heartbeatTotal = Math.random() * frequency + 15;
+				heartbeatCount = 0;
+			}
+			else
+			{
+				if (++heartbeatCount >= heartbeatTotal)
+				{
+					heartbeatTotal = Math.random() * frequency + 15;
+					heartbeatCount = 0;
+					connected ? heartbeat() : online();
+				}
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function readCMD($value:String):void
+		{
+			$value = $value.split("\r").join("");
+			var list:Array = $value.split("\n");
 			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 			{
 				return !StringUtil.isEmpty($item.substr(0, 5));
@@ -194,37 +351,31 @@ package multipublish.tools
 					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
 				}
 			}
-			datas.length = 0;
 		}
 		
 		
 		/**
-		 * @private
+		 * 
+		 * 是否已连接。
+		 * 
 		 */
-		private function handlerTimerHeartbeat($e:TimerEvent = null):void
+		
+		public function get connected():Boolean
 		{
-			if (socket.connected)
-			{
-				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_HEARTBEAT, config.terminalNO));
-				
-				socket.writeUTF(ServiceConsts.FORWARD_HEART_BEAT + config.terminalNO);
-				socket.flush();
-			}
+			return mp::connected as Boolean;
 		}
 		
 		
 		/**
-		 * @private
+		 * 
+		 * 返回信息。
+		 * 
 		 */
-		private function read():void
-		{
-			while(true)
-			{
-				var data:String = socket.readUTF();
-				ArrayUtil.push(datas, data);
-			}
-		}
 		
+		public function get message():String
+		{
+			return mp::message;
+		}
 		
 		
 		/**
@@ -237,9 +388,74 @@ package multipublish.tools
 		
 		
 		/**
+		 * 
+		 * 心跳频率。
+		 * 
+		 */
+		
+		public var frequency:uint = 30;
+		
+		
+		/**
+		 * @private
+		 */
+		private var cmds:Vector.<String> = new Vector.<String>;
+		
+		/**
 		 * @private
 		 */
 		private var datas:Vector.<String> = new Vector.<String>;
+		
+		/**
+		 * @private
+		 */
+		private var timer:Timer;
+		
+		/**
+		 * @private
+		 */
+		private var timerHandler:Function;
+		
+		/**
+		 * @private
+		 */
+		private var loader:URLLoader;
+		
+		/**
+		 * @private
+		 */
+		private var request:URLRequest;
+		
+		/**
+		 * @private
+		 */
+		private var requesting:Boolean;
+		
+		/**
+		 * @private
+		 */
+		private var offsend:Boolean;
+		
+		/**
+		 * @private
+		 */
+		private var heartbeatCount:uint = 0;
+		
+		/**
+		 * @private
+		 */
+		private var heartbeatTotal:uint = 0;
+		
+		
+		/**
+		 * @private
+		 */
+		mp var connected:Boolean;
+		
+		/**
+		 * @private
+		 */
+		mp var message:String;
 		
 		
 		/**

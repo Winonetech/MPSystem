@@ -15,12 +15,30 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 地址推送。<br>
+		 * 排期推送。<br>
 		 * 默认值为“UPSC:”。
 		 * 
 		 */
 		
-		public static const RECEIVE_DATA_PUSH:String = "UPSC:";
+		public static const RECEIVE_SCEDULE:String = "UPSC:";
+		
+		/**
+		 * 
+		 * 发送LED显示内容。<br>
+		 * 默认值为“SLED:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_LEDTEXT:String = "SLED:";
+		
+		/**
+		 * 
+		 * 节目推送。<br>
+		 * 默认值为“UPSC:”。
+		 * 
+		 */
+		
+		public static const RECEIVE_PROGRAM:String = "UPPR:";
 		
 		
 		/**
@@ -53,6 +71,17 @@ package multipublish.consts
 		public static const FILE_DOWNLOAD:String = "FTPS:";
 		
 		
+		
+		/**
+		 * 
+		 * 获取电子报。
+		 * 默认值为“REEP:”。
+		 * 
+		 */
+		
+		public static const EPAPER_DOWNLOAD:String = "REEP:";
+		
+		
 		/**
 		 * 
 		 * 上传日志。
@@ -61,6 +90,16 @@ package multipublish.consts
 		 */
 		
 		public static const UPLOAD_LOG:String = "UPLG:";
+		
+		
+		/**
+		 * 
+		 * 上传报表。
+		 * 默认值为“UPRT:”。
+		 * 
+		 */
+		
+		public static const UPLOAD_REPORT:String = "UPRT:";
 		
 		
 		/**

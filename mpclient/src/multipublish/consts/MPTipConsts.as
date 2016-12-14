@@ -211,7 +211,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_LOAD_FAILURE_SCHEDULE:Tip = new Tip("加载服务端排期数据出错，排期不存在！", 1);
+		public static const RECORD_LOAD_FAILURE_CHANNEL:Tip = new Tip("加载服务端排期数据出错，请检查排期地址是否正确，或排期数据格式是否正确！", 1);
 		
 		
 		/**
@@ -220,7 +220,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_LOAD_FAILURE_PROGRAM:Tip = new Tip("加载服务端节目数据出错，请检查网络连接或与相关工作人员联系！", 1);
+		public static const RECORD_LOAD_FAILURE_PROGRAM:Tip = new Tip("加载服务端节目数据出错，请检查节目地址是否正确，或节目数据格式是否正确！", 1);
 		
 		
 		/**
@@ -256,34 +256,52 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_CONTENT_PLAY:Tip = new Tip("播放内容：{content}", 2);
-		
-		
-		/**
-		 * 
-		 * 设定布局记录。
-		 * 
-		 */
-		
 		public static const RECORD_DOCUMENT_PLAY:Tip = new Tip("播放文档：{path}", 2);
 		
 		
 		/**
 		 * 
-		 * 设定布局记录。
+		 * 播放内容记录。
 		 * 
 		 */
 		
-		public static const RECORD_LAYOUT_DATA:Tip = new Tip("设定布局：{x}, {y}, {width}, {height}", 2);
+		public static const RECORD_CONTENT_PLAY:Tip = new Tip("播放内容：{title}", 2);
 		
 		
 		/**
 		 * 
-		 * 设定节目记录。
+		 * 设定内容记录。
 		 * 
 		 */
 		
-		public static const RECORD_PROGRAM_DATA:Tip = new Tip("设定节目：{summary}", 2);
+		public static const RECORD_CONTENT_DATA:Tip = new Tip("设定内容：{title}", 2);
+		
+		
+		/**
+		 * 
+		 * 设定布局记录。
+		 * 
+		 */
+		
+		public static const RECORD_COMPONENT_DATA:Tip = new Tip("设定组件：{x}, {y}, {w}, {h}", 2);
+		
+		
+		/**
+		 * 
+		 * 播放节目记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHEET_PLAY:Tip = new Tip("播放版面：{label}", 2);
+		
+		
+		/**
+		 * 
+		 * 设定页面记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHEET_DATA:Tip = new Tip("设定版面：{label},{x},{y},{w},{h}", 2);
 		
 		
 		/**
@@ -297,11 +315,11 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 设定排期记录。
+		 * 设定节目记录。
 		 * 
 		 */
 		
-		public static const RECORD_SCHEDULE_DATA:Tip = new Tip("设定排期：{summary}", 2);
+		public static const RECORD_PROGRAM_DATA:Tip = new Tip("设定节目：{summary},{width},{height}", 2);
 		
 		
 		/**
@@ -310,7 +328,16 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const RECORD_SCHEDULE_PLAY:Tip = new Tip("播放排期：{summary}", 2);
+		public static const RECORD_SCHEDULE_PLAY:Tip = new Tip("播放排期：{type}", 2);
+		
+		
+		/**
+		 * 
+		 * 设定排期记录。
+		 * 
+		 */
+		
+		public static const RECORD_SCHEDULE_DATA:Tip = new Tip("设定排期：{type}", 2);
 		
 		
 		/**
@@ -446,6 +473,25 @@ package multipublish.consts
 		 */
 		
 		public static const RECORD_LOG_UPLOAD_FAILURE:Tip = new Tip("日志文件上传失败，{$self}", 2);
+		
+		
+		
+		/**
+		 * 
+		 * 截图上传成功记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHOTCUT_UPLOAD_SUCCESS:Tip = new Tip("截图上传成功。", 2);
+		
+		
+		/**
+		 * 
+		 * 截图上传失败记录。
+		 * 
+		 */
+		
+		public static const RECORD_SHOTCUT_UPLOAD_FAILURE:Tip = new Tip("截图上传失败，{$self}", 2);
 		
 		
 		/**

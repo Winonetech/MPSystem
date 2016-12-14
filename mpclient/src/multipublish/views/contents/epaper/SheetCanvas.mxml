@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ep="multipublish.views.contents.epaper.*"
+		 mouseEnabled="false">
+	
+	<s:Group left="5" right="5" top="5" bottom="5"
+			 clipAndEnableScrolling="true"
+			 mouseEnabled="false" id="container"
+			 resize="canvas_resizeHandler(event)">
+		
+		<s:BorderContainer id="border" mouseEnabled="false"
+						   horizontalCenter="0" verticalCenter="0">
+			
+			<ep:Viewer id="zoomer"/>
+			
+		</s:BorderContainer>
+		
+	</s:Group>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.core.mp;
+			
+			import mx.events.ResizeEvent;
+			
+			
+			/**
+			 * @private
+			 */
+			private function update():void
+			{
+				resizeViewer();
+				
+				content.data = data;
+				
+				zoomer.content = content;
+				
+				if (zoomer) zoomer.update();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function resizeViewer():void
+			{
+				if (container && zoomer && data)
+				{
+					var ww:Number = container.width - 2;
+					var wh:Number = container.height - 2;
+					var cw:Number = data.width;
+					var ch:Number = data.height;
+					var ws:Number = ww / wh;
+					var cs:Number = cw / ch;
+					var ss:Number = ws < cs ? ww / cw : wh /ch;
+					
+					zoomer.width  = ss * cw;
+					zoomer.height = ss * ch;
+					
+					border.width  = zoomer.width  + 2;
+					border.height = zoomer.height + 2;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function canvas_resizeHandler(e:ResizeEvent):void
+			{
+				resizeViewer();
+			}
+			
+			
+			/**
+			 * 
+			 * 数据源
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				update();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var content:SheetContent = new SheetContent;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>

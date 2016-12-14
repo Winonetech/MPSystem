@@ -42,6 +42,8 @@ package multipublish.vo.elements
 		{
 			super.parse($data);
 			
+			mp::documents = new Vector.<String>;
+			
 			var list:* = data["folder"]["item"];
 			if (list is Array) list = list[0];
 			
@@ -63,7 +65,6 @@ package multipublish.vo.elements
 			if (script is String)
 			{
 				var items:Array = script.split(";");
-				mp::documents = new Vector.<String>;
 				for each (item in items) 
 				{
 					var oto:Array = item.split("_");

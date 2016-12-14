@@ -71,11 +71,36 @@ package multipublish.tools
 		
 		/**
 		 * 
-		 * 注册时间点，在该时间点下执行回调。
+		 * 清除截图时间控制。
+		 * 
+		 */
+		
+		public function removeControlAllShotcut():void
+		{
+			shotcutCache = {};
+		}
+		
+		
+		/**
+		 * 
+		 * 清除关机时间控制。
+		 * 
+		 */
+		
+		public function removeControlAllShutdown():void
+		{
+			shutdownCache = {};
+		}
+		
+		
+		
+		/**
+		 * 
+		 * 注册节目播放时间点，在该时间点下执行回调。
 		 * 
 		 * @param $time:Date 时间，精确到秒。
 		 * @param $handler:Function 调用函数。
-		 * @param $args 相关参数。
+		 * @param $args 方法所需参数。
 		 * 
 		 */
 		
@@ -99,7 +124,7 @@ package multipublish.tools
 		 * 
 		 * @param $time:Date 时间，精确到秒。
 		 * @param $handler:Function 调用函数。
-		 * @param $args 相关参数。
+		 * @param $args 方法所需参数。
 		 * 
 		 */
 		
@@ -114,6 +139,30 @@ package multipublish.tools
 			var note:String = getNote($time, true);
 			shutdownCache = shutdownCache || {};
 			shutdownCache[note] = {handler:$handler, args:$args};
+		}
+
+		
+		/**
+		 * 
+		 * 注册截图时间点，在该时间点下执行回调。
+		 * 
+		 * @param $time:Date 时间，精确到秒。
+		 * @param $handler:Function 调用函数。
+		 * @param $args 方法所需参数。
+		 * 
+		 */
+		
+		public function registControlShotcut($time:Date, $handler:Function = null, ...$args):void
+		{
+			if(!commanTimer)
+			{
+				commanTimer = new Timer(1000);
+				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
+				commanTimer.start();
+			}
+			var note:String = getNote($time, true);
+			shotcutCache = shotcutCache || {};
+			shotcutCache[note] = {handler:$handler, args:$args};
 		}
 		
 		
@@ -135,7 +184,8 @@ package multipublish.tools
 		
 		
 		/**
-		 * @private
+		 * 解析成 星期/时/分/秒
+		 * @param $day:是否需要解析星期
 		 */
 		
 		private function getNote($date:Date, $day:Boolean = false):String
@@ -162,6 +212,10 @@ package multipublish.tools
 			var shutdown:Object = shutdownCache ? shutdownCache[note] : null;
 			if (shutdown && shutdown.handler)
 				shutdown.handler.apply(null, shutdown.args);
+			
+			var shotcut:Object = shotcutCache ? shotcutCache[note] : null;
+			if (shotcut && shotcut.handler)
+				shotcut.handler.apply(null, shotcut.args);
 		}
 		
 		/**
@@ -204,6 +258,11 @@ package multipublish.tools
 		 * @private
 		 */
 		private var shutdownCache:Object;
+		
+		/**
+		 * @private
+		 */
+		private var shotcutCache:Object;
 		
 	}
 }

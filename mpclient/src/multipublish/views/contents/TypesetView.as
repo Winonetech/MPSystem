@@ -142,7 +142,7 @@ package multipublish.views.contents
 			if (!tweening)
 			{
 				var index:int = indexOfHistory($data);
-				if (index == -1)
+				if (index== -1)
 				{
 					//新页面在历史记录中不存在，打开新页面。
 					log(MPTipConsts.RECORD_TYPESET_VIEW, $data.element);
@@ -345,6 +345,7 @@ package multipublish.views.contents
 			type[ElementTypeConsts.ARRANGE  ] = ArrangeView;
 			type[ElementTypeConsts.GENERAL  ] = CommanView;
 			type[ElementTypeConsts.OFFICE   ] = OfficeView;
+			type[ElementTypeConsts.NEWSPAPER] = NewsPaperView;
 			//type[ElementTypeConsts.POPWINDOW] = PopWindowView;
 			//type[ElementTypeConsts.THUMBNAIL] = ThumbnailView;
 			//type[ElementTypeConsts.TIMELINE ] = TimelineView;

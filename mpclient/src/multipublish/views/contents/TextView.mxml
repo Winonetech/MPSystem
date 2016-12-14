@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:ct="multipublish.views.contents.*"
+				xmlns:cp="com.winonetech.components.*" xmlns:controls="com.winonetech.controls.*">
+	
+	<controls:MultiTouchScroller left="5" right="5"
+						   top="5" bottom="5" id="scroll" 
+						   horizontalScrollPolicy="off"
+						   skinClass="multipublish.skins.ScrollerSkin"
+						   horizontalTouchScrollEnabled="false">
+		
+		<s:Group width="100%" mouseChildren="false">
+			
+			<mx:Text mouseEnabled="false" mouseChildren="false"
+					 selectable="false" width="100%"
+					 color="{text.textColor}" fontSize="16"
+					 htmlText="{text.content}"/>
+			
+		</s:Group>
+		
+	</controls:MultiTouchScroller>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.core.mp;
+			import multipublish.vo.contents.HText;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				timerPlay();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				if (scroll) scroll.verticalScrollPosition = 0;
+				
+				timerStop();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				text = null;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				text = data as HText;
+				
+				time = text.duration || 30;
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay():void
+			{
+				if(!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			
+			/**
+			 * 
+			 * 文本播放时间。
+			 * 
+			 */
+			
+			public function get time():uint
+			{
+				return mp::time;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var text:HText;
+			
+			/**
+			 * @private
+			 */
+			private var timer:Timer;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+			
+		]]>
+	</fx:Script>
+	
+</ct:ContentView>

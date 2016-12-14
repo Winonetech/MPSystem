@@ -8,6 +8,10 @@ package multipublish.vo.programs
 	 */
 	
 	
+	import cn.vision.collections.Map;
+	import cn.vision.core.or;
+	import cn.vision.utils.ArrayUtil;
+	
 	import com.winonetech.core.VO;
 	
 	import multipublish.core.mp;
@@ -19,7 +23,7 @@ package multipublish.vo.programs
 		
 		/**
 		 * 
-		 * <code>Layout</code>构造函数。
+		 * 构造函数。
 		 * 
 		 * @param $data:Object (default = null) 初始化的数据。
 		 * 
@@ -35,16 +39,170 @@ package multipublish.vo.programs
 		
 		/**
 		 * 
+		 * 添加一个Page。
+		 * 
+		 */
+		
+		mp function addPage($page:Page):void
+		{
+			if(!pagesMap[$page.id])
+			{
+				pagesMap[$page.id] = $page;
+				ArrayUtil.push(pagesArr, $page);
+				mp::updatePagesOrder();
+				
+				if(!home && $page.home) home = $page;
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 删除一个Page。
+		 * 
+		 */
+		
+		mp function delPage($page:Page):void
+		{
+			if (pagesMap[$page.id])
+			{
+				delete pagesMap[$page.id];
+				if (pagesArr[$page.order] == $page)
+					pagesArr.splice($page.order, 1);
+				
+				mp::updatePagesOrder();
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 更新顺序。
+		 * 
+		 */
+		
+		mp function updatePagesOrder():void
+		{
+			pagesArr.sortOn("order", Array.NUMERIC);
+			var l:uint = pagesArr.length;
+			for (var i:uint = 0; i < l; i++) pagesArr[i].order = i;
+		}
+		
+		
+		/**
+		 * 
+		 * 页面数组。
+		 * 
+		 */
+		
+		public function get pagesArr():Array
+		{
+			return mp::pagesArr;
+		}
+		
+		
+		/**
+		 * 
+		 * 页面字典。
+		 * 
+		 */
+		
+		public function get pagesMap():Map
+		{
+			return mp::pagesMap;
+		}
+		
+		
+		/**
+		 * 
+		 * 子级对父级页面切换形式。
+		 * 
+		 */
+		
+		public function get b2t():String
+		{
+			return getProperty("b2t");
+		}
+		
+		
+		/**
+		 * 
+		 * 父级对子级页面切换形式。
+		 * 
+		 */
+		
+		public function get t2b():String
+		{
+			return getProperty("t2b");
+		}
+		
+		
+		/**
+		 * 
+		 * 同一级别页面切换形式。
+		 * 
+		 */
+		
+		public function get vis():String
+		{
+			return getProperty("vis");
+		}
+		
+		
+		/**
+		 * 
+		 * 广告引用。
+		 * 
+		 */
+		
+		public var ad:AD;
+		
+		
+		/**
+		 * 
+		 * 首页引用。
+		 * 
+		 */
+		
+		public var home:Page;
+		
+		
+		/**
+		 * 
+		 * 所有页面。
+		 * 
+		 */
+		
+		public var pagesTol:Map = new Map;
+		
+		
+		/**
+		 * @private
+		 */
+		mp var pagesArr:Array = [];
+		
+		/**
+		 * @private
+		 */
+		mp var pagesMap:Map = new Map;
+		
+		
+		//--------------------------------------------------
+		// 不再支持的属性
+		//--------------------------------------------------
+		
+		
+		/**
+		 * 
 		 * 添加一个Content。
 		 * 
 		 */
 		
 		public function addContent(content:Content):void
 		{
-			if (contents.indexOf(content) == -1)
+			if (contents.indexOf(content)== -1)
 				contents[contents.length] = content;
 		}
-		
 		
 		/**
 		 * @private
@@ -65,19 +223,6 @@ package multipublish.vo.programs
 		{
 			return mp::contents;
 		}
-		
-		
-		/**
-		 * 
-		 * 能否拖动。
-		 * 
-		 */
-		
-		public function get dragable():Boolean
-		{
-			return getProperty("dragable", Boolean);
-		}
-		
 		
 		/**
 		 * 
@@ -134,6 +279,15 @@ package multipublish.vo.programs
 		 */
 		
 		public var program:Program;
+		
+		
+		/**
+		 * 
+		 * 存储临时组按钮。
+		 * 
+		 */
+		
+		public var buttons:Array = [];
 		
 		
 		/**

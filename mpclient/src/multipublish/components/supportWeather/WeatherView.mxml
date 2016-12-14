@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import multipublish.components.supportWeather.vo.LayoutStyle;
+			import multipublish.components.supportWeather.vo.WeatherStyle;
+			import multipublish.components.supportWeather.vo.WeatherVo;
+			
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			
+			public function get layoutStyle():LayoutStyle
+			{
+				return _layoutStyle;
+			}
+			
+			public function set layoutStyle($value:LayoutStyle):void
+			{
+				if(!$value)
+				{
+					$value = new LayoutStyle;
+					$value.layout = "horizontal";
+				}
+				
+				_layoutStyle = $value;
+				if (layoutStyle.layout == "vertical")
+				{
+					var v:VerticalLayout = new VerticalLayout;
+					v.gap = layoutStyle.gap;
+					v.horizontalAlign = layoutStyle.horizontalAlign;
+					v.verticalAlign = layoutStyle.verticalAlign;
+					layout = v;
+				}
+				else
+				{
+					var h:HorizontalLayout = new HorizontalLayout;
+					h.gap = layoutStyle.gap;
+					h.horizontalAlign = layoutStyle.horizontalAlign;
+					h.verticalAlign = layoutStyle.verticalAlign;
+					layout = h;
+				}
+				
+				invalidateDisplayList();
+			}
+			
+			private var _layoutStyle:LayoutStyle;
+			
+			public function get weatherStyle():WeatherStyle
+			{
+				return _weatherStyle;
+			}
+			
+			public function set weatherStyle($value:WeatherStyle):void
+			{
+				_weatherStyle = $value;
+				
+				layoutStyle = _weatherStyle ? _weatherStyle.listLayout : null;
+			}
+			
+			private var _weatherStyle:WeatherStyle;
+			
+			public function addWeatherItem($weatherVo:WeatherVo):void
+			{
+				var weatherItem:SingleDayView = new SingleDayView;
+				weatherItem.setData($weatherVo, weatherStyle);
+				addElement(weatherItem);
+			}
+			
+		]]>
+	</fx:Script>
+</s:Group>

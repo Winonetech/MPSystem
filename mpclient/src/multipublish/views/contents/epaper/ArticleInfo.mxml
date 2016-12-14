@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s ="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:ct="com.winonetech.controls.*"
+				   borderVisible="false" visible="false"
+				   backgroundAlpha=".7">
+	
+	<s:states>
+		<s:State name="noImage"/>
+		<s:State name="hsImage"/>
+	</s:states>
+	
+	<s:Group width="{width * .8}" height="{height * .8}"
+			 horizontalCenter="0" verticalCenter="0"
+			 clipAndEnableScrolling="false">
+		
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		
+		<ct:MultiTouchScroller left="50" right="50"
+							   top="50" bottom="50" id="scroll" 
+							   horizontalScrollPolicy="off"
+							   skinClass="multipublish.skins.ScrollerSkin"
+							   horizontalTouchScrollEnabled="false">
+			
+			<s:VGroup id="group" width="90%" gap="15" horizontalAlign="center">
+				
+				<s:Label width="100%" text="{title}" maxDisplayedLines="2" textAlign="center" fontSize="30"/>
+				
+				<s:HGroup>
+					<s:Label fontSize="16" text="作者：{author}"/>
+					<s:Label fontSize="16" text="日期：{date}"/>
+				</s:HGroup>
+				
+				<mx:HRule width="100%"/>
+				
+				<s:Image id="imageShow" includeIn="hsImage" width="80%" source="{path + image}"/>
+				
+				<mx:Text fontSize="18" width="100%" htmlText="{text}" selectable="false" leading="2"/>
+				
+			</s:VGroup>
+			
+		</ct:MultiTouchScroller>
+		
+		<s:Button right="10" top="10" width="30" height="30"
+				  skinClass="multipublish.skins.BackButtonSkin"
+				  click="back_clickHandler(event)"/>
+		
+		<s:filters>
+			<s:DropShadowFilter distance="2" color="0x999999"/>
+		</s:filters>
+	</s:Group>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import caurina.transitions.Tweener;
+			
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.core.mp;
+			
+			
+			
+			/**
+			 * @private
+			 */
+			private function back_clickHandler(e:MouseEvent):void
+			{
+				visible = false;
+				if (scroll && scroll.viewport)
+					scroll.viewport.verticalScrollPosition = 0;
+			}
+			
+			/**
+			 * 
+			 * 数据源
+			 * 
+			 */
+			
+			public function get data():Object
+			{
+				return mp::data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data($value:Object):void
+			{
+				mp::data = $value;
+				
+				title = "";
+				if(!StringUtil.isEmpty(data.preTitle))
+				{
+					title += data.preTitle;
+				}
+				if(!StringUtil.isEmpty(data.title))
+				{
+					title += (!StringUtil.isEmpty(title))
+						?(StringUtil.lineEnding + data.title)
+						: data.title;
+				}
+				if(!StringUtil.isEmpty(data.subTitle))
+				{
+					title += (!StringUtil.isEmpty(title))
+						?(StringUtil.lineEnding + data.subTitle)
+						: data.subTitle;
+				}
+				
+				
+				author = data.author;
+				
+				date = data.writeDate;
+				
+				text = StringUtil.replace(data.content, "</p>", "</p><p></p>");
+				
+				try 
+				{
+					image = data.withImage[0].easyImage.fileName;
+				}
+				catch (e:Error)
+				{
+					image = null;
+				}
+				
+				currentState = StringUtil.isEmpty(image) ? "noImage" : "hsImage";
+			}
+			
+			
+			[Bindable]
+			public var path:String;
+			
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var preTitle:String;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var author:String;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var date:String;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var image:String;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var title:String;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var text:String;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var data:Object;
+			
+		]]>
+	</fx:Script>
+	
+</s:BorderContainer>
