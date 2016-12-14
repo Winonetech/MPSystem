@@ -6,35 +6,19 @@ package multipublish.views
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
+	import multipublish.utils.ContentUtil;
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
 
-	public class ProgramView extends MPView
+	public final class ContentProgramView extends ProgramView
 	{
-		public function ProgramView()
+		public function ContentProgramView()
 		{
 			super();
 			
 			initializeEnvironment();
 		}
-		
-		/**
-		 * 
-		 * 自适应父容器尺寸。
-		 * 
-		 */
-		
-		public function autofitScale():void
-		{
-			container.scaleX = container.scaleY = 
-				(container.width > 0 && container.height > 0)
-				?(container.width / container.height < width / height 
-					? height / container.height
-					: width  / container.width) 
-				: 1;
-		}
-		
 		
 		/**
 		 * @inheritDoc
@@ -95,7 +79,7 @@ package multipublish.views
 		override protected function resolveData():void
 		{
 			program = data as Program;
-			if (program)
+			if (program.moduleType)
 			{
 				log(MPTipConsts.RECORD_PROGRAM_DATA, data);
 				
@@ -105,11 +89,10 @@ package multipublish.views
 				
 				autofitScale();
 				
-//				container.addElement(view = new (ContentUtil.getModuleView(program.moduleType, program.noticeType)));
-				container.addElement(view = new (program.moduleType ? LayoutProgramView : ContentProgramView));
+				container.addElement(view = new (ContentUtil.getModuleView(program.moduleType, program.noticeType)));
 				view.width  = program.width;
 				view.height = program.height;
-				view.data   = program; 
+				view.data   = program.moduleContents; 
 			}
 		}
 		

@@ -4,9 +4,19 @@ package multipublish.vo.moduleContents
 	
 	public final class EmergencyBroad extends Content
 	{
+		
+		/**
+		 * 
+		 * 应急播报。
+		 * 
+		 */
+		
 		public function EmergencyBroad($data:Object=null)
 		{
 			super($data);
 		}
+		
+		
+		
 	}
 }

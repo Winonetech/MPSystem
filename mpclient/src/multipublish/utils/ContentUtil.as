@@ -11,13 +11,12 @@ package multipublish.utils
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.FileUtil;
 	
-	import com.winonetech.tools.Cache;
-	
 	import multipublish.views.LayoutView;
 	import multipublish.views.contents.*;
 	import multipublish.views.moduleContents.AskPaperView;
 	import multipublish.views.moduleContents.EmergencyBroadView;
-	import multipublish.views.moduleContents.NoticeView;
+	import multipublish.views.moduleContents.noticeView.FindPersonView;
+	import multipublish.views.moduleContents.noticeView.WelcomeView;
 	import multipublish.vo.contents.*;
 	import multipublish.vo.moduleContents.AskPaper;
 	import multipublish.vo.moduleContents.EmergencyBroad;
@@ -95,9 +94,9 @@ package multipublish.utils
 		}
 		
 		
-		public static function getModuleView($index:int):Class
+		public static function getModuleView($index:int, $noticeType:int = 0):Class
 		{
-			return MVIEWS[$index];
+			return  $index == 3 ? MVIEWS[$index][$noticeType - 1] : MVIEWS[$index];
 		}
 		
 		/**
@@ -112,10 +111,9 @@ package multipublish.utils
 		
 		private static const MVIEWS:Object = 
 		{
-			0 : LayoutView,
 			1 : AskPaperView,
 			2 : EmergencyBroadView,
-			3 : NoticeView
+			3 : [FindPersonView, WelcomeView]
 		};
 		
 		

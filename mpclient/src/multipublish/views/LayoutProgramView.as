@@ -1,5 +1,13 @@
 package multipublish.views
 {
+	
+	/**
+	 * 
+	 * 节目视图。
+	 * 
+	 */
+	
+	
 	import com.winonetech.events.ControlEvent;
 	import com.winonetech.tools.LogSQLite;
 	
@@ -9,31 +17,24 @@ package multipublish.views
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
-
-	public class ProgramView extends MPView
+	
+	
+	public final class LayoutProgramView extends ProgramView
 	{
-		public function ProgramView()
+		
+		/**
+		 * 
+		 * <code>ProgramView</code>构造函数。
+		 * 
+		 */
+		
+		public function LayoutProgramView()
 		{
 			super();
 			
 			initializeEnvironment();
 		}
 		
-		/**
-		 * 
-		 * 自适应父容器尺寸。
-		 * 
-		 */
-		
-		public function autofitScale():void
-		{
-			container.scaleX = container.scaleY = 
-				(container.width > 0 && container.height > 0)
-				?(container.width / container.height < width / height 
-					? height / container.height
-					: width  / container.width) 
-				: 1;
-		}
 		
 		
 		/**
@@ -105,11 +106,10 @@ package multipublish.views
 				
 				autofitScale();
 				
-//				container.addElement(view = new (ContentUtil.getModuleView(program.moduleType, program.noticeType)));
-				container.addElement(view = new (program.moduleType ? LayoutProgramView : ContentProgramView));
+				container.addElement(view = new LayoutView);
 				view.width  = program.width;
 				view.height = program.height;
-				view.data   = program; 
+				view.data   = program.layout; 
 			}
 		}
 		
@@ -148,6 +148,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var view:*;
+		private var view:LayoutView;
+		
 	}
 }

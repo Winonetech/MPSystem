@@ -107,11 +107,30 @@ package multipublish.vo.programs
 		}
 		
 		
+		/**
+		 * 
+		 * 模板类型。
+		 * 
+		 */
+		
 		public function get moduleType():int
 		{
 			return getProperty("moduleType", int);
 		}
 		
+		
+		/**
+		 * 
+		 * 通知类型。<br>
+		 * 1. 寻人启事。(单张图片)<br>
+		 * 2. 欢迎标语。(背景图片)
+		 * 
+		 */
+		
+		public function get noticeType():int
+		{
+			return getProperty("noticeType", int);
+		}
 		
 		/**
 		 * 

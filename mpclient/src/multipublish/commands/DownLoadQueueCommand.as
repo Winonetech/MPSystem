@@ -142,7 +142,7 @@ package multipublish.commands
 			if (config.replacable)
 			{
 				trace(Cache.cachesLave);
-				Cache.queue.close();
+//				Cache.queue.close();
 				
 				if (Cache.cachesLave > 0)    
 				{
