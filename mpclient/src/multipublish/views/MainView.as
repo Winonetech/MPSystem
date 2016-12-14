@@ -114,12 +114,14 @@ package multipublish.views
 			
 			schedule = data as Schedule;
 			
+			var program:Program = schedule.programs[index];
+			
 			if(!view)
 			{
-				//ProgramView不存在时进入。
-				view = generateView();     //创建当前视图。
+				view = generateView(program);     //创建当前视图。
+				view.addEventListener(ControlEvent.READY, handler_ready);
+				view.data = program;   //此处关联至 ProgramView的 resolveData。
 				next = generateNext();	  //创建下一个视图。
-				delay(1, play);  //延时回调方法。
 			}
 			else
 			{
@@ -128,7 +130,7 @@ package multipublish.views
 					if (containsElement(next))
 						removeElement(next);
 				}
-				next = generateView();
+				next = generateView(program);
 				next.visible = false;
 				delay(1, tween);
 			}
@@ -175,13 +177,12 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function generateView():ProgramView
+		private function generateView($program:Program):ProgramView
 		{
-			var program:Program = schedule.programs[index];   //默认播放排期内第一个节目。
-			var result:ProgramView = new ProgramView;
+			var result:ProgramView = new ($program.moduleType 
+				? ContentProgramView : LayoutProgramView);
 			result.width  = application.width;
 			result.height = application.height;
-			result.data = program;   //此处关联至 ProgramView的 resolveData。
 			addElementAt(result, 0);
 			neigh = index;
 			return result;
@@ -314,6 +315,13 @@ package multipublish.views
 		private function handlerResize($e:ResizeEvent):void
 		{
 			autofitScale(view);
+		}
+		
+		private function handler_ready($e:ControlEvent):void
+		{
+			var temp:MPView = $e.target as MPView;
+			temp.removeEventListener(ControlEvent.READY, handler_ready);
+			play();
 		}
 		
 		/**

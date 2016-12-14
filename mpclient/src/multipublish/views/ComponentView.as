@@ -135,6 +135,7 @@ package multipublish.views
 				updateBackground();
 				
 				view = generateView();
+				view.data = source.contents[index];
 				fore = generateNext();
 				last = generateNext(false);
 			}
@@ -155,8 +156,8 @@ package multipublish.views
 					result.width  = width;
 					result.height = height;
 					container.addElement(result);
-					neigh = index;
 					result.addEventListener(ControlEvent.READY, handlerReady);
+					neigh = index;
 				}
 				else
 				{

@@ -38,7 +38,7 @@ package multipublish.vo.moduleContents
 		 * 
 		 */
 		
-		override public function get title():String
+		public function get noticeTitle():String
 		{
 			return getProperty("title", String);
 		}

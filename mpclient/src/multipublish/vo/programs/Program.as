@@ -15,6 +15,7 @@ package multipublish.vo.programs
 	
 	import multipublish.core.mp;
 	import multipublish.vo.contents.Content;
+	import multipublish.vo.moduleContents.Module;
 	
 	
 	public final class Program extends VO
@@ -138,11 +139,12 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		mp function addContent($content:Content):void
+		mp function addContent($content:Content, $ref:Class):void
 		{
-			if ($content && moduleContents.indexOf($content) == -1)
+			if ($content && module.moduleContent.indexOf($content) == -1)
 			{
-				ArrayUtil.push(moduleContents, $content);
+				ArrayUtil.push(module.moduleContent, $content);
+				if (!module.moduleClass) module.moduleClass = $ref;
 			}
 		}
 		
@@ -153,9 +155,9 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function get moduleContents():Vector.<Content>
+		public function get module():Module
 		{
-			return mp::moduleContents;
+			return mp::module;
 		}
 		
 		/**
@@ -166,7 +168,7 @@ package multipublish.vo.programs
 		/**
 		 * @private
 		 */
-		mp var moduleContents:Vector.<Content> = new Vector.<Content>;
+		mp var module:Module = new Module;
 		
 		/**
 		 * 

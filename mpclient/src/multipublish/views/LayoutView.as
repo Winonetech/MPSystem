@@ -290,7 +290,8 @@ package multipublish.views
 				source.pagesArr.length)    //该 pagesArr为 children 即根页面集合。
 			{
 				main = createPage(source.home, true);    //增加页面并进入缓存。
-				
+				main.addEventListener(ControlEvent.READY, handlerReady);
+				main.data = source.home;  
 				history.push(main);
 			}	
 			
@@ -316,10 +317,19 @@ package multipublish.views
 			page.height = $page.h;
 			page.x = $page.x;
 			page.y = $page.y;
-			page.data = $page;   
 			addElement(page).visible = $visible;
 			return page;
 		}
+		
+		
+		private function handlerReady($e:ControlEvent):void
+		{
+			var temp:MPView = $e.target as MPView;
+			temp.removeEventListener(ControlEvent.READY, handlerReady);
+			
+			dispatchReady();
+		}
+		
 		
 		/**
 		 * @private

@@ -3,4 +3,24 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
 	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.vo.moduleContents.Notice;
+			
+			
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				notice = data as Notice;
+			}
+			
+			private var notice:Notice;
+		]]>
+	</fx:Script>
+	
+	
 </contents:ContentView>

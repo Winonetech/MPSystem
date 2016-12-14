@@ -40,7 +40,6 @@ package multipublish.utils
 				if (refer) 
 				{
 					var content:* = new refer;
-					content.data  = $content;
 				}
 			}
 			return content;
@@ -111,6 +110,7 @@ package multipublish.utils
 		
 		private static const MVIEWS:Object = 
 		{
+			0 : LayoutView,
 			1 : AskPaperView,
 			2 : EmergencyBroadView,
 			3 : [FindPersonView, WelcomeView]

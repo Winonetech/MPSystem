@@ -202,11 +202,13 @@ package multipublish.commands
 		
 		private function initModuleContent(dataContent:*, program:Program):void
 		{
+			var voRef  :Class = ContentUtil.getModuleVO(program.moduleType);
+			var viewRef:Class = ContentUtil.getModuleView(program.moduleType, program.noticeType); 
 			for each (var tempContent:Object in dataContent)
 			{
 				var tempData:Object = ObjectUtil.clone(tempContent);
-				var content:Content = new (ContentUtil.getModuleVO(program.moduleType))(tempData);
-				program.mp::addContent(content);
+				var content:Content = new voRef(tempData);
+				program.mp::addContent(content, viewRef);
 			}
 		}
 		

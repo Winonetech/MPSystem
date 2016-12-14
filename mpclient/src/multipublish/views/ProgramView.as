@@ -6,6 +6,10 @@ package multipublish.views
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
+	import multipublish.core.mp;
+	import multipublish.utils.ContentUtil;
+	import multipublish.views.moduleContents.ModuleView;
+	import multipublish.vo.contents.Content;
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
@@ -47,10 +51,10 @@ package multipublish.views
 				EventConsts.EVENT_START_PLAYING, program.summary,
 				log(MPTipConsts.RECORD_PROGRAM_PLAY, program));
 			
-			if (view)
+			if (currentView)
 			{
-				view.addEventListener(ControlEvent.STOP, handlerLayoutEnd);
-				view.play();
+				currentView.addEventListener(ControlEvent.STOP, handlerLayoutEnd);
+				currentView.play();
 			}
 			else
 			{
@@ -65,10 +69,10 @@ package multipublish.views
 		
 		override protected function processStop():void
 		{
-			if (view)
+			if (currentView)
 			{
-				view.removeEventListener(ControlEvent.STOP, handlerLayoutEnd);
-				view.stop();
+				currentView.removeEventListener(ControlEvent.STOP, handlerLayoutEnd);
+				currentView.stop();
 			}
 		}
 		
@@ -80,10 +84,10 @@ package multipublish.views
 		override protected function processReset():void
 		{
 			container.removeAllElements();
-			if (view) 
+			if (currentView) 
 			{
-				view.reset();
-				view = null;
+				currentView.reset();
+				currentView = null;
 			}
 			program = null;
 		}
@@ -105,14 +109,23 @@ package multipublish.views
 				
 				autofitScale();
 				
-//				container.addElement(view = new (ContentUtil.getModuleView(program.moduleType, program.noticeType)));
-				container.addElement(view = new (program.moduleType ? LayoutProgramView : ContentProgramView));
-				view.width  = program.width;
-				view.height = program.height;
-				view.data   = program; 
+				container.addElement(currentView = new (program.moduleType ? ModuleView : LayoutView));
+				
+				currentView.width  = program.width;
+				currentView.height = program.height;
+				currentView.addEventListener(ControlEvent.READY, handlerReady);
+				currentView.data   = program.moduleType ? program.module : program.layout; 
 			}
 		}
 		
+		
+		private function handlerReady($e:ControlEvent):void
+		{
+			var temp:MPView = $e.target as MPView;
+			temp.removeEventListener(ControlEvent.READY, handlerReady);
+			
+			dispatchReady();
+		}
 		
 		/**
 		 * @private
@@ -135,6 +148,9 @@ package multipublish.views
 			container.verticalCenter = 0;
 		}
 		
+		private var readyCount:uint;
+		
+		
 		/**
 		 * @private
 		 */
@@ -148,6 +164,6 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var view:*;
+		private var currentView:MPView;
 	}
 }

@@ -97,9 +97,9 @@ package multipublish.views
 					component.width  = child.w;
 					component.height = child.h;
 					
+					registView(component);
 					component.data   = child;
 					
-					registView(component);
 					container.addElement(component);
 				}
 			}
