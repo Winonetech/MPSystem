@@ -131,5 +131,14 @@ package multipublish.consts
 		
 		public static const TOOL_TIME:String = "assets/tools/time.bat";
 		
+		
+		/**
+		 * 
+		 * 关闭WINDOWS克工具。
+		 * 
+		 */
+		
+		public static const EXPLORER_CLOSER:String = "assets/tools/closeExplorer.exe";
+		
 	}
 }

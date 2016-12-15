@@ -27,11 +27,8 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeConfigCommand</code>构造函数。
-<<<<<<< HEAD
 		 * <br>根据config.ini(如果存在)以对其进行配置，不存在则不做任何事。
-=======
 		 * <br>解析 config并映射到 MDConfig中。
->>>>>>> newspaper
 		 * 
 		 */
 		

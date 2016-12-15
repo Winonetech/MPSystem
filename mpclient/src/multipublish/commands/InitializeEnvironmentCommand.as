@@ -45,13 +45,9 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeEnvironmentCommand</code>构造函数。
-<<<<<<< HEAD
 		 * <br>初始化环境 包括如下：
 		 * <br>1.初始化网络配置、终端接口等；
 		 * <br>2.初始化窗口组件等；
-=======
-		 * <br>包括初始化网络配置，初始化窗口和初始化LED。
->>>>>>> newspaper
 		 * 
 		 */
 		
@@ -71,9 +67,14 @@ package multipublish.commands
 			
 			modelog(ClientStateConsts.INIT_ENVI);
 			
+			debug = getDebug();
+			
 			initializeNetInfo();
 			initializeWindow();
 			initializeLed();
+			initializeExplorer();
+			
+			
 			
 			commandEnd();
 		}
@@ -119,9 +120,9 @@ package multipublish.commands
 			var window:WindowedApplication = view.application;
 			//hide window statusbar
 			window.showStatusBar = false;
-			//window.alwaysInFront = true;
+			window.alwaysInFront = !debug;
 			
-			var r:Rectangle = getDebug() ? ScreenUtil.getMainScreenBounds() : ScreenUtil.getScreensBounds();
+			var r:Rectangle = debug ? ScreenUtil.getMainScreenBounds() : ScreenUtil.getScreensBounds();
 			
 			config.screenController = new ScreenController;
 			
@@ -163,6 +164,21 @@ package multipublish.commands
 			}
 		}
 		
+		/**
+		 * @private
+		 */
+		private function initializeExplorer():void
+		{
+			if(!debug)
+			{
+				ApplicationUtil.execute(
+					FileUtil.resolvePathApplication(URLConsts.EXPLORER_CLOSER));
+			}
+		}
+		
+		/**
+		 * @private
+		 */
 		private function getDebug():Boolean
 		{
 			var file:VSFile = new VSFile(FileUtil.resolvePathApplication("config.ini"));
@@ -187,6 +203,11 @@ package multipublish.commands
 			}
 			return false;
 		}
+		
+		/**
+		 * @private
+		 */
+		private var debug:Boolean;
 		
 	}
 }
