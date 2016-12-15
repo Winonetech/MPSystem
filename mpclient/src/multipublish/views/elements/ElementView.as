@@ -111,9 +111,9 @@ package multipublish.views.elements
 		/**
 		 * @private
 		 */
-		[Bindable]
-		protected var tweening:Boolean;
-		
+//		[Bindable]
+//		protected var tweening:Boolean;
+//		
 		/**
 		 * @private
 		 */

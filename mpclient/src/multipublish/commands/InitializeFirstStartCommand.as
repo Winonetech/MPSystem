@@ -35,6 +35,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeFirstStartCommand</code>构造函数。
+		 * <br>初次启动时初始化。显示配置面板
 		 * 
 		 */
 		
@@ -58,6 +59,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 显示配置面板。
 		 */
 		private function show():void
 		{
@@ -86,6 +88,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 服务端接收数据。
 		 */
 		private function load():void
 		{
@@ -125,6 +128,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 判定返回的结果是否满足条件。满足则执行保存，否则弹出提示窗口。
 		 */
 		private function defaultHandler($e:Event):void
 		{

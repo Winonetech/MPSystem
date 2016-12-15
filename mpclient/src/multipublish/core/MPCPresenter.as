@@ -270,7 +270,7 @@ package multipublish.core
 		 */
 		private function initialize():void
 		{
-			quene = new SequenceQueue;
+			quene = new SequenceQueue;    //实例化一个顺序的同步命令
 		}
 		
 		

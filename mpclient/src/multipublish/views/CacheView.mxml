@@ -15,6 +15,7 @@
 			 clipAndEnableScrolling="false"/>
 	<fx:Script>
 		<![CDATA[
+			
 			import cn.vision.utils.ClassUtil;
 			
 			import com.winonetech.events.ControlEvent;
@@ -83,7 +84,7 @@
 				}
 			}
 			
-			
+			private var created:Boolean;
 			/**
 			 * @inheritDoc
 			 */
@@ -98,6 +99,7 @@
 				{
 					var handlerCreated:Function = function($e:FlexEvent):void
 					{
+						created = true;
 						removeEventListener(FlexEvent.CREATION_COMPLETE, handlerCreated);
 						callbackData();
 					};

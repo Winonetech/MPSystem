@@ -34,6 +34,9 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>InitializeEnvironmentCommand</code>构造函数。
+		 * <br>初始化环境 包括如下：
+		 * <br>1.初始化网络配置、终端接口等；
+		 * <br>2.初始化窗口组件等；
 		 * 
 		 */
 		
@@ -53,8 +56,8 @@ package multipublish.commands
 			
 			modelog(ClientStateConsts.INIT_ENVI);
 			
-			initializeNetInfo();
-			initializeWindow();
+			initializeNetInfo();	//初始化网络信息
+			initializeWindow();		//初始化窗口
 			
 			commandEnd();
 		}
@@ -65,7 +68,7 @@ package multipublish.commands
 		 */
 		private function initializeNetInfo():void
 		{
-			var info:NetworkInfo = NetworkInfo.networkInfo;
+			var info:NetworkInfo = NetworkInfo.networkInfo;   //获取实例
 			var interfaces:Vector.<NetworkInterface> = info.findInterfaces();
 			for each (var item:NetworkInterface in interfaces)
 			{

@@ -60,8 +60,9 @@ package multipublish.commands.steps
 		 */
 		private function load():void
 		{
+			//根据文件夹ID存储需要加载的文件夹数据
 			temp = {};
-			
+			//根据排版ID存储需要加载的排版数据
 			dict = {};
 			
 			queue = new ParallelQueue;
@@ -147,9 +148,7 @@ package multipublish.commands.steps
 				if (item is Array)
 				{
 					for each (var icon:ArrangeIcon in item)
-					{
 						icon.element = arrs[icon.bindID];
-					}
 				}
 				else
 				{

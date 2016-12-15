@@ -30,6 +30,7 @@ package multipublish.commands
 		/**
 		 * 
 		 * <code>ShutdownTerminalCommand</code>构造函数。
+		 * <br>初始化关机命令。会一直对关机时间进行监测，达到时间则关机。
 		 * 
 		 */
 		
@@ -49,7 +50,7 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			shutdownTerminal();
+			shutdownTerminal();     //关闭终端
 			
 			commandEnd();
 		}
@@ -66,12 +67,13 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 关闭终端
 		 */
 		private function shutdownTerminal():void
 		{
 			if (StringUtil.isEmpty(cmd))
 			{
-				shutdownDirectly();
+				shutdownDirectly();   //不存在则立即关机
 			}
 			else
 			{
@@ -92,13 +94,14 @@ package multipublish.commands
 				}
 				else
 				{
-					shutdownCheckweek();
+					shutdownCheckweek();  
 				}
 			}
 		}
 		
 		/**
 		 * @private
+		 * 关机命令
 		 */
 		private function shutdownDirectly():void
 		{
@@ -112,6 +115,8 @@ package multipublish.commands
 		
 		/** 
 		 * @private
+		 * 
+		 *  当关闭命令为一个数字时，表示当前星期直接关闭，无时间点。
 		 */
 		private function shutdownCheckweek():void
 		{
@@ -134,6 +139,7 @@ package multipublish.commands
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)
 			{
+				//cmd的格式:0(星期一)-12:00:00;1-12:00:00
 				var t1:Array = cmd.split(";");
 				for each (var i:String in t1)
 				{

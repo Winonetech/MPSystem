@@ -10,6 +10,7 @@ package multipublish.views.contents
 	
 	import cn.vision.utils.TimerUtil;
 	
+	import com.winonetech.core.VO;
 	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.MouseEvent;
@@ -240,7 +241,6 @@ package multipublish.views.contents
 		
 		override protected function processStop():void
 		{
-			//zoomer.stop();
 			main && main.stop(false);
 			advertise && advertise.stop(false);
 			timer && timer.stop();
@@ -475,7 +475,7 @@ package multipublish.views.contents
 		{
 			if (advertise)
 			{
-				if (advertise.data.ready)
+				if ((advertise.data as VO).ready)
 				{
 					LogSQLite.log(
 						TypeConsts.FILE,
@@ -604,7 +604,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var tweening:Boolean;
+//		private var tweening:Boolean;
 		
 		/**
 		 * @private

@@ -10,6 +10,7 @@ package multipublish.views
 	
 	import caurina.transitions.Tweener;
 	
+	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
 	import flash.events.MouseEvent;
@@ -246,12 +247,12 @@ package multipublish.views
 					var a:Number = f ? (side ? -width : width) : 0;
 					var p:Number = b / width;
 					var t:Number = Math.max(.3, p * config.slideTweenTime);
-					if (f) tweening = true;
+					if (f) wt::tweening = true;
 					Tweener.addTween(container, {x:a, time:t, 
 						onComplete:callbackTweenOver, 
 						onCompleteParams:[f]});
-				} else tweening = false;
-			} else tweening = false;
+				} else wt::tweening = false;
+			} else wt::tweening = false;
 		}
 		
 		
@@ -282,7 +283,7 @@ package multipublish.views
 				if (gcable) System.gc();
 			}
 			
-			tweening = false;
+			wt::tweening = false;
 		}
 		
 		/**
@@ -313,7 +314,7 @@ package multipublish.views
 			if(navigatable && !tweening)
 			{
 				down = true;
-				tweening = true;
+				wt::tweening = true;
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				stage.addEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 				start = mouseX;
@@ -408,7 +409,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var tweening:Boolean;
+//		private var tweening:Boolean;
 		
 		/**
 		 * @private

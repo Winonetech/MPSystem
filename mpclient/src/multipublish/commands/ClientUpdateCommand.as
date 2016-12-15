@@ -36,7 +36,8 @@ package multipublish.commands
 		/**
 		 * 
 		 * 构造函数。
-		 * 
+		 * <br>终端更新命令。
+		 *
 		 */
 		
 		public function ClientUpdateCommand($path:String = null)
@@ -114,6 +115,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 升级包升级。
 		 */
 		private function handlerLoadDefault($e:Event):void
 		{
@@ -176,6 +178,7 @@ package multipublish.commands
 		
 		/**
 		 * @private
+		 * 升级判定。
 		 */
 		private function handlerFTPDefault($e:Event):void
 		{
