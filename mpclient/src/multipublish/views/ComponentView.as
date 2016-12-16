@@ -183,6 +183,7 @@ package multipublish.views
 					var result:MPView = ContentUtil.getContentView(source.contents[neigh]);
 					if (result) 
 					{
+						result.data = source.contents[neigh];
 						result.width  = width;
 						result.height = height;
 						if (direction)

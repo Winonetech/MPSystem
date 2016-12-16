@@ -118,7 +118,7 @@ package multipublish.views
 			
 			if(!view)
 			{
-				view = generateView(program);     //创建当前视图。
+				view = generateView();     //创建当前视图。
 				view.addEventListener(ControlEvent.READY, handler_ready);
 				view.data = program;   //此处关联至 ProgramView的 resolveData。
 				next = generateNext();	  //创建下一个视图。
@@ -130,7 +130,7 @@ package multipublish.views
 					if (containsElement(next))
 						removeElement(next);
 				}
-				next = generateView(program);
+				next = generateView();
 				next.visible = false;
 				delay(1, tween);
 			}
@@ -177,10 +177,11 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function generateView($program:Program):ProgramView
+		private function generateView():ProgramView
 		{
-			var result:ProgramView = new ($program.moduleType 
-				? ContentProgramView : LayoutProgramView);
+//			var result:ProgramView = new ($program.moduleType 
+//				? ContentProgramView : LayoutProgramView);
+			var result:ProgramView = new ProgramView;
 			result.width  = application.width;
 			result.height = application.height;
 			addElementAt(result, 0);

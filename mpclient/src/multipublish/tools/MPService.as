@@ -186,7 +186,7 @@ package multipublish.tools
 		
 		public function readConfigOver($config:String):void
 		{
-			send(ServiceConsts.SEND_LEDCONFIG +
+			send(ServiceConsts.CONTROL_LED +
 				config.terminalNO + ";" + $config);
 		}
 		

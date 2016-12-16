@@ -26,67 +26,67 @@ package multipublish.views.moduleContents
 			initializeEnvironment();
 		}
 		
-//		/**
-//		 * @inheritDoc
-//		 */
-//		
-//		override protected function processPlay():void
-//		{
-//			if (view) 
-//			{
-//				stopDispatched = false;
-//				
-//				view.addEventListener(ControlEvent.STOP, handlerViewStop);
-//				view.play(false);
-//			}
-//			else
-//			{
-//				stop();
-//			}
-//		}
+		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function processPlay():void
+		{
+			if (view) 
+			{
+				stopDispatched = false;
+				
+				view.addEventListener(ControlEvent.STOP, handlerViewStop);
+				view.play(false);
+			}
+			else
+			{
+				stop();
+			}
+		}
 		
 		
-//		/**
-//		 * @inheritDoc
-//		 */
-//		
-//		override protected function processStop():void
-//		{
-//			if (view)
-//			{
-//				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
-//				view.stop(false);
-//			}
-//		}
+		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function processStop():void
+		{
+			if (view)
+			{
+				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
+				view.stop(false);
+			}
+		}
 		
 		
-//		/**
-//		 * @inheritDoc
-//		 */
-//		
-//		override protected function processResume():void
-//		{
-//			if (view) view.resume();
-//		}
+		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function processResume():void
+		{
+			if (view) view.resume();
+		}
 		
 		
-//		/**
-//		 * @inheritDoc
-//		 */
-//		
-//		override protected function processReset():void
-//		{
-//			container.removeAllElements();
-//			
-//			if (view) view.reset();
-//			if (next) next.reset();
-//			if (prev) prev.reset();
-//			
-//			view = next = prev = null;
-//			fore = last = null;
-//			source = null;
-//			index = neigh = 0;
-//		}
+		/**
+		 * @inheritDoc
+		 */
+		
+		override protected function processReset():void
+		{
+			container.removeAllElements();
+			
+			if (view) view.reset();
+			if (next) next.reset();
+			if (prev) prev.reset();
+			
+			view = next = prev = null;
+			fore = last = null;
+			source = null;
+			index = neigh = 0;
+		}
 		
 		
 		/**
@@ -121,8 +121,8 @@ package multipublish.views.moduleContents
 				var result:MPView = new source.moduleClass;
 				if (result)
 				{
-					result.width  = width;
-					result.height = height;
+					container.width  = result.width  = width;
+					container.height = result.height = height;
 					container.addElement(result);
 					result.addEventListener(ControlEvent.READY, handlerReady);
 					neigh = index;
@@ -136,6 +136,8 @@ package multipublish.views.moduleContents
 			}
 			return result;
 		}
+		
+		
 		
 		/**
 		 * @private
@@ -151,6 +153,7 @@ package multipublish.views.moduleContents
 					var result:MPView = new source.moduleClass;
 					if (result) 
 					{
+						result.data   = source.moduleContent[neigh]; 
 						result.width  = width;
 						result.height = height;
 						result.x = $side ? width : -width;

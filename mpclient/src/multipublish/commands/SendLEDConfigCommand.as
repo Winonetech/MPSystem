@@ -40,8 +40,14 @@ package multipublish.commands
 		
 		private function sendLEDConfig():void
 		{
+			if (flag) return;      //如果不是第一次进入，则直接返回。
+			
 			var config:String = readConfig2String();
-			if (config) MPCConfig.instance.service.readConfigOver(config);
+			
+			if (config) 
+				MPCConfig.instance.service.readConfigOver(config);
+			
+			flag = true;
 		}
 		
 		
@@ -71,6 +77,14 @@ package multipublish.commands
 			
 			return config;
 		}
+		
+		/**
+		 * 
+		 * 一个标记。只允许首次进入。
+		 * 
+		 */
+		
+		private static var flag:Boolean;
 		
 	}
 }

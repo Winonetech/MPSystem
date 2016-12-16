@@ -127,7 +127,7 @@ package multipublish.core
 			};
 			
 			MPCView.instance.progress.addEventListener(DLStateEvent.FINISH, executePlaySchedule);
-			if (i++ == 0) execute(new SendLEDConfigCommand);
+			execute(new SendLEDConfigCommand);
 			execute(new LoadChannelCommand($push));
 			execute(new InitDataCommand);
 			execute(new DownLoadQueueCommand);
@@ -388,8 +388,6 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
-		
-		private static var i:uint;
 		
 		/**
 		 * 

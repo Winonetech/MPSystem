@@ -64,7 +64,7 @@ package multipublish.consts
 			"}" + 
 			"}," + 
 			"\"weatherData\": {" + 
-			"\"currentCity\": \"宜宾\"" + 
+			"\"currentCity\": \"长沙\"" + 
 			"}" + 
 			"}";	
 	}

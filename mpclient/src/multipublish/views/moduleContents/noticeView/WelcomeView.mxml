@@ -3,4 +3,53 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
 	
+	
+	
+	<s:VGroup verticalCenter="0" width="100%">
+		
+		<s:Label id="label" width="100%" textAlign="center" fontWeight="bold"
+				 fontSize="{notice.titleFont}" text="{notice.noticeTitle}"/>
+		
+		<mx:Text/>
+		
+	</s:VGroup>
+	
+			
+	<fx:Script>
+		<![CDATA[
+			import multipublish.vo.moduleContents.Notice;
+			
+			import mx.events.FlexEvent;
+			
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				notice = data as Notice;
+				
+				if (!notice)
+				{
+					dispatchReady();
+				}
+				else
+				{
+					
+				}
+			}
+			
+			
+			[Bindable]
+			private var notice:Notice;
+			
+			protected function bitmapimage1_readyHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				dispatchReady();
+			}
+			
+		]]>
+	</fx:Script>
+			
+			
 </contents:ContentView>

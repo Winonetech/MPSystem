@@ -103,16 +103,19 @@ package multipublish.views
 			{
 				log(MPTipConsts.RECORD_PROGRAM_DATA, data);
 				
-				container.width  = program.width;
-				container.height = program.height;
+				var tempW:Number = program.width  || 980;
+				var tempH:Number = program.height || 540;
+				
+				container.width  = tempW;
+				container.height = tempH;
 				
 				
 				autofitScale();
 				
 				container.addElement(currentView = new (program.moduleType ? ModuleView : LayoutView));
 				
-				currentView.width  = program.width;
-				currentView.height = program.height;
+				currentView.width  = tempW;
+				currentView.height = tempH;
 				currentView.addEventListener(ControlEvent.READY, handlerReady);
 				currentView.data   = program.moduleType ? program.module : program.layout; 
 			}

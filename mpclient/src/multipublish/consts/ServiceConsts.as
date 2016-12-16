@@ -24,14 +24,6 @@ package multipublish.consts
 		
 		
 		
-		/**
-		 * 
-		 * 发送LED配置文件。<br>
-		 * 默认值为“CLED:”。
-		 * 
-		 */
-		
-		public static const SEND_LEDCONFIG:String = "CLED:";
 		
 		
 		/**
@@ -46,12 +38,12 @@ package multipublish.consts
 		
 		/**
 		 * 
-		 * 接收LED显示内容。<br>
+		 * 接收、发送LED显示内容。<br>
 		 * 默认值为“CLED:”。
 		 * 
 		 */
 		
-		public static const GET_LEDCONFIG:String = "CLED:";
+		public static const CONTROL_LED:String = "CLED:";
 		
 		
 		/**
