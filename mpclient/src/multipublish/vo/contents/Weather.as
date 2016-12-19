@@ -55,6 +55,8 @@ package multipublish.vo.contents
 		{
 			mp::weatherData = ($data is String) ? $data : JSON.stringify($data);
 			
+			LogUtil.log("天气：收到数据：", weatherData);
+			
 			resolved = true;
 			
 			if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
