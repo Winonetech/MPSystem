@@ -344,24 +344,31 @@ package multipublish.tools
 		private function readCMD($value:String):void
 		{
 		    $value = JSON.parse($value) as String;
-			var arr:Object = (JSON.parse($value) as Array).shift();
-			var str:String = arr["result"];
-			var list:Array = str.split("\n");
-			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
+			const l:uint = (JSON.parse($value) as Array).length;
+			var arr:Object;
+			var str:String;
+			var list:Array;
+			for (var i:uint = 0; i < l; i++)
 			{
-				return !StringUtil.isEmpty($item.substr(0, 5));
-			};
-			list = list.filter(filter, null);
-			while (list.length)
-			{
-				var data:String = ArrayUtil.shift(list);
-				
-				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
-				
-				if (data)
+				arr = (JSON.parse($value) as Array)[0];
+				str = arr["result"];
+				list = str.split("\n");
+				var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 				{
-					var cmd:String = data.substr(0, 5);
-					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
+					return !StringUtil.isEmpty($item.substr(0, 5));
+				};
+				list = list.filter(filter, null);
+				while (list.length)
+				{
+					var data:String = ArrayUtil.shift(list);
+					
+					LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
+					
+					if (data)
+					{
+						var cmd:String = data.substr(0, 5);
+						if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
+					}
 				}
 			}
 		}
