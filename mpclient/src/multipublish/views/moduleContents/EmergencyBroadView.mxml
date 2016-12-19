@@ -1,6 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
-					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*" xmlns:state="cn.vision.consts.state.*">
+	
+	<contents:states>
+		<s:State name="bcg"/>
+		<s:State name="img"/>
+	</contents:states>
+	
+	<s:VGroup id="group" horizontalCenter="0" horizontalAlign="center" top.bcg="30" gap.bcg="12" width="50%" height="100%">
+	
+		<s:Label text="{eb.moduleTitle}" includeIn="bcg"
+				 textAlign="center" fontSize="{eb.titleFont}"
+				 fontWeight="bold" width="100%"/>
+		
+		<s:BorderContainer includeIn="img" borderColor="0" borderWeight="2" width="100%" height="100%">
+			<s:Image id="photo" includeIn="img" width="100%" height="100%"
+					 fillMode="scale" scaleMode="letterbox"
+					 source="{currentImage}"
+					 creationComplete="readyHandler(event)"/>
+			    <!-- 使用creationComplete是为了让它只发送一次ready。 -->
+		</s:BorderContainer>
+		
+		<mx:Text id="contentText" maxWidth="{group.width * 2 / 3}"
+				 selectable="false" horizontalCenter="0"
+				 mouseEnabled="false" mouseChildren="false"
+				 fontSize="{eb.contentFont}" includeIn="bcg"
+				 htmlText="{eb.moduleContent}"/>
+	
+	
+	</s:VGroup>
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.core.mp;
+			import multipublish.vo.moduleContents.EmergencyBroad;
+			
+			import mx.events.FlexEvent;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				timerPlay();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				timerStop();
+			}
+			
+			
+			override protected function resolveData():void
+			{
+				eb = data as EmergencyBroad;
+				
+				if (eb)
+				{
+					time = eb.timeLength;
+					if (eb.useBcg)
+					{
+						currentState = "bcg";
+						updateModuleBackground(eb.contents[i = 0]);
+						dispatchReady();
+					}
+					else
+					{
+						currentState = "img";
+						currentImage = eb.contents[i = 0];
+					}
+				}
+				else
+				{
+					dispatchReady();
+				}
+				
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay():void
+			{
+				if(!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				i++;
+				if (eb.contents.length == i)
+				{
+					i = 0;
+					stop();
+				}
+				else
+				{ 	
+					currentImage = eb.contents[i];
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			protected function readyHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				dispatchReady();
+			}
+			
+			
+			
+			private function get time():uint
+			{
+				return mp::time;
+			}
+			
+			private function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			mp var time:uint;
+			
+			private var timer:Timer;
+			
+			private var i:uint;
+			
+			[Bindable]
+			private var eb:EmergencyBroad;
+			
+			[Bindable]
+			private var currentImage:String; 
+		]]>
+	</fx:Script>
+	
+	
+
 	
 </contents:ContentView>

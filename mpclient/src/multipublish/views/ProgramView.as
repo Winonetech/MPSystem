@@ -3,6 +3,8 @@ package multipublish.views
 	import com.winonetech.events.ControlEvent;
 	import com.winonetech.tools.LogSQLite;
 	
+	import input.core.ip;
+	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
@@ -103,8 +105,8 @@ package multipublish.views
 			{
 				log(MPTipConsts.RECORD_PROGRAM_DATA, data);
 				
-				var tempW:Number = program.width  || 980;
-				var tempH:Number = program.height || 540;
+				var tempW:Number = program.width  || config.view.application.width;
+				var tempH:Number = program.height || config.view.application.height;
 				
 				container.width  = tempW;
 				container.height = tempH;

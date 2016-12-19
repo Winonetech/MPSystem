@@ -3,12 +3,12 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
 	
-	<s:VGroup id="group" horizontalAlign="center" horizontalCenter="0" top="30" gap="12" width="50%">
+	<s:VGroup id="group" horizontalAlign="center" horizontalCenter="0" height="100%" top="30" gap="12" width="50%">
 		
 		<s:Label id="title" width="100%" textAlign="center" fontWeight="bold"
 				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"/>
 		
-		<s:Image id="photo" width="100%"
+		<s:Image id="photo" width="100%" maxHeight="{group.height * .65}"
 				 fillMode="scale" scaleMode="letterbox"
 				 source="{notice.picPath}"
 				 ready="readyHandler(event)"/>
