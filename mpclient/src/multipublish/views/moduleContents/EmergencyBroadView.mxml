@@ -8,7 +8,8 @@
 		<s:State name="img"/>
 	</contents:states>
 	
-	<s:VGroup id="group" horizontalCenter="0" horizontalAlign="center" top.bcg="30" gap.bcg="12" width="50%" height="100%">
+	<s:VGroup id="group" horizontalCenter="0" horizontalAlign="center"
+			  top.bcg="30" gap.bcg="12" width="50%" height="100%">
 	
 		<s:Label text="{eb.moduleTitle}" includeIn="bcg"
 				 textAlign="center" fontSize="{eb.titleFont}"
