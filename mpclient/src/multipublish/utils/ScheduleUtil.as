@@ -202,13 +202,16 @@ package multipublish.utils
 			//验证开始与截至日期部分与轮播相同，直接套用。
 			var bool:Boolean = validateTurn($schedule, $now);
 			
-			//非全天点播时，需要检测时段。
-			var v1:Boolean = DateUtil.validate($schedule.startTime);
-			var v2:Boolean = DateUtil.validate($schedule.endTime);
-			bool = (v1 && v2)
-				?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
-					DateUtil.compareTime($now, $schedule.endTime  ) < 0)
-				: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
+			if (bool)
+			{
+				//非全天点播时，需要检测时段。
+				var v1:Boolean = DateUtil.validate($schedule.startTime);
+				var v2:Boolean = DateUtil.validate($schedule.endTime);
+				bool = (v1 && v2)
+					?  (DateUtil.compareTime($now, $schedule.startTime)>= 0 && 
+						DateUtil.compareTime($now, $schedule.endTime  ) < 0)
+					: (v1 ? DateUtil.compareTime($now, $schedule.startTime)>= 0 : false);
+			}
 			return bool;
 		}
 		
