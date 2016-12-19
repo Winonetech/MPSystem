@@ -159,7 +159,7 @@ package multipublish.views.contents
 			
 			if(!background)
 			{
-				addElementAt(background = new BorderContainer, 0);
+				addElementAt(background = new Group, 0);
 				background.mouseEnabled = background.mouseChildren = false;
 				background.percentHeight = 100;
 				background.percentWidth  = 100;
@@ -171,10 +171,8 @@ package multipublish.views.contents
 			image.percentHeight = 100;
 			image.percentWidth  = 100;
 			image.fillMode = BitmapFillMode.SCALE;
-			image.scaleMode = BitmapScaleMode.ZOOM;
-			image.source = $source;
-			background.addElement(image);
-			
+			image.scaleMode = BitmapScaleMode.LETTERBOX;
+			image.source = $source;	
 			background.addElement(component);
 		}
 		
@@ -194,7 +192,7 @@ package multipublish.views.contents
 				
 				if(!background)
 				{
-					addElementAt(background = new BorderContainer, 0);
+					addElementAt(background = new Group, 0);
 					background.mouseEnabled = background.mouseChildren = false;
 					background.percentHeight = 100;
 					background.percentWidth  = 100;
@@ -235,8 +233,7 @@ package multipublish.views.contents
 		/**
 		 * @private
 		 */
-		private var background:BorderContainer;
-//		private var background:Group;
+		private var background:Group;
 		
 		/**
 		 * @private
