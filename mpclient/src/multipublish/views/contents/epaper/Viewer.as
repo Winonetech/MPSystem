@@ -339,6 +339,7 @@ package multipublish.views.contents.epaper
 				Tweener.removeTweens(this);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
 				stage.addEventListener(MouseEvent.MOUSE_UP  , mouseUp);
+				e.stopImmediatePropagation();
 			}
 		}
 		
@@ -355,6 +356,7 @@ package multipublish.views.contents.epaper
 				restrictXY();
 				updateTween();
 			}
+			e.stopImmediatePropagation();
 		}
 		
 		/**
@@ -366,6 +368,7 @@ package multipublish.views.contents.epaper
 			updateTween();
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);
+			e.stopImmediatePropagation();
 		}
 		
 		/**

@@ -44,6 +44,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 关闭explorer程序。
+		 * 
+		 */
+		
+		public static const EXPLORER_CLOSER:String = "assets/tools/closeExplorer.exe";
+		
+		
+		/**
+		 * 
 		 * led启动。
 		 * 
 		 */

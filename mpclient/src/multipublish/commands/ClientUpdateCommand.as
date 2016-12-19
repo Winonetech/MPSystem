@@ -80,6 +80,8 @@ package multipublish.commands
 		 */
 		private function clientUpdate():void
 		{
+			if (config.debug) return;
+			
 			modelog(ClientStateConsts.UPDATE_CHECK);
 			
 			var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));

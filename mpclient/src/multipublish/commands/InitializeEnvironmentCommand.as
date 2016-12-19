@@ -69,6 +69,8 @@ package multipublish.commands
 			initializeWindow();
 			initializeLed();
 			
+			closeExplorer();
+			
 			commandEnd();
 		}
 		
@@ -157,6 +159,20 @@ package multipublish.commands
 			}
 		}
 		
+		/**
+		 * @private
+		 */
+		private function closeExplorer():void
+		{
+			if(!getDebug())
+			{
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.EXPLORER_CLOSER));
+			}
+		}
+		
+		/**
+		 * @private
+		 */
 		private function getDebug():Boolean
 		{
 			var file:VSFile = new VSFile(FileUtil.resolvePathApplication("config.ini"));
