@@ -57,7 +57,7 @@ package multipublish.commands
 		
 		private function resolve():void
 		{
-			var tempCmd:Array = cmd.split("-");
+ 			var tempCmd:Array = cmd.split("-");
 			var args :String = tempCmd.pop();
 			var state:String = tempCmd.shift();
 			
@@ -157,6 +157,10 @@ package multipublish.commands
 					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 				}
 			}
+			else
+			{
+				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+			}
 		}
 		
 		/**
@@ -176,10 +180,12 @@ package multipublish.commands
 			
 			view.progress.isDownloading = false;
 			
-			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
-			   
 			if (view.application.contains(view.progress))
 				view.application.removeElement(view.progress);
+			
+			
+			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+			   
 //			view.progress = null;
 		}
 		
@@ -204,7 +210,7 @@ package multipublish.commands
 			
 			if (config.downloadState) initProgress();
 			
-			ViewUtil.guild(false);
+//			ViewUtil.guild(false);
 			
 		}
 		

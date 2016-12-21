@@ -1,6 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
-					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  xmlns:contents="multipublish.views.contents.*"
+					  creationComplete="mouseChildren = mouseEnabled = true">
+	
+	<s:VGroup id="vg" width="100%" top="50" gap="20" horizontalAlign="center">
+		<s:HGroup id="hg" width="100%" horizontalAlign="center" gap="15">
+			<s:Button label="提交" click="submit_clickHandler(event)"/>
+			<s:Button label="重置" click="reset_clickHandler (event)"/>
+		</s:HGroup>
+	</s:VGroup>
+		
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.vo.moduleContents.AskPaper;
+			
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			
+			import spark.components.Group;
+			
+			
+			
+			override protected function resolveData():void
+			{
+				ask = data as AskPaper;
+				
+				if (ask)
+				{
+					updateModuleBackground(ask.bcg);
+					
+					addPaper(vg, ask.contents);
+				}
+				
+				dispatchReady();
+				
+			}
+			
+			/**
+			 * 
+			 * 添加问卷项目。
+			 * 
+			 */
+			
+			private function addPaper(container:Group, aq:Object):void
+			{
+				if (container)
+				{
+					AskPaperItem.initCount();
+					for (var s:String in aq)
+					{
+						var item:AskPaperItem = new AskPaperItem;
+						item.id = s;
+						item.addItem(aq[s]);
+						items.push(item);
+						vg.addElement(item);
+					}
+					
+					vg.setElementIndex(hg, vg.numElements - 1);   //按钮置下方。
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 重置问卷。
+			 * 
+			 */
+			
+			private function resetOption(t:* = null):void
+			{
+				for each (var a:AskPaperItem in items) a.resetOption();
+			}
+			
+			
+			private function communicate($data:Object):void
+			{
+				http = new HTTPService;
+				http.contentType = "application/json";
+				http.method = "POST";
+				
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.optionRes;
+				
+				http.addEventListener(ResultEvent.RESULT, handlerDefault);
+				http.addEventListener(FaultEvent .FAULT , handlerDefault);
+				
+				
+				if ($data)
+					http.send($data);
+				else
+					http.send();
+			}
+			
+			
+			private function handlerDefault(e:Event):void
+			{
+				http.removeEventListener(ResultEvent.RESULT, handlerDefault);
+				http.removeEventListener(FaultEvent.FAULT  , handlerDefault);
+				
+				if (e.type == ResultEvent.RESULT)
+				{
+					Alert.show("提交成功，谢谢。", "提示", Alert.OK, null, resetOption);
+				}
+				else
+				{
+					Alert.show("与服务器交互失败，请重新提交。", "提示", Alert.OK);
+				}
+			}
+			
+			
+			/**
+			 * 
+			 * 发送结果至后端。
+			 * 
+			 */
+			
+			protected function submit_clickHandler(event:MouseEvent):void
+			{
+				var result:Array = [];   //发送给后端的调查结果。
+				var temp  :Array;       
+				var count :uint;       //错误计数器。
+				var obj   :Object;	
+				
+				for each (var a:AskPaperItem in items)
+				{
+					count++;
+					temp = a.results;
+					if (temp.length == 0) 
+					{
+						Alert.show("第" + count + "个问题未填写，请填写！", "提示", Alert.OK);
+						return;
+					}
+					obj = {};
+					obj["tid"] = a.id;
+					obj["oid"] = temp;
+					result.push(obj);
+				}
+				obj = {};
+				obj["result"] = result;
+				
+				communicate(JSON.stringify(obj));  //失败则重新提交 成功需 reset并清空各个 item的结果。
+			}
+			
+			
+			
+			protected function reset_clickHandler(event:MouseEvent):void
+			{
+				resetOption();
+			}
+			
+			
+			
+			private var http:HTTPService;
+			
+			private var ask:AskPaper;
+			
+			private var items:Vector.<AskPaperItem> = new Vector.<AskPaperItem>;
+		]]>
+	</fx:Script>
+	
 	
 </contents:ContentView>

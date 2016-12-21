@@ -6,13 +6,11 @@ package multipublish.views.moduleContents
 	import com.winonetech.events.ControlEvent;
 	
 	import flash.display.Stage;
+	import flash.utils.getQualifiedClassName;
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.core.mp;
-	import multipublish.utils.ContentUtil;
 	import multipublish.views.MPView;
-	import multipublish.views.contents.ContentView;
-	import multipublish.vo.contents.Content;
 	import multipublish.vo.moduleContents.Module;
 	
 	import spark.components.Group;
@@ -100,7 +98,7 @@ package multipublish.views.moduleContents
 			{
 				log(MPTipConsts.RECORD_COMPONENT_DATA, source);
 				
-				navigatable = mouseEnabled = mouseChildren = false;
+				navigatable = mouseEnabled = mouseChildren = source.moduleClass.toString().indexOf("AskPaper") > -1;
 				
 				view = generateView();
 				view.data = source.moduleContent[index];

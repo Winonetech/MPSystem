@@ -295,6 +295,16 @@ package multipublish.core
 		public var serviceURL:String = "terminal/heartBeat";
 		
 		
+		
+		/**
+		 * 
+		 * 民意调查结果通讯地址。
+		 * 
+		 */
+		
+		public var optionRes:String = "opinion/base/updateResult";
+		
+		
 		/**
 		 * 
 		 * 终端申请地址。
