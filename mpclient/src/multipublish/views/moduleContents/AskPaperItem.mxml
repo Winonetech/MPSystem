@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<s:RadioButtonGroup  id="gbg"/>
+	</fx:Declarations>
+	
+	<s:VGroup width="100%" gap="12" horizontalAlign="center">
+		<s:Label text="{title}" width="100%" fontWeight="bold" fontSize="14" textAlign="left"/>
+		<s:TileGroup id="hg" width="100%" paddingLeft="12" requestedColumnCount="4"
+					 clipAndEnableScrolling="false" horizontalGap="100" verticalGap="12"/>
+	</s:VGroup>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.graphics.RadialGradient;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.components.CheckBox;
+			import spark.components.RadioButton;
+			
+			[Bindable]
+			private var title:String;
+			
+			/**
+			 * 当前题目所选结果。
+			 */
+			private var result:ArrayCollection = new ArrayCollection;
+			
+			/**
+			 * 存放每个选项。
+			 */
+			private var options:Array = [];
+			
+			/**
+			 * 
+			 * 标题计数器。
+			 * 
+			 */
+			private static var count:uint;
+			
+			
+			public function get results():Array
+			{
+				return result.toArray();
+			}
+			
+			
+			/**
+			 * 
+			 * 重置选项。
+			 * 
+			 */
+			
+			public function resetOption():void
+			{
+				for each (var t:* in options)
+				{
+					t.selected = false;
+				}
+				
+				result.removeAll();    //清空结果。
+			}
+			
+			/**
+			 * 
+			 * 初始化题目计数器。
+			 * 
+			 */
+			
+			public static function initCount():void
+			{
+				count = 0;
+			}
+			
+			
+			/**
+			 * 
+			 * 添加一个题目项。
+			 * 
+			 */
+			
+			public function addItem($arr:Array):void
+			{
+				title = (++count) + ". " +$arr[1];
+				if ($arr[0] == 1)   //单选。
+				{
+					for each (var a:Array in $arr[2])
+					{
+						var r:RadioButton = new RadioButton;
+						r.groupName = "gbg";
+						r.id = a[0];
+						r.label = a[1];
+						r.setStyle("fontSize", 14);
+						r.setStyle("color", 0x666666);
+						r.addEventListener(MouseEvent.CLICK, selected_handler);
+						options.push(r);
+						hg.addElement(r);
+					}
+				}
+				else
+				{
+					for each (var ar:Array in $arr[2])
+					{
+						var c:CheckBox = new CheckBox;
+						c.id = ar[0];
+						c.label = ar[1];
+						c.setStyle("fontSize", 14);
+						c.setStyle("color", 0x666666);
+						c.addEventListener(MouseEvent.CLICK, selected_handler);
+						options.push(c);
+						hg.addElement(c);
+					}
+				}
+			}
+			
+			/**
+			 * 
+			 * 选择处理。
+			 * 
+			 */
+			
+			private function selected_handler(e:MouseEvent):void
+			{
+				if (e.target is CheckBox)
+				{
+					var tempC:CheckBox = e.target as CheckBox;
+					tempC.selected ? result.addItem(tempC.id) : result.removeItem(tempC.id);
+				}
+				else if (e.target is RadioButton)
+				{
+					var tempR:RadioButton = e.target as RadioButton;
+					result.removeAll();
+					result.addItem(tempR.id);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+</s:Group>

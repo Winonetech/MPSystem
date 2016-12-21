@@ -318,9 +318,14 @@ package multipublish.tools
 				{
 					cmddata.push({"cmd":cmds[i]});
 				}
-				cmds.splice(0, cmds.length);
 				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				
+				for (var j:uint = 0; j < l; j++)
+				{
+					LogUtil.log("通讯：" + http.url + " cmd:" +　cmds[j]);
+				}
 				http.send(JSON.stringify(cmddata));
+				cmds.splice(0, cmds.length);
 				cmddata = [];	
 			}
 		}
