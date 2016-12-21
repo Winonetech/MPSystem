@@ -33,12 +33,13 @@ package multipublish.tools
 			var window:WindowedApplication = view.application;
 			if (window)
 			{
-				if (window.nativeWindow.x !=0 || window.nativeWindow.y != 0)
+				if (window.nativeWindow.x !=0 || window.nativeWindow.y != 0 ||
+				view.application.x != 0 || view.application.y != 0)
 				{
-					window.nativeWindow.width  = r.width;
-					window.nativeWindow.height = r.height;
-					window.nativeWindow.x = 0;
-					window.nativeWindow.y = 0;
+					view.application.width  = window.nativeWindow.width  = r.width;
+					view.application.height = window.nativeWindow.height = r.height;
+					view.application.x	    = window.nativeWindow.x 	 = 0;
+					view.application.y      = window.nativeWindow.y 	 = 0;
 				}
 			}
 		}

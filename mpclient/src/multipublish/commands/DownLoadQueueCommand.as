@@ -141,7 +141,7 @@ package multipublish.commands
 		{
 			if (config.replacable)
 			{
-				trace(Cache.cachesLave);
+				trace("需要下载的个数... -> " + Cache.cachesLave);
 //				Cache.queue.close();
 				
 				if (Cache.cachesLave > 0)    
