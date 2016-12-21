@@ -83,7 +83,7 @@ package multipublish.views
 					
 					log(MPTipConsts.RECORD_TYPESET_BACK, last ? last.data : null);
 					
-					var temp:CacheView = main;
+					var temp:PageView = main;
 					main = last;
 					last = temp;
 					
@@ -96,11 +96,11 @@ package multipublish.views
 						wt::tweening = true;
 						var effectOutStart:Function = function():void
 						{
-							for each (var item:CacheView in lasts) item.stop(false, $rect, $force);
+							for each (var item:PageView in lasts) item.stop(false, $rect, $force);
 						};
 						var effectOutEnd:Function = function():void
 						{
-							for each (var item:CacheView in lasts)
+							for each (var item:PageView in lasts)
 							{
 								if (containsElement(item))
 									removeElement(item);
@@ -152,7 +152,6 @@ package multipublish.views
 					
 					var effects:Array = [];
 					var lasts:Array = checkOfHistory($page);
-					var layoutView:LayoutView = this;
 					last = main;
 					main = createPage($page, true);
 					
@@ -165,7 +164,7 @@ package multipublish.views
 						//显示新页面
 						var effectInStart:Function = function():void
 						{
-							//for each (var item:CacheView in lasts) item.stop();
+							//for each (var item:LayoutView in lasts) item.stop();
 							if (last.playing)
 							{
 								var father:Page = main.data is Page ? (main.data as Page).father : null;
@@ -184,7 +183,7 @@ package multipublish.views
 						{
 							history.push(main);
 							wt::tweening = false;
-							for each (var item:CacheView in lasts) 
+							for each (var item:PageView in lasts) 
 							{
 								if (containsElement(item)) removeElement(item);
 								item.reset();
@@ -291,9 +290,10 @@ package multipublish.views
 				source.pagesArr.length)    //该 pagesArr为 children 即根页面集合。
 			{
 				main = createPage(source.home, true);    //增加页面并进入缓存。
-				
+				main.addEventListener(ControlEvent.READY, handlerReady);
+				main.data = source.home;  
 				history.push(main);
-			}
+			}	
 			
 			if (source.ad && 
 				source.ad.enabled && 
@@ -310,18 +310,26 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function createPage($page:Page, $visible:Boolean = false):CacheView
+		private function createPage($page:Page, $visible:Boolean = false):PageView
 		{
-			var page:CacheView = new CacheView;   //Cache下载至缓存的进度条。
-			page.refer  = PageView;          //refer是在 CacheView中确认实例化类型的属性。
+			var page:PageView = new PageView;   
 			page.width  = $page.w;
 			page.height = $page.h;
 			page.x = $page.x;
 			page.y = $page.y;
-			page.data = $page;     //此处调用 CacheView的 resolveData。
 			addElement(page).visible = $visible;
 			return page;
 		}
+		
+		
+		private function handlerReady($e:ControlEvent):void
+		{
+			var temp:MPView = $e.target as MPView;
+			temp.removeEventListener(ControlEvent.READY, handlerReady);
+			
+			dispatchReady();
+		}
+		
 		
 		/**
 		 * @private
@@ -395,7 +403,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function getEffectIn($last:CacheView, $main:CacheView):Effect
+		private function getEffectIn($last:PageView, $main:PageView):Effect
 		{
 			var effect:Effect = EffectUtil.getEffectIn($last.data as Page, $main.data as Page, source);
 			effect.addEventListener(EffectEvent.EFFECT_START, effectIn_startHandler);
@@ -406,7 +414,7 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private function getEffectOut($last:CacheView, $main:CacheView):Effect
+		private function getEffectOut($last:PageView, $main:PageView):Effect
 		{
 			var effect:Effect = EffectUtil.getEffectOut($last.data as Page, $main.data as Page, source);
 			effect.addEventListener(EffectEvent.EFFECT_START, effectOut_startHandler);
@@ -617,12 +625,12 @@ package multipublish.views
 		/**
 		 * @private
 		 */
-		private var main:CacheView;
+		private var main:PageView;
 		
 		/**
 		 * @private
 		 */
-		private var last:CacheView;
+		private var last:PageView;
 		
 		/**
 		 * @private

@@ -87,19 +87,19 @@ package multipublish.views
 				//update children
 				for each (var child:Component in sheet.componentsArr)
 				{
-					var component:CacheView = new CacheView;
+					var component:ComponentView = new ComponentView;
+					
 					component.addEventListener(ControlEvent.READY, handlerReady, false, 0, true);
 					
-					component.refer = ComponentView;
 					
 					component.x = child.x;
 					component.y = child.y;
 					component.width  = child.w;
 					component.height = child.h;
 					
+					registView(component);
 					component.data   = child;
 					
-					registView(component);
 					container.addElement(component);
 				}
 			}

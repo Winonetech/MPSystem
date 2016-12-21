@@ -126,7 +126,7 @@ package multipublish.vo.contents
 			
 			resolved = true;
 			
-			Cache.start();
+//			Cache.start();
 			
 			if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
 		}

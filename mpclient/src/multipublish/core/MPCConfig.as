@@ -21,6 +21,7 @@ package multipublish.core
 	import multipublish.tools.ScreenController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	[Bindable]
@@ -180,6 +181,15 @@ package multipublish.core
 		
 		
 		/**
+		 *
+		 * 是否显示下载状态。 
+		 * 
+		 */
+		
+		public var downloadState:Boolean;
+		
+		
+		/**
 		 * 
 		 * 自动关机指令。
 		 * 
@@ -283,6 +293,16 @@ package multipublish.core
 		 */
 		
 		public var serviceURL:String = "terminal/heartBeat";
+		
+		
+		
+		/**
+		 * 
+		 * 民意调查结果通讯地址。
+		 * 
+		 */
+		
+		public var optionRes:String = "opinion/base/updateResult";
 		
 		
 		/**
@@ -608,6 +628,13 @@ package multipublish.core
 		
 		public var screenController:ScreenController;
 		
+		
+		/**
+		 * 
+		 * 最后播放的节目。
+		 * 
+		 */
+		public var latest:Schedule;
 		
 		/**
 		 * 

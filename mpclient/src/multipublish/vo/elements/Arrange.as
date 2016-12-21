@@ -9,6 +9,7 @@ package multipublish.vo.elements
 	
 	
 	import cn.vision.utils.ArrayUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.consts.PathConsts;
@@ -65,20 +66,20 @@ package multipublish.vo.elements
 			{
 				mp::id = list["id"];
 				mp::summary = list["name"];
-				mp::backgroundMode = XMLUtil.convert(list["items"]["bgmode"], uint);
-				var pre:String = XMLUtil.convert(data["thumbnailurl"]);
-				var tmb:String = pre + XMLUtil.convert(list["thumbnailpath"]);
+				mp::backgroundMode = ObjectUtil.convert(list["items"]["bgmode"], uint);
+				var pre:String = ObjectUtil.convert(data["thumbnailurl"]);
+				var tmb:String = pre + ObjectUtil.convert(list["thumbnailpath"]);
 				mp::thumbnail  = CacheUtil.extractURI(tmb, PathConsts.PATH_FILE);
 				wt::registCache(tmb);
 				if (backgroundMode == ArrangeBackgroundModeConsts.IMAGE)
 				{
-					var bgi:String = pre + XMLUtil.convert(list["items"]["bg"]);
+					var bgi:String = pre + ObjectUtil.convert(list["items"]["bg"]);
 					mp::backgroundImage = CacheUtil.extractURI(bgi, PathConsts.PATH_FILE);
 					wt::registCache(bgi);
 				}
 				else
 				{
-					mp::backgroundColor = XMLUtil.convert(list["items"]["bg"], uint);
+					mp::backgroundColor = ObjectUtil.convert(list["items"]["bg"], uint);
 				}
 			}
 		}

@@ -16,6 +16,8 @@ package multipublish.commands
 	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
 	
+	import flash.utils.ByteArray;
+	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
@@ -117,7 +119,8 @@ package multipublish.commands
 			try
 			{
 				ApplicationUtil.exit();
-				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
+				if (!(config.debug  || config.downloadState))
+					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
 			}
 			catch (e:Error)
 			{

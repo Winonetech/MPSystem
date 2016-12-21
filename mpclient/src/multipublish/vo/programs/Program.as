@@ -9,10 +9,13 @@ package multipublish.vo.programs
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.ArrayUtil;
 	
 	import com.winonetech.core.VO;
 	
 	import multipublish.core.mp;
+	import multipublish.vo.contents.Content;
+	import multipublish.vo.moduleContents.Module;
 	
 	
 	public final class Program extends VO
@@ -106,10 +109,66 @@ package multipublish.vo.programs
 		
 		
 		/**
+		 * 
+		 * 模板类型。
+		 * 
+		 */
+		
+		public function get moduleType():int
+		{
+			return getProperty("moduleType", int);
+		}
+		
+		
+		/**
+		 * 
+		 * 通知类型。<br>
+		 * 1. 寻人启事。(单张图片)<br>
+		 * 2. 欢迎标语。(背景图片)
+		 * 
+		 */
+		
+		public function get noticeType():int
+		{
+			return getProperty("noticeType", int);
+		}
+		
+		/**
+		 * 
+		 * 添加内容。
+		 * 
+		 */
+		
+		mp function addContent($content:Content, $ref:Class):void
+		{
+			if ($content && module.moduleContent.indexOf($content) == -1)
+			{
+				ArrayUtil.push(module.moduleContent, $content);
+				if (!module.moduleClass) module.moduleClass = $ref;
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 内容集合。
+		 * 
+		 */
+		
+		public function get module():Module
+		{
+			return mp::module;
+		}
+		
+		/**
 		 * @private
 		 */
 		mp var layouts:Map;
 		
+		/**
+		 * @private
+		 */
+		mp var module:Module = new Module;
 		
 		/**
 		 * 

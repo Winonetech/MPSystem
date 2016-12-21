@@ -50,6 +50,7 @@ package multipublish.utils
 				'\t<!-- 截图策略指令 -->' + e + 
 				'\t<shotcut>' + config.shotcut + '</shotcut>' + e + 
 				getDebug() + e + 
+				getDownloadState() + e + 
 				getRemote() + e + 
 				getSled() + e + 
 				e + 
@@ -106,6 +107,20 @@ package multipublish.utils
 				'\t<zoomTweenTime>' +(config.zoomTweenTime || 1)+ '</zoomTweenTime>' + e + 
 				e + 
 				'</config>';
+		}
+		
+		
+		private static function getDownloadState():String
+		{
+			var e:String = StringUtil.lineEnding;
+			var config:MPCConfig = MPCConfig.instance;
+			var result:String = "";
+			if (config.downloadState)
+			{
+				result += '\t<!-- 下载状态栏 -->' + e;
+				result += '\t<downloadState>' + config.downloadState + '</downloadState>' + e;
+			}
+			return result;
 		}
 		
 		

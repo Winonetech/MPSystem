@@ -11,6 +11,7 @@ package multipublish.commands.steps
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.LogSQLite;
@@ -86,7 +87,7 @@ package multipublish.commands.steps
 		 */
 		private function make($xml:XML, $data:* = null):void
 		{
-			source = source || XMLUtil.convert($xml["folderurl"]);
+			source = source || ObjectUtil.convert($xml["folderurl"]);
 			if ($data is Array)
 			{
 				for each (var icon:ArrangeIcon in $data) make($xml, icon);
@@ -128,7 +129,7 @@ package multipublish.commands.steps
 				var list:XMLList = $xml.descendants("item");
 				for each (var item:XML in list)
 				{
-					var type:uint = XMLUtil.convert(item["bindtype"], uint);
+					var type:uint = ObjectUtil.convert(item["bindtype"], uint);
 					type == ElementTypeConsts.ARRANGE
 						? handlerArrange(item, $arrange)
 						: handlerFolder (item, $arrange);
@@ -164,7 +165,7 @@ package multipublish.commands.steps
 		 */
 		private function handlerArrange($xml:XML, $parent:Arrange):void
 		{
-			var id:String = XMLUtil.convert($xml["bindid"]);
+			var id:String = ObjectUtil.convert($xml["bindid"]);
 			if (uint(id) > 0)
 			{
 				var icon:ArrangeIcon = new ArrangeIcon($xml);
@@ -200,7 +201,7 @@ package multipublish.commands.steps
 		 */
 		private function handlerFolder($xml:XML, $parent:Arrange):void
 		{
-			var id:String = XMLUtil.convert($xml["bindid"]);
+			var id:String = ObjectUtil.convert($xml["bindid"]);
 			if (uint(id) > 0)
 			{
 				var icon:ArrangeIcon = new ArrangeIcon($xml);
@@ -214,8 +215,8 @@ package multipublish.commands.steps
 		 */
 		private function handlerAdvertise($xml:XML, $parent:Arrange):void
 		{
-			var id:String = XMLUtil.convert($xml["bindid"]);
-			var enabled:Boolean = XMLUtil.convert($xml["adenable"], Boolean);
+			var id:String = ObjectUtil.convert($xml["bindid"]);
+			var enabled:Boolean = ObjectUtil.convert($xml["adenable"], Boolean);
 			if (enabled && uint(id) > 0)
 			{
 				var advertise:Advertise = new Advertise($xml);
@@ -234,11 +235,11 @@ package multipublish.commands.steps
 			var model:Model = $e.command as Model;
 			var url:String = DataConsts.PATH_TYPESET + "-" + model.extra.id + ".xml";
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			var xml:XML = ObjectUtil.convert(model.data, XML);
 			if (xml)
 			{
 				//验证加载的数据ID与需要加载的ID是否相同，有时从服务端返回的数据会有误。
-				if (model.extra.id == XMLUtil.convert(xml["layout"]["id"]))
+				if (model.extra.id == ObjectUtil.convert(xml["layout"]["id"]))
 				{
 					make(xml, model.extra.sub ? dict[model.extra.id] : config.temp[model.extra.id]);
 					if (model.url != url) save(url, xml);

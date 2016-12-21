@@ -11,6 +11,7 @@ package multipublish.commands.steps
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.LogSQLite;
@@ -103,7 +104,7 @@ package multipublish.commands.steps
 			{
 				if ($data)
 				{
-					var name:uint = XMLUtil.convert($xml["folder"]["type"], uint);
+					var name:uint = ObjectUtil.convert($xml["folder"]["type"], uint);
 					solv(type[name] ? type[name]($data, $xml) : null, $xml);
 				}
 			}
@@ -179,7 +180,7 @@ package multipublish.commands.steps
 					var folder:IFolder = $element as IFolder;
 					for each (var item:XML in $xml["folder"]["item"])
 					{
-						var name:String = XMLUtil.convert(item["filetype"], String);
+						var name:String = ObjectUtil.convert(item["filetype"], String);
 						if (func[name]) folder.addDocument(func[name](item));
 					}
 				}
@@ -219,11 +220,11 @@ package multipublish.commands.steps
 		{
 			var model:Model = $e.command as Model;
 			var url:String = DataConsts.PATH_FOLDER + "-" + model.extra.id + ".xml";
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			var xml:XML = ObjectUtil.convert(model.data, XML);
 			if (xml)
 			{
 				//验证加载的数据ID与需要加载的ID是否相同，有时从服务端返回的数据会有误。
-				if (model.extra.id == XMLUtil.convert(xml["folder"]["id"]))
+				if (model.extra.id == ObjectUtil.convert(xml["folder"]["id"]))
 				{
 					make(xml, config.temp[model.extra.id]);
 					model.url != url ? save(url, xml) : flag(url);

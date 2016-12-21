@@ -146,6 +146,31 @@ package multipublish.tools
 		}
 		
 		
+		
+		/**
+		 * 
+		 * 向服务端申请下载。
+		 * 
+		 */
+		
+		public function downloadApply():void
+		{
+			send(ServiceConsts.DL_APPLY + config.terminalNO);
+		}
+		
+		
+		/**
+		 * 
+		 * 向服务端报告下载完成。
+		 * 
+		 */
+		
+		public function downloadOver():void
+		{
+			send(ServiceConsts.DL_OVER + config.terminalNO);
+		}
+		
+		
 		/**
 		 * 
 		 * 向服务端上报截图上传完毕，并传递截图的地址。
@@ -156,10 +181,21 @@ package multipublish.tools
 		
 		public function shotcutOver($success:Boolean = true, $name:String = null):void
 		{
-			send(ServiceConsts.SEND_SHOTCUT + $name);
+			if ($success) send(ServiceConsts.SEND_SHOTCUT + $name);
 		}
 		
 		
+		/**
+		 * 
+		 * 向服务端发送LED config文件。
+		 * 
+		 */
+		
+		public function readConfigOver($config:String):void
+		{
+			send(ServiceConsts.CONTROL_LED +
+				config.terminalNO + ";" + $config);
+		}
 		
 		/**
 		 * 
@@ -285,7 +321,7 @@ package multipublish.tools
 				cmds.splice(0, cmds.length);
 				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				http.send(JSON.stringify(cmddata));
-				cmddata = [];
+				cmddata = [];	
 			}
 		}
 		
@@ -306,7 +342,7 @@ package multipublish.tools
 					break;
 				case FaultEvent.FAULT:
 					disconnect();
-					mp::message = ($e as Object).text;
+					mp::message = ($e as Object).message;
 					break;
 				default:
 					break;
@@ -344,7 +380,14 @@ package multipublish.tools
 		private function readCMD($value:String):void
 		{
 		    $value = JSON.parse($value) as String;
-			const l:uint = (JSON.parse($value) as Array).length;
+			try
+			{
+				const l:uint = (JSON.parse($value) as Array).length;
+			}
+			catch (e:SyntaxError)
+			{
+				return;
+			}
 			var arr:Object;
 			var str:String;
 			var list:Array;

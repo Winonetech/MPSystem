@@ -12,6 +12,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.JSONUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.ScreenUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.XMLUtil;
@@ -154,7 +155,7 @@ package multipublish.commands
 				if (xml) 
 				{
 					XMLUtil.map(xml, config);
-					config.language.data = XMLUtil.convert(xml["languageData"]);
+					config.language.data = ObjectUtil.convert(xml["languageData"]);
 					
 					applySettings();
 				}

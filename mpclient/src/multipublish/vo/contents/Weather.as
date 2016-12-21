@@ -8,6 +8,7 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.events.ControlEvent;
@@ -53,7 +54,7 @@ package multipublish.vo.contents
 		
 		override protected function analyzeContent($data:Object):void
 		{
-			mp::weatherData = ($data is String) ? $data : JSON.stringify($data);
+			mp::weatherData = ($data is String) ? Base64Util.decode($data as String) : JSON.stringify($data);
 			
 			resolved = true;
 			

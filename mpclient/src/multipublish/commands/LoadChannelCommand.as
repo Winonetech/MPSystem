@@ -8,11 +8,13 @@ package multipublish.commands
 	 */
 	
 	
+	import cn.vision.collections.Map;
 	import cn.vision.events.pattern.CommandEvent;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.TimerUtil;
 	
+	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.steps.Model;
@@ -59,12 +61,12 @@ package multipublish.commands
 			modelog("加载频道数据。");
 			config.loadable = true;
 			
-			config.controller.removeControlUsecache();
 			model = new Model;    //执行 url并存储数据。
 			model.url = config.cache ? DataConsts.PATH_CHANNEL : url;
 			model.addEventListener(CommandEvent.COMMAND_END, model_commandEndHandler);
 			model.execute();
 		}
+		
 		
 		/**
 		 * @private
@@ -74,6 +76,10 @@ package multipublish.commands
 			//判定是否与上一次的排期相等
 			if (config.ori["channel"]!= model.data)
 			{
+				config.controller.removeControlUsecache();
+				Cache.queue.commandsIdle.length = 0;    //清空未下载的队列。
+				Cache.queue.close();       //停止下载。
+				
 				config.ori["channel"] = model.data;  
 				config.replacable = true;
 				var dat:Object = ObjectUtil.convert(model.data, Object);

@@ -26,6 +26,7 @@ package multipublish.views.contents
 	import mx.graphics.BitmapScaleMode;
 	import mx.graphics.SolidColor;
 	
+	import spark.components.BorderContainer;
 	import spark.components.Group;
 	import spark.components.Image;
 	import spark.primitives.Rect;
@@ -148,6 +149,33 @@ package multipublish.views.contents
 				timer = null;
 			}
 		}
+		
+		
+		protected function updateModuleBackground($source:String):void
+		{
+			if (StringUtil.isEmpty($source)) return;
+			
+			var component:IVisualElement, rect:Rect, image:Image;
+			
+			if(!background)
+			{
+				addElementAt(background = new Group, 0);
+				background.mouseEnabled = background.mouseChildren = false;
+				background.percentHeight = 100;
+				background.percentWidth  = 100;
+			}
+			
+			background.removeAllElements();
+			
+			component = image = new Image;
+			image.percentHeight = 100;
+			image.percentWidth  = 100;
+			image.fillMode = BitmapFillMode.SCALE;
+			image.scaleMode = BitmapScaleMode.LETTERBOX;
+			image.source = $source;	
+			background.addElement(component);
+		}
+		
 		
 		
 		/**
