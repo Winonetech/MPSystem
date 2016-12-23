@@ -62,7 +62,7 @@
 				
 				if (notice)
 				{
-					time = notice.timeLength || ContentConsts.CONTENT_TIME_DEFAUALT;
+					time = notice.timeLength || ContentConsts.MODULE_TIME_DEFAUALT;
 				}
 				else
 				{

@@ -1,5 +1,7 @@
 package multipublish.vo.moduleContents
 {
+	import cn.vision.utils.StringUtil;
+	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
@@ -28,9 +30,11 @@ package multipublish.vo.moduleContents
 			super.parse($data);
 			
 			var url:String = getProperty("url", String);
-
-			wt::registCache(url);
-			mp::bcg = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			if (!StringUtil.isEmpty(url))
+			{
+				wt::registCache(url);
+				mp::bcg = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
+			}
 			
 			resolveItem();
 		}

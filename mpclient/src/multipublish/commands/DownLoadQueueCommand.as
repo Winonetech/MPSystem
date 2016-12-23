@@ -1,6 +1,7 @@
 package multipublish.commands
 {
 	import cn.vision.events.pattern.QueueEvent;
+	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.tools.Cache;
 	
@@ -32,7 +33,7 @@ package multipublish.commands
 		{
 			cmd = $cmd;
 			
-			if (view.progress.isDownloading)     //如果正在下载时收到排期 应该初始化 isDownloading。 
+			if (view.progress.isDownloading && config.replacable)     //如果正在下载时收到排期 应该初始化 isDownloading。 
 			{
 				Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 				view.progress.isDownloading = false;
@@ -141,8 +142,7 @@ package multipublish.commands
 		{
 			if (config.replacable)
 			{
-				trace("需要下载的个数... -> " + Cache.cachesLave);
-//				Cache.queue.close();
+				LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
 				
 				if (Cache.cachesLave > 0)    
 				{
@@ -156,10 +156,6 @@ package multipublish.commands
 					
 					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 				}
-			}
-			else
-			{
-				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 			}
 		}
 		
@@ -201,6 +197,7 @@ package multipublish.commands
 			{
 				initImage(); 
 			
+				
 				view.application.addElement(image);
 			}
 			else if (image && view.application.contains(image))

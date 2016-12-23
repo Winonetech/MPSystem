@@ -48,11 +48,11 @@ package multipublish.tools
 			
 			usecacheHandler = $handler;
 			usecacheArgs = $args;
-			if(!usecackeTimer)
+			if(!usecacheTimer)
 			{
-				usecackeTimer = new Timer(1000, $time);
-				usecackeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
-				usecackeTimer.start();
+				usecacheTimer = new Timer(1000, $time);
+				usecacheTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
+				usecacheTimer.start();
 			}
 		}
 		
@@ -174,11 +174,11 @@ package multipublish.tools
 		
 		public function removeControlUsecache():void
 		{
-			if (usecackeTimer)
+			if (usecacheTimer)
 			{
-				usecackeTimer.stop();
-				usecackeTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
-				usecackeTimer = null;
+				usecacheTimer.stop();
+				usecacheTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
+				usecacheTimer = null;
 			}
 		}
 		
@@ -220,7 +220,7 @@ package multipublish.tools
 		 */
 		private function handlerUsecache($e:TimerEvent):void
 		{
-			LogUtil.logTip(MPTipConsts.RECORD_CACHE_USE, usecackeTimer);
+			LogUtil.logTip(MPTipConsts.RECORD_CACHE_USE, usecacheTimer);
 			
 			usecacheHandler && usecacheHandler.apply(null, usecacheArgs);
 		}
@@ -239,7 +239,7 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var usecackeTimer:Timer;
+		private var usecacheTimer:Timer;
 		
 		/**
 		 * @private

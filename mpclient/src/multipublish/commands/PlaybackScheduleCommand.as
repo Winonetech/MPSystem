@@ -55,6 +55,8 @@ package multipublish.commands
 				}
 			}
 			
+			config.replacable = true;
+			
 			commandEnd();
  		}
 		
@@ -85,7 +87,7 @@ package multipublish.commands
 							(schedule.type == ScheduleTypeConsts.REPEAT  && 
 							!schedule.repeatWholeDay))
 						{
-							//轮播是不需要注册时间的。重复类型如果是全天播放也不需要注册时间。
+							//轮播、默认是不需要注册时间点。重复类型如果是全天播放也不需要注册时间点。
 							controller.registControlBroadcast(schedule.startTime, presenter.broadcastProgram);
 							controller.registControlBroadcast(schedule.endTime  , presenter.broadcastProgram);
 						}

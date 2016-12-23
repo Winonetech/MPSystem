@@ -14,6 +14,16 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 插播内容默认时长
+		 * 
+		 */
+		
+		public static const MODULE_TIME_DEFAUALT:uint = 60;
+		
+		
+		
+		/**
+		 * 
 		 * 天气默认数据
 		 * 
 		 */

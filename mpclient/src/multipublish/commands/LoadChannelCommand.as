@@ -77,8 +77,7 @@ package multipublish.commands
 			if (config.ori["channel"]!= model.data)
 			{
 				config.controller.removeControlUsecache();
-				Cache.queue.commandsIdle.length = 0;    //清空未下载的队列。
-				Cache.queue.close();       //停止下载。
+				Cache.queue.clear();       //停止正在下载 /预备下载的命令。
 				
 				config.ori["channel"] = model.data;  
 				config.replacable = true;

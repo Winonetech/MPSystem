@@ -35,7 +35,9 @@
 		<![CDATA[
 			import cn.vision.utils.MathUtil;
 			
+			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
+			import multipublish.utils.ContentUtil;
 			import multipublish.vo.moduleContents.EmergencyBroad;
 			
 			import mx.events.FlexEvent;
@@ -69,7 +71,7 @@
 				
 				if (eb)
 				{
-					time = eb.timeLength;
+					time = eb.timeLength || ContentConsts.MODULE_TIME_DEFAUALT;
 					if (eb.useBcg)
 					{
 						currentState = "bcg";
