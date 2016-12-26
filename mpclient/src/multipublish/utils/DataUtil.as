@@ -115,11 +115,8 @@ package multipublish.utils
 			var e:String = StringUtil.lineEnding;
 			var config:MPCConfig = MPCConfig.instance;
 			var result:String = "";
-			if (config.downloadState)
-			{
-				result += '\t<!-- 下载状态栏 -->' + e;
-				result += '\t<downloadState>' + config.downloadState + '</downloadState>' + e;
-			}
+			result += '\t<!-- 下载状态栏 -->' + e;
+			result += '\t<downloadState>' + config.downloadState + '</downloadState>' + e;
 			return result;
 		}
 		
@@ -132,11 +129,8 @@ package multipublish.utils
 			var e:String = StringUtil.lineEnding;
 			var config:MPCConfig = MPCConfig.instance;
 			var result:String = "";
-			if (config.debug)
-			{
-				result += '\t<!-- 调试模式 -->' + e;
-				result += '\t<debug>' + config.debug + '</debug>' + e;
-			}
+			result += '\t<!-- 调试模式 -->' + e;
+			result += '\t<debug>' + config.debug + '</debug>' + e;
 			return result;
 		}
 		
