@@ -93,8 +93,11 @@ package multipublish.tools
 			if(!connected)
 			{
 				offsend = false;
-				count = true;
-				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
+				var str:String = ServiceConsts.FORWARD_ON_LINE + config.terminalNO;
+				on = [{"cmd" : str}];
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+				http.send(JSON.stringify(on));
 			}
 		}
 		
@@ -102,7 +105,7 @@ package multipublish.tools
 		/**
 		 * 
 		 * 向服务端发送离线指令。
-		 * 
+		 *  
 		 */
 		
 		public function offline():void
@@ -110,7 +113,12 @@ package multipublish.tools
 			if (connected)
 			{
 				offsend = true;
-				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
+				var str:String = ServiceConsts.FORWARD_OFF_LINE + config.terminalNO;
+				off = [{"cmd" : str}];
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+				http.send(JSON.stringify(off));
+//				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
 			}
 		}
 		
@@ -510,6 +518,16 @@ package multipublish.tools
 		 * @private
 		 */
 		private var heartbeatTotal:uint = 0;
+		
+		/**
+		 * @private
+		 */
+		private var off:Array = [];
+		
+		/**
+		 * @private
+		 */
+		private var on:Array = [];
 		
 		/**
 		 * @private
