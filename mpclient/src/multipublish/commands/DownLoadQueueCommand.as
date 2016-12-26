@@ -32,7 +32,7 @@ package multipublish.commands
 		{
 			cmd = $cmd;
 			
-			if (view.progress.isDownloading)     //如果正在下载时收到排期 应该初始化 isDownloading。 
+			if (view.progress.isDownloading && config.replacable)     //如果正在下载时收到排期 应该初始化 isDownloading。 
 			{
 				Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 				view.progress.isDownloading = false;

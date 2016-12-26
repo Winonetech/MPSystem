@@ -134,6 +134,12 @@ package multipublish.core
 		}
 		
 		
+		public function cleanCahce():void
+		{
+			execute(new CleanCacheCommand);
+		}
+		
+		
 		/**
 		 * 
 		 * 播放节目。
@@ -350,6 +356,7 @@ package multipublish.core
 			execute(new InitializeViewCommand);     //调出显示页面。
 			execute(new InitializeServiceCommand); //初始化服务。
 			execute(new SendLedCommand);          //发送 LED。
+			execute(new CleanCacheCommand);      //启动缓存清除器。
 		}
 		
 		

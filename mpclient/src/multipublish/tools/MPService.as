@@ -93,8 +93,7 @@ package multipublish.tools
 			if(!connected)
 			{
 				offsend = false;
-				count = true;
-				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
+				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO, true);
 			}
 		}
 		
@@ -293,10 +292,15 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private function send($value:String):void
+		private function send($value:String, $isOline:Boolean = false):void
 		{
-			cmds.push($value);
-			
+			if ($isOline) 
+			{
+				cmds.unshift($value);
+				requestURI();
+			}
+			else cmds.push($value);
+
 			if (count || cmds.length >= config.cmdLimit)
 			{
 				count = false;

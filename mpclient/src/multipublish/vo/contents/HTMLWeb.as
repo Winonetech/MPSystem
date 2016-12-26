@@ -28,7 +28,10 @@ package multipublish.vo.contents
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
 	
+	import multipublish.consts.ContentConsts;
+	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.tools.WipeCache;
 	import multipublish.utils.EPaperUtil;
 	
 	use namespace wt; 
@@ -122,7 +125,7 @@ package multipublish.vo.contents
 					cach[cache.saveURL] = cache;
 				}
 			}
-			
+			WipeCache.wipeHTMLWebCache();
 		}
 		
 		private function handlerCacheEnd($e:CommandEvent):void

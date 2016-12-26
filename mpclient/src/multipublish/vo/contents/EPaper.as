@@ -29,6 +29,7 @@ package multipublish.vo.contents
 	
 	import multipublish.core.mp;
 	import multipublish.tools.ImageCompare;
+	import multipublish.tools.WipeCache;
 	import multipublish.utils.EPaperUtil;
 	import multipublish.utils.URLUtil;
 	
@@ -50,6 +51,7 @@ package multipublish.vo.contents
 		{
 			super($data);
 		}
+		
 		
 		override public function parse($data:Object):void
 		{
@@ -146,9 +148,13 @@ package multipublish.vo.contents
 					LogUtil.log(title + "：已解析完毕：" + fzip);
 					if (file.exists) file.deleteFile();
 				}
+				
 			}
-			
+			WipeCache.wipeEpaperCache(daysKeep, content);
 		}
+		
+		
+		
 		
 		
 		/**
@@ -379,6 +385,7 @@ package multipublish.vo.contents
 			
 			if (cach.length == 0) resolveData();
 		}
+		
 		
 		
 		/**

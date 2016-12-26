@@ -14,6 +14,14 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 最大保存时长。
+		 * 
+		 */
+		
+		public static const DAYSKEEP:uint = 30;
+		
+		/**
+		 * 
 		 * 天气默认数据
 		 * 
 		 */
