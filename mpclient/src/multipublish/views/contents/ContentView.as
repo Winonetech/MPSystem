@@ -8,18 +8,10 @@ package multipublish.views.contents
 	 */
 	
 	
-	import cn.vision.utils.StringUtil;
-	
 	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
-	
-	import multipublish.consts.EventConsts;
-	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
-	import multipublish.views.MPView;
-	import multipublish.vo.contents.Content;
 	
 	import mx.core.IVisualElement;
 	import mx.graphics.BitmapFillMode;
@@ -30,6 +22,14 @@ package multipublish.views.contents
 	import spark.components.Group;
 	import spark.components.Image;
 	import spark.primitives.Rect;
+	
+	import cn.vision.utils.StringUtil;
+	
+	import multipublish.consts.EventConsts;
+	import multipublish.consts.MPTipConsts;
+	import multipublish.consts.TypeConsts;
+	import multipublish.views.MPView;
+	import multipublish.vo.contents.Content;
 	
 	
 	public class ContentView extends MPView
@@ -151,11 +151,18 @@ package multipublish.views.contents
 		}
 		
 		
-		protected function updateModuleBackground($source:String):void
+		/**
+		 * 
+		 * 针对于插播模板而另写的一个方法。<br>
+		 * 可更新背景图片或者背景颜色。<br>
+		 * 优先显示背景图片，背景颜色默认为白色。
+		 * 
+		 */
+		
+		protected function updateModuleBackground($source:String, $bgColor:uint = 16777215):void
 		{
-			if (StringUtil.isEmpty($source)) return;
-			
 			var component:IVisualElement, rect:Rect, image:Image;
+			
 			
 			if(!background)
 			{
@@ -165,14 +172,26 @@ package multipublish.views.contents
 				background.percentWidth  = 100;
 			}
 			
+			background.alpha = 1;
 			background.removeAllElements();
 			
-			component = image = new Image;
-			image.percentHeight = 100;
-			image.percentWidth  = 100;
-			image.fillMode = BitmapFillMode.SCALE;
-			image.scaleMode = BitmapScaleMode.LETTERBOX;
-			image.source = $source;	
+			if (StringUtil.isEmpty($source))
+			{
+				component = rect = new Rect;
+				rect.percentHeight = 100;
+				rect.percentWidth  = 100;
+				rect.fill = new SolidColor($bgColor);
+			}
+			else
+			{
+				component = image = new Image;
+				image.percentHeight = 100;
+				image.percentWidth  = 100;
+				image.fillMode = BitmapFillMode.SCALE;
+				image.scaleMode = BitmapScaleMode.LETTERBOX;
+				image.source = $source;	
+			}
+			
 			background.addElement(component);
 		}
 		

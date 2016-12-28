@@ -11,7 +11,7 @@
 				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
 				 paddingTop="30" paddingLeft="30" paddingRight="30"/>
 		
-		<mx:Text id="text" maxWidth="{vg.width}" textAlign="left" color="{notice.contentColor}"
+		<mx:Text id="text" maxWidth="{vg.width * 2 / 3}" textAlign="left" color="{notice.contentColor}"
 				 htmlText="{notice.content}" fontSize="{notice.contentFont}"/>
 		
 	</s:VGroup>
@@ -33,7 +33,7 @@
 			 */
 			private function init():void
 			{
-				updateModuleBackground(notice.picPath);
+				updateModuleBackground(notice.picPath, notice.bgColor);
 				dispatchReady();
 			}
 			

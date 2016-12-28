@@ -6,7 +6,8 @@
 	<s:VGroup id="group" horizontalAlign="center" horizontalCenter="0" height="100%" top="30" gap="12" width="50%">
 		
 		<s:Label id="title" width="100%" textAlign="center" fontWeight="bold"
-				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"/>
+				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
+				 color="{notice.titleColor}"/>
 		
 		<s:Image id="photo" width="100%" maxHeight="{group.height * .65}"
 				 fillMode="scale" scaleMode="letterbox"
@@ -16,6 +17,7 @@
 		<mx:Text id="contentText" maxWidth="{group.width * 2 / 3}"
 				 selectable="false" horizontalCenter="0"
 				 mouseEnabled="false" mouseChildren="false"
+				 color="{notice.contentColor}"
 				 fontSize="{notice.contentFont}"
 				 htmlText="{notice.content}"/>
 	</s:VGroup>
@@ -25,15 +27,15 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import cn.vision.utils.MathUtil;
+			import flash.utils.Timer;
 			
-			import flash.utils.getQualifiedClassName;
+			import mx.events.FlexEvent;
+			
+			import cn.vision.utils.MathUtil;
 			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
 			import multipublish.vo.moduleContents.Notice;
-			
-			import mx.events.FlexEvent;
 			
 			/**
 			 * @inheritDoc
