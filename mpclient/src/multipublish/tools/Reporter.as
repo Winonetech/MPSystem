@@ -135,7 +135,7 @@ package multipublish.tools
 				var memo:String = name + (exist ? " 下载完成" : " 下载失败");
 				if(!exist) 
 				{
-					memo += "，" + cache.message;
+					memo += "," + cache.message;
 					data += ";" + cache.code + ";" + cache.message;
 				}
 				
