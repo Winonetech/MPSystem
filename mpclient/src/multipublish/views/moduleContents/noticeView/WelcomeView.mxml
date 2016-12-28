@@ -7,11 +7,11 @@
 	
 	<s:VGroup id="vg" width="100%" height="100%" top="30" horizontalAlign="center" gap="50">
 		
-		<s:Label id="title" width="50%" textAlign="center" fontWeight="bold"
+		<s:Label id="title" width="50%" textAlign="center" fontWeight="bold" color="{notice.titleColor}"
 				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
 				 paddingTop="30" paddingLeft="30" paddingRight="30"/>
 		
-		<mx:Text id="text" maxWidth="{vg.width}" textAlign="left" 
+		<mx:Text id="text" maxWidth="{vg.width}" textAlign="left" color="{notice.contentColor}"
 				 htmlText="{notice.content}" fontSize="{notice.contentFont}"/>
 		
 	</s:VGroup>

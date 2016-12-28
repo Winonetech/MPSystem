@@ -98,6 +98,7 @@ package multipublish.tools
 				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
 				http.send(JSON.stringify(on));
+//				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
 			}
 		}
 		

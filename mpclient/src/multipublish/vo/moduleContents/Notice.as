@@ -99,6 +99,42 @@ package multipublish.vo.moduleContents
 		}
 		
 		
+		/**
+		 * 
+		 * 背景颜色。
+		 * 
+		 */
+		
+		public function get bgColor():String
+		{
+			return getProperty("bgColor", String);
+		}
+		
+		
+		/**
+		 * 
+		 * 标题字体颜色。
+		 * 
+		 */
+		
+		public function get titleColor():uint
+		{
+			return getProperty("titleColor", String);
+		}
+		
+		
+		/**
+		 * 
+		 * 内容字体颜色。
+		 * 
+		 */
+		
+		public function get contentColor():uint
+		{
+			return getProperty("contentColor", String);
+		}
+		
+		
 		
 		
 		
