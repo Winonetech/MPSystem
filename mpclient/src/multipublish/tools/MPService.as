@@ -94,10 +94,10 @@ package multipublish.tools
 			{
 				offsend = false;
 				var str:String = ServiceConsts.FORWARD_ON_LINE + config.terminalNO;
-				on = [{"cmd" : str}];
+				temp = [{"cmd" : str}];
 				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
-				http.send(JSON.stringify(on));
+				http.send(JSON.stringify(temp));
 //				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
 			}
 		}
@@ -115,10 +115,10 @@ package multipublish.tools
 			{
 				offsend = true;
 				var str:String = ServiceConsts.FORWARD_OFF_LINE + config.terminalNO;
-				off = [{"cmd" : str}];
+				temp = [{"cmd" : str}];
 				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
-				http.send(JSON.stringify(off));
+				http.send(JSON.stringify(temp));
 //				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
 			}
 		}
@@ -164,7 +164,12 @@ package multipublish.tools
 		
 		public function downloadApply():void
 		{
-			send(ServiceConsts.DL_APPLY + config.terminalNO);
+			var str:String = ServiceConsts.DL_APPLY + config.terminalNO;
+			temp = [{"cmd" : str}];
+			http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+			LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+			http.send(JSON.stringify(temp));
+//			send(ServiceConsts.DL_APPLY + config.terminalNO);
 		}
 		
 		
@@ -407,7 +412,7 @@ package multipublish.tools
 			var list:Array;
 			for (var i:uint = 0; i < l; i++)
 			{
-				arr = (JSON.parse($value) as Array)[0];
+				arr = (JSON.parse($value) as Array)[i];
 				str = arr["result"];
 				list = str.split("\n");
 				var filter:Function = function($item:*, $index:int, $array:Array):Boolean
@@ -521,14 +526,9 @@ package multipublish.tools
 		private var heartbeatTotal:uint = 0;
 		
 		/**
-		 * @private
+		 * 存储需要立即发送的命令。
 		 */
-		private var off:Array = [];
-		
-		/**
-		 * @private
-		 */
-		private var on:Array = [];
+		private var temp:Array = [];
 		
 		/**
 		 * @private
