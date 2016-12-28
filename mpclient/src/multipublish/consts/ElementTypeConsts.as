@@ -122,5 +122,16 @@ package multipublish.consts
 		
 		public static const WEBSITE:uint = 3;
 		
+		
+		
+		/**
+		 * 
+		 * 呼叫经理。
+		 * @default 12
+		 * 
+		 */
+		
+		public static const CALLBTN:uint = 12;
+		
 	}
 }

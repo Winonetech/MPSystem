@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<elements:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:elements="multipublish.views.elements.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.consts.ServiceConsts;
+			import multipublish.skins.MapBackButtonSkin;
+			
+			[Bindable]
+			private var showStr:String;
+			
+			private var timer:Timer;
+			
+			private const WAIT_TIME:uint = 3;
+			
+			override protected function processPlay():void
+			{
+				config.service.registHandler(ServiceConsts.CALL_MASTER, changeLabel);
+			}
+			
+			
+			override protected function processStop():void
+			{
+				config.service.removeHandler(ServiceConsts.CALL_MASTER);
+			}
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				config.service.callMaster();
+				
+				timerDeal();
+
+				showStr = "呼叫中...";
+				
+				currentState = "show";
+				
+			}
+			
+			
+			private function timerDeal():void
+			{
+				if (!timer)
+				{
+					timer = new Timer(1000 * WAIT_TIME, 1);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, changeState);
+				}
+				else
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, changeState);
+					timer = null;
+				}
+			}
+			
+			
+			private function changeState(e:Timer):void
+			{
+				timerDeal();
+
+				currentState = "btn";
+			}
+			
+			/**
+			 * 
+			 * 解析参数。若参数为200则表示正常，否则表示繁忙。
+			 * 
+			 */
+			
+			private function changeLabel($cmd:String = null):void
+			{
+				if ($cmd)
+				{
+					showStr = $cmd == "200" ? "马上为您服务" : "繁忙，请稍后再试";
+					
+					timer && timer.start();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<elements:states>
+		<s:State name="btn"/>
+		<s:State name="show"/>
+	</elements:states>
+	
+	<s:Button horizontalCenter="0" verticalCenter="0" 
+			  includeIn="btn" label="呼叫大堂经理"
+			  fontWeight="bold" click="button1_clickHandler(event)"/>
+	
+	<s:Label  horizontalCenter="0" verticalCenter="0" 
+			  includeIn="show" text="{showStr}" 
+			  textAlign="center" fontSize="24" fontWeight="bold"/>
+	
+	<s:Button right="10" top="10" skinClass="multipublish.skins.MapBackButtonSkin" label="返回" click="back()"/>
+	
+</elements:ElementView>

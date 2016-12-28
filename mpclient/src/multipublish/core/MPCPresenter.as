@@ -13,7 +13,26 @@ package multipublish.core
 	import cn.vision.pattern.core.Presenter;
 	import cn.vision.pattern.queue.SequenceQueue;
 	
-	import multipublish.commands.*;
+	import multipublish.commands.ClientUpdateCommand;
+	import multipublish.commands.ExportDataCommand;
+	import multipublish.commands.ImportDataCommand;
+	import multipublish.commands.InitializeConfigCommand;
+	import multipublish.commands.InitializeDataCommand;
+	import multipublish.commands.InitializeEnvironmentCommand;
+	import multipublish.commands.InitializeFirstStartCommand;
+	import multipublish.commands.InitializeServiceCommand;
+	import multipublish.commands.InitializeShutdownCommand;
+	import multipublish.commands.InitializeViewCommand;
+	import multipublish.commands.LockTimeCommand;
+	import multipublish.commands.LogUploadCommand;
+	import multipublish.commands.PlaybackProgramCommand;
+	import multipublish.commands.PlaybackScheduleCommand;
+	import multipublish.commands.RebootTerminalCommand;
+	import multipublish.commands.RegulateVolumeCommand;
+	import multipublish.commands.ReportProgressCommand;
+	import multipublish.commands.RestartPlayerCommand;
+	import multipublish.commands.ShotcutPlayerCommand;
+	import multipublish.commands.ShowDeployCommand;
 	
 	import spark.components.WindowedApplication;
 	
@@ -243,6 +262,8 @@ package multipublish.core
 		{
 			execute(new InitializeShutdownCommand($value));
 		}
+		
+		
 		
 		
 		/**
