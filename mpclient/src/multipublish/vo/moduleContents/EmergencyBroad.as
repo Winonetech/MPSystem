@@ -1,10 +1,10 @@
 package multipublish.vo.moduleContents
 {
-	import cn.vision.utils.StringUtil;
-	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
+	
+	import cn.vision.utils.StringUtil;
 	
 	import flashx.textLayout.factory.StringTextLineFactory;
 	
@@ -78,6 +78,22 @@ package multipublish.vo.moduleContents
 			return getProperty("isBcg", Boolean);
 		}
 		
+		
+		public function get titleColor():uint
+		{
+			return getProperty("titleColor", uint);
+		}
+		
+		
+		public function get bgColor():uint
+		{
+			return uint(getProperty("bgColor", uint));
+		}
+		
+		public function get contentColor():uint
+		{
+			return getProperty("contentColor", uint);
+		}
 		
 		public function get timeLength():uint
 		{

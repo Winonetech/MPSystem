@@ -105,9 +105,9 @@ package multipublish.vo.moduleContents
 		 * 
 		 */
 		
-		public function get bgColor():String
+		public function get bgColor():uint
 		{
-			return getProperty("bgColor", String);
+			return getProperty("bgColor", uint);
 		}
 		
 		
@@ -119,7 +119,7 @@ package multipublish.vo.moduleContents
 		
 		public function get titleColor():uint
 		{
-			return getProperty("titleColor", String);
+			return getProperty("titleColor", uint);
 		}
 		
 		
@@ -131,7 +131,7 @@ package multipublish.vo.moduleContents
 		
 		public function get contentColor():uint
 		{
-			return getProperty("contentColor", String);
+			return getProperty("contentColor", uint);
 		}
 		
 		

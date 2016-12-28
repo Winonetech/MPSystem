@@ -12,6 +12,7 @@
 			  top.bcg="30" gap.bcg="12" width="50%" height="100%">
 	
 		<s:Label text="{eb.moduleTitle}" includeIn="bcg"
+				 color="{eb.titleColor}"
 				 textAlign="center" fontSize="{eb.titleFont}"
 				 fontWeight="bold" width="100%"/>
 		
@@ -27,20 +28,20 @@
 				 selectable="false" horizontalCenter="0"
 				 mouseEnabled="false" mouseChildren="false"
 				 fontSize="{eb.contentFont}" includeIn="bcg"
-				 htmlText="{eb.moduleContent}"/>
+				 htmlText="{eb.moduleContent}" color="{eb.contentColor}"/>
 	
 	
 	</s:VGroup>
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import cn.vision.utils.MathUtil;
 			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
-			import multipublish.utils.ContentUtil;
+			import multipublish.vo.contents.Content;
 			import multipublish.vo.moduleContents.EmergencyBroad;
-			
-			import mx.events.FlexEvent;
 			
 			
 			/**
@@ -67,7 +68,10 @@
 			
 			override protected function resolveData():void
 			{
+				super.resolveData();
+				
 				eb = data as EmergencyBroad;
+				
 				
 				if (eb)
 				{
@@ -75,7 +79,7 @@
 					if (eb.useBcg)
 					{
 						currentState = "bcg";
-						updateModuleBackground(eb.contents[i = 0]);
+						updateModuleBackground(eb.contents[i = 0], eb.bgColor);
 						dispatchReady();
 					}
 					else
