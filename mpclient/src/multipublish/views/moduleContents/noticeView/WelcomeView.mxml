@@ -11,8 +11,11 @@
 				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
 				 paddingTop="30" paddingLeft="30" paddingRight="30"/>
 		
-		<mx:Text id="text" maxWidth="{vg.width * 2 / 3}" textAlign="left" color="{notice.contentColor}"
-				 htmlText="{notice.content}" fontSize="{notice.contentFont}"/>
+		<s:TextArea borderVisible="false" contentBackgroundAlpha="0"
+					editable="false" selectable="false" height="{vg.height * 2 / 3}" 
+					id="text" maxWidth="{vg.width * 2 / 3}" textAlign="left" color="{notice.contentColor}"
+					text="{notice.content}" fontSize="{notice.contentFont}"/>
+		
 		
 	</s:VGroup>
 	
