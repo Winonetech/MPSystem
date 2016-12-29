@@ -127,16 +127,18 @@
 	</elements:states>
 	
 	<s:Button horizontalCenter="0" verticalCenter="0" 
+			  buttonMode="true" useHandCursor="true" mouseChildren="false" 
 			  includeIn="btn" label="呼叫大堂经理" cornerRadius="20"
 			  fontFamily="微软雅黑" fontSize="60" height="120" width="500"
 			  fontWeight="bold" click="button1_clickHandler(event)"/>
 	
-	<s:Label  horizontalCenter="0" verticalCenter="0" verticalAlign="middle" height="100"
-			  backgroundAlpha=".3" paddingTop="5" backgroundColor="0xffffff"  width="50%"
-			  includeIn="show" text="{showStr}" fontFamily="微软雅黑"
-			  textAlign="center" fontSize="60" fontWeight="bold"/>
+	<s:Label  horizontalCenter="0" verticalCenter="0" verticalAlign="middle"
+			  height="100" width="50%" backgroundColor="0xffffff" 
+			  backgroundAlpha=".3" paddingTop="5"  fontSize="60"
+			  fontFamily="微软雅黑" fontWeight="bold" text="{showStr}" 
+			  textAlign="center" includeIn="show"/>
 	
-	<s:Button right="10" top="10" includeIn="btn" 
-			  skinClass="multipublish.skins.MapBackButtonSkin" label="返回" click="back()"/>
+	<s:Button right="10" top="10" includeIn="btn" label="返回" click="back()"
+			  skinClass="multipublish.skins.MapBackButtonSkin" />
 	
 </elements:ElementView>
