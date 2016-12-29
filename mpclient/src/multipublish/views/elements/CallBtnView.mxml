@@ -8,13 +8,18 @@
 			import multipublish.consts.ServiceConsts;
 			import multipublish.skins.MapBackButtonSkin;
 			
+			
 			[Bindable]
 			private var showStr:String;
 			
+			private var i:uint;
+			
 			private var timer:Timer;
 			
-			private const WAIT_TIME:uint = 3;
+			private var timerPoint:Timer;
 			
+			private const WAIT_TIME:uint = 3;
+
 			override protected function processPlay():void
 			{
 				config.service.registHandler(ServiceConsts.CALL_MASTER, changeLabel);
@@ -31,14 +36,47 @@
 			{
 				config.service.callMaster();
 				
-				timerDeal();
-
-				showStr = "呼叫中...";
-				
 				currentState = "show";
+
+				timerDeal();
+				timerPointDeal();
+				
+				showStr = "呼叫中";
+				
+				
+				
+				timerPoint.reset();
+				timerPoint.start();
+				
 				
 			}
 			
+			
+			private function timerPointDeal():void
+			{
+				if (!timerPoint)
+				{
+					timerPoint = new Timer(300);
+					timerPoint.addEventListener(TimerEvent.TIMER, timerHandler);
+				}
+				else
+				{
+					timerPoint.removeEventListener(TimerEvent.TIMER, timerHandler);
+					timerPoint = null;
+				}
+			}
+			
+			private function timerHandler(e:TimerEvent):void
+			{
+				if (currentState == "btn") return;
+				
+				if (i++ < 3) showStr += ".";
+				else
+				{
+					i = 0;
+					showStr = "呼叫中";
+				}
+			}
 			
 			private function timerDeal():void
 			{
@@ -55,10 +93,10 @@
 			}
 			
 			
-			private function changeState(e:Timer):void
+			private function changeState(e:TimerEvent):void
 			{
 				timerDeal();
-
+				
 				currentState = "btn";
 			}
 			
@@ -74,6 +112,8 @@
 				{
 					showStr = $cmd == "200" ? "马上为您服务" : "繁忙，请稍后再试";
 					
+					timerPointDeal();
+					
 					timer && timer.start();
 				}
 			}
@@ -87,13 +127,16 @@
 	</elements:states>
 	
 	<s:Button horizontalCenter="0" verticalCenter="0" 
-			  includeIn="btn" label="呼叫大堂经理"
+			  includeIn="btn" label="呼叫大堂经理" cornerRadius="20"
+			  fontFamily="微软雅黑" fontSize="60" height="120" width="500"
 			  fontWeight="bold" click="button1_clickHandler(event)"/>
 	
-	<s:Label  horizontalCenter="0" verticalCenter="0" 
-			  includeIn="show" text="{showStr}" 
-			  textAlign="center" fontSize="24" fontWeight="bold"/>
+	<s:Label  horizontalCenter="0" verticalCenter="0" verticalAlign="middle" height="100"
+			  backgroundAlpha=".3" paddingTop="5" backgroundColor="0xffffff"  width="50%"
+			  includeIn="show" text="{showStr}" fontFamily="微软雅黑"
+			  textAlign="center" fontSize="60" fontWeight="bold"/>
 	
-	<s:Button right="10" top="10" skinClass="multipublish.skins.MapBackButtonSkin" label="返回" click="back()"/>
+	<s:Button right="10" top="10" includeIn="btn" 
+			  skinClass="multipublish.skins.MapBackButtonSkin" label="返回" click="back()"/>
 	
 </elements:ElementView>
