@@ -182,5 +182,27 @@ package multipublish.consts
 		
 		public static const PLAY_PROGRAM:String = "PLPG:";
 		
+		
+		/**
+		 * 
+		 * 呼叫大厅经理指令。<br>
+		 * 默认值为“ICRS:”。<br>
+		 * 其中返回值为200和500。200为正常服务，500为繁忙。
+		 * 
+		 */	
+		
+		public static const CALL_MASTER:String = "ICRS:";
+		
+	
+		/**
+		 * 
+		 * 发送呼叫大厅经理指令。<br>
+		 * 默认值为“ICRE:”。
+		 * 
+		 */	
+		
+		public static const SEND_MASTER:String = "ICRE:";
+		
+		
 	}
 }

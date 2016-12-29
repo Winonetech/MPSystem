@@ -71,6 +71,22 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 发送呼叫大厅经理请求指令。
+		 * 
+		 */
+		
+		public function callMaster():void
+		{
+			if (socket && socket.connected)
+			{
+				socket.writeUTF(ServiceConsts.SEND_MASTER + config.terminalNO);
+				socket.flush();
+			}
+		}
+		
+		
+		/**
+		 * 
 		 * 向服务端上报文件进度。
 		 * 
 		 * @param $data:String 相关参数，$cmd为true，$data上报格式为1430276253109.jpg;3，2代表开始下载，3代表下载完成，4代表下载出错。

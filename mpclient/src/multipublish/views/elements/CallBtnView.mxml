@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<elements:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:elements="multipublish.views.elements.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.consts.ServiceConsts;
+			import multipublish.skins.MapBackButtonSkin;
+			
+			
+			[Bindable]
+			private var showStr:String;
+			
+			private var i:uint;
+			
+			private var timer:Timer;
+			
+			private var timerPoint:Timer;
+			
+			private const WAIT_TIME:uint = 3;
+
+			override protected function processPlay():void
+			{
+				config.service.registHandler(ServiceConsts.CALL_MASTER, changeLabel);
+			}
+			
+			
+			override protected function processStop():void
+			{
+				config.service.removeHandler(ServiceConsts.CALL_MASTER);
+			}
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				config.service.callMaster();
+				
+				currentState = "show";
+
+				timerDeal();
+				timerPointDeal();
+				
+				showStr = "呼叫中";
+				
+				
+				
+				timerPoint.reset();
+				timerPoint.start();
+				
+				
+			}
+			
+			
+			private function timerPointDeal():void
+			{
+				if (!timerPoint)
+				{
+					timerPoint = new Timer(300);
+					timerPoint.addEventListener(TimerEvent.TIMER, timerHandler);
+				}
+				else
+				{
+					timerPoint.removeEventListener(TimerEvent.TIMER, timerHandler);
+					timerPoint = null;
+				}
+			}
+			
+			private function timerHandler(e:TimerEvent):void
+			{
+				if (currentState == "btn") return;
+				
+				if (i++ < 3) showStr += ".";
+				else
+				{
+					i = 0;
+					showStr = "呼叫中";
+				}
+			}
+			
+			private function timerDeal():void
+			{
+				if (!timer)
+				{
+					timer = new Timer(1000 * WAIT_TIME, 1);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, changeState);
+				}
+				else
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, changeState);
+					timer = null;
+				}
+			}
+			
+			
+			private function changeState(e:TimerEvent):void
+			{
+				timerDeal();
+				
+				currentState = "btn";
+			}
+			
+			/**
+			 * 
+			 * 解析参数。若参数为200则表示正常，否则表示繁忙。
+			 * 
+			 */
+			
+			private function changeLabel($cmd:String = null):void
+			{
+				if ($cmd)
+				{
+					showStr = $cmd == "200" ? "马上为您服务" : "繁忙，请稍后再试";
+					
+					timerPointDeal();
+					
+					timer && timer.start();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<elements:states>
+		<s:State name="btn"/>
+		<s:State name="show"/>
+	</elements:states>
+	
+	<s:Button horizontalCenter="0" verticalCenter="0" 
+			  buttonMode="true" useHandCursor="true" mouseChildren="false" 
+			  includeIn="btn" label="呼叫大堂经理" cornerRadius="20"
+			  fontFamily="微软雅黑" fontSize="60" height="120" width="500"
+			  fontWeight="bold" click="button1_clickHandler(event)"/>
+	
+	<s:Label  horizontalCenter="0" verticalCenter="0" verticalAlign="middle"
+			  height="100" width="50%" backgroundColor="0xffffff" 
+			  backgroundAlpha=".3" paddingTop="5"  fontSize="60"
+			  fontFamily="微软雅黑" fontWeight="bold" text="{showStr}" 
+			  textAlign="center" includeIn="show"/>
+	
+	<s:Button right="10" top="10" includeIn="btn" label="返回" click="back()"
+			  skinClass="multipublish.skins.MapBackButtonSkin" />
+	
+</elements:ElementView>

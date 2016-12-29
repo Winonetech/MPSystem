@@ -92,6 +92,7 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.REGULATE_VOL     , presenter.regulateVolume);
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
 				service.registHandler(ServiceConsts.PLAY_PROGRAM     , presenter.playProgram);
+//				service.registHandler(ServiceConsts.CALL_MASTER		 , presenter.callMaster);
 			}
 			service.connect(config.socketHost, config.messagePort || 6666);
 			

@@ -8,12 +8,12 @@ package multipublish.commands.steps
 	 */
 	
 	
+	import com.winonetech.tools.LogSQLite;
+	
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.XMLUtil;
-	
-	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.Step;
 	import multipublish.consts.ClientStateConsts;
@@ -24,8 +24,19 @@ package multipublish.commands.steps
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
 	import multipublish.interfaces.IFolder;
-	import multipublish.vo.documents.*;
-	import multipublish.vo.elements.*;
+	import multipublish.vo.documents.Document;
+	import multipublish.vo.documents.FlashDocument;
+	import multipublish.vo.documents.ImageDocument;
+	import multipublish.vo.documents.VideoDocument;
+	import multipublish.vo.elements.Advertise;
+	import multipublish.vo.elements.ArrangeIcon;
+	import multipublish.vo.elements.CallBtn;
+	import multipublish.vo.elements.Comman;
+	import multipublish.vo.elements.Elecmap;
+	import multipublish.vo.elements.Element;
+	import multipublish.vo.elements.Office;
+	import multipublish.vo.elements.Slide;
+	import multipublish.vo.elements.Website;
 	
 	
 	public final class InitializeDocument extends Step
@@ -69,6 +80,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.OFFICE   ] = handlerOffice;
 			type[ElementTypeConsts.SLIDE    ] = handlerSlide;
 			type[ElementTypeConsts.MAP      ] = handlerMap;
+			type[ElementTypeConsts.CALLBTN	] = handlerCall;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -108,6 +120,13 @@ package multipublish.commands.steps
 					solv(type[name] ? type[name]($data, $xml) : null, $xml);
 				}
 			}
+		}
+		
+		
+		private function handlerCall($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new CallBtn($data.raw);
 		}
 		
 		

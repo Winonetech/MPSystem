@@ -12,24 +12,20 @@ package multipublish.commands
 	 */
 	
 	
+	import com.winonetech.tools.LogSQLite;
+	
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.SequenceQueue;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
-	import multipublish.commands.steps.*;
+	import multipublish.commands.steps.InitializeDocument;
+	import multipublish.commands.steps.InitializeProgram;
+	import multipublish.commands.steps.InitializeSchedule;
+	import multipublish.commands.steps.InitializeTypeset;
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
 	import multipublish.tools.Controller;
-	import multipublish.vo.contents.Content;
-	import multipublish.vo.contents.Typeset;
-	import multipublish.vo.documents.Document;
-	import multipublish.vo.elements.Arrange;
-	import multipublish.vo.elements.Element;
-	import multipublish.vo.programs.Layout;
-	import multipublish.vo.programs.Program;
 	
 	
 	public final class InitializeDataCommand extends _InternalCommand
