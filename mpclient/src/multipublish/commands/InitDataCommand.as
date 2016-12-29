@@ -60,7 +60,8 @@ package multipublish.commands
 		{
 			if (config.replacable)
 			{
-				ViewUtil.guild(true);
+				if (!config.view.main.data)    //如果有排期内容则不显示 guild。
+					ViewUtil.guild(true);
 				
 				modelog("初始化排期，下载文件。");
 				

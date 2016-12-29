@@ -5,8 +5,10 @@ package multipublish.commands
 	
 	import com.winonetech.tools.Cache;
 	
+	import multipublish.consts.ContentConsts;
 	import multipublish.events.DLStateEvent;
 	import multipublish.tools.MPService;
+	import multipublish.utils.ContentUtil;
 	import multipublish.utils.ViewUtil;
 	
 	import spark.components.Image;
@@ -207,7 +209,7 @@ package multipublish.commands
 			
 			if (config.downloadState) initProgress();
 			
-//			ViewUtil.guild(false);
+			ViewUtil.guild(false);
 			
 		}
 		
@@ -237,9 +239,15 @@ package multipublish.commands
 			image.width = view.application.width;
 			image.height = view.application.height;
 			image.x = image.y = 0;
-			image.source = "assets/images/welcomePic.png";
+			image.source = isH ? ContentConsts.DLPIC_H : ContentConsts.DLPIC_V;
 		}
 
+		private function get isH():Boolean
+		{
+			return view.application.nativeWindow.width < view.application.nativeWindow.height;
+		}
+		
+		
 		private static var image:Image;
 		
 		/**
