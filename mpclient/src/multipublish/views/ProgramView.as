@@ -48,10 +48,17 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			LogSQLite.log(
-				TypeConsts.FILE,
-				EventConsts.EVENT_START_PLAYING, program.summary,
-				log(MPTipConsts.RECORD_PROGRAM_PLAY, program));
+			try
+			{
+				LogSQLite.log(
+					TypeConsts.FILE,
+					EventConsts.EVENT_START_PLAYING, program.summary,
+					log(MPTipConsts.RECORD_PROGRAM_PLAY, program));
+			}
+			catch (e:TypeError)
+			{
+				
+			}
 			
 			if (currentView)
 			{

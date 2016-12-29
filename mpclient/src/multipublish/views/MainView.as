@@ -131,6 +131,8 @@ package multipublish.views
 						removeElement(next);
 				}
 				next = generateView();
+				next.addEventListener(ControlEvent.READY, handler_ready);
+				next.data = program;   //此处关联至 ProgramView的 resolveData。
 				next.visible = false;
 				delay(1, tween);
 			}
