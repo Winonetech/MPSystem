@@ -288,6 +288,14 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 设定插播记录。
+		 * 
+		 */
+		
+		public static const RECORD_MODULE_DATA:Tip = new Tip("播放插播节目：{moduleClass}", 2);
+		
+		/**
+		 * 
 		 * 播放节目记录。
 		 * 
 		 */

@@ -96,7 +96,7 @@ package multipublish.views.moduleContents
 			source = data as Module;
 			if (source)
 			{
-				log(MPTipConsts.RECORD_COMPONENT_DATA, source);
+				log(MPTipConsts.RECORD_MODULE_DATA, source);
 				
 				navigatable = mouseEnabled = source.moduleClass.toString().indexOf("AskPaper") > -1;
 				
