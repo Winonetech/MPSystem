@@ -3,6 +3,17 @@ package multipublish.consts
 	public final class ContentConsts
 	{
 		
+		
+		
+		/**
+		 * 
+		 * 下载状态视频。竖屏
+		 * 
+		 */
+		
+		public static const WELCOME_VIDEO:String = "assets/video/helena.mp4"; 
+		
+		
 		/**
 		 * 
 		 * 图片内容默认时长
