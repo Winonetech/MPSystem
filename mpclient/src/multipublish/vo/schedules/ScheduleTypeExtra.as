@@ -53,8 +53,11 @@ package multipublish.vo.schedules
 			if(!StringUtil.isEmpty($extra))
 			{
 				if(!FUNC[Consts.INIT])
-				{
-					FUNC[Consts.INIT] = true;
+				{ 
+					//这里改成 false是为了要一直更新这些方法对象的持有者。
+				   //因为如果不实时更新该方法对象，其方法的持有者将一直是第一次进入该赋值区域的对象。
+				  //故而赋值将一直赋值给方法的持有者，而不是赋值给当前对象。相当于是调用了一个第一次进入该赋值区域的对象的一个方法。
+					FUNC[Consts.INIT] = false;      
 					FUNC[ScheduleRepeatTypeConsts.DAY  ] = resolveDay;
 					FUNC[ScheduleRepeatTypeConsts.WEEK ] = resolveWeek;
 					FUNC[ScheduleRepeatTypeConsts.MONTH] = resolveMonth;
@@ -63,7 +66,7 @@ package multipublish.vo.schedules
 				
 				var array:Array = $extra.split("|");
 				resolveRepeatType(array);
-				FUNC[repeatType](array);
+			    FUNC[repeatType](array);
 			}
 		}
 		
