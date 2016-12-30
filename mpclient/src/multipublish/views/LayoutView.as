@@ -217,6 +217,7 @@ package multipublish.views
 						}
 					};
 					main.addEventListener(ControlEvent.READY, handler);
+					main.data = $page;
 				}
 				else
 				{
