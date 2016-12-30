@@ -3,22 +3,15 @@ package multipublish.consts
 	public final class ContentConsts
 	{
 		
-		/**
-		 * 
-		 * 下载状态图片。横屏
-		 * 
-		 */
-		
-		public static const DLPIC_V:String = "assets/images/welcomePic_V.jpg"; 
 		
 		
 		/**
 		 * 
-		 * 下载状态图片。竖屏
+		 * 下载状态视频。竖屏
 		 * 
 		 */
 		
-		public static const DLPIC_H:String = "assets/images/welcomePic_H.jpg"; 
+		public static const WELCOME_VIDEO:String = "assets/video/helena.mp4"; 
 		
 		
 		/**

@@ -8,10 +8,9 @@ package multipublish.commands
 	import multipublish.consts.ContentConsts;
 	import multipublish.events.DLStateEvent;
 	import multipublish.tools.MPService;
-	import multipublish.utils.ContentUtil;
 	import multipublish.utils.ViewUtil;
 	
-	import spark.components.Image;
+	import spark.components.VideoDisplay;
 	
 	/**
 	 *
@@ -153,8 +152,8 @@ package multipublish.commands
 				}
 				else        
 				{
-					if(image && view.application.contains(image))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
-						view.application.removeElement(image);
+					if(video && view.application.contains(video))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
+						view.application.removeElement(video);
 					
 					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 				}
@@ -173,8 +172,8 @@ package multipublish.commands
 			
 			service.downloadOver();
 			
-			if(image && view.application.contains(image))
-				view.application.removeElement(image);
+			if(video && view.application.contains(video))
+				view.application.removeElement(video);
 			
 			view.progress.isDownloading = false;
 			
@@ -195,16 +194,16 @@ package multipublish.commands
 		
 		private function initDLState():void
 		{
-			if (!image && !view.main.data)   //当图片不存在(第一次加载)并且主页面无数据(无排期播放)时加入图片。
+			if (!video && !view.main.data)   //当图片不存在(第一次加载)并且主页面无数据(无排期播放)时加入图片。
 			{
 				initImage(); 
 			
-				
-				view.application.addElement(image);
+				view.application.addElement(video);
 			}
-			else if (image && view.application.contains(image))
+			else if (video && view.application.contains(video))
 			{
-				view.application.removeElement(image);
+				view.application.removeElement(video);
+				if (!video.playing) video.play();
 			}
 			
 			if (config.downloadState) initProgress();
@@ -235,20 +234,19 @@ package multipublish.commands
 		
 		private function initImage():void
 		{
-			image = new Image;
-			image.width = view.application.width;
-			image.height = view.application.height;
-			image.x = image.y = 0;
-			image.source = isH ? ContentConsts.DLPIC_H : ContentConsts.DLPIC_V;
+			video = new VideoDisplay;
+			video.width = view.application.width;
+			video.height = view.application.height;
+			video.x = video.y = 0;
+			video.autoDisplayFirstFrame = true;
+			video.autoPlay = true;
+			video.loop = true;
+			video.scaleMode = "letterbox";
+			video.source = ContentConsts.WELCOME_VIDEO;
 		}
 
-		private function get isH():Boolean
-		{
-			return view.application.nativeWindow.width < view.application.nativeWindow.height;
-		}
 		
-		
-		private static var image:Image;
+		private static var video:VideoDisplay;
 		
 		/**
 		 * 
