@@ -237,7 +237,7 @@
 			
 			private function changeLabel($cmd:String = null):void
 			{
-				if ($cmd)
+				if ($cmd && currentState == "show")
 				{
 					showStr = $cmd == "200" ? "马上为您服务" : "繁忙，请稍后再试";
 					
