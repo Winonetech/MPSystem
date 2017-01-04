@@ -8,18 +8,77 @@
 			import multipublish.consts.ServiceConsts;
 			import multipublish.skins.MapBackButtonSkin;
 			
+			/**
+			 * 
+			 * 结果展示。
+			 * 
+			 */
 			
 			[Bindable]
 			private var showStr:String;
 			
+			
+			
+			/**
+			 * 
+			 * 打点计数器。
+			 * 
+			 */
+			
 			private var i:uint;
 			
-			private var timer:Timer;
+			
+			
+			/**
+			 * 
+			 * 结果展示计时器。
+			 * 
+			 */
+			
+			private var timer_return:Timer;
+			
+			
+			
+			/**
+			 * 
+			 * 等待超时计时器。
+			 * 
+			 */
+			
+			private var timerOut:Timer;
+			
+			
+			
+			/**
+			 * 
+			 * 打点计时器。
+			 * 
+			 */
 			
 			private var timerPoint:Timer;
 			
+			
+			
+			/**
+			 * 
+			 * 结果展示时长。
+			 * 
+			 */
+			
 			private const WAIT_TIME:uint = 3;
+			
+			
+			
+			/**
+			 * 
+			 * 等待超时时长。
+			 * 
+			 */
+			
+			private const OUT_TIME :uint = 30;
 
+			
+			
 			override protected function processPlay():void
 			{
 				config.service.registHandler(ServiceConsts.CALL_MASTER, changeLabel);
@@ -32,41 +91,114 @@
 			}
 			
 			
-			protected function button1_clickHandler(event:MouseEvent):void
+			protected function sendCommand(event:MouseEvent):void
 			{
 				config.service.callMaster();
 				
 				currentState = "show";
 
-				timerDeal();
+				timerReturnDeal();
+				timerOutDeal();
 				timerPointDeal();
 				
 				showStr = "呼叫中";
 				
-				
-				
 				timerPoint.reset();
 				timerPoint.start();
 				
+				timerOut.reset();
+				timerOut.start();
 				
 			}
 			
+			
+			
+			/**
+			 * 
+			 * 返回计时器的创建与销毁。
+			 * 
+			 */
+			
+			private function timerReturnDeal():void
+			{
+				if (!timer_return)
+				{
+					timer_return = new Timer(1000 * WAIT_TIME, 1);
+					timer_return.addEventListener(TimerEvent.TIMER_COMPLETE, timerReturnHandler);
+				}
+				else
+				{
+					timer_return.removeEventListener(TimerEvent.TIMER_COMPLETE, timerReturnHandler);
+					timer_return = null;
+				}
+			}
+			
+			
+			
+			/**
+			 * 
+			 * 打点计时器的创建与销毁。
+			 * 
+			 */
 			
 			private function timerPointDeal():void
 			{
 				if (!timerPoint)
 				{
 					timerPoint = new Timer(300);
-					timerPoint.addEventListener(TimerEvent.TIMER, timerHandler);
+					timerPoint.addEventListener(TimerEvent.TIMER, timerPointHandler);
 				}
 				else
 				{
-					timerPoint.removeEventListener(TimerEvent.TIMER, timerHandler);
+					timerPoint.removeEventListener(TimerEvent.TIMER, timerPointHandler);
 					timerPoint = null;
 				}
 			}
+
 			
-			private function timerHandler(e:TimerEvent):void
+			
+			/**
+			 * 
+			 * 超时计时器的创建与销毁。
+			 * 
+			 */
+			
+			private function timerOutDeal():void
+			{
+				if (!timerOut)
+				{
+					timerOut = new Timer(1000 * OUT_TIME);
+					timerOut.addEventListener(TimerEvent.TIMER, timerOutHandler);
+				}
+				else
+				{
+					timerOut.removeEventListener(TimerEvent.TIMER, timerOutHandler);
+					timerOut = null;
+				}
+			}
+			
+			
+			
+			/**
+			 * 
+			 * 超时处理。
+			 * 
+			 */
+			
+			private function timerOutHandler(e:TimerEvent):void
+			{
+				changeLabel("busy");
+			}
+			
+			
+			
+			/**
+			 * 
+			 * 打点处理。
+			 * 
+			 */
+			
+			private function timerPointHandler(e:TimerEvent):void
 			{
 				if (currentState == "btn") return;
 				
@@ -77,44 +209,41 @@
 					showStr = "呼叫中";
 				}
 			}
+
+
 			
-			private function timerDeal():void
+			/**
+			 * 
+			 * 返回处理。
+			 * 
+			 */
+			
+			private function timerReturnHandler(e:TimerEvent):void
 			{
-				if (!timer)
-				{
-					timer = new Timer(1000 * WAIT_TIME, 1);
-					timer.addEventListener(TimerEvent.TIMER_COMPLETE, changeState);
-				}
-				else
-				{
-					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, changeState);
-					timer = null;
-				}
-			}
-			
-			
-			private function changeState(e:TimerEvent):void
-			{
-				timerDeal();
+				timerReturnDeal();   //timerReturn结束。
+				timerOutDeal();		//timerOut结束。
 				
 				currentState = "btn";
 			}
 			
+			
+			
 			/**
 			 * 
-			 * 解析参数。若参数为200则表示正常，否则表示繁忙。
+			 * 解析参数。
+			 * @param $cmd:String "200"表示正常，否则表示繁忙。
 			 * 
 			 */
 			
 			private function changeLabel($cmd:String = null):void
 			{
-				if ($cmd)
+				if ($cmd && currentState == "show")
 				{
 					showStr = $cmd == "200" ? "马上为您服务" : "繁忙，请稍后再试";
 					
-					timerPointDeal();
+					timerPointDeal();  //timerPoint结束。
 					
-					timer && timer.start();
+					timer_return && timer_return.start();
 				}
 			}
 			
@@ -130,7 +259,7 @@
 			  buttonMode="true" useHandCursor="true" mouseChildren="false" 
 			  includeIn="btn" label="呼叫大堂经理" cornerRadius="20"
 			  fontFamily="微软雅黑" fontSize="60" height="120" width="500"
-			  fontWeight="bold" click="button1_clickHandler(event)"/>
+			  fontWeight="bold" click="sendCommand(event)"/>
 	
 	<s:Label  horizontalCenter="0" verticalCenter="0" verticalAlign="middle"
 			  height="100" width="50%" backgroundColor="0xffffff" 
