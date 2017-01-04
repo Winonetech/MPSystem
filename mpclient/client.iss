@@ -3,7 +3,7 @@
 
 
 #define MyAppName "WOS Player o2o"
-#define MyAppVersion "18.8.1"
+#define MyAppVersion "18.8.4"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -24,7 +24,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputBaseFilename=WOS Player
+OutputBaseFilename=WOS Player o2o
 SetupIconFile=files\MPClient.ico
 Compression=lzma
 SolidCompression=yes
