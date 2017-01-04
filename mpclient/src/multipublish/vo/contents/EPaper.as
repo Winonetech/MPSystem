@@ -93,17 +93,17 @@ package multipublish.vo.contents
 			for (var i:int = 0; i < l; i++)
 			{
 				var item:* = $args[i];    //item存储下载的地址。
-				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);   //电子书相对路径。
-				var fzip:String = FileUtil.resolvePathApplication(saveURL);    //保存电子书的绝对路径。
+				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);   //电子书压缩包相对路径。
+				var fzip:String = FileUtil.resolvePathApplication(saveURL);    //保存电子书压缩包的绝对路径。
 				var path:String = EPaperUtil.mp::getPathByZipFile(fzip);     //解压路径。
 				
-				var file:VSFile = new VSFile(fzip);
+				var file:VSFile = new VSFile(fzip);    //电子报压缩包文件。
 				ArrayUtil.push(days, path);
 				
 				if(!EPaperUtil.mp::getDayInited(path))
 				{
 					LogUtil.log(title + "：未解析完毕，" + fzip);
-					if (file.exists)
+					if (file.exists)     //存在则解压缩。
 					{
 						LogUtil.log(title + "：报纸压缩包存在，解压缩文件。");
 						try
@@ -120,7 +120,7 @@ package multipublish.vo.contents
 							for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
 						}
 					}
-					else
+					else      //不存在则开始下载。
 					{
 						LogUtil.log(title + "：报纸压缩包不存在，" + fzip);
 						
@@ -186,7 +186,7 @@ package multipublish.vo.contents
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
-			var urls:Array = [];        //根据daysKeep得到的需要天数的报纸
+			var urls:Array = [];        //根据daysKeep得到的需要天数的报纸。存放的是 FTP的地址。
 			var pre:String = URLUtil.buildFTPURL(content);
 			if (pre.substr(-1) != "/") url += "/";
 			for (var i:int = 0; i < daysKeep; i++)
@@ -444,8 +444,7 @@ package multipublish.vo.contents
 		
 		
 		/**
-		 * @private
-		 * 保存电子报的绝对路径。
+		 * 保存电子报文件夹的绝对路径。
 		 */
 		private var days:Array = [];
 		
@@ -455,12 +454,12 @@ package multipublish.vo.contents
 		private var images:Map = new Map;
 		
 		/**
-		 * @private
+		 * 重新下载的存放。
 		 */
 		private var retrys:Map = new Map;
 		
 		/**
-		 * @private
+		 * 是否已被解析。
 		 */
 		private var reslvd:Object = {};
 		
