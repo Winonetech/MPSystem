@@ -18,6 +18,7 @@ package multipublish.commands
 	import flash.filesystem.FileStream;
 	
 	import multipublish.consts.URLConsts;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.DataUtil;
 	
 	
@@ -68,6 +69,7 @@ package multipublish.commands
 						config.sled = data;
 						
 						FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+						ConfigUtil.backupConfig();
 						
 						writeData(RegexpUtil.replaceTag(DATA, config.sled));
 					}

@@ -23,6 +23,7 @@ package multipublish.commands
 	import multipublish.consts.TypeConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.DataUtil;
 	
 	
@@ -149,6 +150,7 @@ package multipublish.commands
 				config.shutdown = cmd;
 				
 				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+				ConfigUtil.backupConfig();
 			}
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)

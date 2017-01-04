@@ -89,6 +89,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 配置文件备份路径。
+		 * 
+		 */
+		
+		public static const BACKUP_CONFIG:String = "backup/config.ini";
+		
+		
+		/**
+		 * 
 		 * 报纸记录。
 		 * 
 		 */

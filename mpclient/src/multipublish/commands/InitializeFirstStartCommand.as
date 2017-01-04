@@ -10,7 +10,6 @@ package multipublish.commands
 	
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
-	import cn.vision.utils.JSONUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.ScreenUtil;
@@ -32,6 +31,7 @@ package multipublish.commands
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.URLConsts;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.DataUtil;
 	import multipublish.utils.ViewUtil;
 	import multipublish.views.InstallerView;
@@ -74,21 +74,34 @@ package multipublish.commands
 		{
 			if (StringUtil.isEmpty(config.terminalNO))
 			{
-				ViewUtil.guild(false);
-				
-				view.application.addElement(view.installer = new InstallerView);
-				view.installer.onSubmit = load;
-				view.installer.onCancel = exit;
-				var bounds:Rectangle = ScreenUtil.getMainScreenBounds();
-				view.installer.x = .5 * (bounds.width  - view.installer.width);
-				view.installer.y = .5 * (bounds.height - view.installer.height);
-				BindingUtils.bindProperty(view.installer, "labelSubmit", language, "getTerminalNO");
-				BindingUtils.bindProperty(view.installer, "labelCancel", language, "cancel");
+				//如果备份存在而config不存在，则说明config是被删除的，故而需要还原。
+				//否则则视为配置终端。
+				if (config.hasBackup)
+				{
+					ConfigUtil.restoreConfig();
+					commandEnd();
+				}
+				else
+				{
+					ViewUtil.guild(false);
+					
+					view.application.addElement(view.installer = new InstallerView);
+					view.installer.onSubmit = load;
+					view.installer.onCancel = exit;
+					var bounds:Rectangle = ScreenUtil.getMainScreenBounds();
+					view.installer.x = .5 * (bounds.width  - view.installer.width);
+					view.installer.y = .5 * (bounds.height - view.installer.height);
+					BindingUtils.bindProperty(view.installer, "labelSubmit", language, "getTerminalNO");
+					BindingUtils.bindProperty(view.installer, "labelCancel", language, "cancel");
+				}
 			}
 			else
 			{
+				//开启终端且存在config时需检测是否有备份，没有则备份之。
+				if (!config.hasBackup) ConfigUtil.backupConfig();  
 				commandEnd();
 			}
+			
 		}
 		
 		/**
@@ -132,6 +145,7 @@ package multipublish.commands
 		private function save():void
 		{
 			FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+			ConfigUtil.backupConfig();
 			
 			view.application.removeElement(view.installer);
 			ViewUtil.guild(true);
