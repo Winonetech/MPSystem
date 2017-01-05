@@ -132,6 +132,9 @@ package multipublish.commands
 				
 			}
 			
+			config.width  = r.width;
+			config.height = r.height;
+			
 			//add guild view
 			ViewUtil.guild(true);
 			
