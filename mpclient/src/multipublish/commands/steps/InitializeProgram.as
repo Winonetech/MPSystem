@@ -74,17 +74,18 @@ package multipublish.commands.steps
 			type[ContentTypeConsts.CARTOON] = Cartoon;
 			
 			queue = new ParallelQueue;
+			//QUEUE_END为该队列整体完毕，STEP_END为阶段性完毕可能还会有重新下载等其他处理。
 			queue.addEventListener(QueueEvent.STEP_END, stepHandler);
-			queue.addEventListener(QueueEvent.QUEUE_END, endHandler);
+			queue.addEventListener(QueueEvent.QUEUE_END, endHandler);   
 			
 			for (var id:String in config.temp)
 			{
 				var model:Model = new Model;
 				model.url = config.cache 
 					? DataConsts.PATH_PROGRAM + "-" + id + ".xml"
-					: config.source + id;
+					: config.source + id;     //该 source为排期 xml中的 url地址。
 				model.extra.id = id;
-				model.extra.index = config.temp[id].index;
+				model.extra.index = config.temp[id].index;     //该 temp为 temp[programID] -> {index:programIndex, schedule:schedule}
 				queue.execute(model);
 			}
 			
@@ -123,7 +124,7 @@ package multipublish.commands.steps
 								var content:Content = gain(item);
 								if (content)
 								{
-									if (content.type == ContentTypeConsts.TYPESET)
+									if (content.type == ContentTypeConsts.TYPESET)    //是否为排版模式。
 									{
 										var typeset:Content = store.retrieveData(content.id, Typeset);
 										if (typeset)
@@ -132,7 +133,7 @@ package multipublish.commands.steps
 											store.registData(content);
 										var arr:Array = content.content.split("=");
 										var ls:uint = arr.length - 1;
-										var id:String = arr[ls];
+										var id:String = arr[ls];      //contentID
 										arr[ls] = "";
 										config.source = config.source || arr.join("=");
 										temp[id] = content;

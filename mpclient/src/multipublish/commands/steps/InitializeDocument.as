@@ -91,12 +91,12 @@ package multipublish.commands.steps
 			queue.addEventListener(QueueEvent.STEP_END, stepHandler);
 			queue.addEventListener(QueueEvent.QUEUE_END, endHandler);
 			
-			for(var id:String in config.temp)
+			for(var id:String in config.temp)    //此 temp为 temp[bindID] -> icon
 			{
 				var model:Model = new Model;
 				model.url = config.cache 
 					? DataConsts.PATH_FOLDER + "-" + id + ".xml"
-					: config.source + id;
+					: config.source + id;       //此 source为 typeset中的 folderurl。
 				model.extra.id = id;
 				queue.execute(model);
 			}

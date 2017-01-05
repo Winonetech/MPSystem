@@ -64,6 +64,7 @@ package multipublish.commands
 		 * 
 		 * 存入临时数组。
 		 * 注意，存入的数组不能是Array。
+		 * <br>存放规则：$dic ["$key"] = $obj
 		 * 
 		 * @param $data:* 要保存的数据。
 		 * @param $saveURL:String 文件存储路径。

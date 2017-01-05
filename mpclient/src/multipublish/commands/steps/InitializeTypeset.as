@@ -69,12 +69,12 @@ package multipublish.commands.steps
 			queue.addEventListener(QueueEvent.STEP_END, stepHandler);
 			queue.addEventListener(QueueEvent.QUEUE_END, endHandler);
 			
-			for(var id:String in config.temp)
+			for(var id:String in config.temp)       //此temp为 temp[typesetID] -> typeset。
 			{
 				var model:Model = new Model;
 				model.url = config.cache 
 					? DataConsts.PATH_TYPESET + "-" + id + ".xml"
-					: config.source + id;
+					: config.source + id;        //此 source为 program中 typeset中 getContents中去除了 id的字符串。
 				model.extra.id = id;
 				queue.execute(model);
 			}

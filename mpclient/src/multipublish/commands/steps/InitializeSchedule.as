@@ -119,7 +119,7 @@ package multipublish.commands.steps
 		{
 			var xml:XML = XMLUtil.convert(model.data, XML);
 			var url:String = DataConsts.PATH_SCHEDULE;
-			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
+			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;   //排期获取路径是否为本地。改属性只存 url的加载。
 			if (xml)
 			{
 				model.removeEventListener(CommandEvent.COMMAND_END, modelHandler);
@@ -128,7 +128,7 @@ package multipublish.commands.steps
 				else flag(url);
 				commandEnd();
 			}
-			else
+			else     //如果无法从服务器获取到 则读取本地排期。
 			{
 				if (model.url!= url)
 				{
