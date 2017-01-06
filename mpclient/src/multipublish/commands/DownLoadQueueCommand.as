@@ -96,6 +96,7 @@ package multipublish.commands
 			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 			view.progress.isDownloading = true;
 			if (config.downloadState) view.progress.stateLabel.text = "下载中...";
+			view.progress.stop();    //防止下载一半的时候收到排期无法下载。
 			view.progress.play();
 		}
 		
