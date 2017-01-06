@@ -96,7 +96,6 @@ package multipublish.commands
 			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 			view.progress.isDownloading = true;
 			if (config.downloadState) view.progress.stateLabel.text = "下载中...";
-			view.progress.stop();
 			view.progress.play();
 		}
 		
@@ -169,6 +168,8 @@ package multipublish.commands
 		private function handler_QueueEnd(e:QueueEvent):void
 		{
 			Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
+			
+			view.progress.stop();
 			
 			service.downloadOver();
 			

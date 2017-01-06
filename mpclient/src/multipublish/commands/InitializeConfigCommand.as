@@ -73,9 +73,9 @@ package multipublish.commands
 					applySettings();
 				}
 				reader.close();
-				reader = null;
+				reader = null;  //释放内存
 			}
-			file = null;
+			file = null;  //释放内存
 		}
 		
 		/**
