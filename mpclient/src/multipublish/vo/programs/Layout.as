@@ -14,6 +14,7 @@ package multipublish.vo.programs
 	
 	import com.winonetech.core.VO;
 	
+	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
 	import multipublish.vo.contents.Content;
 	
@@ -232,7 +233,8 @@ package multipublish.vo.programs
 		
 		public function get height():Number
 		{
-			return getProperty("height", Number);
+			var h:Number = getProperty("height", Number);
+			return h <= 0 ? config.height : h;
 		}
 		
 		
@@ -244,7 +246,8 @@ package multipublish.vo.programs
 		
 		public function get width():Number
 		{
-			return getProperty("width", Number);
+			var w:Number = getProperty("width", Number);
+			return w <= 0 ? config.width : w;
 		}
 		
 		
@@ -271,6 +274,11 @@ package multipublish.vo.programs
 			return getProperty("y", Number);
 		}
 		
+		
+		public function get config():MPCConfig
+		{
+			return MPCConfig.instance;
+		}
 		
 		/**
 		 * 

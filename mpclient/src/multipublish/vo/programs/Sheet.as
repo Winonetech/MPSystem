@@ -10,6 +10,7 @@ package multipublish.vo.programs
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
+	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
 	
 	public class Sheet extends VO
@@ -157,7 +158,7 @@ package multipublish.vo.programs
 		public function get h():Number
 		{
 			var r:Number = getProperty("height", Number);
-			return isNaN(r) ? 0 : r;
+			return isNaN(r) || r < 0 ? config.height : r;
 		}
 		
 		/**
@@ -178,7 +179,7 @@ package multipublish.vo.programs
 		public function get w():Number
 		{
 			var r:Number = getProperty("width", Number);
-			return isNaN(r) ? 0 : r;
+			return isNaN(r) || r < 0 ? config.width : r;
 		}
 		
 		
@@ -191,7 +192,7 @@ package multipublish.vo.programs
 		public function get x():Number
 		{
 			var r:Number = getProperty("coordX", Number);
-			return isNaN(r) ? 0 : r;
+			return isNaN(r) || r < 0 ? 0 : r;
 		}
 		
 		
@@ -204,7 +205,7 @@ package multipublish.vo.programs
 		public function get y():Number
 		{
 			var r:Number = getProperty("coordY", Number);
-			return isNaN(r) ? 0 : r;
+			return isNaN(r) || r < 0 ? 0 : r;
 		}
 		
 		
@@ -231,6 +232,11 @@ package multipublish.vo.programs
 			return mp::componentsMap;
 		}
 		
+		
+		public function get config():MPCConfig
+		{
+			return MPCConfig.instance;
+		} 
 		
 		/**
 		 * 
