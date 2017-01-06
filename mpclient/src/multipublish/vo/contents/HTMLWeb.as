@@ -146,7 +146,7 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				if (cache.code == "530")
+				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
 					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);

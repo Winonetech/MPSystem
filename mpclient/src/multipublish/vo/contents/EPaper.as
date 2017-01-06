@@ -64,7 +64,7 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function update(...$args):void
+		override public function update(...$args):void    //每秒监测。
 		{
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
 			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
@@ -359,7 +359,7 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				if (cache.code == "530")
+				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
 					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
