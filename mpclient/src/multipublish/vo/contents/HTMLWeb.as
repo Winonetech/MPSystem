@@ -72,8 +72,8 @@ package multipublish.vo.contents
 			}
 			else
 			{
-//				content = HTTPUtil.normalize(getProperty("contentSource"));
-				LogUtil.log("htmlType字段不存在。");
+				LogUtil.log("htmlType字段不存在，默认视为动态网页。");
+				content = HTTPUtil.normalize(getProperty("contentSource"));    //适应老系统。
 			}
 		}
 		

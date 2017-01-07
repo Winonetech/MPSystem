@@ -220,7 +220,7 @@ package multipublish.vo.contents
 		
 		override public function get ready():Boolean
 		{
-			return super.ready && resolved;
+			return (super.ready || temp > 0) && resolved;
 		}
 		
 		
@@ -253,6 +253,7 @@ package multipublish.vo.contents
 		 */
 		private var timer:Timer;
 		
+		protected var temp:int;
 		
 		/**
 		 * @private

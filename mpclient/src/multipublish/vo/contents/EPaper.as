@@ -17,6 +17,7 @@ package multipublish.vo.contents
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	
+	import com.rubenswieringa.book.Book;
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
@@ -109,10 +110,12 @@ package multipublish.vo.contents
 						try
 						{
 							var errors:Array = EPaperUtil.mp::unzipFile(file, path);
+							temp++;
 						}
 						catch (e:Error)
 						{
 							LogUtil.log(title + "：解压报纸文件出错，文件已损坏，路径：" + fzip);
+							temp--;
 						}
 						if (errors)
 						{
@@ -130,12 +133,23 @@ package multipublish.vo.contents
 						}
 						else
 						{
-							var cache:Cache = (item is String) ? Cache.cache(item) : item;   //Cache主要存放一些下载路径和安装路径。
+//							var date:String  = ObjectUtil.convert(new Date, String, "YYYY-MM-DD");
+//							var temp:String  = saveURL.split("/").pop();
+//							var save:String  = temp.split(".")[0];
+//							var bool:Boolean = save == date;
+							var cache:Cache = (item is String) ? Cache.cache(item, true) : item;   //Cache主要存放一些下载路径和安装路径。
+							
+//							if (bool) 
+//							{
+//								cache.extra = cache.extra || {};
+//								cache.extra.response = (i == 0);
+//								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+//							}
 							if (!cach[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
 								cache.extra.response = (i == 0);
-								cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
 								cach[cache.saveURL] = cache;
 							}
 						}
@@ -145,6 +159,7 @@ package multipublish.vo.contents
 				{
 					LogUtil.log(title + "：已解析完毕：" + fzip);
 					if (file.exists) file.deleteFile();
+					temp ++;
 				}
 			}
 			
@@ -183,6 +198,7 @@ package multipublish.vo.contents
 			images.clear();
 			retrys.clear();
 			reslvd = {};
+			temp = 0;
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
@@ -200,7 +216,7 @@ package multipublish.vo.contents
 			
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach.length == 0) 
+			if (cach.length == 0 || temp > 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();
@@ -221,7 +237,7 @@ package multipublish.vo.contents
 			var objDay:Object, objSheet:Object, fileSheets:Array, fileItems:Array, arr:Array;
 			var fileDay:VSFile, fileSheet:File,fileItem:File, stream:FileStream, fzip:VSFile, path:String;
 			//遍历每一天的报纸
-			for each (keyDay in days)
+			for each (keyDay in days)	
 			{
 				if (!reslvd[keyDay])
 				{
@@ -346,7 +362,7 @@ package multipublish.vo.contents
 			
 			if (exist)
 			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length + retrys.length));
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length - 1 + retrys.length));
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
@@ -379,6 +395,53 @@ package multipublish.vo.contents
 			
 			if (cach.length == 0) resolveData();
 		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function handler_spCacheEnd($e:CommandEvent):void
+		{
+			var cache:Cache = $e.command as Cache;
+			const exist:Boolean = cache.exist;
+			const fzip:String = FileUtil.resolvePathApplication(cache.saveURL);
+			
+			if (exist)
+			{
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length - 1 + retrys.length));
+				
+				delete retrys[cache.saveURL];
+				cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
+				if (errors)
+				{
+					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");
+					for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
+				}
+			}
+			else
+			{
+				if (cache.code == "550")
+				{
+					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
+					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
+					cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+				}
+				else
+				{
+					if (cach[cache.saveURL])
+					{
+						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
+						retrys[cache.saveURL] = cache;
+					}
+				}
+			}
+			
+			delete cach[cache.saveURL];
+			
+			if (cach.length == 0) resolveData();
+		}
+		
 		
 		
 		/**
@@ -463,10 +526,6 @@ package multipublish.vo.contents
 		 */
 		private var reslvd:Object = {};
 		
-		/**
-		 * @private
-		 */
-		private var temp:Map = new Map;
 		
 		/**
 		 * @private

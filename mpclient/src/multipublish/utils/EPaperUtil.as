@@ -11,8 +11,10 @@ package multipublish.utils
 	import com.coltware.airxzip.ZipFileReader;
 	import com.rubenswieringa.book.Book;
 	
+	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
+	import flash.net.URLStream;
 	import flash.utils.ByteArray;
 	
 	import multipublish.consts.URLConsts;
@@ -111,10 +113,10 @@ package multipublish.utils
 		mp static function checkFileUnzipable($fileName:String):Boolean
 		{
 			var ext:String = FileUtil.getFileTypeByURL($fileName).toLowerCase();
-			return(ext == FileTypeConsts.JPEG || 
-					ext == FileTypeConsts.JPG ||
-					ext == FileTypeConsts.PNG || 
-					ext == "xml");
+			return( ext == FileTypeConsts.JPEG || 
+					ext == FileTypeConsts.JPG  ||
+					ext == FileTypeConsts.PNG  || 
+					ext == FileTypeConsts.XML);
 		}
 		
 		
@@ -186,8 +188,19 @@ package multipublish.utils
 					stream.writeUTFBytes("inited");
 					stream.close();
 					
-					//删除zip压缩包
-					file.deleteFile();
+//					//删除zip压缩包
+//					file.deleteFile();
+				}
+				else
+				{
+					var evURL:String = path.charAt(path.length - 1) == "/" ? path.substr(0, length - 2) : path;
+					var name :String = evURL.split("/").pop();
+					evURL = evURL.substr(0, evURL.lastIndexOf("/") + 1);
+					var evidence:File = new File(evURL + "evidence.ini");
+					stream = new FileStream;
+					stream.open(evidence, FileMode.APPEND);
+					stream.writeUTFBytes("----- " + name + " : 压缩包内无内容！ -----" + StringUtil.lineEnding);
+					stream.close();
 				}
 			}
 			return errors;

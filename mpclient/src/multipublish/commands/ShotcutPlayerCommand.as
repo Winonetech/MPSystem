@@ -83,7 +83,7 @@ package multipublish.commands
 							shotcutSettime();
 						}
 					}
-					else if (cmd.indexOf("&") == -1)
+					else if (cmd != "false" && cmd.indexOf("&") == -1)
 					{
 						//仅为回调时反馈。
 						shotcutCheckDay();

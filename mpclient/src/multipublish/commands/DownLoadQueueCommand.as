@@ -3,6 +3,7 @@ package multipublish.commands
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.utils.LogUtil;
 	
+	import com.rubenswieringa.book.limited;
 	import com.winonetech.tools.Cache;
 	
 	import multipublish.consts.ContentConsts;
@@ -37,6 +38,7 @@ package multipublish.commands
 			if (view.progress.isDownloading && config.replacable)     //如果正在下载时收到排期 应该初始化 isDownloading。 
 			{
 				Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
+				Cache.queue_sp.removeEventListener(QueueEvent.QUEUE_END, handler_sp);
 				view.progress.isDownloading = false;
 			}
 		}
@@ -94,6 +96,7 @@ package multipublish.commands
 			}
 			//开始下载时再注册监听。
 			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
+			Cache.queue_sp.addEventListener(QueueEvent.QUEUE_END, handler_sp);
 			view.progress.isDownloading = true;
 			if (config.downloadState) view.progress.stateLabel.text = "下载中...";
 			view.progress.stop();    //防止下载一半的时候收到排期无法下载。
@@ -144,8 +147,9 @@ package multipublish.commands
 			if (config.replacable)
 			{
 				LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
+				LogUtil.log("是否存在特殊下载队列 -> " + Cache.hasSP);
 				
-				if (Cache.cachesLave > 0)    
+				if (Cache.cachesLave > 0)       //普通队列大于 0则开始下载。
 				{
 					service.downloadApply();
 					initDLState();
@@ -156,6 +160,9 @@ package multipublish.commands
 						view.application.removeElement(video);
 					
 					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+					
+					//如果新队列大于0 则依旧需要申请下载，但是在后台下载。
+					if (Cache.hasSP) service.downloadApply();     //普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
 				}
 			}
 		}
@@ -169,15 +176,21 @@ package multipublish.commands
 		private function handler_QueueEnd(e:QueueEvent):void
 		{
 			Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
+
 			
-			view.progress.stop();
+			if (Cache.queue_sp.lave + Cache.queue_sp.num == 0)
+			{
+				view.progress.isDownloading = false;
+		
+				service.downloadOver();
+				
+				view.progress.stop();
+			}
 			
-			service.downloadOver();
 			
 			if(video && view.application.contains(video))
 				view.application.removeElement(video);
 			
-			view.progress.isDownloading = false;
 			
 			if (view.application.contains(view.progress))
 				view.application.removeElement(view.progress);
@@ -186,6 +199,21 @@ package multipublish.commands
 			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 			   
 //			view.progress = null;
+		}
+		
+		
+		private function handler_sp(e:QueueEvent):void
+		{
+			Cache.queue_sp.removeEventListener(QueueEvent.QUEUE_END, handler_sp);
+			
+			if (Cache.queue.lave + Cache.queue.num == 0) 
+			{
+				service.downloadOver(); 
+				
+				view.progress.isDownloading = false;
+				
+				view.progress.stop();
+			}
 		}
 		
 		/**
