@@ -114,7 +114,6 @@ package multipublish.core
 		public var style:Object;
 		
 		
-		
 		/**
 		 * 
 		 * EPaper字典。
@@ -122,6 +121,8 @@ package multipublish.core
 		 */
 		
 		public var ePaperMap:Map = new Map;
+		
+		
 		/**
 		 * 
 		 * 单例引用。

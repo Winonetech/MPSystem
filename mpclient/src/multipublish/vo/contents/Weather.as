@@ -62,7 +62,7 @@ package multipublish.vo.contents
 			}
 			catch (e:Error)
 			{
-				LogUtil.log("解析电子报出错，尝试使用Base64解密...");
+				LogUtil.log("解析天气出错，尝试使用Base64解密...");
 				mp::weatherData = Base64Util.decode(weatherData);
 			}
 			

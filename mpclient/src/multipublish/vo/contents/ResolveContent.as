@@ -220,7 +220,7 @@ package multipublish.vo.contents
 		
 		override public function get ready():Boolean
 		{
-			return (super.ready || temp > 0) && resolved;
+			return super.ready && resolved;
 		}
 		
 		

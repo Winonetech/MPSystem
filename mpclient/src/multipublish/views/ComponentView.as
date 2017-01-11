@@ -22,6 +22,8 @@ package multipublish.views
 	import multipublish.consts.MPTipConsts;
 	import multipublish.core.mp;
 	import multipublish.utils.ContentUtil;
+	import multipublish.views.contents.NewsView;
+	import multipublish.vo.contents.News;
 	import multipublish.vo.programs.Component;
 	
 	import mx.core.IVisualElement;
@@ -153,6 +155,10 @@ package multipublish.views
 				var result:MPView = ContentUtil.getContentView(source.contents[index]);
 				if (result)
 				{
+					if (result is NewsView)
+					{
+						trace();
+					}
 					result.width  = width;
 					result.height = height;
 					container.addElement(result);

@@ -145,12 +145,12 @@ package multipublish.vo.contents
 //								cache.extra.response = (i == 0);
 //								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
 //							}
-							if (!cach[cache.saveURL])
+							if (!cach_sp[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
 								cache.extra.response = (i == 0);
 								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
-								cach[cache.saveURL] = cache;
+								cach_sp[cache.saveURL] = cache;
 							}
 						}
 					}
@@ -216,14 +216,14 @@ package multipublish.vo.contents
 			
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach.length == 0 || temp > 0) 
+			if (cach_sp.length == 0 || temp > 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();
 			}
 			else
 			{
-				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach.length);
+				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach_sp.length);
 			}
 		}
 		
@@ -319,6 +319,7 @@ package multipublish.vo.contents
 			{
 				LogUtil.log(title + "：报纸处理完毕，没有报纸数据");
 				resolved = true;
+				Cache.start();
 				dispatchEvent(new ControlEvent(ControlEvent.READY));
 			}
 		}
@@ -362,7 +363,7 @@ package multipublish.vo.contents
 			
 			if (exist)
 			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length - 1 + retrys.length));
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
@@ -383,7 +384,7 @@ package multipublish.vo.contents
 				}
 				else
 				{
-					if (cach[cache.saveURL])
+					if (cach_sp[cache.saveURL])
 					{
 						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
 						retrys[cache.saveURL] = cache;
@@ -391,9 +392,9 @@ package multipublish.vo.contents
 				}
 			}
 			
-			delete cach[cache.saveURL];
+			delete cach_sp[cache.saveURL];
 			
-			if (cach.length == 0) resolveData();
+			if (cach_sp.length == 0) resolveData();
 		}
 		
 		
@@ -408,7 +409,7 @@ package multipublish.vo.contents
 			
 			if (exist)
 			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length - 1 + retrys.length));
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
@@ -429,7 +430,7 @@ package multipublish.vo.contents
 				}
 				else
 				{
-					if (cach[cache.saveURL])
+					if (cach_sp[cache.saveURL])
 					{
 						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
 						retrys[cache.saveURL] = cache;
@@ -437,9 +438,9 @@ package multipublish.vo.contents
 				}
 			}
 			
-			delete cach[cache.saveURL];
+			delete cach_sp[cache.saveURL];
 			
-			if (cach.length == 0) resolveData();
+			if (cach_sp.length == 0) resolveData();
 		}
 		
 		
