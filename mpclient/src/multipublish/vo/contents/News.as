@@ -51,6 +51,7 @@ package multipublish.vo.contents
 		{
 			$args = $args || [];
 			ArrayUtil.unshift($args, content);
+			Cache.allowed = true;
 			loadContent.apply(null, $args);
 		}
 		

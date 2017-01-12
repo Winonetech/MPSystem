@@ -17,7 +17,6 @@ package multipublish.vo.contents
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	
-	import com.rubenswieringa.book.Book;
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
@@ -70,7 +69,11 @@ package multipublish.vo.contents
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
 			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
 			else useCache = true;
-			if (time == getPaperTime || $args[0]) updateContents();
+			if (time == getPaperTime || $args[0])
+			{
+				Cache.allowed = true;
+				updateContents();
+			}
 		}
 		
 		
@@ -213,7 +216,7 @@ package multipublish.vo.contents
 			}
 			
 			wt::registCache.apply(this, urls);
-			
+			Cache.start();
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
 			if (cach_sp.length == 0 || temp > 0) 

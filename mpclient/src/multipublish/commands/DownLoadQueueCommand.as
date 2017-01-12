@@ -98,7 +98,7 @@ package multipublish.commands
 			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
 			Cache.queue_sp.addEventListener(QueueEvent.QUEUE_END, handler_sp);
 			view.progress.isDownloading = true;
-			if (config.downloadState) view.progress.stateLabel.text = "下载中...";
+			if (config.downloadState && view.progress.stateLabel) view.progress.stateLabel.text = "下载中...";
 			view.progress.stop();    //防止下载一半的时候收到排期无法下载。
 			view.progress.play();
 		}
@@ -144,8 +144,6 @@ package multipublish.commands
 		
 		private function send():void
 		{
-			if (config.replacable)
-			{
 				LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
 				LogUtil.log("是否存在特殊下载队列 -> " + Cache.hasSP);
 				
@@ -159,12 +157,11 @@ package multipublish.commands
 					if(video && view.application.contains(video))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
 						view.application.removeElement(video);
 					
-					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 					
-					//如果新队列大于0 则依旧需要申请下载，但是在后台下载。
-					if (Cache.hasSP) service.downloadApply();     //普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
+					
+					if (Cache.hasSP) service.downloadApply();
+					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));//普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
 				}
-			}
 		}
 		
 		/**
@@ -206,13 +203,14 @@ package multipublish.commands
 		{
 			Cache.queue_sp.removeEventListener(QueueEvent.QUEUE_END, handler_sp);
 			
+			service.downloadOver(); 
 			if (Cache.queue.lave + Cache.queue.num == 0) 
 			{
-				service.downloadOver(); 
-				
 				view.progress.isDownloading = false;
 				
 				view.progress.stop();
+				
+//				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
 			}
 		}
 		

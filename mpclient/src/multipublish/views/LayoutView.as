@@ -9,6 +9,8 @@ package multipublish.views
 	
 	
 	import cn.vision.utils.ArrayUtil;
+	import cn.vision.utils.ClassUtil;
+	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.core.wt;
@@ -18,6 +20,7 @@ package multipublish.views
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
+	import flash.utils.getQualifiedClassName;
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.utils.EffectUtil;
@@ -568,6 +571,13 @@ package multipublish.views
 		{
 			timerReset();
 			adStop();
+			
+			if (config.debug)
+			{
+				LogUtil.log("===== clicked item's type is " + 
+					ClassUtil.getClassName(
+						$e.target, false) + " =====");
+			}
 			
 			if ($e.target is ButtonView || $e.target is MarqueeView)
 			{

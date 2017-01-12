@@ -24,8 +24,6 @@ package multipublish.commands
 			commandStart();
 			
 			delay(1, dealDelay);    //延迟 1s是为了让 new排期生成 dat文件而不是生成 tmp文件。
-			
-			commandEnd();
 		}
 		
 		
@@ -44,17 +42,22 @@ package multipublish.commands
 			var target:File = new File(File.applicationDirectory.
 				resolvePath(DataConsts.PATH_CHANNEL).nativePath);
 			
-			if (!source.exists) return;
+			if (!source.exists) 
+			{
+				commandEnd();
+				return;
+			}
 			else if (FileUtil.compareFile(source, target))
 			{
 				source.deleteFile();
+				commandEnd();
 				return;
 			}
 			
 			
 			if (count == 0)
 			{
-				presenter.initializeModule(null, true);
+				presenter.initializeModule("fromDelay", true);
 			}
 			else if (count == 1)
 			{
@@ -64,6 +67,8 @@ package multipublish.commands
 			}
 			
 			count++;
+			
+			commandEnd();
 		}
 		
 		/**

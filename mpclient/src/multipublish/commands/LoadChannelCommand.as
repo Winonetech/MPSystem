@@ -15,6 +15,7 @@ package multipublish.commands
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.TimerUtil;
 	
+	import com.winonetech.controls.Field;
 	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
 	
@@ -43,8 +44,6 @@ package multipublish.commands
 			super();
 			
 			url = $url;
-			
-			count = 0;
 		}
 		
 		
@@ -68,15 +67,27 @@ package multipublish.commands
 			modelog("加载频道数据。");
 			config.loadable = true;
 			
-          	if ((!config.view.main.data && !config.cache && 
-				File.applicationDirectory.
-				resolvePath(DataConsts.PATH_CHANNEL).exists) ||
-				(!config.cache && File.applicationDirectory
-					.resolvePath(DataConsts.NEW_CHANNEL).exists))
+			//保证只有收到新排期或者无排期的时候才会进入。
+          	if (!config.cache && File.applicationDirectory.
+				resolvePath(DataConsts.PATH_CHANNEL).exists &&
+				url != "fromDelay")
 			{
-				//如果无内容播放(终端刚启动时)且不是第一次启动则播放老排期。
-				//或者收到新排期时正在 new的下载阶段。
 				config.cache = true;  
+				
+				var delay:Function = function($time:Number, $f:Function):void
+				{
+					var timer:Timer = new Timer($time * 1000, 1);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, $f);
+					timer.start();
+				};
+				
+				var f1:Function = function(e:TimerEvent):void
+				{
+					delayModel.execute();
+				}
+				
+				
+				InitDelayModuleCommand.count = 0;
 				
 				count++;
 				
@@ -84,20 +95,13 @@ package multipublish.commands
 				
 				delayModel.url = url;
 				delayModel.addEventListener(CommandEvent.COMMAND_END, delayModel_commandEndHandler);
-				delayModel.execute();
+				delay(.5, f1);
 			}
 			
-			//如果新排期存在则去读取新排期。否则正常播放。
-			if (File.applicationDirectory.
-				resolvePath(DataConsts.NEW_CHANNEL).exists)
+			//只要进了上面的 if就必须进此处的 else。
+			if (count == 0 && File.applicationDirectory.
+				resolvePath(DataConsts.PATH_CHANNEL).exists && url == "fromDelay")
 			{
-				if (count != 0)
-				{
-					var file:File = new File(File.applicationDirectory.
-						resolvePath(DataConsts.NEW_CHANNEL).nativePath);
-					InitDelayModuleCommand.count = 0;
-					if (file.exists) file.deleteFile();
-				}
 				delayModel = new Model;
 				delayModel.url = DataConsts.NEW_CHANNEL;
 				
@@ -106,7 +110,7 @@ package multipublish.commands
 				delayModel.addEventListener(CommandEvent.COMMAND_END, delayModel_commandEndHandler);
 				delayModel.execute();	
 			}
-			else
+			else if (!File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists && !config.view.main.data)
 			{
 				model = new Model;    //执行 url并存储数据。
 				
@@ -116,6 +120,18 @@ package multipublish.commands
 				
 				model.addEventListener(CommandEvent.COMMAND_END, model_commandEndHandler);
 				model.execute();
+			}
+			else
+			{
+				if (File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
+				{
+					var f:File = new File(File.applicationDirectory.
+						resolvePath(DataConsts.NEW_CHANNEL).nativePath);
+					
+					f.deleteFile();
+				}
+				
+				config.replacable = false;
 			}
 		}
 		
@@ -132,9 +148,11 @@ package multipublish.commands
 				count--;    //解析成功需要自减。
 				
 				//新排期存在就不需要再保存了。
-				if (!File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
+				if (!File.applicationDirectory.resolvePath(url).exists)
 				{
-					flagSave(delayModel.url, url, JSON.stringify(dat, null, "\t"));
+//					flagSave(delayModel.url, url, JSON.stringify(dat, null, "\t"));
+					FileUtil.saveUTF(FileUtil.resolvePathApplication(url), JSON.stringify(dat, null, "\t"));
+//					config.replacable = true;
 					if (count == 0) commandEnd();
 				}
 				else
@@ -142,10 +160,11 @@ package multipublish.commands
 					config.controller.removeControlUsecache();
 					Cache.queue.clear();       //停止正在下载 /预备下载的命令。
 					Cache.queue_sp.clear();
-					
+
+//					
+					config.replacable = config.ori["channel"] != delayModel.data;
 					config.ori["channel"] = delayModel.data; 
 					config.raw["channel"] = dat;
-					config.replacable = true;
 					if (count == 0) commandEnd();
 				}
 				
@@ -213,6 +232,15 @@ package multipublish.commands
 				count--;     //排期相同需要自减。
 				config.replacable = false;
 				modelog(model.data ? "与上一次的排期数据相同。" : "排期数据为空。");
+				
+				if (File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
+				{
+					var f:File = new File(File.applicationDirectory.
+						resolvePath(DataConsts.NEW_CHANNEL).nativePath);
+					
+					f.deleteFile();
+				}
+				
 				if (count == 0) commandEnd();
 			}
 		}
