@@ -37,10 +37,13 @@
 			{
 				var item_mouseUpHandler:Function = function(e:MouseEvent):void
 				{
-					stage.removeEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+					if (stage)
+					{
+						stage.removeEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+					}
 					alpha = 1;
 				}
-				stage.addEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler, false, 0, true);
 				alpha = .8;
 			}
 			

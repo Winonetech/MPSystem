@@ -98,20 +98,29 @@ package multipublish.commands
 				delay(.5, f1);
 			}
 			
-			//只要进了上面的 if就必须进此处的 else。
+			//只要进了上面的 if就必须进此处的 else之一。
 			if (count == 0 && File.applicationDirectory.
 				resolvePath(DataConsts.PATH_CHANNEL).exists && url == "fromDelay")
 			{
+				//进入此处的可能有：
+			    //1.已下载完成 new排期但需要对其进行解析。
+				
 				delayModel = new Model;
 				delayModel.url = DataConsts.NEW_CHANNEL;
 				
 				count++;
+				InitDelayModuleCommand.count = 1;
 				
 				delayModel.addEventListener(CommandEvent.COMMAND_END, delayModel_commandEndHandler);
 				delayModel.execute();	
 			}
 			else if (!File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists && !config.view.main.data)
 			{
+				//进入此处的可能有：
+				//1.开机时未收到排期故而需要调用本地缓存。
+				//2.无节目时读取老排期的时候。
+				//3.无老排期时。
+				
 				model = new Model;    //执行 url并存储数据。
 				
 				model.url = config.cache ? DataConsts.PATH_CHANNEL : url;
@@ -123,6 +132,9 @@ package multipublish.commands
 			}
 			else
 			{
+				//进入此处的可能有：
+				//1.在解析下载新排期时收到新的排期的时候。需要替换原来的新排期。
+				
 				if (File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
 				{
 					var f:File = new File(File.applicationDirectory.
@@ -131,8 +143,8 @@ package multipublish.commands
 					f.deleteFile();
 				}
 				
-				config.replacable = false;
-			}
+				config.replacable = false;   //此处设置为 false是为了保证不要正在播放的节目再切换一遍。
+			} 
 		}
 		
 		
@@ -152,7 +164,6 @@ package multipublish.commands
 				{
 //					flagSave(delayModel.url, url, JSON.stringify(dat, null, "\t"));
 					FileUtil.saveUTF(FileUtil.resolvePathApplication(url), JSON.stringify(dat, null, "\t"));
-//					config.replacable = true;
 					if (count == 0) commandEnd();
 				}
 				else
@@ -161,10 +172,13 @@ package multipublish.commands
 					Cache.queue.clear();       //停止正在下载 /预备下载的命令。
 					Cache.queue_sp.clear();
 
-//					
-					config.replacable = config.ori["channel"] != delayModel.data;
+					config.replacable = !FileUtil.compareFile(
+						File.applicationDirectory.resolvePath(DataConsts.PATH_CHANNEL),
+						File.applicationDirectory.resolvePath(DataConsts. NEW_CHANNEL));
+					
 					config.ori["channel"] = delayModel.data; 
 					config.raw["channel"] = dat;
+					
 					if (count == 0) commandEnd();
 				}
 				

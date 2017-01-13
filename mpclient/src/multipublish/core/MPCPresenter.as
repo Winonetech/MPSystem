@@ -118,18 +118,17 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
-//			if ($cache && )
-			
 			var executePlaySchedule:Function = function(e:DLStateEvent):void
 			{
-				MPCView.instance.progress.removeEventListener(
+				config.view.progress.removeEventListener(
 					DLStateEvent.FINISH, executePlaySchedule);
 				
 				execute(new PlaybackScheduleCommand);
 				execute(new InitDelayModuleCommand);
 			};
 			
-			MPCView.instance.progress.addEventListener(DLStateEvent.FINISH, executePlaySchedule);
+			config.view.progress.
+				addEventListener(DLStateEvent.FINISH, executePlaySchedule);
 			execute(new SendLEDConfigCommand);
 			execute(new LoadChannelCommand($push));
 			execute(new InitDataCommand);

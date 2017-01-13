@@ -120,7 +120,7 @@ package multipublish.commands
 			try
 			{
 				ApplicationUtil.exit();
-				if (!(config.debug  || config.downloadState))
+				if (!config.debug  && !config.downloadState)
 					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_SHUTDOWN));
 			}
 			catch (e:Error)

@@ -55,11 +55,11 @@ package multipublish.commands
 			}
 			
 			
-			if (count == 0)
+			if (count == 0)   //当 count为 0的时候为解析新排期
 			{
 				presenter.initializeModule("fromDelay", true);
 			}
-			else if (count == 1)
+			else if (count == 1)  //当 count为 1的时候为新排期替换至老排期
 			{
 				source.moveTo(target, true);
 				

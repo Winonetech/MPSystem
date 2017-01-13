@@ -3,7 +3,6 @@ package multipublish.commands
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.utils.LogUtil;
 	
-	import com.rubenswieringa.book.limited;
 	import com.winonetech.tools.Cache;
 	
 	import multipublish.consts.ContentConsts;
