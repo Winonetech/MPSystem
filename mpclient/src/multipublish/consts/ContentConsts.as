@@ -3,6 +3,17 @@ package multipublish.consts
 	public final class ContentConsts
 	{
 		
+		
+		
+		/**
+		 * 
+		 * 下载状态视频。竖屏
+		 * 
+		 */
+		
+		public static const WELCOME_VIDEO:String = "assets/video/helena.mp4"; 
+		
+		
 		/**
 		 * 
 		 * 图片内容默认时长
@@ -10,6 +21,16 @@ package multipublish.consts
 		 */
 		
 		public static const CONTENT_TIME_DEFAUALT:uint = 15;
+		
+		
+		/**
+		 * 
+		 * 插播内容默认时长
+		 * 
+		 */
+		
+		public static const MODULE_TIME_DEFAUALT:uint = 60;
+		
 		
 		
 		/**
@@ -64,7 +85,7 @@ package multipublish.consts
 			"}" + 
 			"}," + 
 			"\"weatherData\": {" + 
-			"\"currentCity\": \"宜宾\"" + 
+			"\"currentCity\": \"长沙\"" + 
 			"}" + 
 			"}";	
 	}

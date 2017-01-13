@@ -48,9 +48,9 @@
 					if (stage)
 					{
 						stage.removeEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler);
-						filters = [shadow];
-						alpha = 1;
 					}
+					filters = [shadow];
+					alpha = 1;
 				}
 				stage.addEventListener(MouseEvent.MOUSE_UP, item_mouseUpHandler, false, 0, true);
 				filters = [shadow, glow];

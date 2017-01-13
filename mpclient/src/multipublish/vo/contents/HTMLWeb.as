@@ -72,7 +72,8 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				LogUtil.log("htmlType字段不存在。");
+				LogUtil.log("htmlType字段不存在，默认视为动态网页。");
+				content = HTTPUtil.normalize(getProperty("contentSource"));    //适应老系统。
 			}
 		}
 		
@@ -145,7 +146,7 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				if (cache.code == "530")
+				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
 					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);

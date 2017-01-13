@@ -9,6 +9,7 @@ package multipublish.commands
 	
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.XMLUtil;
 	
@@ -67,14 +68,14 @@ package multipublish.commands
 				if (xml) 
 				{
 					XMLUtil.map(xml, config);
-					config.language.data = XMLUtil.convert(xml["languageData"]);
+					config.language.data = ObjectUtil.convert(xml["languageData"]);
 					
 					applySettings();
 				}
 				reader.close();
-				reader = null;
+				reader = null;  //释放内存
 			}
-			file = null;
+			file = null;  //释放内存
 		}
 		
 		/**

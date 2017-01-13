@@ -291,6 +291,7 @@ package multipublish.vo.contents
 		 */
 		private var timer:Timer;
 		
+		protected var temp:int;
 		
 		/**
 		 * @private

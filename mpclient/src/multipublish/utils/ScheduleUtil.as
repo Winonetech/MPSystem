@@ -115,6 +115,7 @@ package multipublish.utils
 		public static function validateScheduleInArchive($schedule:Schedule):Boolean
 		{
 			return $schedule.type == ScheduleTypeConsts.TURN || 
+				$schedule.type == ScheduleTypeConsts.DEFAULT ||
 				validateTurn($schedule, new Date);
 		}
 		

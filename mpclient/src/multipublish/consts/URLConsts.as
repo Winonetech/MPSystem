@@ -98,6 +98,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 配置文件备份路径。
+		 * 
+		 */
+		
+		public static const BACKUP_CONFIG:String = "backup/config.ini";
+		
+		
+		/**
+		 * 
 		 * 报纸记录。
 		 * 
 		 */
@@ -130,6 +139,15 @@ package multipublish.consts
 		 */
 		
 		public static const TOOL_SYNC:String = "assets/tools/timesync.exe";
+		
+		
+		/**
+		 * 
+		 * led配置文件路径。
+		 * 
+		 */
+		
+		public static const LED_CONFIG:String = "led/config/LedSend.xml";
 		
 		
 		/**

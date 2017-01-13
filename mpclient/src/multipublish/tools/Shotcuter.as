@@ -245,7 +245,7 @@ package multipublish.tools
 					: MPTipConsts.RECORD_SHOTCUT_UPLOAD_FAILURE;
 				var text:String = success ? "" : ($e as IOErrorEvent).text;
 				
-				if (success) config.service.shotcutOver(true, 
+				config.service.shotcutOver(success, 
 					config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
 				
 				LogSQLite.log(TypeConsts.NETWORK, 

@@ -92,6 +92,8 @@ package multipublish.commands
 				service.registHandler(ServiceConsts.UPLOAD_LOG       , presenter.logUpload);
 				service.registHandler(ServiceConsts.FILE_DOWNLOAD    , presenter.downloadFiles);
 				service.registHandler(ServiceConsts.EPAPER_DOWNLOAD  , presenter.downloadEPaper);
+				service.registHandler(ServiceConsts.CONTROL_LED      , presenter.getLEDConfig);
+				service.registHandler(ServiceConsts.DOWNLOAD_STATE	 , presenter.downloadQueueHandle);
 			}
 			service.frequency = config.heartbeatTime;
 			service.communicationStart();

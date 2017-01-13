@@ -43,6 +43,16 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 频道数据暂存路径。
+		 * 
+		 */
+		
+		public static const NEW_CHANNEL:String = "cache/channel/channel_new.dat";
+		
+		
+		
+		/**
+		 * 
 		 * 内容数据缓存路径。
 		 * 
 		 */

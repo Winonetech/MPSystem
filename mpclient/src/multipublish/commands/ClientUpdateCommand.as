@@ -14,6 +14,7 @@ package multipublish.commands
 	import cn.vision.utils.ApplicationUtil;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.Cache;
@@ -185,7 +186,7 @@ package multipublish.commands
 							ftp.addEventListener(Event.COMPLETE, handlerFTPDefault);
 							ftp.addEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
 							ftp.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
-							var loadURL:String = CacheUtil.extractURI(XMLUtil.convert(data.fpath));
+							var loadURL:String = CacheUtil.extractURI(ObjectUtil.convert(data.fpath));
 							var saveURL:String = FileUtil.resolvePathApplication(URLConsts.UPDATER);
 							var request:FTPRequest = new FTPRequest(
 								config.ftpHost,

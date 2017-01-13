@@ -12,6 +12,7 @@ package multipublish.commands
 	import multipublish.consts.TypeConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.DataUtil;
 	import multipublish.vo.elements.Arrange;
 	
@@ -82,7 +83,7 @@ package multipublish.commands
 							shotcutSettime();
 						}
 					}
-					else if (cmd.indexOf("&") == -1)
+					else if (cmd != "false" && cmd.indexOf("&") == -1)
 					{
 						//仅为回调时反馈。
 						shotcutCheckDay();
@@ -129,6 +130,7 @@ package multipublish.commands
 			{
 				config.shotcut = cmd;
 				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+				ConfigUtil.backupConfig();
 			}
 			
 			if (cmd != "null" && cmd.indexOf("false") < 0)

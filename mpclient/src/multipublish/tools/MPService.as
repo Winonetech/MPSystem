@@ -8,20 +8,19 @@ package multipublish.tools
 	 */
 	
 	
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
+	
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.DebugUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
 	import cn.vision.utils.StringUtil;
-	
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.events.TimerEvent;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.net.URLVariables;
-	import flash.utils.Timer;
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.ServiceConsts;
@@ -86,16 +85,20 @@ package multipublish.tools
 			if(!connected)
 			{
 				offsend = false;
-				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
+				var str:String = ServiceConsts.FORWARD_ON_LINE + config.terminalNO;
+				temp = [{"cmd" : str}];
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+				http.send(JSON.stringify(temp));
+//				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
 			}
-			
 		}
 		
 		
 		/**
 		 * 
 		 * 向服务端发送离线指令。
-		 * 
+		 *  
 		 */
 		
 		public function offline():void
@@ -103,7 +106,12 @@ package multipublish.tools
 			if (connected)
 			{
 				offsend = true;
-				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
+				var str:String = ServiceConsts.FORWARD_OFF_LINE + config.terminalNO;
+				temp = [{"cmd" : str}];
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+				http.send(JSON.stringify(temp));
+//				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
 			}
 		}
 		
@@ -139,6 +147,36 @@ package multipublish.tools
 		}
 		
 		
+		
+		/**
+		 * 
+		 * 向服务端申请下载。
+		 * 
+		 */
+		
+		public function downloadApply():void
+		{
+			var str:String = ServiceConsts.DL_APPLY + config.terminalNO;
+			temp = [{"cmd" : str}];
+			http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
+			LogUtil.log("通讯：" + http.url + " cmd:" +　str);
+			http.send(JSON.stringify(temp));
+//			send(ServiceConsts.DL_APPLY + config.terminalNO);
+		}
+		
+		
+		/**
+		 * 
+		 * 向服务端报告下载完成。
+		 * 
+		 */
+		
+		public function downloadOver():void
+		{
+			send(ServiceConsts.DL_OVER + config.terminalNO);
+		}
+		
+		
 		/**
 		 * 
 		 * 向服务端上报截图上传完毕，并传递截图的地址。
@@ -149,10 +187,21 @@ package multipublish.tools
 		
 		public function shotcutOver($success:Boolean = true, $name:String = null):void
 		{
-			send(ServiceConsts.SEND_SHOTCUT + $name);
+			if ($success) send(ServiceConsts.SEND_SHOTCUT + $name);
 		}
 		
 		
+		/**
+		 * 
+		 * 向服务端发送LED config文件。
+		 * 
+		 */
+		
+		public function readConfigOver($config:String):void
+		{
+			send(ServiceConsts.CONTROL_LED +
+				config.terminalNO + ";" + $config);
+		}
 		
 		/**
 		 * 
@@ -204,13 +253,13 @@ package multipublish.tools
 		 */
 		private function initialize():void
 		{
-			loader = new URLLoader;
-			request = new URLRequest;
-			request.contentType = "text/xml; charset=utf-8";
+			http = new HTTPService;
+			http.contentType = "application/json";
+			http.method = "POST";
+			
 			timer = new Timer(1000);
-			loader.addEventListener(Event.COMPLETE, handlerDefault);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerDefault);
+			http.addEventListener(ResultEvent.RESULT, handlerDefault);
+			http.addEventListener(FaultEvent.FAULT, handlerDefault);
 			
 			timer.addEventListener(TimerEvent.TIMER, handlerTimer);
 		}
@@ -254,7 +303,11 @@ package multipublish.tools
 		{
 			cmds.push($value);
 			
-			requestURI();
+			if (count || cmds.length >= config.cmdLimit)
+			{
+				count = false;
+				requestURI();
+			}
 		} 
 		
 		/**
@@ -263,17 +316,23 @@ package multipublish.tools
 		 */
 		private function requestURI():void
 		{
-			if(!requesting &&cmds.length)
+			if(!requesting && cmds.length)
 			{
 				requesting = true;
-				var variables:URLVariables = new URLVariables;
-				variables.cmd = cmds.shift();
-				request.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
-				request.data = variables;
+				const l:uint = cmds.length;
+				for (var i:uint = 0; i < l; i++)
+				{
+					cmddata.push({"cmd":cmds[i]});
+				}
+				http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 				
-				LogUtil.log("通讯：" + request.url + "，cmd:" + variables.cmd);
-				
-				loader.load(request);
+				for (var j:uint = 0; j < l; j++)
+				{
+					LogUtil.log("通讯：" + http.url + " cmd:" +　cmds[j]);
+				}
+				http.send(JSON.stringify(cmddata));
+				cmds.splice(0, cmds.length);
+				cmddata = [];	
 			}
 		}
 		
@@ -288,14 +347,13 @@ package multipublish.tools
 			requesting = false;
 			switch ($e.type)
 			{
-				case Event.COMPLETE:
+				case ResultEvent.RESULT:
 					offsend ? disconnect() : connect();
-					readCMD(loader.data as String);
+					readCMD(JSON.stringify(($e as ResultEvent).result));
 					break;
-				case IOErrorEvent.IO_ERROR:
-				case SecurityErrorEvent.SECURITY_ERROR:
+				case FaultEvent.FAULT:
 					disconnect();
-					mp::message = ($e as Object).text;
+					mp::message = ($e as Object).message;
 					break;
 				default:
 					break;
@@ -310,7 +368,6 @@ package multipublish.tools
 		 */
 		private function handlerTimer($e:TimerEvent):void
 		{
-			//
 			if (heartbeatTotal == 0)
 			{
 				heartbeatTotal = Math.random() * frequency + 15;
@@ -320,6 +377,7 @@ package multipublish.tools
 			{
 				if (++heartbeatCount >= heartbeatTotal)
 				{
+					count = true;
 					heartbeatTotal = Math.random() * frequency + 15;
 					heartbeatCount = 0;
 					connected ? heartbeat() : online();
@@ -332,23 +390,39 @@ package multipublish.tools
 		 */
 		private function readCMD($value:String):void
 		{
-			$value = $value.split("\r").join("");
-			var list:Array = $value.split("\n");
-			var filter:Function = function($item:*, $index:int, $array:Array):Boolean
+		    $value = JSON.parse($value) as String;
+			try
 			{
-				return !StringUtil.isEmpty($item.substr(0, 5));
-			};
-			list = list.filter(filter, null);
-			while (list.length)
+				const l:uint = (JSON.parse($value) as Array).length;
+			}
+			catch (e:SyntaxError)
 			{
-				var data:String = ArrayUtil.shift(list);
-				
-				LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
-				
-				if (data)
+				return;
+			}
+			var arr:Object;
+			var str:String;
+			var list:Array;
+			for (var i:uint = 0; i < l; i++)
+			{
+				arr = (JSON.parse($value) as Array)[i];
+				str = arr["result"];
+				list = str.split("\n");
+				var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 				{
-					var cmd:String = data.substr(0, 5);
-					if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
+					return !StringUtil.isEmpty($item.substr(0, 5));
+				};
+				list = list.filter(filter, null);
+				while (list.length)
+				{
+					var data:String = ArrayUtil.shift(list);
+					
+					LogUtil.log(RegexpUtil.replaceTag(MPTipConsts.RECORD_SOCKET_DATA, data));
+					
+					if (data)
+					{
+						var cmd:String = data.substr(0, 5);
+						if (HANDS[cmd]) DebugUtil.execute(HANDS[cmd], true, data.substr(5));
+					}
 				}
 			}
 		}
@@ -419,12 +493,9 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private var loader:URLLoader;
+		private var http:HTTPService;
 		
-		/**
-		 * @private
-		 */
-		private var request:URLRequest;
+		
 		
 		/**
 		 * @private
@@ -446,6 +517,20 @@ package multipublish.tools
 		 */
 		private var heartbeatTotal:uint = 0;
 		
+		/**
+		 * 存储需要立即发送的命令。
+		 */
+		private var temp:Array = [];
+		
+		/**
+		 * @private
+		 */
+		private var cmddata:Array = [];
+		
+		/**
+		 * @private 
+		 */
+		private var count:Boolean;
 		
 		/**
 		 * @private

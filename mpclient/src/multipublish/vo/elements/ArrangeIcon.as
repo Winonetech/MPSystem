@@ -8,6 +8,7 @@ package multipublish.vo.elements
 	 */
 	
 	
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.consts.PathConsts;
@@ -62,10 +63,10 @@ package multipublish.vo.elements
 					list = data["customInfo"];
 					if (list)
 					{
-						mp::customX = XMLUtil.convert(list["x"], Number);
-						mp::customY = XMLUtil.convert(list["y"], Number);
-						mp::customW = XMLUtil.convert(list["w"], Number);
-						mp::customH = XMLUtil.convert(list["h"], Number);
+						mp::customX = ObjectUtil.convert(list["x"], Number);
+						mp::customY = ObjectUtil.convert(list["y"], Number);
+						mp::customW = ObjectUtil.convert(list["w"], Number);
+						mp::customH = ObjectUtil.convert(list["h"], Number);
 					}
 				}
 			}
@@ -74,7 +75,7 @@ package multipublish.vo.elements
 				list = data["folder"];
 				if (list)
 				{
-					var tmb:String = XMLUtil.convert(list["thumbnailpath"]);
+					var tmb:String = ObjectUtil.convert(list["thumbnailpath"]);
 					mp::thumbnail  = CacheUtil.extractURI(tmb, PathConsts.PATH_FILE);
 					wt::registCache(tmb);
 					
@@ -85,8 +86,8 @@ package multipublish.vo.elements
 					list = data["layout"];
 					if (list)
 					{
-						var pre:String = XMLUtil.convert(data["thumbnailurl"]);
-						tmb = pre + XMLUtil.convert(list["thumbnailpath"]);
+						var pre:String = ObjectUtil.convert(data["thumbnailurl"]);
+						tmb = pre + ObjectUtil.convert(list["thumbnailpath"]);
 						mp::thumbnail  = CacheUtil.extractURI(tmb, PathConsts.PATH_FILE);
 						wt::registCache(tmb);
 						

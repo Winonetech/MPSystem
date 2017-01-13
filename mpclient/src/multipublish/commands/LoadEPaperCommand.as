@@ -17,11 +17,18 @@ package multipublish.commands
 	
 	public final class LoadEPaperCommand extends _InternalCommand
 	{
-		public function LoadEPaperCommand($url:String = null)
+		public function LoadEPaperCommand($url:String)
 		{
 			super();
 			
-			url = $url[$url.length] == "/" ? $url : $url += "/";
+			daysKeep = $url.split("&").pop();
+			
+			$url = $url.split("&").shift();
+			
+			
+			url = $url.charAt($url.length - 1) == "/" ? $url : $url += "/";
+			
+//			url  = $url.charAt() == "/" ? $url : "/" + $url;
 		}
 		
 		override public function execute():void
@@ -40,8 +47,10 @@ package multipublish.commands
 			modelog("下载电子报。");
 			
 			//强制更新。
-			MDProvider.instance.ePaperMap[url] && MDProvider.instance.ePaperMap[url].update(true);
+			MDProvider.instance.ePaperMap[url] && MDProvider.instance.ePaperMap[url].update(true, daysKeep);
 		}
+		
+		private var daysKeep:String;
 		
 		private var url:String;
  	}

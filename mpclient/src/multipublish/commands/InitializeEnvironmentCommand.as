@@ -18,6 +18,7 @@ package multipublish.commands
 	import cn.vision.utils.ScreenUtil;
 	
 	import flash.desktop.NativeApplication;
+	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.geom.Rectangle;
@@ -28,6 +29,7 @@ package multipublish.commands
 	import input.Input;
 	
 	import multipublish.consts.ClientStateConsts;
+	import multipublish.consts.DataConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.ScreenController;
 	import multipublish.utils.ViewUtil;
@@ -68,10 +70,22 @@ package multipublish.commands
 			initializeNetInfo();
 			initializeWindow();
 			initializeLed();
+			initializeChannelCache();
 			
 			closeExplorer();
 			
 			commandEnd();
+		}
+		
+		
+		
+		private function initializeChannelCache():void
+		{
+			var f :File  = new File(FileUtil.resolvePathApplication(DataConsts.NEW_CHANNEL));
+			var ft:File  = new File(FileUtil.resolvePathApplication(DataConsts.NEW_CHANNEL) + ".tmp");
+			
+			if (f .exists) f .deleteFile();
+			if (ft.exists) ft.deleteFile(); 
 		}
 		
 		
@@ -133,6 +147,9 @@ package multipublish.commands
 				LogUtil.log("获取屏幕尺寸：" + r);
 				
 			}
+			
+			config.width  = r.width;
+			config.height = r.height;
 			
 			//add guild view
 			ViewUtil.guild(true);

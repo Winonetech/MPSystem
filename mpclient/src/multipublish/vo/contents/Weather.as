@@ -61,7 +61,15 @@ package multipublish.vo.contents
 			
 			mp::weatherData = ($data is String) ? $data : JSON.stringify($data);
 			
-			LogUtil.log("天气：收到数据：", weatherData);
+			try
+			{
+				JSON.parse(weatherData);
+			}
+			catch (e:Error)
+			{
+				LogUtil.log("解析天气出错，尝试使用Base64解密...");
+				mp::weatherData = Base64Util.decode(weatherData);
+			}
 			
 			resolved = true;
 			
@@ -83,7 +91,8 @@ package multipublish.vo.contents
 				}
 				catch(o:Error)
 				{
-					LogUtil.log("天气：解析天气JSON出错：", o.message, $data);
+					LogUtil.log("天气：解析天气JSON出错，使用Base64解密...");
+					data = Base64Util.decode($data as String);
 				}
 				analyzeContent(data);
 			}

@@ -64,10 +64,16 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function update(...$args):void
+		override public function update(...$args):void    //每秒监测。
 		{
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
-			if (time == getPaperTime || $args[0]) updateContents();
+			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
+			else useCache = true;
+			if (time == getPaperTime || $args[0])
+			{
+				Cache.allowed = true;
+				updateContents();
+			}
 		}
 		
 		
@@ -91,26 +97,28 @@ package multipublish.vo.contents
 			for (var i:int = 0; i < l; i++)
 			{
 				var item:* = $args[i];    //item存储下载的地址。
-				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);   //电子书相对路径。
-				var fzip:String = FileUtil.resolvePathApplication(saveURL);    //保存电子书的绝对路径。
+				var saveURL:String = CacheUtil.extractURI(item, PathConsts.PATH_FILE);   //电子书压缩包相对路径。
+				var fzip:String = FileUtil.resolvePathApplication(saveURL);    //保存电子书压缩包的绝对路径。
 				var path:String = EPaperUtil.mp::getPathByZipFile(fzip);     //解压路径。
 				
-				var file:VSFile = new VSFile(fzip);
+				var file:VSFile = new VSFile(fzip);    //电子报压缩包文件。
 				ArrayUtil.push(days, path);
 				
 				if(!EPaperUtil.mp::getDayInited(path))
 				{
 					LogUtil.log(title + "：未解析完毕，" + fzip);
-					if (file.exists)
+					if (file.exists)     //存在则解压缩。
 					{
 						LogUtil.log(title + "：报纸压缩包存在，解压缩文件。");
 						try
 						{
 							var errors:Array = EPaperUtil.mp::unzipFile(file, path);
+							temp++;
 						}
 						catch (e:Error)
 						{
 							LogUtil.log(title + "：解压报纸文件出错，文件已损坏，路径：" + fzip);
+							temp--;
 						}
 						if (errors)
 						{
@@ -118,7 +126,7 @@ package multipublish.vo.contents
 							for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
 						}
 					}
-					else
+					else      //不存在则开始下载。
 					{
 						LogUtil.log(title + "：报纸压缩包不存在，" + fzip);
 						
@@ -128,13 +136,24 @@ package multipublish.vo.contents
 						}
 						else
 						{
-							var cache:Cache = (item is String) ? Cache.cache(item) : item;
-							if (!cach[cache.saveURL])
+//							var date:String  = ObjectUtil.convert(new Date, String, "YYYY-MM-DD");
+//							var temp:String  = saveURL.split("/").pop();
+//							var save:String  = temp.split(".")[0];
+//							var bool:Boolean = save == date;
+							var cache:Cache = (item is String) ? Cache.cache(item, true) : item;   //Cache主要存放一些下载路径和安装路径。
+							
+//							if (bool) 
+//							{
+//								cache.extra = cache.extra || {};
+//								cache.extra.response = (i == 0);
+//								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+//							}
+							if (!cach_sp[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
 								cache.extra.response = (i == 0);
-								cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
-								cach[cache.saveURL] = cache;
+								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+								cach_sp[cache.saveURL] = cache;
 							}
 						}
 					}
@@ -143,6 +162,7 @@ package multipublish.vo.contents
 				{
 					LogUtil.log(title + "：已解析完毕：" + fzip);
 					if (file.exists) file.deleteFile();
+					temp ++;
 				}
 			}
 			
@@ -181,10 +201,11 @@ package multipublish.vo.contents
 			images.clear();
 			retrys.clear();
 			reslvd = {};
+			temp = 0;
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
-			var urls:Array = [];
+			var urls:Array = [];        //根据daysKeep得到的需要天数的报纸。存放的是 FTP的地址。
 			var pre:String = URLUtil.buildFTPURL(content);
 			if (pre.substr(-1) != "/") url += "/";
 			for (var i:int = 0; i < daysKeep; i++)
@@ -195,17 +216,17 @@ package multipublish.vo.contents
 			}
 			
 			wt::registCache.apply(this, urls);
-			
+			Cache.start();
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach.length == 0) 
+			if (cach_sp.length == 0 || temp > 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();
 			}
 			else
 			{
-				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach.length);
+				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach_sp.length);
 			}
 		}
 		
@@ -219,7 +240,7 @@ package multipublish.vo.contents
 			var objDay:Object, objSheet:Object, fileSheets:Array, fileItems:Array, arr:Array;
 			var fileDay:VSFile, fileSheet:File,fileItem:File, stream:FileStream, fzip:VSFile, path:String;
 			//遍历每一天的报纸
-			for each (keyDay in days)
+			for each (keyDay in days)	
 			{
 				if (!reslvd[keyDay])
 				{
@@ -301,6 +322,7 @@ package multipublish.vo.contents
 			{
 				LogUtil.log(title + "：报纸处理完毕，没有报纸数据");
 				resolved = true;
+				Cache.start();
 				dispatchEvent(new ControlEvent(ControlEvent.READY));
 			}
 		}
@@ -344,7 +366,7 @@ package multipublish.vo.contents
 			
 			if (exist)
 			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length + retrys.length));
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
@@ -357,7 +379,7 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				if (cache.code == "530")
+				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
 					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
@@ -365,7 +387,7 @@ package multipublish.vo.contents
 				}
 				else
 				{
-					if (cach[cache.saveURL])
+					if (cach_sp[cache.saveURL])
 					{
 						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
 						retrys[cache.saveURL] = cache;
@@ -373,10 +395,57 @@ package multipublish.vo.contents
 				}
 			}
 			
-			delete cach[cache.saveURL];
+			delete cach_sp[cache.saveURL];
 			
-			if (cach.length == 0) resolveData();
+			if (cach_sp.length == 0) resolveData();
 		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function handler_spCacheEnd($e:CommandEvent):void
+		{
+			var cache:Cache = $e.command as Cache;
+			const exist:Boolean = cache.exist;
+			const fzip:String = FileUtil.resolvePathApplication(cache.saveURL);
+			
+			if (exist)
+			{
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
+				
+				delete retrys[cache.saveURL];
+				cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
+				if (errors)
+				{
+					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");
+					for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
+				}
+			}
+			else
+			{
+				if (cache.code == "550")
+				{
+					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
+					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
+					cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
+				}
+				else
+				{
+					if (cach_sp[cache.saveURL])
+					{
+						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
+						retrys[cache.saveURL] = cache;
+					}
+				}
+			}
+			
+			delete cach_sp[cache.saveURL];
+			
+			if (cach_sp.length == 0) resolveData();
+		}
+		
 		
 		
 		/**
@@ -387,9 +456,16 @@ package multipublish.vo.contents
 		
 		public function get daysKeep():uint
 		{
-			return getProperty("daysKeep", uint);
+			return useCache ? getProperty("daysKeep", uint) : _daysKeep;
 		}
 		
+		public function set daysKeep($value:uint):void
+		{
+			useCache  = false;
+			_daysKeep = $value;
+		}
+		
+		private var useCache:Boolean = true;
 		
 		/**
 		 * 
@@ -435,7 +511,7 @@ package multipublish.vo.contents
 		
 		
 		/**
-		 * @private
+		 * 保存电子报文件夹的绝对路径。
 		 */
 		private var days:Array = [];
 		
@@ -445,20 +521,20 @@ package multipublish.vo.contents
 		private var images:Map = new Map;
 		
 		/**
-		 * @private
+		 * 重新下载的存放。
 		 */
 		private var retrys:Map = new Map;
 		
 		/**
-		 * @private
+		 * 是否已被解析。
 		 */
 		private var reslvd:Object = {};
+		
 		
 		/**
 		 * @private
 		 */
-		private var temp:Map = new Map;
-		
+		private var _daysKeep:uint;
 		
 		/**
 		 * @private

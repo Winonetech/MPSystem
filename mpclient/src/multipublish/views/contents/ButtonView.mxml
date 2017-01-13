@@ -73,6 +73,8 @@
 					if (StringUtil.isEmpty(button.sourceUp))   readyTotal++;
 					if (StringUtil.isEmpty(button.sourceDown)) readyTotal++;
 					BindingUtils.bindProperty(this, "selected", button, "selected");
+					if (StringUtil.isEmpty(button.sourceUp) &&
+						StringUtil.isEmpty(button.sourceDown)) dispatchReady();
 				}
 				else
 				{

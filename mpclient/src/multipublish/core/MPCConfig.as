@@ -14,13 +14,16 @@ package multipublish.core
 	import com.winonetech.core.Store;
 	
 	import flash.display.Stage;
+	import flash.filesystem.File;
 	
+	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
 	import multipublish.tools.ScreenController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	[Bindable]
@@ -155,6 +158,19 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 备份文件是否存在。
+		 * 
+		 */
+		
+		public function get hasBackup():Boolean
+		{
+			var file:File = File.applicationDirectory.resolvePath(URLConsts.BACKUP_CONFIG);
+			
+			return file.exists;
+		}
+		
+		/**
+		 * 
 		 * 使用缓存。
 		 * 
 		 */
@@ -177,6 +193,15 @@ package multipublish.core
 		 */
 		
 		public var sled:String;
+		
+		
+		/**
+		 *
+		 * 是否显示下载状态。 
+		 * 
+		 */
+		
+		public var downloadState:Boolean;
 		
 		
 		/**
@@ -285,6 +310,16 @@ package multipublish.core
 		public var serviceURL:String = "terminal/heartBeat";
 		
 		
+		
+		/**
+		 * 
+		 * 民意调查结果通讯地址。
+		 * 
+		 */
+		
+		public var optionRes:String = "opinion/base/updateResult";
+		
+		
 		/**
 		 * 
 		 * 终端申请地址。
@@ -337,6 +372,15 @@ package multipublish.core
 		 */
 		
 		public var heartbeatTime:uint = 30;
+		
+		
+		/**
+		 * 
+		 * 最大累积命令长度。
+		 * 
+		 */
+		
+		public var cmdLimit:uint = 3;
 		
 		
 		/**
@@ -503,7 +547,7 @@ package multipublish.core
 		/**
 		 * 
 		 * 是否替换当前播放内容。
-		 * <br>判定是否与上一排期相同。
+		 * <br>判定是否与上一排期相同。不相同则为true。
 		 * 
 		 */
 		
@@ -599,6 +643,13 @@ package multipublish.core
 		
 		public var screenController:ScreenController;
 		
+		
+		/**
+		 * 
+		 * 最后播放的节目。
+		 * 
+		 */
+		public var latest:Schedule;
 		
 		/**
 		 * 

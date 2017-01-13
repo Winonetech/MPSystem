@@ -6,9 +6,10 @@
 				xmlns:wt="com.winonetech.controls.*">
 	
 	
+	
 	<wt:Browser id="browser" left="0" right="0" top="0" bottom="60"
 				paintsDefaultBackground="false"
-				location="about:blank"
+				
 				htmlDOMInitialize="handlerBrowserInitialize(event)"
 				complete="handlerBrowserComplete(event)"/>
 	

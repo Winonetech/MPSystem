@@ -14,7 +14,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	
 	import com.coltware.airxzip.ZipFileWriter;
-	import com.winonetech.components.progress.ProgressView;
+	import com.winonetech.components.progress.ProgressWindow;
 	import com.winonetech.tools.Cache;
 	
 	import flash.events.Event;
@@ -79,8 +79,8 @@ package multipublish.commands
 		{
 			queue.addEventListener(QueueEvent.QUEUE_END, handlerQueueEnd);
 			view.application.removeElement(view.guild);
-			view.application.addElement(view.progress = new ProgressView);
-			view.progress.data = Cache.caches;
+			view.application.addElement(view.progress = new ProgressWindow);
+//			view.progress.data = Cache.caches;
 			view.progress.play();
 		}
 		
@@ -130,7 +130,7 @@ package multipublish.commands
 			queue.removeEventListener(QueueEvent.QUEUE_END, handlerQueueEnd);
 			view.application.removeElement(view.progress);
 			view.application.addElement(view.guild);
-			view.progress = null;
+//			view.progress = null;
 			makeOfflinePackage();
 		}
 		

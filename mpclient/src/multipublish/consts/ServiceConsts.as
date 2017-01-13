@@ -22,6 +22,10 @@ package multipublish.consts
 		
 		public static const RECEIVE_SCEDULE:String = "UPSC:";
 		
+		
+		
+		
+		
 		/**
 		 * 
 		 * 发送LED显示内容。<br>
@@ -30,6 +34,17 @@ package multipublish.consts
 		 */
 		
 		public static const RECEIVE_LEDTEXT:String = "SLED:";
+		
+		
+		/**
+		 * 
+		 * 接收、发送LED显示内容。<br>
+		 * 默认值为“CLED:”。
+		 * 
+		 */
+		
+		public static const CONTROL_LED:String = "CLED:";
+		
 		
 		/**
 		 * 
@@ -209,6 +224,37 @@ package multipublish.consts
 		 */
 		
 		public static const LOCK_TIME:String = "SYTI:";
+		
+		
+		/**
+		 * 
+		 * 下载申请。<br>
+		 * 默认值为“DLRS:”。
+		 * 
+		 */		
+		
+		public static const DL_APPLY:String = "DLRS:";
+
+		
+		
+		/**
+		 * 
+		 * 下载结束。<br>
+		 * 默认值为“DLOV:”。
+		 * 
+		 */		
+		
+		public static const DL_OVER:String = "DLOV:";
+		
+		
+		/**
+		 * 
+		 * 下载状态回馈。<br>
+		 * 默认值为“DLIF:”。
+		 * 
+		 */		
+		
+		public static const DOWNLOAD_STATE:String = "DLIF:";
 		
 	}
 }

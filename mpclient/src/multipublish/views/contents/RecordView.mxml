@@ -166,7 +166,13 @@
 			 */
 			private function timer_completeHandler($e:TimerEvent):void
 			{
-				stop();
+				var total:uint = (content as Record).playTimes;
+				if (total > 1 && count < total)
+				{
+					video.stop();
+					video_completeHandler();
+				}
+				else stop();
 			}
 			
 			/**
@@ -190,17 +196,19 @@
 			/**
 			 * @private
 			 */
-			private function video_completeHandler(event:TimeEvent):void
+			private function video_completeHandler(event:TimeEvent = null):void
 			{
 				
 				//解决系统内部机制会调用两次改方法的BUG。
-				if (f)
+				if (event)
 				{
-					f = !f;
-					return;
+					if (f)
+					{
+						f = !f;
+						return;
+					}
+					f = !f;  
 				}
-				f = !f;  
-				
 				
 				
  				var total:uint = (content as Record).playTimes;

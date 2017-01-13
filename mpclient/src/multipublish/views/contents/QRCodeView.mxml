@@ -23,6 +23,8 @@
 			override protected function resolveData():void
 			{
 				super.resolveData();
+				
+				dispatchReady();
 			}
 			
 			

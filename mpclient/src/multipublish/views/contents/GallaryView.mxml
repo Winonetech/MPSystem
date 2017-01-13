@@ -99,6 +99,8 @@
 					
 					createTimer(gallary.updateFrequency, 0, gallary_updateHandler);
 					
+					gallary_updateHandler(null);
+					
 					applyCallback(callbackData);
 				}
 				else

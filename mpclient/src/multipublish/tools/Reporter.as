@@ -4,6 +4,11 @@ package multipublish.tools
 	/**
 	 * 
 	 * 文件下载进度上报器。
+	 * 可能的状态有: 
+	 * <br>2 -> 开始下载;
+	 * <br>3 -> 下载成功;
+	 * <br>4 -> 下载失败;
+	 *
 	 * 
 	 */
 	
@@ -135,7 +140,7 @@ package multipublish.tools
 				var memo:String = name + (exist ? " 下载完成" : " 下载失败");
 				if(!exist) 
 				{
-					memo += "，" + cache.message;
+					memo += "," + cache.message;
 					data += ";" + cache.code + ";" + cache.message;
 				}
 				

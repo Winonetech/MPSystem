@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  xmlns:contents="multipublish.views.contents.*"
+					  creationComplete="init()">
+	
+	<s:VGroup id="vg" width="100%" height="100%" top="30" horizontalAlign="center" gap="50">
+		
+		<s:Label id="title" width="50%" textAlign="center" fontWeight="bold" color="{notice.titleColor}"
+				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
+				 paddingTop="30" paddingLeft="30" paddingRight="30"/>
+		
+		<s:TextArea borderVisible="false" contentBackgroundAlpha="0"
+					editable="false" selectable="false" height="{vg.height * 2 / 3}" 
+					id="text" maxWidth="{vg.width * 2 / 3}" textAlign="left" color="{notice.contentColor}"
+					text="{notice.content}" fontSize="{notice.contentFont}"/>
+		
+		
+	</s:VGroup>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.ContentConsts;
+			import multipublish.core.mp;
+			import multipublish.vo.moduleContents.Notice;
+			
+			import mx.events.FlexEvent;
+			
+			
+			/**
+			 * @private
+			 */
+			private function init():void
+			{
+				updateModuleBackground(notice.picPath, notice.bgColor);
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				timerPlay();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				timerStop();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				notice = data as Notice;
+				
+				if (notice)
+				{
+					time = notice.timeLength || ContentConsts.MODULE_TIME_DEFAUALT;
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay():void
+			{
+				if(!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			
+			private function get time():uint
+			{
+				return mp::time;
+			}
+			
+			private function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+			
+			/**
+			 * @private
+			 */
+			private var timer:Timer;
+			
+			[Bindable]
+			private var notice:Notice;
+		]]>
+	</fx:Script>
+	
+	
+</contents:ContentView>

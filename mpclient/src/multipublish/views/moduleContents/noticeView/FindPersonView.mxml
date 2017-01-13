@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
+	
+	<s:VGroup id="group" horizontalAlign="center" horizontalCenter="0" height="100%" top="30" gap="12" width="50%">
+		
+		<s:Label id="title" width="100%" textAlign="center" fontWeight="bold"
+				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
+				 color="{notice.titleColor}"/>
+		
+		<s:Image id="photo" width="100%" maxHeight="{group.height * .65}"
+				 fillMode="scale" scaleMode="letterbox"
+				 source="{notice.picPath}"
+				 ready="readyHandler(event)"/>
+		
+		<mx:Text id="contentText" maxWidth="{group.width * 2 / 3}"
+				 selectable="false" horizontalCenter="0"
+				 mouseEnabled="false" mouseChildren="false"
+				 color="{notice.contentColor}"
+				 fontSize="{notice.contentFont}"
+				 htmlText="{notice.content}"/>
+	</s:VGroup>
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.Timer;
+			
+			import mx.events.FlexEvent;
+			
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.ContentConsts;
+			import multipublish.core.mp;
+			import multipublish.vo.moduleContents.Notice;
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				timerPlay();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				timerStop();
+			}
+			
+			override protected function resolveData():void
+			{
+				notice = data as Notice;
+				
+				if (notice)
+				{
+					time = notice.timeLength || ContentConsts.MODULE_TIME_DEFAUALT;
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function timerPlay():void
+			{
+				if(!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerStop():void
+			{
+				if (timer) 
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			
+			private function get time():uint
+			{
+				return mp::time;
+			}
+			
+			private function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			mp var time:uint;
+			
+			private var timer:Timer;
+			
+			[Bindable]
+			private var notice:Notice;
+			
+			protected function readyHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				dispatchReady();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+</contents:ContentView>
