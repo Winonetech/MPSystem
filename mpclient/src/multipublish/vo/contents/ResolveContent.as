@@ -8,13 +8,16 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.events.pattern.CommandEvent;
 	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.consts.PathConsts;
+	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
+	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
 	
 	import flash.events.Event;
@@ -26,6 +29,8 @@ package multipublish.vo.contents
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
+	
+	use namespace wt;
 	
 	
 	public class ResolveContent extends Content
@@ -57,6 +62,34 @@ package multipublish.vo.contents
 			localURL = StringUtil.replace(localURL, "&", "-");
 			
 			resolveContentSource(remoteURL);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override wt function registCache(...$args):void
+		{
+			for each (var item:* in $args)
+			{
+				var cache:Cache = (item is String) ? Cache.cache(item, inited) : item;
+				if (cache && ! cach[cache.saveURL] && !cache.exist)
+				{
+					var handler:Function = function($e:CommandEvent):void
+					{
+						var cache:Cache = Cache($e.command);
+						cache.removeEventListener(CommandEvent.COMMAND_END, handler);
+						
+						delete cach[cache.saveURL];
+						if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
+					};
+					cache.addEventListener(CommandEvent.COMMAND_END, handler);
+					cach[cache.saveURL] = cache;
+				}
+			}
+			
+			if (cach.length) dispatchEvent(new ControlEvent(ControlEvent.DOWNLOAD));  //当有需要下载的文件时，发送下载命令。
 		}
 		
 		
@@ -232,6 +265,11 @@ package multipublish.vo.contents
 		
 		protected var resolved:Boolean = true;
 		
+		
+		/**
+		 * @private
+		 */
+		protected var inited:Boolean;
 		
 		/**
 		 * @private
