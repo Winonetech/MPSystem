@@ -24,6 +24,7 @@ package multipublish.vo.contents
 	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.events.DLStateEvent;
 	import multipublish.utils.DicUtil;
 	import multipublish.utils.URLUtil;
 	
@@ -51,7 +52,6 @@ package multipublish.vo.contents
 		{
 			$args = $args || [];
 			ArrayUtil.unshift($args, content);
-			Cache.allowed = true;
 			loadContent.apply(null, $args);
 		}
 		
@@ -75,6 +75,7 @@ package multipublish.vo.contents
 			var temp:int = getTimer();
 			if (time == 0 || (temp - time > updateFrequency * 1000) || $useCache)
 			{
+				if (time) Cache.allowed = true;
 				time = temp;
 				super.loadContent($url, $useCache, $method, $args);
 			}
@@ -138,7 +139,12 @@ package multipublish.vo.contents
 			
 			resolved = true;
 			
-			inited = true;
+			if (!inited)
+			{
+				dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+				inited = true;
+			}
+			
 			
 			Cache.start();
 			

@@ -1,11 +1,15 @@
 package multipublish.commands
 {
 	import cn.vision.events.pattern.QueueEvent;
+	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.tools.Cache;
 	
+	import flash.filesystem.File;
+	
 	import multipublish.consts.ContentConsts;
+	import multipublish.consts.DataConsts;
 	import multipublish.events.DLStateEvent;
 	import multipublish.tools.MPService;
 	import multipublish.utils.ViewUtil;
@@ -143,24 +147,47 @@ package multipublish.commands
 		
 		private function send():void
 		{
-				LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
-				LogUtil.log("是否存在特殊下载队列 -> " + Cache.hasSP);
-				
-				if (Cache.cachesLave > 0)       //普通队列大于 0则开始下载。
+			LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
+			LogUtil.log("是否存在特殊下载队列 -> " + Cache.hasSP);
+			LogUtil.log("当前排期与上一排期不相同 -> " + config.replacable);
+			
+			
+			if (Cache.cachesLave > 0)       //普通队列大于 0则开始下载。
+			{
+				//当前无节目播放且两个排期不一样 则跳过老排期下载和播放。
+				if (count++ == 0 && !view.main.data && 
+					File.applicationDirectory.
+					resolvePath(DataConsts.PATH_CHANNEL).exists &&
+					File.applicationDirectory.
+					resolvePath(DataConsts.NEW_CHANNEL ).exists &&
+					!FileUtil.compareFile(
+						File.applicationDirectory.
+						resolvePath(DataConsts.PATH_CHANNEL), 
+						File.applicationDirectory.
+						resolvePath(DataConsts.NEW_CHANNEL)))   
+				{
+					LogUtil.log("老排期下载未完成且与新排期相异 跳过老排期...");
+					config.replacable = false;
+					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+				}
+				else
 				{
 					service.downloadApply();
 					initDLState();
 				}
-				else        
-				{
-					if(video && view.application.contains(video))   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
-						view.application.removeElement(video);
-					
-					
-					
-					if (Cache.hasSP) service.downloadApply();
-					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));//普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
-				}
+			}
+			else        
+			{
+				if(video && view.application.contains(video) && config.view.main.data)   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
+					view.application.removeElement(video);
+				
+				if (Cache.hasSP && !FileUtil.compareFile(
+					File.applicationDirectory.
+					resolvePath(DataConsts.PATH_CHANNEL), 
+					File.applicationDirectory.
+					resolvePath(DataConsts.NEW_CHANNEL))) service.downloadApply();
+				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));//普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
+			}
 		}
 		
 		/**
@@ -227,7 +254,7 @@ package multipublish.commands
 			
 				view.application.addElement(video);
 			}
-			else if (video && view.application.contains(video))
+			else if (video && view.application.contains(video) && view.main.data)
 			{
 				view.application.removeElement(video);
 				if (!video.playing) video.play();
@@ -277,11 +304,11 @@ package multipublish.commands
 		
 		/**
 		 * 
-		 * 一个计数器。统计发送申请的个数。只处理最后一个。
+		 * 一个计数器。
 		 * 
 		 */
 		
-		private static var count:int = 0;
+		public static var count:int = 0;
 		
 		private const REMOVE_B:RegExp = /^\[*/;
 		

@@ -382,7 +382,8 @@ package multipublish.vo.contents
 				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
-					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
+					if (EPaperUtil.mp::checkArchiveUnloadable(cache.saveURL))
+						EPaperUtil.mp::flagArchiveUnloadable (cache.saveURL);
 					cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
 				}
 				else
@@ -428,7 +429,8 @@ package multipublish.vo.contents
 				if (cache.code == "550")
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
-					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
+					if (EPaperUtil.mp::checkArchiveUnloadable(cache.saveURL))
+						EPaperUtil.mp::flagArchiveUnloadable (cache.saveURL);
 					cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
 				}
 				else

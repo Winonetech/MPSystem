@@ -87,7 +87,7 @@ package multipublish.commands
 				}
 				
 				
-				InitDelayModuleCommand.count = 0;
+				InitDelayModuleCommand.count = DownLoadQueueCommand.count = 0;
 				
 				count++;
 				
@@ -135,14 +135,14 @@ package multipublish.commands
 				//进入此处的可能有：
 				//1.在解析下载新排期时收到新的排期的时候。需要替换原来的新排期。
 				
-				if (File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
-				{
-					var f:File = new File(File.applicationDirectory.
-						resolvePath(DataConsts.NEW_CHANNEL).nativePath);
-					
-					f.deleteFile();
-				}
-				
+//				if (File.applicationDirectory.resolvePath(DataConsts.NEW_CHANNEL).exists)
+//				{
+//					var f:File = new File(File.applicationDirectory.
+//						resolvePath(DataConsts.NEW_CHANNEL).nativePath);
+//					
+//					f.deleteFile();
+//				}
+//				
 				config.replacable = false;   //此处设置为 false是为了保证不要正在播放的节目再切换一遍。
 			} 
 		}
@@ -151,19 +151,16 @@ package multipublish.commands
 		private function delayModel_commandEndHandler($e:CommandEvent):void
 		{
 			delayModel.removeEventListener(CommandEvent.COMMAND_END, delayModel_commandEndHandler);
-			
 			var dat:Object = ObjectUtil.convert(delayModel.data, Object);
-			var url:String = DataConsts.NEW_CHANNEL;
 			
 			if (dat)
 			{
 				count--;    //解析成功需要自减。
 				
 				//新排期存在就不需要再保存了。
-				if (!File.applicationDirectory.resolvePath(url).exists)
+				if (url != "fromDelay")
 				{
-//					flagSave(delayModel.url, url, JSON.stringify(dat, null, "\t"));
-					FileUtil.saveUTF(FileUtil.resolvePathApplication(url), JSON.stringify(dat, null, "\t"));
+					FileUtil.saveUTF(FileUtil.resolvePathApplication(DataConsts.NEW_CHANNEL), JSON.stringify(dat, null, "\t"));
 					if (count == 0) commandEnd();
 				}
 				else

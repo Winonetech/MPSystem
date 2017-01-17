@@ -1,6 +1,7 @@
 package multipublish.commands
 {
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.LogUtil;
 	
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
@@ -44,11 +45,13 @@ package multipublish.commands
 			
 			if (!source.exists) 
 			{
+				LogUtil.log("新排期不存在...");
 				commandEnd();
 				return;
 			}
 			else if (FileUtil.compareFile(source, target))
 			{
+				LogUtil.log("新老排期相同，新排期被删除... 将继续播放老排期...");
 				source.deleteFile();
 				commandEnd();
 				return;
@@ -57,13 +60,13 @@ package multipublish.commands
 			
 			if (count == 0)   //当 count为 0的时候为解析新排期
 			{
+				LogUtil.log("InitializeModule again...");
 				presenter.initializeModule("fromDelay", true);
 			}
 			else if (count == 1)  //当 count为 1的时候为新排期替换至老排期
 			{
+				LogUtil.log("The new schedule is moved to the old schedule...");
 				source.moveTo(target, true);
-				
-				if (source.exists) source.deleteFile();
 			}
 			
 			count++;

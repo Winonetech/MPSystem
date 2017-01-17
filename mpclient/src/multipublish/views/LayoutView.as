@@ -571,13 +571,13 @@ package multipublish.views
 		{
 			timerReset();
 			adStop();
-			
-			if (config.debug)
-			{
-				LogUtil.log("===== clicked item's type is " + 
-					ClassUtil.getClassName(
-						$e.target, false) + " =====");
-			}
+//			
+//			if (config.debug)
+//			{
+//				LogUtil.log("===== clicked item's type is " + 
+//					ClassUtil.getClassName(
+//						$e.target, false) + " =====");
+//			}
 			
 			if ($e.target is ButtonView || $e.target is MarqueeView)
 			{

@@ -10,14 +10,20 @@ package multipublish.commands
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.ObjectUtil;
 	
+	import com.winonetech.core.VO;
+	
+	import flash.events.Event;
+	
 	import multipublish.core.MDProvider;
 	import multipublish.core.mp;
 	import multipublish.managers.ButtonManager;
+	import multipublish.proxy.AsynVOProxy;
 	import multipublish.utils.ContentUtil;
 	import multipublish.utils.ViewUtil;
 	import multipublish.vo.contents.Button;
 	import multipublish.vo.contents.Content;
 	import multipublish.vo.contents.EPaper;
+	import multipublish.vo.contents.Gallary;
 	import multipublish.vo.contents.Marquee;
 	import multipublish.vo.contents.News;
 	import multipublish.vo.programs.*;
@@ -36,7 +42,10 @@ package multipublish.commands
 		public function InitDataCommand()
 		{
 			super();
+			
+			initProxy();
 		}
+		
 		
 		
 		/**
@@ -49,7 +58,35 @@ package multipublish.commands
 			
 			initData();
 			
-			commandEnd();
+			controlEnd()
+		}
+		
+		
+		/**
+		 * 
+		 * 结束命令控制。
+		 *  
+		 */
+		
+		private function controlEnd(e:Event = null):void
+		{
+			if (proxy.allowed)
+			{
+				proxy.removeEventListener(Event.COMPLETE, controlEnd);
+				proxy = null;
+				commandEnd();
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function initProxy():void
+		{
+			proxy = new AsynVOProxy;
+			
+			proxy.addEventListener(Event.COMPLETE, controlEnd);
 		}
 		
 		
@@ -71,12 +108,12 @@ package multipublish.commands
 				
 				initSchedule(config.raw["channel"]);
 				
-				
 				//随机延时30秒内的时间，避免同时访问服务端FTP造成的服务端压力过大
-//				TimerUtil.callLater(Math.random() * 180000, Cache.start);
+                //TimerUtil.callLater(Math.random() * 180000, Cache.start);
 				//Cache.start();
 			}
 		}
+		
 		
 		/**
 		 * @private
@@ -136,6 +173,7 @@ package multipublish.commands
 			}
 		}
 		
+		
 		/**
 		 * @private
 		 */
@@ -152,6 +190,7 @@ package multipublish.commands
 				initComponents(datAD["components"], ad, layout);
 			}
 		}
+		
 		
 		/**
 		 * @private
@@ -182,6 +221,7 @@ package multipublish.commands
 			}
 		}
 		
+		
 		/**
 		 * @private
 		 */
@@ -201,6 +241,9 @@ package multipublish.commands
 		}
 		
 		
+		/**
+		 * @private
+		 */
 		private function initModuleContent(dataContent:*, program:Program):void
 		{
 			var voRef  :Class = ContentUtil.getModuleVO(program.moduleType);
@@ -223,18 +266,23 @@ package multipublish.commands
 			{
 				var rawContent:Object = ObjectUtil.clone(datContent);
 				var content:Content = ContentUtil.getContentVO(rawContent);
+				
+				
 				if (content is Button || content is Marquee)
 				{
 					content.pageID = component.linkID;
 					if (content is Button) ArrayUtil.push(layout.buttons, content);
 				}
-				
-				if (content is News)
+				else if (content is News)
 				{
 					(content as News).noImage = component.noImage;   
+					proxy.registVO(content as VO);
 				}
-				
-				if (content is EPaper)
+				else if (content is Gallary)
+				{
+					proxy.registVO(content as VO);
+				}
+				else if (content is EPaper)
 				{
 					var temp:EPaper = content as EPaper;
 					provider.ePaperMap[temp.content] = temp;
@@ -256,6 +304,10 @@ package multipublish.commands
 			layout.buttons = null;
 		}
 		
+		/**
+		 * @private
+		 */
+		private var proxy:AsynVOProxy;
 		
 		/**
 		 * @private

@@ -1,5 +1,6 @@
 package multipublish.commands
 {
+	import cn.vision.collections.Map;
 	import cn.vision.net.FTPRequest;
 	import cn.vision.net.FTPUploader;
 	
@@ -25,10 +26,7 @@ package multipublish.commands
 			
 			$url = $url.split("&").shift();
 			
-			
 			url = $url.charAt($url.length - 1) == "/" ? $url : $url += "/";
-			
-//			url  = $url.charAt() == "/" ? $url : "/" + $url;
 		}
 		
 		override public function execute():void
@@ -46,8 +44,10 @@ package multipublish.commands
 		{
 			modelog("下载电子报。");
 			
+			var arr:Map = MDProvider.instance.ePaperMap;
+			
 			//强制更新。
-			MDProvider.instance.ePaperMap[url] && MDProvider.instance.ePaperMap[url].update(true, daysKeep);
+			arr && arr[url].update(true, daysKeep);
 		}
 		
 		private var daysKeep:String;
