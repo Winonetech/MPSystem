@@ -8,6 +8,8 @@ package multipublish.views.contents
 	 */
 	
 	
+	import cn.vision.utils.TimerUtil;
+	
 	import com.winonetech.core.VO;
 	import com.winonetech.tools.LogSQLite;
 	
@@ -15,14 +17,6 @@ package multipublish.views.contents
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
-	
-	import mx.effects.Sequence;
-	import mx.events.EffectEvent;
-	
-	import spark.components.Group;
-	import spark.effects.Fade;
-	
-	import cn.vision.utils.TimerUtil;
 	
 	import input.Input;
 	
@@ -36,6 +30,7 @@ package multipublish.views.contents
 	import multipublish.views.elements.ArrangeView;
 	import multipublish.views.elements.CallBtnView;
 	import multipublish.views.elements.CommanView;
+	import multipublish.views.elements.FinanceBtnView;
 	import multipublish.views.elements.MapView;
 	import multipublish.views.elements.NavableAdView;
 	import multipublish.views.elements.OfficeView;
@@ -45,6 +40,12 @@ package multipublish.views.contents
 	import multipublish.vo.elements.Advertise;
 	import multipublish.vo.elements.Arrange;
 	import multipublish.vo.elements.ArrangeIcon;
+	
+	import mx.effects.Sequence;
+	import mx.events.EffectEvent;
+	
+	import spark.components.Group;
+	import spark.effects.Fade;
 	
 	
 	public final class TypesetView extends ContentView
@@ -355,7 +356,8 @@ package multipublish.views.contents
 			type[ElementTypeConsts.OFFICE   ] = OfficeView;
 			type[ElementTypeConsts.SLIDE    ] = SlideView;
 			type[ElementTypeConsts.MAP      ] = MapView;
-			type[ElementTypeConsts.CALLBTN	] = CallBtnView
+			type[ElementTypeConsts.CALLBTN	] = CallBtnView;
+			type[ElementTypeConsts.FINANCE  ] = FinanceBtnView;
 			//type[ElementTypeConsts.POPWINDOW] = PopWindowView;
 			//type[ElementTypeConsts.THUMBNAIL] = ThumbnailView;
 			//type[ElementTypeConsts.TIMELINE ] = TimelineView;

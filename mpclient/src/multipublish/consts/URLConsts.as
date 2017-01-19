@@ -35,6 +35,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 金融数据。
+		 * 
+		 */
+		
+		public static const FINANCEDATA:String = "financeData/resource.xml";
+
+		
+		/**
+		 * 
 		 * 多线程绘图工具路径。
 		 * 
 		 */
@@ -59,6 +68,14 @@ package multipublish.consts
 		
 		public static const GET_CLIENT_INFO:String = "/wos/versions/updateVersionAction.action";
 		
+		
+		/**
+		 * 
+		 * 金融数据路径。
+		 * 
+		 */
+		
+		public static const GET_FINANCE_DATA:String = "/wos/icbc/getICBCFinanceDataAction.action";
 		
 		/**
 		 * 

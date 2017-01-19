@@ -225,7 +225,8 @@ package multipublish.views
 				type[ContentTypeConsts.PICTURE] = PictureView;
 				type[ContentTypeConsts.TYPESET] = TypesetView;
 				type[ContentTypeConsts.RECORD ] = RecordView;
-				type[ContentTypeConsts.CARTOON] = CartoonView;
+				type[ContentTypeConsts.FINANCE] = FinanceView;
+//				type[ContentTypeConsts.CARTOON] = CartoonView;
 			}
 		}
 		

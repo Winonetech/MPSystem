@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<elements:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:elements="multipublish.views.elements.*"
+					  >
+	
+	<s:BorderContainer borderWeight="0" height="100%" width="100%">
+		
+		<s:layout>
+			<s:VerticalLayout gap="10" paddingTop="20" paddingBottom="20"/>
+		</s:layout>
+		
+		<s:SWFLoader height="100%" id="swfloader" width="100%"
+					 verticalAlign="middle" horizontalAlign="center" 
+					 scaleContent="true" maintainAspectRatio="true" 
+					 source="{financeDataUrl}"/>
+	
+		<s:HGroup horizontalAlign="center" width="100%" gap="{config.isVertical ? 80 : 110}" mouseEnabled="false">
+			
+			<s:Button id="depositrate" label="存款利率" fontFamily="微软雅黑" 
+					  fontSize="{btnF}" buttonMode="true" width="{btnW}" height="{btnH}"
+					  click="depositrate_clickHandler(event)"/>
+			
+			<s:Button id="quotation" label="外汇牌价" fontFamily="微软雅黑" 
+					  fontSize="{btnF}" buttonMode="true" width="{btnW}" height="{btnH}"
+					  click="quotation_clickHandler(event)"/>
+			
+			<s:Button id="gold" label="黄金" fontFamily="微软雅黑" 
+					  fontSize="{btnF}" buttonMode="true" width="{btnW}" height="{btnH}"
+					  click="gold_clickHandler(event)"/>
+			
+			<s:Button id="oil" label="原油" fontFamily="微软雅黑" 
+					  fontSize="{btnF}" buttonMode="true" width="{btnW}" height="{btnH}"
+					  click="oil_clickHandler(event)"/>
+			
+			<s:Button id="stock" label="股票" fontFamily="微软雅黑" 
+					  fontSize="{btnF}" buttonMode="true" width="{btnW}" height="{btnH}"
+					  click="stock_clickHandler(event)"/>
+		</s:HGroup>
+
+	</s:BorderContainer> 
+		
+	
+	<s:Button right="10" top="10" label="返回" click="back()"
+			  skinClass="multipublish.skins.MapBackButtonSkin" />
+	
+	<fx:Script>
+		<![CDATA[
+			import multipublish.consts.FinanceTypeConsts;
+			import multipublish.consts.URLConsts;
+			import multipublish.core.MPCView;
+			
+			
+			override protected function processPlay():void
+			{
+				financeDataUrl = FinanceTypeConsts.DEPOSITRATE;
+//				view.application.addElement(this);
+//				view.main.visible = false;
+			}
+			
+			
+			override protected function processStop():void
+			{
+//				view.application.removeElement(this);
+//				view.main.visible = true;
+			}
+			
+			
+			private function get view():MPCView
+			{
+				return MPCView.instance;
+			}
+			
+			
+			protected function depositrate_clickHandler(event:MouseEvent):void
+			{
+				financeDataUrl = FinanceTypeConsts.DEPOSITRATE;
+			}
+			
+			
+			protected function quotation_clickHandler(event:MouseEvent):void
+			{
+				financeDataUrl = FinanceTypeConsts.QUOTATION;
+			}
+			
+			
+			protected function gold_clickHandler(event:MouseEvent):void
+			{
+				financeDataUrl = FinanceTypeConsts.GOLD;
+			}
+			
+			
+			protected function oil_clickHandler(event:MouseEvent):void
+			{
+				financeDataUrl = FinanceTypeConsts.OIL;
+			}
+			
+			
+			protected function stock_clickHandler(event:MouseEvent):void
+			{
+				financeDataUrl = FinanceTypeConsts.STOCK;
+			}
+			
+			[Bindable]
+			private var financeDataUrl:String;
+			
+			[Bindable]
+			private var btnW:Number = config.isVertical ? 120 : 216;
+			
+			[Bindable]
+			private var btnH:Number = config.isVertical ? 120 : 102;
+			
+			[Bindable]
+			private var btnF:Number = config.isVertical ? 24 : 32;
+			
+		]]>
+	</fx:Script>
+	
+</elements:ElementView>

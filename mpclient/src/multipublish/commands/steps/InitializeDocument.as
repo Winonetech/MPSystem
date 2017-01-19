@@ -8,12 +8,12 @@ package multipublish.commands.steps
 	 */
 	
 	
-	import com.winonetech.tools.LogSQLite;
-	
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.XMLUtil;
+	
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.Step;
 	import multipublish.consts.ClientStateConsts;
@@ -34,6 +34,7 @@ package multipublish.commands.steps
 	import multipublish.vo.elements.Comman;
 	import multipublish.vo.elements.Elecmap;
 	import multipublish.vo.elements.Element;
+	import multipublish.vo.elements.FinanceBtn;
 	import multipublish.vo.elements.Office;
 	import multipublish.vo.elements.Slide;
 	import multipublish.vo.elements.Website;
@@ -81,6 +82,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.SLIDE    ] = handlerSlide;
 			type[ElementTypeConsts.MAP      ] = handlerMap;
 			type[ElementTypeConsts.CALLBTN	] = handlerCall;
+			type[ElementTypeConsts.FINANCE  ] = handlerFinance;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -129,6 +131,12 @@ package multipublish.commands.steps
 			return $data.element = new CallBtn($data.raw);
 		}
 		
+		
+		private function handlerFinance($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new FinanceBtn($data.raw);
+		}
 		
 		/**
 		 * @private

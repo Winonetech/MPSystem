@@ -16,6 +16,7 @@ package multipublish.core
 	import flash.display.Stage;
 	
 	import multipublish.tools.Controller;
+	import multipublish.tools.FinanceDataUdtController;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
 	import multipublish.tools.Shotcuter;
@@ -397,6 +398,14 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 金融数据定时更新。
+		 * 
+		 */
+		
+		public var fduc:FinanceDataUdtController;
+		
+		/**
+		 * 
 		 * 是否导入缓存包。
 		 * 
 		 */
@@ -420,6 +429,15 @@ package multipublish.core
 		 */
 		
 		public var width:Number = 0;
+		
+		
+		/**
+		 * 
+		 * 是否为竖屏。
+		 * 
+		 */
+		
+		public var isVertical:Boolean;
 		
 		
 		/**
@@ -484,7 +502,7 @@ package multipublish.core
 		
 		public var temp:*;
 		
-		
+
 		/**
 		 * @private
 		 */

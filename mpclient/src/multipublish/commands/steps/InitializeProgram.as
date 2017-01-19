@@ -71,6 +71,7 @@ package multipublish.commands.steps
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;
 			type[ContentTypeConsts.RECORD ] = Record;
+			type[ContentTypeConsts.FINANCE] = Finance;
 			type[ContentTypeConsts.GALLERY] = Gallery;
 			
 			queue = new ParallelQueue;

@@ -133,5 +133,14 @@ package multipublish.consts
 		
 		public static const CALLBTN:uint = 12;
 		
+		
+		/**
+		 * 
+		 * 金融数据。
+		 * @default 13
+		 * 
+		 */
+		
+		public static const FINANCE:uint = 13;
 	}
 }

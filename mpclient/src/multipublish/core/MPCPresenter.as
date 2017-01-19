@@ -33,6 +33,7 @@ package multipublish.core
 	import multipublish.commands.RestartPlayerCommand;
 	import multipublish.commands.ShotcutPlayerCommand;
 	import multipublish.commands.ShowDeployCommand;
+	import multipublish.tools.FinanceDataUdtController;
 	
 	import spark.components.WindowedApplication;
 	
@@ -118,6 +119,7 @@ package multipublish.core
 			
 			execute(new InitializeDataCommand($push));
 			execute(new PlaybackScheduleCommand);
+			if (i++ == 0) config.fduc = new FinanceDataUdtController;
 		}
 		
 		
@@ -321,6 +323,7 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
+		private static var i:uint = 0;
 		
 		/**
 		 * 
