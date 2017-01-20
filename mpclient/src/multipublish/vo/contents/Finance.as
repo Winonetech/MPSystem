@@ -27,10 +27,6 @@ package multipublish.vo.contents
 		override public function parse($data:Object):void
 		{
 			super.parse($data);
-			
-//			var name:String = getProperty("contentsname");
-			
-//			config.list.push(name);
 		}
 		
 		public function get contentName():String

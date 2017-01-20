@@ -2,7 +2,7 @@
 <elements:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:elements="multipublish.views.elements.*"
-					  >
+					  creationComplete="init()">
 	
 	<s:BorderContainer borderWeight="0" height="100%" width="100%">
 		
@@ -49,26 +49,21 @@
 			import multipublish.consts.FinanceTypeConsts;
 			import multipublish.consts.URLConsts;
 			import multipublish.core.MPCView;
+			import multipublish.tools.FinanceDataUdtController;
+			
+			
+			private function init():void
+			{
+				if (!config.fduc)
+				{
+					config.fduc = new FinanceDataUdtController;
+				}
+			}
 			
 			
 			override protected function processPlay():void
 			{
 				financeDataUrl = FinanceTypeConsts.DEPOSITRATE;
-//				view.application.addElement(this);
-//				view.main.visible = false;
-			}
-			
-			
-			override protected function processStop():void
-			{
-//				view.application.removeElement(this);
-//				view.main.visible = true;
-			}
-			
-			
-			private function get view():MPCView
-			{
-				return MPCView.instance;
 			}
 			
 			

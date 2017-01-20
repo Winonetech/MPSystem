@@ -2,7 +2,8 @@
 <contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" 
-					  xmlns:contents="multipublish.views.contents.*">
+					  xmlns:contents="multipublish.views.contents.*"
+					  creationComplete="init()">
 	
 	<s:SWFLoader id="loader" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"
 				 scaleContent="true" maintainAspectRatio="true" source="{financeDateUrl}"/>
@@ -13,17 +14,22 @@
 			
 			import multipublish.consts.FinanceTypeConsts;
 			import multipublish.core.mp;
+			import multipublish.tools.FinanceDataUdtController;
 			import multipublish.vo.contents.Finance;
+			
+			
+			private function init():void
+			{
+				if (!config.fduc)
+				{
+					config.fduc = new FinanceDataUdtController;
+				}
+			}
+			
 			
 			override protected function processPlay():void
 			{
 				financeDateUrl = type[financeDate.contentName];
-//				financeDateUrl = type[config.list[config.count]];
-//				config.count++;
-//				if (config.count == config.list.length)
-//				{
-//					config.count = 0;
-//				}
 				timerPlay();
 			}
 			
@@ -31,7 +37,6 @@
 			override protected function processStop():void
 			{
 				timerStop();
-				
 			}
 			
 			
