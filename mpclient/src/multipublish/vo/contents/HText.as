@@ -27,9 +27,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function HText($data:Object = null)
+		public function HText(
+			$data:Object = null, 
+			$name:String = "text", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

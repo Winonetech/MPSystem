@@ -59,6 +59,23 @@ package multipublish.tools
 		
 		/**
 		 * 
+		 * 停止数据控制。
+		 * 
+		 */
+		
+		public function removeControlUsecache():void
+		{
+			if (usecacheTimer)
+			{
+				usecacheTimer.stop();
+				usecacheTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
+				usecacheTimer = null;
+			}
+		}
+		
+		
+		/**
+		 * 
 		 * 清除节目播放时间控制。
 		 * 
 		 */
@@ -163,23 +180,6 @@ package multipublish.tools
 			var note:String = getNote($time, true);
 			shotcutCache = shotcutCache || {};
 			shotcutCache[note] = {handler:$handler, args:$args};
-		}
-		
-		
-		/**
-		 * 
-		 * 停止数据控制。
-		 * 
-		 */
-		
-		public function removeControlUsecache():void
-		{
-			if (usecacheTimer)
-			{
-				usecacheTimer.stop();
-				usecacheTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
-				usecacheTimer = null;
-			}
 		}
 		
 		

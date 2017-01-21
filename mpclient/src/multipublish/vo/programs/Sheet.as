@@ -13,11 +13,23 @@ package multipublish.vo.programs
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
 	
+	
 	public class Sheet extends VO
 	{
-		public function Sheet($data:Object=null, $name:String="sheet")
+		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
+		
+		public function Sheet(
+			$data:Object = null, 
+			$name:String = "sheet", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data, $name);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -35,7 +47,6 @@ package multipublish.vo.programs
 				wt::registCache(mp::background);
 				mp::background = CacheUtil.extractURI(mp::background, PathConsts.PATH_FILE);
 			}
-			
 			
 			mp::backgroundAlpha = Number(data["backgroundAlpha"]);
 			mp::backgroundAlpha = isNaN(mp::backgroundAlpha) ? 1 : mp::backgroundAlpha;

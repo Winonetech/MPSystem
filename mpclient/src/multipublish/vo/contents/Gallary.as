@@ -23,7 +23,6 @@ package multipublish.vo.contents
 	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
-	import multipublish.utils.URLUtil;
 	
 	
 	public final class Gallary extends ResolveContent
@@ -35,9 +34,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Gallary($data:Object = null)
+		public function Gallary(
+			$data:Object = null, 
+			$name:String = "gallary", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -125,12 +128,6 @@ package multipublish.vo.contents
 //			list.sortOn("order", Array.NUMERIC);
 			
 			resolved = true;
-			
-			inited = true;
-			
-			Cache.start();
-			
-			if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
 		}
 		
 		

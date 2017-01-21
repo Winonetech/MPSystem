@@ -3,7 +3,7 @@ package multipublish.utils
 	
 	/**
 	 * 
-	 * 内容工具。
+	 * 内容工具，用于获取内容视图与数据结构。
 	 * 
 	 */
 	
@@ -11,6 +11,7 @@ package multipublish.utils
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.FileUtil;
 	
+	import multipublish.views.CacheView;
 	import multipublish.views.LayoutView;
 	import multipublish.views.contents.*;
 	import multipublish.views.moduleContents.AskPaperView;
@@ -39,14 +40,14 @@ package multipublish.utils
 				var refer:Class = VIEWS[$content.type];
 				if (refer) 
 				{
-					var content:* = new refer;
+					//如果是不需要等待的模块，则需要创建一个CacheView壳来包含对应的视图。
+					var content:* = (UNWAIT_CONTENTS_VIEW.indexOf(refer) > 0)
+						? getCacheView(refer)
+						: new refer;
 				}
 			}
 			return content;
 		}
-		
-		
-		
 		
 		
 		/**
@@ -55,7 +56,7 @@ package multipublish.utils
 		 * 
 		 */
 		
-		public static function getContentVO($content:Object):Content
+		public static function getContentVO($content:Object, $useWait:Boolean, $cacheGroup:String, $resolveWait:Boolean):Content
 		{
 			if ($content.contentType == "video")
 			{
@@ -81,48 +82,26 @@ package multipublish.utils
 				classRef = VOS[$content.contentType];
 			}
 			
-			if (classRef) var content:Content = new classRef($content);    //实例化对应的视图。
+			if (classRef) 
+			{
+				var content:Content = new classRef($content, "content", 
+					(UNWAIT_CONTENTS_VO.indexOf(classRef) > 0) ? $resolveWait : $useWait, $cacheGroup);
+				//实例化对应的视图。
+			}
 			return content;
 		}
 		
 		
-		
-		public static function getModuleVO($index:int):Class
-		{
-			return MVOS[$index];
-		}
-		
-		
-		public static function getModuleView($index:int, $noticeType:int = 0):Class
-		{
-			return  $index == 3 ? MVIEWS[$index][$noticeType - 1] : MVIEWS[$index];
-		}
-		
 		/**
-		 * 
-		 * 模块类型字典。     <br>
-		 * 0 -> 其他模块。<br>
-		 * 1 -> 民意调查。<br>
-		 * 2 -> 应急播报。<br>
-		 * 3 -> 公告通知。
-		 * 
+		 * @private
 		 */
-		
-		private static const MVIEWS:Object = 
+		private static function getCacheView(refer:Class):CacheView
 		{
-			0 : LayoutView,
-			1 : AskPaperView,
-			2 : EmergencyBroadView,
-			3 : [FindPersonView, WelcomeView]
-		};
+			var content:CacheView = new CacheView;
+			content.refer = refer;
+			return content;
+		}
 		
-		
-		private static const MVOS:Object = 
-		{
-			1 : AskPaper,
-			2 : EmergencyBroad,
-			3 : Notice
-		};
 		
 		/**
 		 * @private
@@ -165,6 +144,16 @@ package multipublish.utils
 			"marquee" : MarqueeView,
 			"qrCode"  : QRCodeView
 		};
+		
+		/**
+		 * @private
+		 */
+		private static const UNWAIT_CONTENTS_VIEW:Array = [NewsView, GallaryView, EPaperView];
+		
+		/**
+		 * @private
+		 */
+		private static const UNWAIT_CONTENTS_VO:Array = [News, Gallary, EPaper];
 		
 	}
 }

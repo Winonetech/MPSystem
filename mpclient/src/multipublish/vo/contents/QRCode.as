@@ -21,9 +21,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function QRCode($data:Object=null)
+		public function QRCode(
+			$data:Object = null, 
+			$name:String = "qrCode", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		/**

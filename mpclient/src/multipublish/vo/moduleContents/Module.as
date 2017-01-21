@@ -7,9 +7,13 @@ package multipublish.vo.moduleContents
 	
 	public final class Module extends VO
 	{
-		public function Module($data:Object=null)
+		public function Module(
+			$data:Object = null, 
+			$name:String = "content", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 			
 			mp::moduleContent = new Vector.<Content>;
 		}

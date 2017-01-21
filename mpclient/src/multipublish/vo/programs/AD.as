@@ -17,9 +17,13 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function AD($data:Object=null, $name:String = "ad")
+		public function AD(
+			$data:Object = null, 
+			$name:String = "ad", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data, $name);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

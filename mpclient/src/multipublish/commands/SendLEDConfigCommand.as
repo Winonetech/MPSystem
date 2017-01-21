@@ -1,5 +1,13 @@
 package multipublish.commands
 {
+	
+	/**
+	 * 
+	 * 发送LED的配置信息。
+	 * 
+	 */
+	
+	
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
 	
@@ -13,10 +21,15 @@ package multipublish.commands
 	import multipublish.errors.FileUnExistError;
 	import multipublish.tools.MPService;
 
+	
 	public final class SendLEDConfigCommand extends _InternalCommand
 	{
 		
-		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
 		
 		public function SendLEDConfigCommand()
 		{
@@ -38,28 +51,22 @@ package multipublish.commands
 		}
 		
 		
+		/**
+		 * @private
+		 */
 		private function sendLEDConfig():void
 		{
-			if (flag) return;      //如果不是第一次进入，则直接返回。
-			
 			var config:String = readConfig2String();
 			
 			if (config) 
 				MPCConfig.instance.service.readConfigOver(config);
-			
-			flag = true;
 		}
 		
-		
 		/**
-		 * 
 		 * 返回读到的config数据。String类型。
-		 * 
 		 */
-		
 		private function readConfig2String():String
 		{
-			
 			var url:String = FileUtil.resolvePathApplication(URLConsts.LED_CONFIG);
 			var f:File = new File(url);
 			var fs:FileStream = new FileStream;
@@ -70,21 +77,9 @@ package multipublish.commands
 				var config:String = fs.readUTFBytes(fs.bytesAvailable);
 				fs.close();
 			}
-			else
-			{
-				throw new FileUnExistError(url);
-			}
 			
 			return config;
 		}
-		
-		/**
-		 * 
-		 * 一个标记。只允许首次进入。
-		 * 
-		 */
-		
-		private static var flag:Boolean;
 		
 	}
 }

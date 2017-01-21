@@ -20,9 +20,13 @@ package multipublish.vo.moduleContents
 		 * 
 		 */
 		
-		public function EmergencyBroad($data:Object=null)
+		public function EmergencyBroad(
+			$data:Object = null, 
+			$name:String = "emergencyBroad", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

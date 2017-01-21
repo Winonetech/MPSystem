@@ -14,10 +14,14 @@ package multipublish.core
 	
 	import com.winonetech.components.progress.ProgressWindow;
 	
+	import flash.media.Video;
+	
 	import input.Input;
 	
+	import multipublish.consts.ContentConsts;
 	import multipublish.views.*;
 	
+	import spark.components.VideoDisplay;
 	import spark.components.WindowedApplication;
 	
 	
@@ -32,8 +36,23 @@ package multipublish.core
 		
 		public function MPCView()
 		{
-			if(!instance) super();
+			if(!instance) 
+			{
+				super();
+				treeVideo = initTreeVideo();
+			}
 			else throw new SingleTonError(this);
+		}
+		
+		private function initTreeVideo():VideoDisplay
+		{
+			var video:VideoDisplay = new VideoDisplay;
+			video.width = application.width;
+			video.height = application.height;
+			video.autoDisplayFirstFrame = true;
+			video.loop = true;
+			video.scaleMode = "letterbox";
+			return video;
 		}
 		
 		
@@ -92,6 +111,15 @@ package multipublish.core
 		 */
 		
 		public var progress:ProgressWindow = new ProgressWindow;
+		
+		
+		/**
+		 * 
+		 * 下载演示视频。
+		 * 
+		 */
+		
+		public var treeVideo:VideoDisplay;
 		
 		
 		/**

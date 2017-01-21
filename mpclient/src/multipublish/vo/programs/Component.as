@@ -32,9 +32,13 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function Component($data:Object = null, $name:String = "component")
+		public function Component(
+			$data:Object = null, 
+			$name:String = "component", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data, $name);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

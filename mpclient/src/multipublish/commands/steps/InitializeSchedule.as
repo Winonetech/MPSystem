@@ -64,7 +64,7 @@ package multipublish.commands.steps
 		private function load():void
 		{
 			model = new Model;
-			model.url = config.cache ? DataConsts.PATH_CHANNEL : config.source;
+			model.url = config.cache ? DataConsts.CHANNEL_NOW : config.source;
 			model.addEventListener(CommandEvent.COMMAND_END, modelHandler);
 			model.execute();
 		}
@@ -125,7 +125,7 @@ package multipublish.commands.steps
 		private function modelHandler($e:CommandEvent):void
 		{
 			var xml:Object = ObjectUtil.convert(model.data, Object);
-			var url:String = DataConsts.PATH_CHANNEL;
+			var url:String = DataConsts.CHANNEL_NOW;
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
 			if (xml)
 			{

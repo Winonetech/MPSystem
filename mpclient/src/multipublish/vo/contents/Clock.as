@@ -26,9 +26,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Clock($data:Object=null)
+		public function Clock(
+			$data:Object = null, 
+			$name:String = "clock", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

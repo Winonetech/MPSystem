@@ -24,9 +24,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Marquee($data:Object = null)
+		public function Marquee(
+			$data:Object = null, 
+			$name:String = "marquee", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

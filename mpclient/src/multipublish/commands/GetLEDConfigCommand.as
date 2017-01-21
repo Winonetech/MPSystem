@@ -1,12 +1,26 @@
 package multipublish.commands
 {
+	
+	/**
+	 * 
+	 * 设置从服务端发送过来的LED配置信息。
+	 * 
+	 */
+	
+	
 	import cn.vision.utils.FileUtil;
 	
 	import multipublish.consts.URLConsts;
-
+	
+	
 	public class GetLEDConfigCommand extends _InternalCommand
 	{
 		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
 		
 		public function GetLEDConfigCommand($config:String)
 		{
@@ -14,6 +28,7 @@ package multipublish.commands
 			
 			ledConfig = $config;
 		}
+		
 		
 		/**
 		 * @inheritDoc
@@ -28,12 +43,21 @@ package multipublish.commands
 			commandEnd();
 		}
 		
+		
+		/**
+		 * @private
+		 */
 		private　function getLEDConfig():void
 		{
 			if (ledConfig)
 				FileUtil.saveUTF(URLConsts.LED_CONFIG, ledConfig);
 		}
 		
+		
+		/**
+		 * @private
+		 */
 		private var ledConfig:String;
+		
 	}
 }

@@ -18,6 +18,7 @@ package multipublish.core
 	
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
+	import multipublish.tools.Downloader;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
 	import multipublish.tools.ScreenController;
@@ -58,6 +59,7 @@ package multipublish.core
 			mp::shotcuter  = new Shotcuter;
 			mp::language   = new Language;
 			mp::reporter   = new Reporter;
+			mp::downloader = new Downloader;
 		}
 		
 		
@@ -94,6 +96,11 @@ package multipublish.core
 		public function get service():MPService
 		{
 			return mp::service;
+		}
+		
+		public function get downloader():Downloader
+		{
+			return mp::downloader;
 		}
 		
 		
@@ -679,6 +686,11 @@ package multipublish.core
 		 * @private
 		 */
 		mp var shotcuter:Shotcuter;
+		
+		/**
+		 * @private
+		 */
+		mp var downloader:Downloader;
 		
 		/**
 		 * @private

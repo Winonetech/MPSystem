@@ -81,8 +81,8 @@ package multipublish.commands
 		
 		private function initializeChannelCache():void
 		{
-			var f :File  = new File(FileUtil.resolvePathApplication(DataConsts.NEW_CHANNEL));
-			var ft:File  = new File(FileUtil.resolvePathApplication(DataConsts.NEW_CHANNEL) + ".tmp");
+			var f :File  = new File(FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW));
+			var ft:File  = new File(FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW) + ".tmp");
 			
 			if (f .exists) f .deleteFile();
 			if (ft.exists) ft.deleteFile(); 

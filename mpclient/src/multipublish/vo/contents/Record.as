@@ -28,9 +28,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Record($data:Object = null)
+		public function Record(
+			$data:Object = null, 
+			$name:String = "record", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

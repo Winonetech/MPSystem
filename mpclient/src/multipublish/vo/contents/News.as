@@ -37,9 +37,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function News($data:Object = null)
+		public function News(
+			$data:Object = null, 
+			$name:String = "news", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -51,7 +55,6 @@ package multipublish.vo.contents
 		{
 			$args = $args || [];
 			ArrayUtil.unshift($args, content);
-			Cache.allowed = true;
 			loadContent.apply(null, $args);
 		}
 		
@@ -137,12 +140,6 @@ package multipublish.vo.contents
 			}
 			
 			resolved = true;
-			
-			inited = true;
-			
-			Cache.start();
-			
-			if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
 		}
 		
 		

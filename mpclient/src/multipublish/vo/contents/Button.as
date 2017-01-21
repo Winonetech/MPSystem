@@ -29,9 +29,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Button($data:Object = null)
+		public function Button(
+			$data:Object = null, 
+			$name:String = "button", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

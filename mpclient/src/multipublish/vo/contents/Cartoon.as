@@ -28,9 +28,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Cartoon($data:Object = null)
+		public function Cartoon(
+			$data:Object = null, 
+			$name:String = "cartoon", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

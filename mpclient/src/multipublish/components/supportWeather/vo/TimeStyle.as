@@ -1,6 +1,8 @@
 package multipublish.components.supportWeather.vo
 {
 	import cn.vision.utils.StringUtil;
+	
+	
 
 	[Bindable]
 	public class TimeStyle

@@ -29,9 +29,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Picture($data:Object = null)
+		public function Picture(
+			$data:Object = null, 
+			$name:String = "picture", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

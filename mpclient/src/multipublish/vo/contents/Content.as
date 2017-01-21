@@ -37,9 +37,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Content($data:Object = null)
+		public function Content(
+			$data:Object = null, 
+			$name:String = "content", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

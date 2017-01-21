@@ -18,9 +18,13 @@ package multipublish.vo.moduleContents
 		 * 
 		 */
 		
-		public function Notice($data:Object=null)
+		public function Notice(
+			$data:Object = null, 
+			$name:String = "notice", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

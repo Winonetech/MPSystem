@@ -16,6 +16,7 @@ package multipublish.vo.contents
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
@@ -46,10 +47,19 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function EPaper($data:Object = null)
+		public function EPaper(
+			$data:Object = null, 
+			$name:String = "epaper", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		
 		override public function parse($data:Object):void
 		{
@@ -69,11 +79,7 @@ package multipublish.vo.contents
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
 			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
 			else useCache = true;
-			if (time == getPaperTime || $args[0])
-			{
-				Cache.allowed = true;
-				updateContents();
-			}
+			if (time == getPaperTime || $args[0]) updateContents();
 		}
 		
 		
@@ -140,7 +146,7 @@ package multipublish.vo.contents
 //							var temp:String  = saveURL.split("/").pop();
 //							var save:String  = temp.split(".")[0];
 //							var bool:Boolean = save == date;
-							var cache:Cache = (item is String) ? Cache.cache(item, true) : item;   //Cache主要存放一些下载路径和安装路径。
+							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup) : item;   //Cache主要存放一些下载路径和安装路径。
 							
 //							if (bool) 
 //							{
@@ -148,12 +154,12 @@ package multipublish.vo.contents
 //								cache.extra.response = (i == 0);
 //								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
 //							}
-							if (!cach_sp[cache.saveURL])
+							if (!cach[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
 								cache.extra.response = (i == 0);
-								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
-								cach_sp[cache.saveURL] = cache;
+								cache.addEventListener(CommandEvent.COMMAND_END, cache_endHandler);
+								cach[cache.saveURL] = cache;
 							}
 						}
 					}
@@ -216,18 +222,21 @@ package multipublish.vo.contents
 			}
 			
 			wt::registCache.apply(this, urls);
-			Cache.start();
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach_sp.length == 0 || temp > 0) 
+			if (cach.length == 0 || temp > 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();
 			}
 			else
 			{
-				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach_sp.length);
+				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach.length);
 			}
+			
+			TimerUtil.callLater(1, dispatchInit);
+			
+			TimerUtil.callLater(2, dispatchReady);
 		}
 		
 		/**
@@ -322,8 +331,7 @@ package multipublish.vo.contents
 			{
 				LogUtil.log(title + "：报纸处理完毕，没有报纸数据");
 				resolved = true;
-				Cache.start();
-				dispatchEvent(new ControlEvent(ControlEvent.READY));
+				dispatchReady();
 			}
 		}
 		
@@ -358,7 +366,7 @@ package multipublish.vo.contents
 		/**
 		 * @private
 		 */
-		private function handlerCacheEnd($e:CommandEvent):void
+		private function cache_endHandler($e:CommandEvent):void
 		{
 			var cache:Cache = $e.command as Cache;
 			const exist:Boolean = cache.exist;
@@ -366,10 +374,10 @@ package multipublish.vo.contents
 			
 			if (exist)
 			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
+				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach.length - 1 + retrys.length));
 				
 				delete retrys[cache.saveURL];
-				cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+				cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
 				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
 				if (errors)
 				{
@@ -383,11 +391,11 @@ package multipublish.vo.contents
 				{
 					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
 					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
-					cache.removeEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+					cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
 				}
 				else
 				{
-					if (cach_sp[cache.saveURL])
+					if (cach[cache.saveURL])
 					{
 						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
 						retrys[cache.saveURL] = cache;
@@ -395,57 +403,10 @@ package multipublish.vo.contents
 				}
 			}
 			
-			delete cach_sp[cache.saveURL];
+			delete cach[cache.saveURL];
 			
-			if (cach_sp.length == 0) resolveData();
+			if (cach.length == 0) resolveData();
 		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function handler_spCacheEnd($e:CommandEvent):void
-		{
-			var cache:Cache = $e.command as Cache;
-			const exist:Boolean = cache.exist;
-			const fzip:String = FileUtil.resolvePathApplication(cache.saveURL);
-			
-			if (exist)
-			{
-				LogUtil.log(title + "：下载文件成功", cache.saveURL, "剩余下载：" + (cach_sp.length - 1 + retrys.length));
-				
-				delete retrys[cache.saveURL];
-				cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
-				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
-				if (errors)
-				{
-					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");
-					for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
-				}
-			}
-			else
-			{
-				if (cache.code == "550")
-				{
-					LogUtil.log(title + "：下载文件失败", cache.saveURL, "文件不存在。");
-					EPaperUtil.mp::flagArchiveUnloadable(cache.saveURL);
-					cache.removeEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
-				}
-				else
-				{
-					if (cach_sp[cache.saveURL])
-					{
-						LogUtil.log(title + "：下载文件中断", cache.saveURL, "稍后重新下载。");
-						retrys[cache.saveURL] = cache;
-					}
-				}
-			}
-			
-			delete cach_sp[cache.saveURL];
-			
-			if (cach_sp.length == 0) resolveData();
-		}
-		
 		
 		
 		/**
@@ -456,20 +417,22 @@ package multipublish.vo.contents
 		
 		public function get daysKeep():uint
 		{
-			return useCache ? getProperty("daysKeep", uint) : _daysKeep;
+			return useCache ? getProperty("daysKeep", uint) : (mp::daysKeep);
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set daysKeep($value:uint):void
 		{
-			useCache  = false;
-			_daysKeep = $value;
+			useCache = false;
+			mp::daysKeep = $value;
 		}
 		
-		private var useCache:Boolean = true;
 		
 		/**
 		 * 
-		 * 具体内容。
+		 * 顶点更新时间。
 		 * 
 		 */
 		
@@ -521,6 +484,11 @@ package multipublish.vo.contents
 		private var images:Map = new Map;
 		
 		/**
+		 * @private
+		 */
+		private var useCache:Boolean = true;
+		
+		/**
 		 * 重新下载的存放。
 		 */
 		private var retrys:Map = new Map;
@@ -534,7 +502,8 @@ package multipublish.vo.contents
 		/**
 		 * @private
 		 */
-		private var _daysKeep:uint;
+		mp var daysKeep:uint;
+		
 		
 		/**
 		 * @private

@@ -30,9 +30,13 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function Program($data:Object = null)
+		public function Program(
+			$data:Object = null, 
+			$name:String = "program", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 			
 			initialize();
 		}
