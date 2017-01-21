@@ -173,10 +173,10 @@ package multipublish.views
 			if (temp)
 			{
 				temp.removeEventListener(ControlEvent.READY, handlerReady);
-				if (++readyCount >= sheet.componentsArr.length) 
-				{
+//				if (++readyCount >= sheet.componentsArr.length) 
+//				{
 					dispatchReady();
-				}
+//				}
 			}
 		}
 		

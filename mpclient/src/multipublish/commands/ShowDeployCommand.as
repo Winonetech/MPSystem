@@ -60,7 +60,6 @@ package multipublish.commands
 		{
 			if(!view.installer)
 			{ 
-				
 				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_DEPLOY);
 				view.main.enabled = false;
 				view.application.addElement(view.installer = new InstallerView);

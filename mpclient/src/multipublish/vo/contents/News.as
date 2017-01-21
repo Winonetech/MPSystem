@@ -24,6 +24,7 @@ package multipublish.vo.contents
 	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.events.DLStateEvent;
 	import multipublish.utils.DicUtil;
 	import multipublish.utils.URLUtil;
 	

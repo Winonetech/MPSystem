@@ -68,7 +68,6 @@ package multipublish.commands
 			return result;
 		}
 		
-		
 		/**
 		 * @private
 		 */
@@ -84,6 +83,10 @@ package multipublish.commands
 			model.execute();
 		}
 		
+		
+		/**
+		 * @private
+		 */
 		private function model_commandEndHandler($e:CommandEvent):void
 		{
 			var channelNew:Object = ObjectUtil.convert(model.data, Object);

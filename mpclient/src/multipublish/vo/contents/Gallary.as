@@ -125,8 +125,6 @@ package multipublish.vo.contents
 				}
 			}
 			
-//			list.sortOn("order", Array.NUMERIC);
-			
 			resolved = true;
 		}
 		

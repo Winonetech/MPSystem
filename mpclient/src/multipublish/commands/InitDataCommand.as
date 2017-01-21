@@ -33,6 +33,7 @@ package multipublish.commands
 		}
 		
 		
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -45,7 +46,6 @@ package multipublish.commands
 				
 				initData();
 			}
-			
 		}
 		
 		
@@ -102,6 +102,7 @@ package multipublish.commands
 			if (!provider.channelNow && !provider.channelNew) commandEnd();
 		}
 		
+		
 		/**
 		 * @private
 		 * 设定当前排期必须满足两个条件：
@@ -112,6 +113,7 @@ package multipublish.commands
 		{
 			return provider.channelNow == null && $channelNowData;
 		}
+		
 		
 		/**
 		 * @private
