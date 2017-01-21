@@ -15,7 +15,6 @@ package multipublish.commands
 	
 	import com.winonetech.tools.LogSQLite;
 	
-	import multipublish.commands.steps.Model;
 	import multipublish.consts.DataConsts;
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
