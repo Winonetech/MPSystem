@@ -14,7 +14,10 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
+	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.VO;
@@ -53,8 +56,32 @@ package multipublish.vo.contents
 		
 		override public function parse($data:Object):void
 		{
-			super.parse($data);
+			wt::internalParse($data);
 			
+			mp::parseBackground();
+			
+			customParse();
+			
+			TimerUtil.callLater(1, dispatchInit);
+			TimerUtil.callLater(2, dispatchReady);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		protected function customParse():void
+		{
+			
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		mp function parseBackground():void
+		{
 			mp::background = getProperty("background");
 			if(!StringUtil.isEmpty(mp::background))
 			{
@@ -65,6 +92,7 @@ package multipublish.vo.contents
 			mp::backgroundAlpha = getProperty("backgroundAlpha", Number);
 			if (mp::backgroundAlpha > 1)
 				mp::backgroundAlpha = mp::backgroundAlpha * .01;
+			
 		}
 		
 		

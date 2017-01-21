@@ -30,31 +30,18 @@ package multipublish.vo.contents
 			super($data, $name, $useWait, $cacheGroup);
 		}
 		
+		
 		/**
 		 * @inheritDoc
 		 */
-		override public function parse($data:Object):void
+		
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			setProperty("contentType", "qrCode");
 			
 			var url:String = getProperty("contentSource");
 			wt::registCache(url);
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
-			
-			VOUtil.registCacheParent(parent, content as String);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		
-		override public function set parent(value:VO):void
-		{
-			super.parent = value;
-			
-			VOUtil.registCacheParent(parent, content as String);
 		}
 		
 		

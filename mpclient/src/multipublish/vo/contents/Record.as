@@ -42,12 +42,10 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			setProperty("contentType", "video");
-				
+			
 			var url:String = getProperty("contentSource");
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
 			

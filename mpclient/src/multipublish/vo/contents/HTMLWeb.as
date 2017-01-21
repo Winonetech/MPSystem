@@ -13,6 +13,10 @@ package multipublish.vo.contents
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.HTTPUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
+	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
+	import cn.vision.utils.XMLUtil;
 	
 	import com.coltware.airxzip.ZipEntry;
 	import com.coltware.airxzip.ZipFileReader;
@@ -56,10 +60,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			if (htmlType)
 			{
 				if (htmlType == "url")

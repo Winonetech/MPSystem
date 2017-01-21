@@ -8,6 +8,8 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.TimerUtil;
+	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
@@ -40,10 +42,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			var url:String = getProperty("contentSource");
 			wt::registCache(url);
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);

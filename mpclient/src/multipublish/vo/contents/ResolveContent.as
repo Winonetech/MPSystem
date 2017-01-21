@@ -28,6 +28,8 @@ package multipublish.vo.contents
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
+	import multipublish.core.mp;
+	
 	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -55,40 +57,27 @@ package multipublish.vo.contents
 		}
 		
 		
+		
 		/**
 		 * @inheritDoc
 		 */
 		
 		override public function parse($data:Object):void
 		{
-			if ($data)
-			{
-				wt::raw = $data;
-				if ($data is String)
-				{
-					var src:String = StringUtil.trim(String($data));
-					data = XMLUtil.validate(src)
-						?  ObjectUtil.convert(XML(src), Object)
-						:  JSON.parse(src);
-				}
-				else if ($data is XML)
-				{
-					data = ObjectUtil.convert($data, Object);
-				}
-				else
-				{
-					data = ObjectUtil.clone($data);
-				}
-			}
-			else data = {};
+			wt::internalParse($data);
+			
+			mp::parseBackground();
 			
 			remoteURL = getProperty("contentSource");
 			localURL = StringUtil.replace(CacheUtil.extractURI(remoteURL, PathConsts.PATH_FILE), "?", "-");
 			localURL = StringUtil.replace(localURL, "=", "-");
 			localURL = StringUtil.replace(localURL, "&", "-");
 			
+			customParse();
+			
 			resolveContentSource(remoteURL);
 		}
+		
 		
 		
 		/**

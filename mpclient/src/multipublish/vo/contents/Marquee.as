@@ -38,10 +38,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			mp::content = StringUtil.replace(getProperty("contentSource"), "\n", " ");
 		}
 		

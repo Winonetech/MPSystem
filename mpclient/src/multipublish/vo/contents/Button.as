@@ -9,6 +9,7 @@ package multipublish.vo.contents
 	
 	
 	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
@@ -43,10 +44,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			if(!transparent)
 			{
 				var sourceUp:String = getProperty("sourceUp");
