@@ -165,7 +165,6 @@ package multipublish.utils
 						
 						view.main.data = current;  //调用 data的 setter函数 会触发其 resolveData (MainView)
 						
-						view.main.play();
 					}
 				}
 				else

@@ -27,6 +27,8 @@
 			override protected function processPlay():void
 			{
 				super.processPlay();
+
+				play();
 				
 				rollingCount = 0;
 				
