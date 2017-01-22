@@ -31,7 +31,7 @@ package multipublish.utils
 		 * 
 		 */
 		
-		public static function changeChannel():void
+		public static function changeChannel():Boolean
 		{
 			var provider:MDProvider = MDProvider.instance;
 			if (provider.channelNew)
@@ -43,7 +43,10 @@ package multipublish.utils
 				FileUtil.moveFile(
 					FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW),
 					FileUtil.resolvePathApplication(DataConsts.CHANNEL_NOW), true);
+				
+				return true;
 			}
+			return false;
 		}
 		
 		

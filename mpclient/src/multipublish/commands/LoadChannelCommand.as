@@ -92,7 +92,8 @@ package multipublish.commands
 			if (channelNew)
 			{
 				//当新排期数据有效且与老排期不同，则需要保存新排期数据。
-				if(!ObjectUtil.compare(channelNow, channelNew))
+				config.replacable = !ObjectUtil.compare(channelNow, channelNew);
+				if(config.replacable)
 					FileUtil.saveUTF(FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW), String(model.data));
 				else
 					modelog("与上一次的排期数据相同。");

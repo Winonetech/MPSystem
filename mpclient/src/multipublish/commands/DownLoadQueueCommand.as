@@ -48,7 +48,14 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			cmd ? resolve() : send();
+			if (config.replacable)
+			{
+				cmd ? resolve() : send();
+			}
+			else
+			{
+				commandEnd();
+			}
 		}
 		
 		
