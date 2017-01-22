@@ -1,8 +1,6 @@
 package multipublish.components.supportWeather
 {
 	
-	
-	
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	

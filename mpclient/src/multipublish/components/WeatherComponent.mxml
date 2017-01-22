@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:s ="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:supportWeather="multipublish.components.supportWeather.*"
+		 xmlns:sp="multipublish.components.supportWeather.*"
 		 fontFamily="微软雅黑" fontWeight="bold"
 		 clipAndEnableScrolling="true"
 		 creationComplete="application1_creationCompleteHandler(event)">
 	
-	<supportWeather:TimeView id="time"/>
+	<sp:TimeView id="time"/>
 	
-	<supportWeather:WeatherView id="weather"/>
+	<sp:WeatherView id="weather"/>
 	
 	<fx:Script>
 		<![CDATA[
