@@ -30,9 +30,9 @@ package multipublish.vo.schedules
 		 * 
 		 */
 		
-		public function Schedule($data:Object = null)
+		public function Schedule($data:Object = null, $name:String = "schedule")
 		{
-			super($data);
+			super($data, $name);
 			
 			initialize();
 		}

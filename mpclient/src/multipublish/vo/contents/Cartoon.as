@@ -8,6 +8,8 @@ package multipublish.vo.contents
 	 */
 	
 	
+	import cn.vision.utils.TimerUtil;
+	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
@@ -28,9 +30,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Cartoon($data:Object = null)
+		public function Cartoon(
+			$data:Object = null, 
+			$name:String = "cartoon", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -38,10 +44,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			setProperty("contentType", "flash");
 			
 			var url:String = getProperty("contentSource");

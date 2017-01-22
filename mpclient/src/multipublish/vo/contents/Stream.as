@@ -1,11 +1,30 @@
 package multipublish.vo.contents
 {
+	
+	/**
+	 * 
+	 * 流媒体。
+	 * 
+	 */
+	
 	public final class Stream extends Content
 	{
-		public function Stream($data:Object = null)
+		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
+		
+		public function Stream(
+			$data:Object = null, 
+			$name:String = "stream", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
+		
 		
 		/**
 		 * 

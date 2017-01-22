@@ -58,7 +58,7 @@ package multipublish.commands
 				//注册每天 00:00监测排期。
 				controller.registControlBroadcast(new Date(2000, 0, 1), presenter.broadcastProgram);
 				//设定 n秒后执行加载频道排期。
-				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5, null, true);
+				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5);
 			}
 			else
 			{

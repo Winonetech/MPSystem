@@ -28,9 +28,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Record($data:Object = null)
+		public function Record(
+			$data:Object = null, 
+			$name:String = "record", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -38,12 +42,10 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			setProperty("contentType", "video");
-				
+			
 			var url:String = getProperty("contentSource");
 			mp::content = CacheUtil.extractURI(url, PathConsts.PATH_FILE);
 			

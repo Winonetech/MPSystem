@@ -38,7 +38,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const PATH_CHANNEL:String = "cache/channel/channel.dat";
+		public static const CHANNEL_NOW:String = "cache/channel/channel.dat";
 		
 		
 		/**
@@ -47,7 +47,7 @@ package multipublish.consts
 		 * 
 		 */
 		
-		public static const NEW_CHANNEL:String = "cache/channel/channel_new.dat";
+		public static const CHANNEL_NEW:String = "cache/channel/channel_new.dat";
 		
 		
 		

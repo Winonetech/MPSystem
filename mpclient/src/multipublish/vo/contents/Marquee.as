@@ -24,9 +24,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Marquee($data:Object = null)
+		public function Marquee(
+			$data:Object = null, 
+			$name:String = "marquee", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -34,10 +38,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			mp::content = StringUtil.replace(getProperty("contentSource"), "\n", " ");
 		}
 		

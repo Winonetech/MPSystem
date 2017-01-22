@@ -30,9 +30,13 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function Layout($data:Object = null)
+		public function Layout(
+			$data:Object = null, 
+			$name:String = "layout", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 			
 			initialize();
 		}

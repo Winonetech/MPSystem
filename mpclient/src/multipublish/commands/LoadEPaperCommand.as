@@ -39,19 +39,30 @@ package multipublish.commands
 		}
 		
 		
-		
+		/**
+		 * @private
+		 */
 		private function loadEPaper():void
 		{
 			modelog("下载电子报。");
-			
-			var arr:Map = MDProvider.instance.ePaperMap;
-			
-			//强制更新。
-			arr && arr[url].update(true, daysKeep);
+			if (MDProvider.instance.channelNow)
+			{
+				var arr:Map = MDProvider.instance.channelNow.epapersMap;
+				
+				//强制更新。
+				arr[url] && arr[url].update(true, daysKeep);
+			}
 		}
 		
+		
+		/**
+		 * @private
+		 */
 		private var daysKeep:String;
 		
+		/**
+		 * @private
+		 */
 		private var url:String;
  	}
 }

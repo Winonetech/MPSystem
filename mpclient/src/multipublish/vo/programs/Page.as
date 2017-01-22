@@ -26,9 +26,13 @@ package multipublish.vo.programs
 		 * 
 		 */
 		
-		public function Page($data:Object = null, $name:String = "page")
+		public function Page(
+			$data:Object = null, 
+			$name:String = "page", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data, $name);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		

@@ -38,9 +38,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function News($data:Object = null)
+		public function News(
+			$data:Object = null, 
+			$name:String = "news", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -75,7 +79,6 @@ package multipublish.vo.contents
 			var temp:int = getTimer();
 			if (time == 0 || (temp - time > updateFrequency * 1000) || $useCache)
 			{
-				if (time) Cache.allowed = true;
 				time = temp;
 				super.loadContent($url, $useCache, $method, $args);
 			}
@@ -138,17 +141,6 @@ package multipublish.vo.contents
 			}
 			
 			resolved = true;
-			
-			if (!inited)
-			{
-				dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
-				inited = true;
-			}
-			
-			
-			Cache.start();
-			
-			if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
 		}
 		
 		

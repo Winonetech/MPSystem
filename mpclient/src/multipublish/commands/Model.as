@@ -1,4 +1,4 @@
-package multipublish.commands.steps
+package multipublish.commands
 {
 	
 	/**
@@ -17,7 +17,6 @@ package multipublish.commands.steps
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequest;
 	
-	import multipublish.commands.Step;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.core.mp;
 	

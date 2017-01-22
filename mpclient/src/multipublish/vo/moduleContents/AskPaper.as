@@ -19,10 +19,14 @@ package multipublish.vo.moduleContents
 		 * 
 		 */
 		
-		public function AskPaper($data:Object=null)
-		{
-			super($data);
-		}
+		public function AskPaper(
+			$data:Object = null, 
+			$name:String = "askPaper", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
+			{
+				super($data, $name, $useWait, $cacheGroup);
+			}
 		
 		
 		override public function parse($data:Object):void

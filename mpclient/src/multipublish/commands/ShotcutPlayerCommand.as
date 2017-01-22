@@ -14,7 +14,6 @@ package multipublish.commands
 	import multipublish.tools.Controller;
 	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.DataUtil;
-	import multipublish.vo.elements.Arrange;
 	
 	import mx.utils.OnDemandEventDispatcher;
 	

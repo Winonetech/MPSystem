@@ -12,7 +12,10 @@ package multipublish.vo.contents
 	import cn.vision.utils.Base64Util;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
+	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.wt;
@@ -24,6 +27,8 @@ package multipublish.vo.contents
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
+	
+	import multipublish.core.mp;
 	
 	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
@@ -42,10 +47,15 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function ResolveContent($data:Object = null)
+		public function ResolveContent(
+			$data:Object = null, 
+			$name:String = "resolveContent", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
+		
 		
 		
 		/**
@@ -54,43 +64,20 @@ package multipublish.vo.contents
 		
 		override public function parse($data:Object):void
 		{
-			super.parse($data);
+			wt::internalParse($data);
+			
+			mp::parseBackground();
 			
 			remoteURL = getProperty("contentSource");
 			localURL = StringUtil.replace(CacheUtil.extractURI(remoteURL, PathConsts.PATH_FILE), "?", "-");
 			localURL = StringUtil.replace(localURL, "=", "-");
 			localURL = StringUtil.replace(localURL, "&", "-");
 			
+			customParse();
+			
 			resolveContentSource(remoteURL);
 		}
 		
-		
-		/**
-		 * @inheritDoc
-		 */
-		
-		override wt function registCache(...$args):void
-		{
-			for each (var item:* in $args)
-			{
-				var cache:Cache = (item is String) ? Cache.cache(item, inited) : item;
-				if (cache && ! cach[cache.saveURL] && !cache.exist)
-				{
-					var handler:Function = function($e:CommandEvent):void
-					{
-						var cache:Cache = Cache($e.command);
-						cache.removeEventListener(CommandEvent.COMMAND_END, handler);
-						
-						delete cach[cache.saveURL];
-						if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
-					};
-					cache.addEventListener(CommandEvent.COMMAND_END, handler);
-					cach[cache.saveURL] = cache;
-				}
-			}
-			
-			if (cach.length) dispatchEvent(new ControlEvent(ControlEvent.DOWNLOAD));  //当有需要下载的文件时，发送下载命令。
-		}
 		
 		
 		/**
@@ -121,8 +108,6 @@ package multipublish.vo.contents
 				http.send(JSON.stringify($args));
 			else
 				http.send();
-			
-			//createTimer(30);
 		}
 		
 		
@@ -134,7 +119,9 @@ package multipublish.vo.contents
 		
 		protected function resolveContentSource($content:*):void
 		{
+			TimerUtil.callLater(1, dispatchInit);
 			
+			TimerUtil.callLater(2, dispatchReady);
 		}
 		
 		
@@ -193,6 +180,10 @@ package multipublish.vo.contents
 					dispatchEvent(new ControlEvent(ControlEvent.ERROR, tip.message));
 				}
 			}
+			
+			dispatchInit();
+			
+			dispatchReady();
 		}
 		
 		
@@ -265,11 +256,6 @@ package multipublish.vo.contents
 		
 		protected var resolved:Boolean = true;
 		
-		
-		/**
-		 * @private
-		 */
-		protected var inited:Boolean;
 		
 		/**
 		 * @private

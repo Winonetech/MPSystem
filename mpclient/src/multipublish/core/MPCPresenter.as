@@ -14,7 +14,7 @@ package multipublish.core
 	import cn.vision.pattern.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
-	import multipublish.events.DLStateEvent;
+	import multipublish.utils.ViewUtil;
 	
 	import spark.components.WindowedApplication;
 	
@@ -80,11 +80,11 @@ package multipublish.core
 		
 		public function importData():void
 		{
-			config.cache = true;
+			/*config.cache = true;
 			
 			execute(new ImportDataCommand);
 			execute(new InitializeDataCommand);
-			execute(new PlaybackScheduleCommand);
+			execute(new PlaybackScheduleCommand);*/
 		}
 		
 		
@@ -98,39 +98,28 @@ package multipublish.core
 		
 		public function exportData($push:String = null, $cache:Boolean = false):void
 		{
-			config.cache  = $cache;
+			/*config.cache  = $cache;
 			
 			execute(new InitializeDataCommand($push));
-			execute(new ExportDataCommand);
+			execute(new ExportDataCommand);*/
 		}
 		
 		
 		/**
 		 * 
-		 * 初始化模块。
+		 * 加载排期，初始化视图数据。
 		 * 
 		 * @param $push:String 推送地址。
-		 * @param $cache:Boolean 是否使用缓存。
 		 * 
 		 */
 		
-		public function initializeModule($push:String = null, $cache:Boolean = false):void
+		public function initializeModule($push:String = null):void
 		{
-			config.cache  = $cache;
+			//收到排期后，需要先清除以前的加载队列，排期播放命令。
+			quene.clear();
 			
-			var executePlaySchedule:Function = function(e:DLStateEvent):void
-			{
-				config.view.progress.removeEventListener(
-					DLStateEvent.FINISH, executePlaySchedule);
-				
-				execute(new PlaybackScheduleCommand);
-				execute(new InitDelayModuleCommand);
-			};
-			
-			config.view.progress.
-				addEventListener(DLStateEvent.FINISH, executePlaySchedule);
-			execute(new SendLEDConfigCommand);
-			execute(new LoadChannelCommand($push));
+			//如果有推送地址，从服务端加载排期，否则跳过此步骤，直接初始化数据。
+			if ($push) execute(new LoadChannelCommand($push));
 			execute(new InitDataCommand);
 			execute(new DownLoadQueueCommand);
 		}
@@ -145,7 +134,8 @@ package multipublish.core
 		
 		public function broadcastProgram():void
 		{
-			execute(new PlaybackScheduleCommand(false));
+			ViewUtil.playSchedule(false);
+			//execute(new PlaybackScheduleCommand(false));
 		}
 		
 		
@@ -344,15 +334,17 @@ package multipublish.core
 		override protected function setup(...$args):void
 		{
 			config.exportData = $args[0];
-			execute(new InitializeEnvironmentCommand);    //初始化网络配置，初始化窗口和初始化LED。
-			execute(new InitializeConfigCommand);        //解析 config并映射到 MDConfig中。
-			execute(new InitializeShutdownCommand);     //初始化关机数据。
-			execute(new ShotcutPlayerCommand);         //初始化截图数据。
-			execute(new InitializeFirstStartCommand); //调出首次设置弹窗。(根据是否有终端编号以判定是否需要弹出设置窗口)
-			execute(new ClientUpdateCommand);		 //升级判定。
-			execute(new InitializeViewCommand);     //调出显示页面。
-			execute(new InitializeServiceCommand); //初始化服务。
-			execute(new SendLedCommand);          //发送 LED。
+			
+			execute(new InitializeEnvironmentCommand);	//初始化网络配置，初始化窗口和初始化LED。
+			execute(new InitializeConfigCommand);		//解析 config并映射到 MDConfig中。
+			execute(new InitializeFirstStartCommand);	//调出首次设置弹窗。(根据是否有终端编号以判定是否需要弹出设置窗口)
+			execute(new InitializeShutdownCommand);		//初始化关机数据。
+			execute(new ShotcutPlayerCommand);			//初始化截图数据。
+			execute(new ClientUpdateCommand);			//升级判定。
+			execute(new SendLedCommand);				//发送 LED。
+			execute(new SendLEDConfigCommand);			//发送LED配置。
+			execute(new InitializeViewCommand);			//调出显示页面。
+			execute(new InitializeServiceCommand);		//初始化服务。
 		}
 		
 		

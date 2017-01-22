@@ -1,60 +1,78 @@
 package multipublish.commands
 {
+	
+	/**
+	 *
+	 * 下载队列命令。
+	 * 执行发送和接收，当参数为空时表示向服务端请求下载。
+	 * 
+	 */
+	
+	
 	import cn.vision.events.pattern.QueueEvent;
+	import cn.vision.pattern.queue.ParallelQueue;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.tools.Cache;
 	
-	import flash.filesystem.File;
-	
-	import multipublish.consts.ContentConsts;
 	import multipublish.consts.DataConsts;
-	import multipublish.events.DLStateEvent;
+	import multipublish.core.MDProvider;
 	import multipublish.tools.MPService;
 	import multipublish.utils.ViewUtil;
 	
-	import spark.components.VideoDisplay;
-	
-	/**
-	 *
-	 * 下载队列命令。
-	 * 执行发送和接收，当参数为空时表示发送至服务端。
-	 * 
-	 */
 	
 	public final class DownLoadQueueCommand extends _InternalCommand
 	{
 		
+		/**
+		 * 
+		 * 构造函数。
+		 * 
+		 */
 		
 		public function DownLoadQueueCommand($cmd:String = null)
 		{
 			super();
 			
-			initialize($cmd);
-		}
-		
-		private function initialize($cmd:String):void
-		{
 			cmd = $cmd;
-			
-			if (view.progress.isDownloading && config.replacable)     //如果正在下载时收到排期 应该初始化 isDownloading。 
-			{
-				Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
-				Cache.queue_sp.removeEventListener(QueueEvent.QUEUE_END, handler_sp);
-				view.progress.isDownloading = false;
-			}
 		}
 		
+		
+		/**
+		 * @inheritDoc
+		 */
 		
 		override public function execute():void
 		{
 			commandStart();
 			
+			ViewUtil.playSchedule(true);
+			
 			cmd ? resolve() : send();
 			
-			commandEnd();
 		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		
+		override public function close():void
+		{
+			if (executing)
+			{
+				waitQueue.removeEventListener(QueueEvent.QUEUE_END, wait_endHandler);
+				unwaitQueue.removeEventListener(QueueEvent.QUEUE_END, unwait_endHandler);
+				
+				ViewUtil.showDownload(false);
+				
+				ViewUtil.showTree(false);
+				
+				commandEnd();
+			}
+		}
+		
 		
 		/**
 		 * 
@@ -68,6 +86,7 @@ package multipublish.commands
 			var args :String = tempCmd.pop();
 			var state:String = tempCmd.shift();
 			
+			//如果是start表示开始下载，如果是delay，表示排队等待下载。
 			state.toLowerCase() == "start" ? resolveStart(args) : resolveDelay(args);
 		}
 		
@@ -80,16 +99,12 @@ package multipublish.commands
 		
 		private function resolveStart($args:String):void
 		{
-			if ($args)   
+			if ($args)   //传入参数表示使用子FTP地址
 			{
 				var temp:Array = trimBracket($args).split(",");
-				Cache.deftp(
-					temp[0], 
-					temp[1], 
-					temp[2], 
-					temp[3]);
+				Cache.deftp(temp[0], temp[1], temp[2], temp[3]);
 			}
-			else	//不传参数表示默认用原来的 (主服务器)。
+			else	//不传参数表示默认用主服务器地址(主服务器)。
 			{
 				Cache.deftp(
 					config.ftpHost, 
@@ -97,225 +112,175 @@ package multipublish.commands
 					config.ftpUserName, 
 					config.ftpPassWord);
 			}
+			
 			//开始下载时再注册监听。
-			Cache.queue.addEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
-			Cache.queue_sp.addEventListener(QueueEvent.QUEUE_END, handler_sp);
-			view.progress.isDownloading = true;
-			if (config.downloadState && view.progress.stateLabel) view.progress.stateLabel.text = "下载中...";
-			view.progress.stop();    //防止下载一半的时候收到排期无法下载。
-			view.progress.play();
+			if (waitQueue.lave)
+				waitQueue.addEventListener(QueueEvent.QUEUE_END, wait_endHandler, false, 0, true);
+			if (unwaitQueue.lave)
+				unwaitQueue.addEventListener(QueueEvent.QUEUE_END, unwait_endHandler, false, 0, true);
+			
+			//展示下载提示框。
+			if (config.downloadState && Cache.waitLave) ViewUtil.showDownload(true);
+			
+			Cache.start();
+			
 		}
 		
 		/**
-		 * 
+		 * @private
 		 * 去除字符串的首尾中括号([])。
-		 * 
 		 */
-		
 		private function trimBracket($str:String):String
 		{
-			$str = $str.replace(REMOVE_B, "");
-			$str = $str.replace(REMOVE_E, "");
+			$str = $str.replace(/^\[*/, "");
+			$str = $str.replace(/\]*$/, "");
 			
 			return $str;
 		}
 		
-		
-		
-		
 		/**
-		 * 
+		 * @private
 		 * 解析排队状态。
-		 * 
 		 */
-		
 		private function resolveDelay($args:String):void
 		{
 			if (config.downloadState)
 			{
 				var temp:Array = $args.split("/");
-				view.progress.stateLabel.text = "正在排队...当前共有" + temp.pop() +
-					"个终端正在排队，您前面还有" + temp.shift() + "台。";
+				var message:String = "正在排队...当前共有" + temp.pop() +
+					"个终端正在排队，您前面还有" + temp.shift() + "台。"
+				ViewUtil.showDownload(true, message);
 			}
+			
+			commandEnd();
 		}
 		
 		/**
-		 * 
+		 * @private
 		 * 发送下载申请并初始化状态栏。
-		 * 
 		 */
-		
 		private function send():void
 		{
-			LogUtil.log("需要下载的个数  -> " + Cache.cachesLave);
-			LogUtil.log("是否存在特殊下载队列 -> " + Cache.hasSP);
-			LogUtil.log("当前排期与上一排期不相同 -> " + config.replacable);
+			LogUtil.log("需要等待下载的个数  -> " + Cache.waitLave);
+			LogUtil.log("不需要等待的下载个数 -> " + Cache.unwaitLave);
 			
-			
-			if (Cache.cachesLave > 0)       //普通队列大于 0则开始下载。
+			if (Cache.hasDownload)
 			{
-				//当前无节目播放且两个排期不一样 则跳过老排期下载和播放。
-				if (count++ == 0 && !view.main.data && 
-					File.applicationDirectory.
-					resolvePath(DataConsts.PATH_CHANNEL).exists &&
-					File.applicationDirectory.
-					resolvePath(DataConsts.NEW_CHANNEL ).exists &&
-					!FileUtil.compareFile(
-						File.applicationDirectory.
-						resolvePath(DataConsts.PATH_CHANNEL), 
-						File.applicationDirectory.
-						resolvePath(DataConsts.NEW_CHANNEL)))   
+				service.downloadApply();
+				
+				if(!provider.channelNow && Cache.waitLave > 0) //如果当前无排期，且有新的排期素材需要下载
 				{
-					LogUtil.log("老排期下载未完成且与新排期相异 跳过老排期...");
-					config.replacable = false;
-					view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
+					//显示下载树。
+					ViewUtil.guild(false);
+					
+					ViewUtil.showTree(true);
+				}
+			}
+			else
+			{
+				if (provider.channelNew)
+				{
+					changeChannel();
 				}
 				else
 				{
-					service.downloadApply();
-					initDLState();
+					if(!provider.channelNow) modelog("没有节目");
 				}
 			}
-			else        
-			{
-				if(video && view.application.contains(video) && config.view.main.data)   //如果在显示图片时发送新排期且该排期无需下载则清除图片。     
-					view.application.removeElement(video);
-				
-				if (Cache.hasSP && !FileUtil.compareFile(
-					File.applicationDirectory.
-					resolvePath(DataConsts.PATH_CHANNEL), 
-					File.applicationDirectory.
-					resolvePath(DataConsts.NEW_CHANNEL))) service.downloadApply();
-				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));//普通队列无下载但是新队列有下载，则也需要申请，但无需展示下载中的视频。
-			}
+			
+			commandEnd();
 		}
 		
 		/**
-		 * 
-		 * 下载完毕后的处理方法。
-		 *  
+		 * @private
+		 * 下载结束。
 		 */
-		
-		private function handler_QueueEnd(e:QueueEvent):void
+		private function downloadOver():void
 		{
-			Cache.queue.removeEventListener(QueueEvent.QUEUE_END, handler_QueueEnd);
-
+			service.downloadOver();
 			
-			if (Cache.queue_sp.lave + Cache.queue_sp.num == 0)
-			{
-				view.progress.isDownloading = false;
-		
-				service.downloadOver();
-				
-				view.progress.stop();
-			}
+			changeChannel();
 			
-			
-			if(video && view.application.contains(video))
-				view.application.removeElement(video);
-			
-			
-			if (view.application.contains(view.progress))
-				view.application.removeElement(view.progress);
-			
-			
-			view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
-			   
-//			view.progress = null;
-		}
-		
-		
-		private function handler_sp(e:QueueEvent):void
-		{
-			Cache.queue_sp.removeEventListener(QueueEvent.QUEUE_END, handler_sp);
-			
-			service.downloadOver(); 
-			if (Cache.queue.lave + Cache.queue.num == 0) 
-			{
-				view.progress.isDownloading = false;
-				
-				view.progress.stop();
-				
-//				view.progress.dispatchEvent(new DLStateEvent(DLStateEvent.FINISH));
-			}
+			commandEnd();
 		}
 		
 		/**
-		 * 
-		 * 下载状态初始化。
-		 * 
+		 * @private
+		 * 切换排期。
 		 */
-		
-		private function initDLState():void
+		private function changeChannel():void
 		{
-			if (!video && !view.main.data)   //当图片不存在(第一次加载)并且主页面无数据(无排期播放)时加入图片。
-			{
-				initImage(); 
+			provider.channelNow = provider.channelNew;
 			
-				view.application.addElement(video);
-			}
-			else if (video && view.application.contains(video) && view.main.data)
-			{
-				view.application.removeElement(video);
-				if (!video.playing) video.play();
-			}
+			provider.channelNew = null;
 			
-			if (config.downloadState) initProgress();
+			FileUtil.moveFile(
+				FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW),
+				FileUtil.resolvePathApplication(DataConsts.CHANNEL_NOW), true);
 			
-			ViewUtil.guild(false);
-			
-		}
-		
-		/**
-		 * 
-		 * 初始化状态栏。
-		 * 
-		 */
-		
-		private function initProgress():void
-		{
-			view.application.addElement(view.progress);
-			view.progress.x = view.progress.y = 0;
-			view.progress.stateLabel.text = "下载准备中 请稍候...";
+			ViewUtil.playSchedule(true);
 		}
 		
 		
 		/**
-		 * 
-		 * 初始化图片。
-		 * 
+		 * @private
 		 */
-		
-		private function initImage():void
+		private function wait_endHandler(e:QueueEvent):void
 		{
-			video = new VideoDisplay;
-			video.width = view.application.width;
-			video.height = view.application.height;
-			video.x = video.y = 0;
-			video.autoDisplayFirstFrame = true;
-			video.autoPlay = true;
-			video.loop = true;
-			video.scaleMode = "letterbox";
-			video.source = ContentConsts.WELCOME_VIDEO;
+			waitQueue.removeEventListener(QueueEvent.QUEUE_END, wait_endHandler);
+			
+			//隐藏下载树视频
+			ViewUtil.showTree(false);
+			
+			ViewUtil.showDownload(false);
+			
+			//新排期下载完毕，替换老排期
+			
+			if (unwaitQueue.lave + unwaitQueue.num == 0) downloadOver();
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function unwait_endHandler(e:QueueEvent):void
+		{
+			unwaitQueue.removeEventListener(QueueEvent.QUEUE_END, unwait_endHandler);
+			
+			if (waitQueue.lave + waitQueue.num == 0) downloadOver();
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function get waitQueue():ParallelQueue
+		{
+			return Cache.queue;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function get unwaitQueue():ParallelQueue
+		{
+			return Cache.queue_sp;
 		}
 
 		
-		private static var video:VideoDisplay;
-		
 		/**
-		 * 
-		 * 一个计数器。
-		 * 
+		 * @private
 		 */
-		
-		public static var count:int = 0;
-		
-		private const REMOVE_B:RegExp = /^\[*/;
-		
-		private const REMOVE_E:RegExp = /\]*$/;
-		
 		private var service:MPService = config.service;
 		
+		/**
+		 * @private
+		 */
+		private var provider:MDProvider = MDProvider.instance;
+		
+		/**
+		 * @private
+		 */
 		private var cmd:String;
 		
 	}

@@ -13,6 +13,10 @@ package multipublish.vo.contents
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.HTTPUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
+	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
+	import cn.vision.utils.XMLUtil;
 	
 	import com.coltware.airxzip.ZipEntry;
 	import com.coltware.airxzip.ZipFileReader;
@@ -42,9 +46,13 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function HTMLWeb($data:Object = null)
+		public function HTMLWeb(
+			$data:Object = null, 
+			$name:String = "html", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
 		
@@ -52,10 +60,8 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override public function parse($data:Object):void
+		override protected function customParse():void
 		{
-			super.parse($data);
-			
 			if (htmlType)
 			{
 				if (htmlType == "url")
@@ -128,8 +134,15 @@ package multipublish.vo.contents
 			}
 			else
 			{
-				LogUtil.log(title + "：已解析完毕：" + zipPath);
-				if (file.exists) file.deleteFile();
+				LogUtil.log(title + "：网页文件压缩包不存在，" + zipPath);
+				
+				var cache:Cache = ($args[0] is String) ? Cache.cache($args[0], !useWait) : $args[0];
+				if (!cach[cache.saveURL])
+				{
+					cache.extra = cache.extra || {};
+					cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+					cach[cache.saveURL] = cache;
+				}
 			}
 			
 			

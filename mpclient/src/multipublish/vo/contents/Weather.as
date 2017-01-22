@@ -26,11 +26,19 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		public function Weather($data:Object = null)
+		public function Weather(
+			$data:Object = null, 
+			$name:String = "weather", 
+			$useWait:Boolean = true,
+			$cacheGroup:String = null)
 		{
-			super($data);
+			super($data, $name, $useWait, $cacheGroup);
 		}
 		
+		
+		/**
+		 * @inheritDoc
+		 */
 		
 		override public function update(...$args):void
 		{
@@ -104,6 +112,10 @@ package multipublish.vo.contents
 				LogUtil.log(tip.message = "天气：加载天气样式出错，使用默认天气样式。");
 				if (ready) dispatchEvent(new ControlEvent(ControlEvent.READY));
 			}
+			
+			dispatchInit();
+			
+			dispatchReady();
 		}
 		
 		

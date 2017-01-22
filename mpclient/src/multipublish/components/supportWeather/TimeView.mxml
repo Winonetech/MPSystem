@@ -9,23 +9,13 @@
 			 fontSize="{_timeStyle.timeSize}"
 			 color="{_timeStyle.timeColor}"/>
 	
-	<s:HGroup id = "date" gap="20">
-		
-		<s:Label text="{dateStr}"
-				 fontFamily="{_timeStyle.fontFamily}"
-				 fontSize="{_timeStyle.dateSize}"
-				 color="{_timeStyle.dateColor}"/>
-		
-		<s:Label text="{weekStr}"
-				 fontFamily="{_timeStyle.fontFamily}"
-				 fontSize="{_timeStyle.dateSize}"
-				 color="{_timeStyle.dateColor}"/>
-		
-	</s:HGroup>
+	<s:Label id = "date" text="{dateStr}"
+			 fontFamily="{_timeStyle.fontFamily}"
+			 fontSize="{_timeStyle.dateSize}"
+			 color="{_timeStyle.dateColor}"/>
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.ObjectUtil;
 			import cn.vision.utils.StringUtil;
 			
@@ -43,8 +33,6 @@
 			private var timeStr:String;
 			[Bindable]
 			private var dateStr:String;
-			[Bindable]
-			private var weekStr:String;
 			[Bindable]
 			private var size:Number;
 			
@@ -120,12 +108,10 @@
 					timer = new Timer(1000);
 					timer.addEventListener(TimerEvent.TIMER,function settimers():void
 					{
-						var date:Date = new Date;
-						var dateString:String = ObjectUtil.convert(date, String, _timeStyle.format);
+						var dateString:String = ObjectUtil.convert(new Date, String, _timeStyle.format);
 						var arr:Array = dateString.split("|");
 						dateStr = arr[0];
 						timeStr = arr[arr.length-1];
-						weekStr = "星期" + WEEK[date.day];
 					});
 					timer.start();
 				}
@@ -140,8 +126,6 @@
 				"time",
 				"date"
 			];
-			
-			private static const WEEK:Array = ["日", "一", "二", "三", "四", "五", "六"]
 			
 		]]>
 	</fx:Script>
