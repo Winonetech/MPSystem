@@ -3,6 +3,7 @@ package multipublish.utils
 	import cn.vision.collections.Map;
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.ScreenUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import flash.geom.Rectangle;
 	
@@ -155,7 +156,16 @@ package multipublish.utils
 					if (view.main)
 					{
 						view.main.enabled = true;
+						
+						if (view.main.data)
+						{
+							view.main.reset();
+							view.main.data = null;
+						}
+						
 						view.main.data = current;  //调用 data的 setter函数 会触发其 resolveData (MainView)
+						
+						view.main.play();
 					}
 				}
 				else

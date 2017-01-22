@@ -11,16 +11,40 @@ package multipublish.utils
 	import cn.vision.consts.Consts;
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.DateUtil;
+	import cn.vision.utils.FileUtil;
 	
+	import multipublish.consts.DataConsts;
 	import multipublish.consts.ScheduleMonthTypeConsts;
 	import multipublish.consts.ScheduleRepeatTypeConsts;
 	import multipublish.consts.ScheduleTypeConsts;
+	import multipublish.core.MDProvider;
 	import multipublish.vo.schedules.Schedule;
 	import multipublish.vo.schedules.ScheduleTypeExtra;
 	
 	
 	public final class ScheduleUtil extends NoInstance
 	{
+		
+		/**
+		 * 
+		 * 切换排期数据，新排期替换旧排期
+		 * 
+		 */
+		
+		public static function changeChannel():void
+		{
+			var provider:MDProvider = MDProvider.instance;
+			if (provider.channelNew)
+			{
+				provider.channelNow = provider.channelNew;
+				
+				provider.channelNew = null;
+				
+				FileUtil.moveFile(
+					FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW),
+					FileUtil.resolvePathApplication(DataConsts.CHANNEL_NOW), true);
+			}
+		}
 		
 		
 		public static function validateTurnSchedusConflit($schedule1:Schedule, $schedule2:Schedule):Boolean

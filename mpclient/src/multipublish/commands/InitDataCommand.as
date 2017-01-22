@@ -14,6 +14,7 @@ package multipublish.commands
 	
 	import multipublish.consts.DataConsts;
 	import multipublish.core.MDProvider;
+	import multipublish.utils.ScheduleUtil;
 	import multipublish.utils.ViewUtil;
 	import multipublish.vo.Channel;
 	
@@ -81,6 +82,7 @@ package multipublish.commands
 			//2.当前排期数据结构为空，即provider.channelNow == null。
 			if(!provider.channelNow && channelNow) 
 			{
+				channelNowInited = false;
 				provider.channelNow = new Channel(channelNow, "channel", false);
 				provider.channelNow.addEventListener(ControlEvent.INIT, channelNow_initHandler);
 			}
@@ -92,6 +94,7 @@ package multipublish.commands
 			var channelNew:String = getChannel(DataConsts.CHANNEL_NEW);
 			if (channelNew) 
 			{
+				channelNewInited = false;
 				//如果当前排期不存在，则将报纸等数据加入等待队列
 				var resolveWait:Boolean = !provider.channelNow;
 				provider.channelNew = new Channel(channelNew, "channel", true, resolveWait);
@@ -131,7 +134,10 @@ package multipublish.commands
 		private function channelNow_initHandler($e:ControlEvent):void
 		{
 			provider.channelNow.removeEventListener(ControlEvent.INIT, channelNow_initHandler);
-			if(!provider.channelNew) commandEnd();
+			
+			channelNowInited = true;
+			
+			if(!provider.channelNew || provider.channelNew && channelNewInited) commandEnd();
 		}
 		
 		/**
@@ -140,7 +146,22 @@ package multipublish.commands
 		private function channelNew_initHandler($e:ControlEvent):void
 		{
 			provider.channelNew.removeEventListener(ControlEvent.INIT, channelNew_initHandler);
-			if(!provider.channelNow) commandEnd();
+			
+			channelNewInited = true;
+			
+			if(!provider.channelNow || provider.channelNow && channelNowInited) commandEnd();
+		}
+		
+		
+		
+		override protected function commandEnd():void
+		{
+			//新排期如果没有需要下载的素材，则需要将新排期替换老排期
+			if (Cache.waitLave == 0) ScheduleUtil.changeChannel();
+			
+			ViewUtil.playSchedule(true);
+			
+			super.commandEnd();
 		}
 		
 		
@@ -148,6 +169,16 @@ package multipublish.commands
 		 * @private
 		 */
 		private var provider:MDProvider = MDProvider.instance;
+		
+		/**
+		 * @private
+		 */
+		private var channelNowInited:Boolean = true;
+		
+		/**
+		 * @private
+		 */
+		private var channelNewInited:Boolean = true;
 		
 	}
 }

@@ -114,27 +114,30 @@ package multipublish.views
 			
 			schedule = data as Schedule;
 			
-			var program:Program = schedule.programs[index];
-			
-			if(!view)
+			if (schedule)
 			{
-				view = generateView();     //创建当前视图。
-				view.addEventListener(ControlEvent.READY, handler_ready);
-				view.data = program;   //此处关联至 ProgramView的 resolveData。
-				next = generateNext();	  //创建下一个视图。
-			}
-			else
-			{
-				if (next)
+				var program:Program = schedule.programs[index];
+				
+				if(!view)
 				{
-					if (containsElement(next))
-						removeElement(next);
+					view = generateView();     //创建当前视图。
+					view.addEventListener(ControlEvent.READY, handler_ready);
+					view.data = program;   //此处关联至 ProgramView的 resolveData。
+					next = generateNext();	  //创建下一个视图。
 				}
-				next = generateView();
-				next.addEventListener(ControlEvent.READY, handler_ready);
-				next.data = program;   //此处关联至 ProgramView的 resolveData。
-				next.visible = false;
-				delay(1, tween);
+				else
+				{
+					if (next)
+					{
+						if (containsElement(next))
+							removeElement(next);
+					}
+					next = generateView();
+					next.addEventListener(ControlEvent.READY, handler_ready);
+					next.data = program;   //此处关联至 ProgramView的 resolveData。
+					next.visible = false;
+					delay(1, tween);
+				}
 			}
 		}
 		

@@ -19,6 +19,7 @@ package multipublish.commands
 	import multipublish.consts.DataConsts;
 	import multipublish.core.MDProvider;
 	import multipublish.tools.MPService;
+	import multipublish.utils.ScheduleUtil;
 	import multipublish.utils.ViewUtil;
 	
 	
@@ -47,10 +48,7 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			ViewUtil.playSchedule(true);
-			
 			cmd ? resolve() : send();
-			
 		}
 		
 		
@@ -178,14 +176,7 @@ package multipublish.commands
 			}
 			else
 			{
-				if (provider.channelNew)
-				{
-					changeChannel();
-				}
-				else
-				{
-					if(!provider.channelNow) modelog("没有节目");
-				}
+				if(!provider.channelNow) modelog("没有节目");
 			}
 			
 			commandEnd();
@@ -210,13 +201,7 @@ package multipublish.commands
 		 */
 		private function changeChannel():void
 		{
-			provider.channelNow = provider.channelNew;
-			
-			provider.channelNew = null;
-			
-			FileUtil.moveFile(
-				FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW),
-				FileUtil.resolvePathApplication(DataConsts.CHANNEL_NOW), true);
+			ScheduleUtil.changeChannel();
 			
 			ViewUtil.playSchedule(true);
 		}
