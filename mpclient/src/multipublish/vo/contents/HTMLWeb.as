@@ -89,39 +89,49 @@ package multipublish.vo.contents
 			var zipPath  :String = FileUtil.resolvePathApplication(saveURL);			  //文件绝对路径。
 			var unZipPath:String = EPaperUtil.mp::getPathByZipFile(zipPath); 		     //解压路径。
 			var file:VSFile = new VSFile(zipPath);
-			if (file.exists)
+			if (!EPaperUtil.mp::getDayInited(unZipPath))
 			{
-				LogUtil.log(title + "：网页文件压缩包存在，解压缩文件。");
-				try
+				if (file.exists)
 				{
-					var errors:Array = EPaperUtil.mp::unzipFile(file, unZipPath);
-				}
-				catch (e:Error)
-				{
-					LogUtil.log(title + "：解压网页文件出错，文件已损坏，路径：" + zipPath);
-				}
-				if (errors)
-				{
-					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");
-					for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
+					LogUtil.log(title + "：未解析完毕，" + zipPath);
+					LogUtil.log(title + "：网页文件压缩包存在，解压缩文件。");
+					try
+					{
+						var errors:Array = EPaperUtil.mp::unzipFile(file, unZipPath);
+					}
+					catch (e:Error)
+					{
+						LogUtil.log(title + "：解压网页文件出错，文件已损坏，路径：" + zipPath);
+					}
+					if (errors)
+					{
+						LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");
+						for each (var error:String in errors) LogUtil.log("\t" + error + "\n");
+					}
+					else
+					{
+						content = unZipPath + homePath;
+					}
 				}
 				else
 				{
-					content = unZipPath + homePath;
+					LogUtil.log(title + "：网页文件压缩包不存在，" + zipPath);
+					
+					var cache:Cache = ($args[0] is String) ? Cache.cache($args[0]) : $args[0];
+					if (!cach[cache.saveURL])
+					{
+						cache.extra = cache.extra || {};
+						cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
+						cach[cache.saveURL] = cache;
+					}
 				}
 			}
 			else
 			{
-				LogUtil.log(title + "：网页文件压缩包不存在，" + zipPath);
-				
-				var cache:Cache = ($args[0] is String) ? Cache.cache($args[0]) : $args[0];
-				if (!cach[cache.saveURL])
-				{
-					cache.extra = cache.extra || {};
-					cache.addEventListener(CommandEvent.COMMAND_END, handlerCacheEnd);
-					cach[cache.saveURL] = cache;
-				}
+				LogUtil.log(title + "：已解析完毕：" + zipPath);
+				if (file.exists) file.deleteFile();
 			}
+			
 			
 		}
 		
@@ -221,7 +231,7 @@ package multipublish.vo.contents
 					stream.close();
 					
 					//删除zip压缩包
-					file.deleteFile();
+//					file.deleteFile();
 				}
 			}
 			return errors;
