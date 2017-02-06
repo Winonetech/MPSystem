@@ -200,34 +200,45 @@ package multipublish.vo.contents
 			if (file && file.exists)
 			{
 				var reader:ZipFileReader = new ZipFileReader;
-				reader.open(file);
-				var entries:Array = reader.getEntries();
-				var fold:String = getFold(path, entries);
-				var t:int, entry:ZipEntry, fileName:String;
-				var temp:VSFile, bytes:ByteArray, errors:Array;
-				var stream:FileStream = new FileStream;
-				var l:int = entries.length;
-				
-				for (t = 0; t < l; t++)
+				try
 				{
-					entry = entries[t] as ZipEntry;
-					fileName = fold + entry.getFilename();
-					if (entry.getUncompressSize() > 0)
+					reader.open(file);
+					var entries:Array = reader.getEntries();
+				}
+				catch(e:Error)
+				{
+					errors = errors || [];
+					errors.push(file.name);
+				}
+				if (entries)
+				{
+					var fold:String = getFold(path, entries);
+					var t:int, entry:ZipEntry, fileName:String;
+					var temp:VSFile, bytes:ByteArray, errors:Array;
+					var stream:FileStream = new FileStream;
+					var l:int = entries.length;
+					
+					for (t = 0; t < l; t++)
 					{
-						temp = new VSFile(fileName);
-						stream.open(temp, FileMode.WRITE);
-						try
+						entry = entries[t] as ZipEntry;
+						fileName = fold + entry.getFilename();
+						if (entry.getUncompressSize() > 0)
 						{
-							bytes = reader.unzip(entry);
+							temp = new VSFile(fileName);
+							stream.open(temp, FileMode.WRITE);
+							try
+							{
+								bytes = reader.unzip(entry);
+							}
+							catch (e:Error)
+							{
+								errors = errors || [];
+								errors.push(fileName);
+							}
+							if (bytes) stream.writeBytes(reader.unzip(entry));
+							stream.close();
+							bytes = null;
 						}
-						catch (e:Error)
-						{
-							errors = errors || [];
-							errors.push(fileName);
-						}
-						if (bytes) stream.writeBytes(reader.unzip(entry));
-						stream.close();
-						bytes = null;
 					}
 				}
 				

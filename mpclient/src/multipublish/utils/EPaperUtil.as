@@ -4,6 +4,7 @@ package multipublish.utils
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.DateUtil;
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	
@@ -143,6 +144,7 @@ package multipublish.utils
 		{
 			if (file && file.exists)
 			{
+				
 				var reader:ZipFileReader = new ZipFileReader;
 				
 				try
@@ -163,7 +165,6 @@ package multipublish.utils
 					var temp:VSFile, bytes:ByteArray, errors:Array;
 					var stream:FileStream = new FileStream;
 					var l:int = entries.length;
-					
 					for (t = 0; t < l; t++)
 					{
 						entry = entries[t] as ZipEntry;
@@ -171,6 +172,7 @@ package multipublish.utils
 						if (entry.getUncompressSize() > 0 &&
 							EPaperUtil.mp::checkFileUnzipable(fileName))
 						{
+							LogUtil.log((t + 1));
 							temp = new VSFile(fileName);
 							stream.open(temp, FileMode.WRITE);
 							try
@@ -182,7 +184,7 @@ package multipublish.utils
 								errors = errors || [];
 								errors.push(fileName);
 							}
-							if (bytes) stream.writeBytes(reader.unzip(entry));
+							if (bytes) stream.writeBytes(bytes);
 							stream.close();
 							bytes = null;
 						}

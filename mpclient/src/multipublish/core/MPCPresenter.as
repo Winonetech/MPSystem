@@ -207,7 +207,8 @@ package multipublish.core
 		
 		public function rebootTerminal(...$args):void
 		{
-			execute(new RebootTerminalCommand);
+			var reboot:RebootTerminalCommand = new RebootTerminalCommand;
+			reboot.execute();
 		}
 		
 		
@@ -219,7 +220,8 @@ package multipublish.core
 		
 		public function restartPlayer(...$args):void
 		{
-			execute(new RestartPlayerCommand);
+			var restart:RestartPlayerCommand = new RestartPlayerCommand;
+			restart.execute();
 		}
 		
 		
@@ -231,7 +233,8 @@ package multipublish.core
 		
 		public function shotcutPlayer($value:String):void
 		{
-			execute(new ShotcutPlayerCommand($value));
+			var shotcut:ShotcutPlayerCommand = new ShotcutPlayerCommand($value);
+			shotcut.execute();
 		}
 		
 		
@@ -255,7 +258,8 @@ package multipublish.core
 		
 		public function shutdownTerminal($value:String = null):void
 		{
-			execute(new InitializeShutdownCommand($value));
+			var shutdown:InitializeShutdownCommand = new InitializeShutdownCommand($value);
+			shutdown.execute();
 		}
 		
 		

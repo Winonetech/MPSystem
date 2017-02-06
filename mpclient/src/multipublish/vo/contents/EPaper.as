@@ -119,12 +119,10 @@ package multipublish.vo.contents
 						try
 						{
 							var errors:Array = EPaperUtil.mp::unzipFile(file, path);
-							temp++;
 						}
 						catch (e:Error)
 						{
 							LogUtil.log(title + "：解压报纸文件出错，文件已损坏，路径：" + fzip);
-							temp--;
 						}
 						if (errors)
 						{
@@ -168,7 +166,6 @@ package multipublish.vo.contents
 				{
 					LogUtil.log(title + "：已解析完毕：" + fzip);
 					if (file.exists) file.deleteFile();
-					temp ++;
 				}
 			}
 			
@@ -207,7 +204,6 @@ package multipublish.vo.contents
 			images.clear();
 			retrys.clear();
 			reslvd = {};
-			temp = 0;
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
@@ -224,7 +220,7 @@ package multipublish.vo.contents
 			wt::registCache.apply(this, urls);
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach.length == 0 || temp > 0) 
+			if (cach.length == 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();

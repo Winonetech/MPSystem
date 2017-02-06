@@ -3,7 +3,7 @@
 
 #define MyAppName "WOS Player"
 #define MyAppToolName "MPCExporter" 
-#define MyAppVersion "19.0.2"
+#define MyAppVersion "19.0.4"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "JRShell.exe"
