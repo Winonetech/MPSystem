@@ -374,7 +374,9 @@ package multipublish.vo.contents
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
-				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
+				var toSeparator:String = fzip.split("\\").join("/");
+				var typePointIndex:int = toSeparator.lastIndexOf(".");
+				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), toSeparator.slice(0, typePointIndex) + "/");
 				if (errors)
 				{
 					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");

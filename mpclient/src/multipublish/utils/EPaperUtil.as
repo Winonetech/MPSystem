@@ -94,7 +94,7 @@ package multipublish.utils
 		{
 			try
 			{
-				var temp:String = JSON.stringify($value);
+				var temp:String = JSON.stringify($value, null, '\t');
 			} catch(e:Error) {}
 			if (temp)
 			{
@@ -142,83 +142,84 @@ package multipublish.utils
 		
 		mp static function unzipFile(file:VSFile, path:String):Array
 		{
-			if (file && file.exists)
+			var errors:Array, times:uint;
+			
+			var unzip:Function = function():void
 			{
-				
-				var reader:ZipFileReader = new ZipFileReader;
-				
-				try
+				if (file && file.exists)
 				{
-					reader.open(file);
-					var entries:Array = reader.getEntries();
-				}
-				catch(e:Error)
-				{
-					errors = errors || [];
-					errors.push(file.name);
-				}
-				
-				if (entries)
-				{
-					var fold:String = getFold(path, entries);
-					var t:int, entry:ZipEntry, fileName:String;
-					var temp:VSFile, bytes:ByteArray, errors:Array;
-					var stream:FileStream = new FileStream;
-					var l:int = entries.length;
-					for (t = 0; t < l; t++)
+					var reader:ZipFileReader = new ZipFileReader;
+
+					try
 					{
-						entry = entries[t] as ZipEntry;
-						fileName = fold + entry.getFilename();
-						if (entry.getUncompressSize() > 0 &&
-							EPaperUtil.mp::checkFileUnzipable(fileName))
-						{
-							LogUtil.log((t + 1));
-							temp = new VSFile(fileName);
-							stream.open(temp, FileMode.WRITE);
-							try
-							{
-								bytes = reader.unzip(entry);
-							}
-							catch (e:Error)
-							{
-								errors = errors || [];
-								errors.push(fileName);
-							}
-							if (bytes) stream.writeBytes(bytes);
-							stream.close();
-							bytes = null;
-						}
+						reader.open(file);
+						var entries:Array = reader.getEntries();
+					}
+					catch(e:Error)
+					{
+						errors = errors || [];
+						errors.push(file.name);
 					}
 					
+					if (entries)
+					{
+						var fold:String = getFold(path, entries);
+						var t:int, entry:ZipEntry, fileName:String;
+						var temp:VSFile, bytes:ByteArray;
+						var stream:FileStream = new FileStream;
+						var l:int = entries.length;
+						for (t = 0; t < l; t++)
+						{
+							entry = entries[t] as ZipEntry;
+							fileName = fold + entry.getFilename();
+							if (entry.getUncompressSize() > 0 &&
+								EPaperUtil.mp::checkFileUnzipable(fileName))
+							{
+								LogUtil.log((t + 1));
+								temp = new VSFile(fileName);
+								stream.open(temp, FileMode.WRITE);
+								try
+								{
+									bytes = reader.unzip(entry);
+								}
+								catch (e:Error)
+								{
+									errors = errors || [];
+									errors.push(fileName);
+								}
+								if (bytes) stream.writeBytes(bytes);
+								stream.close();
+								bytes = null;
+							}
+						}
+						
+					}
+					reader.close();
 				}
+			};
 				
-				reader.close();
-				
+			while (times++ < 3)
+			{
 				var folder:VSFile = new VSFile(path);
-				if (folder.exists && folder.getDirectoryListing().length > 0)
+				if (folder.exists && 
+					folder.getDirectoryListing().length > 0)
 				{
 					//创建一个标识文件来表示已经解压完毕
 					var init:VSFile = new VSFile(path + "init.ini");
-					stream = new FileStream;
+					var stream:FileStream = new FileStream;
 					stream.open(init, FileMode.WRITE);
 					stream.writeUTFBytes("inited");
 					stream.close();
-					
-//					//删除zip压缩包
-//					file.deleteFile();
+					LogUtil.log("解压缩成功噜。" + " -=-=-=-=-=-=-=-=-=-=-=-=- " + path);
+					break;   //解压缩成功，退出循环。
 				}
 				else
 				{
-					var evURL:String = path.charAt(path.length - 1) == "/" ? path.substr(0, length - 2) : path;
-					var name :String = evURL.split("/").pop();
-					evURL = evURL.substr(0, evURL.lastIndexOf("/") + 1);
-					var evidence:File = new File(evURL + "evidence.ini");
-					stream = new FileStream;
-					stream.open(evidence, FileMode.APPEND);
-					stream.writeUTFBytes("----- " + name + " : 压缩包内无内容！ -----" + StringUtil.lineEnding);
-					stream.close();
+					LogUtil.log("尝试第" + times + "次解压缩。");
+					unzip();
 				}
 			}
+			
 			return errors;
 		}
 		

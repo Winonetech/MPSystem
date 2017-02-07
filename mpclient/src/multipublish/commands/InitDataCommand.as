@@ -99,14 +99,14 @@ package multipublish.commands
 				{
 					channelNewInited = false;
 					//如果当前排期不存在，则将报纸等数据加入等待队列
-					var resolveWait:Boolean = !provider.channelNow;
+					var resolveWait:Boolean = !Boolean(provider.channelNow);
 					provider.channelNew = new Channel(channelNew, "channel", true, resolveWait);
 					provider.channelNew.addEventListener(ControlEvent.INIT, channelNew_initHandler);
 				}
 				
-				//如果当前排期与新排期都没有，表示没有任何数据，直接结束。
 			}
 			
+			//如果当前排期与新排期都没有，表示没有任何数据，直接结束。
 			if (!channelNew || (!provider.channelNow && !provider.channelNew)) commandEnd();
 		}
 		
@@ -142,7 +142,7 @@ package multipublish.commands
 			
 			channelNowInited = true;
 			
-			if(!provider.channelNew || provider.channelNew && channelNewInited) commandEnd();
+			if(!provider.channelNew || channelNewInited) commandEnd();
 		}
 		
 		/**
@@ -154,7 +154,7 @@ package multipublish.commands
 			
 			channelNewInited = true;
 			
-			if(!provider.channelNow || provider.channelNow && channelNowInited) commandEnd();
+			if(!provider.channelNow || channelNowInited) commandEnd();
 		}
 		
 		

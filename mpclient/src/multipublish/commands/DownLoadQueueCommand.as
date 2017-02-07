@@ -48,7 +48,7 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			if (config.replacable)
+			if (config.replacable || Cache.unwaitLave > 0)
 			{
 				cmd ? resolve() : send();
 			}
