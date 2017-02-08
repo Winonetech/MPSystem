@@ -107,7 +107,7 @@ package multipublish.commands
 			}
 			
 			//如果当前排期与新排期都没有，表示没有任何数据，直接结束。
-			if (!channelNew || (!provider.channelNow && !provider.channelNew)) commandEnd();
+			if (!provider.channelNow && !provider.channelNew) commandEnd();
 		}
 		
 		

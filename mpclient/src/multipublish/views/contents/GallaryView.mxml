@@ -174,7 +174,7 @@
 				{
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
-				}
+				};
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
 				stage.addEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
 			}
