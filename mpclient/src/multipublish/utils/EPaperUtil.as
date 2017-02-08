@@ -198,7 +198,7 @@ package multipublish.utils
 				}
 			};
 				
-			while (times++ < 3)
+			while (times++ < 3)   //失败重新解压缩有2次机会。
 			{
 				var folder:VSFile = new VSFile(path);
 				if (folder.exists && 
@@ -210,13 +210,18 @@ package multipublish.utils
 					stream.open(init, FileMode.WRITE);
 					stream.writeUTFBytes("inited");
 					stream.close();
-					LogUtil.log("解压缩成功噜。" + " -=-=-=-=-=-=-=-=-=-=-=-=- " + path);
+					LogUtil.log("-------- 解压缩成功噜。" + " 解压地址 -----------> " + path);
 					break;   //解压缩成功，退出循环。
 				}
-				else
+				else if (!folder.exists)   //只有当其压缩目录不存在时才重新解压缩。
 				{
 					LogUtil.log("尝试第" + times + "次解压缩。");
 					unzip();
+				}
+				else
+				{
+					LogUtil.log("压缩包内无文件，靴靴。");
+					break;   //压缩包内无文件，退出循环。
 				}
 			}
 			

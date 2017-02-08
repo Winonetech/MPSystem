@@ -374,6 +374,7 @@ package multipublish.vo.contents
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
+				//解决当路径中存在小数点会导致解压缩路径错误的BUG。
 				var toSeparator:String = fzip.split("\\").join("/");
 				var typePointIndex:int = toSeparator.lastIndexOf(".");
 				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), toSeparator.slice(0, typePointIndex) + "/");
