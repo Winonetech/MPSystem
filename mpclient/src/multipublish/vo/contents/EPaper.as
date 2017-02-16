@@ -30,6 +30,7 @@ package multipublish.vo.contents
 	
 	import multipublish.core.mp;
 	import multipublish.tools.ImageCompare;
+	import multipublish.tools.WipeCache;
 	import multipublish.utils.EPaperUtil;
 	import multipublish.utils.URLUtil;
 	
@@ -168,7 +169,7 @@ package multipublish.vo.contents
 					if (file.exists) file.deleteFile();
 				}
 			}
-			
+			WipeCache.wipeEpaperCache(daysKeep, content);
 		}
 		
 		
@@ -254,7 +255,7 @@ package multipublish.vo.contents
 					if (EPaperUtil.mp::getDayInited(keyDay))
 					{
 						fzip = new VSFile(keyDay.substr(0, keyDay.length - 1) + ".zip");
-						if (fzip.exists) fzip.deleteFile();
+						if (fzip.exists) fzip.deleteFile();    //删除已解压电子报压缩包
 					}
 					
 					if (fileDay.exists && fileDay.isDirectory)

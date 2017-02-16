@@ -32,6 +32,14 @@ package multipublish.consts
 		public static const MODULE_TIME_DEFAUALT:uint = 60;
 		
 		
+		/**
+		 * 
+		 * 最大保存时长。
+		 * 
+		 */
+		
+		public static const DAYSKEEP:uint = 30;
+		
 		
 		/**
 		 * 
