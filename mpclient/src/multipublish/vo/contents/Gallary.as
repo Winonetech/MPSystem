@@ -11,6 +11,7 @@ package multipublish.vo.contents
 	import cn.vision.consts.FileTypeConsts;
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.consts.PathConsts;
@@ -50,6 +51,7 @@ package multipublish.vo.contents
 		
 		override public function update(...$args):void
 		{
+			allowed = true;
 			loadContent(content + "&terminalId=" + config.terminalNO);
 		}
 		
@@ -89,6 +91,10 @@ package multipublish.vo.contents
 			{
 				list.length = 0;
 				
+				LogUtil.log("----------------------------");
+				LogUtil.log("---------- 该图集有 -> " + $data.dataObjs.length + " 个item --------------");
+				LogUtil.log("----------------------------");
+				
 				for each (var item:* in $data.dataObjs)
 				{
 					if (item && item.url)
@@ -126,6 +132,8 @@ package multipublish.vo.contents
 			}
 			
 			resolved = true;
+			
+			downloadWhenUpt();
 		}
 		
 		

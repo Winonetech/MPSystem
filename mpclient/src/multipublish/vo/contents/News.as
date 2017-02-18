@@ -54,6 +54,7 @@ package multipublish.vo.contents
 		
 		override public function update(...$args):void
 		{
+ 			allowed = true;
 			$args = $args || [];
 			ArrayUtil.unshift($args, content);
 			loadContent.apply(null, $args);
@@ -94,6 +95,10 @@ package multipublish.vo.contents
 			if ($data)
 			{
 				list.length = 0;
+				
+				LogUtil.log("----------------------------");
+				LogUtil.log("---------- 该资讯有 -> " + $data.dataObjs.length + " 个item --------------");
+				LogUtil.log("----------------------------");
 				
 				for each (var item:* in $data.dataObjs)
 				{
@@ -141,6 +146,8 @@ package multipublish.vo.contents
 			}
 			
 			resolved = true;
+			
+			downloadWhenUpt();
 		}
 		
 		
@@ -176,6 +183,7 @@ package multipublish.vo.contents
 		
 		public function get updateFrequency():uint
 		{
+//			return 30;
 			return getProperty("updateFreq", uint);
 		}
 		

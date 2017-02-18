@@ -113,8 +113,11 @@ package multipublish.utils
 		
 		public static function playSchedule($note:Boolean):void
 		{
-			var controller:Controller = config.controller;
-			controller.removeControlAllBroadcast();
+			if ($note)
+			{
+				var controller:Controller = config.controller;
+				controller.removeControlAllBroadcast();
+			}
 			
 			if (provider.channelNow)
 			{

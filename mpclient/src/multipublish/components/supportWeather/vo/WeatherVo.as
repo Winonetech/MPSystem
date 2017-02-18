@@ -22,6 +22,8 @@ package multipublish.components.supportWeather.vo
 					weather = obj.weather;
 					if(weather=="晴天")
 						image = $url+$ctpy.toPinyin("晴")+".png";
+					else if (weather == "霾")
+						image = $url+"mai.png";
 					else
 						image = $url+$ctpy.toPinyin(weather)+".png";
 				}

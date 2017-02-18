@@ -9,7 +9,6 @@ package multipublish.vo.programs
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.core.or;
 	import cn.vision.utils.ArrayUtil;
 	
 	import com.winonetech.core.VO;

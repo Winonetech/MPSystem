@@ -175,7 +175,6 @@ package multipublish.utils
 							if (entry.getUncompressSize() > 0 &&
 								EPaperUtil.mp::checkFileUnzipable(fileName))
 							{
-								LogUtil.log((t + 1));
 								temp = new VSFile(fileName);
 								stream.open(temp, FileMode.WRITE);
 								try

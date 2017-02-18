@@ -79,6 +79,21 @@ package multipublish.vo.contents
 		}
 		
 		
+		/**
+		 * 
+		 * 更新时下载。
+		 * 
+		 */
+		
+		protected function downloadWhenUpt():void
+		{
+			if (allowed)
+			{
+				allowed = false;
+				Cache.start();
+			}
+		}
+		
 		
 		/**
 		 * 
@@ -101,7 +116,7 @@ package multipublish.vo.contents
 			http.method = $method;
 			http.requestTimeout = 10;
 			http.url = $url;
-			http.resultFormat
+			http.resultFormat;
 			http.contentType = "application/json; charset=utf-8";
 			
 			if ($args)
@@ -277,11 +292,12 @@ package multipublish.vo.contents
 		 */
 		private var timer:Timer;
 		
-		
 		/**
 		 * @private
 		 */
 		private var http:HTTPService;
+
+		protected var allowed:Boolean;
 		
 	}
 }

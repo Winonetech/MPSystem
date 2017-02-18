@@ -180,7 +180,7 @@
 				//回调之必要。
 				if (result) 
 				{
-					data.update();    //一般存在于具体组件 View内的 update方法。否则不做任何操作。
+//					data.update();    
 					var ready:Boolean = data.ready;    //一般来说是根据是否存在尚需下载的内容进行判定的。
 					currentState = ready ? "display" : "loading";
 					if (ready)

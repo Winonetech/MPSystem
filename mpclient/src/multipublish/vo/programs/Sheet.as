@@ -2,7 +2,6 @@ package multipublish.vo.programs
 {
 	import cn.vision.collections.Map;
 	import cn.vision.utils.ArrayUtil;
-	import cn.vision.utils.MathUtil;
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.consts.PathConsts;

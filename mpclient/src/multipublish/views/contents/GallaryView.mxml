@@ -99,7 +99,7 @@
 					
 					createTimer(gallary.updateFrequency, 0, gallary_updateHandler);
 					
-					gallary_updateHandler(null);
+//					gallary_updateHandler(null);
 					
 					applyCallback(callbackData);
 				}
@@ -146,7 +146,7 @@
 			 */
 			private function gallary_updateHandler($e:TimerEvent):void
 			{
-				gallary.update();
+				if (gallary) gallary.update();
 			}
 			
 			/**

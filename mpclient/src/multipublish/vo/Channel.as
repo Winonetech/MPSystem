@@ -19,16 +19,12 @@ package multipublish.vo
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
-	import flash.events.Event;
-	
 	import multipublish.core.mp;
-	import multipublish.managers.ButtonManager;
 	import multipublish.utils.ContentUtil;
 	import multipublish.utils.ModuleUtil;
 	import multipublish.vo.contents.Button;
 	import multipublish.vo.contents.Content;
 	import multipublish.vo.contents.EPaper;
-	import multipublish.vo.contents.Gallary;
 	import multipublish.vo.contents.Marquee;
 	import multipublish.vo.contents.News;
 	import multipublish.vo.contents.ResolveContent;

@@ -12,6 +12,7 @@ package multipublish.commands
 	import com.winonetech.events.ControlEvent;
 	import com.winonetech.tools.Cache;
 	
+	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.DataConsts;
 	import multipublish.core.MDProvider;
 	import multipublish.utils.ScheduleUtil;
@@ -74,6 +75,9 @@ package multipublish.commands
 			
 			modelog("初始化排期，下载文件。");
 			
+			//channel计数器。
+			var channelCount:uint = 0;
+			
 			//如果当前排期缓存存在，则解析当前排期缓存，当前排期的素材不论下载完成与否，都加入非等待队列
 			var channelNow:String = getChannel(DataConsts.CHANNEL_NOW);
 			
@@ -86,6 +90,7 @@ package multipublish.commands
 				schedulePlayable = true;
 				provider.channelNow = new Channel(channelNow, "channel", false);
 				provider.channelNow.addEventListener(ControlEvent.INIT, channelNow_initHandler);
+				channelCount++;
 			}
 			
 			if (config.replacable)
@@ -102,12 +107,22 @@ package multipublish.commands
 					var resolveWait:Boolean = !Boolean(provider.channelNow);
 					provider.channelNew = new Channel(channelNew, "channel", true, resolveWait);
 					provider.channelNew.addEventListener(ControlEvent.INIT, channelNew_initHandler);
+					channelCount++;
 				}
-				
 			}
 			
+			/**
+			 * 
+			 * 在if(... now ...)、if(... new ...)里面增加一个计数器，当计数器为0时，在此处执行commandEnd();
+			 * 
+			 */		
+			
 			//如果当前排期与新排期都没有，表示没有任何数据，直接结束。
-			if (!provider.channelNow && !provider.channelNew) commandEnd();
+			if (channelCount == 0) 
+			{
+				config.state = ClientStateConsts.BROD_NOPR;
+				commandEnd();
+			}
 		}
 		
 		

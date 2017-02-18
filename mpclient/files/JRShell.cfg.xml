@@ -7,8 +7,7 @@
         <monitoritems>MPClient.exe|</monitoritems>
         <hideshow>CommService.exe|ApplicationFramework.exe|</hideshow>
 		<player>MPClient.exe</player>
-		<!-- <closemonitorplayer>CloseMonitorPlayer.exe</closemonitorplayer> -->
-		<closemonitorplayer></closemonitorplayer>
+		<closemonitorplayer>CloseMonitorPlayer.exe</closemonitorplayer>
         <macsearch></macsearch>
         <grouppeertime>30</grouppeertime>
         <updatetime>1</updatetime>
