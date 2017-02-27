@@ -136,7 +136,7 @@ package multipublish.vo.contents
 			{
 				LogUtil.log(title + "：网页文件压缩包不存在，" + zipPath);
 				
-				var cache:Cache = ($args[0] is String) ? Cache.cache($args[0], !useWait) : $args[0];
+				cache = ($args[0] is String) ? Cache.cache($args[0], !useWait) : $args[0];
 				if (!cach[cache.saveURL])
 				{
 					cache.extra = cache.extra || {};
