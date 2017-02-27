@@ -71,7 +71,8 @@ package multipublish.commands.steps
 			type[ContentTypeConsts.PICTURE] = Picture;
 			type[ContentTypeConsts.TYPESET] = Typeset;
 			type[ContentTypeConsts.RECORD ] = Record;
-			type[ContentTypeConsts.CARTOON] = Cartoon;
+			type[ContentTypeConsts.FINANCE] = Finance;
+			type[ContentTypeConsts.GALLERY] = Gallery;
 			
 			queue = new ParallelQueue;
 			//QUEUE_END为该队列整体完毕，STEP_END为阶段性完毕可能还会有重新下载等其他处理。

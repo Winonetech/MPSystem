@@ -3,7 +3,7 @@
 
 
 #define MyAppName "WOS Player o2o"
-#define MyAppVersion "18.8.1"
+#define MyAppVersion "18.8.5"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -24,7 +24,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputBaseFilename=WOS Player
+OutputBaseFilename=WOS Player o2o
 SetupIconFile=files\MPClient.ico
 Compression=lzma
 SolidCompression=yes
@@ -44,6 +44,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 
 Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "MPClient\financeData\*"; DestDir: "{app}\financeData"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
@@ -52,6 +53,10 @@ Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
+<<<<<<< HEAD
+=======
+
+>>>>>>> 290b26ad08bf2831ea2c968d49ac67121a5c4f8a
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 

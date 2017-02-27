@@ -147,7 +147,7 @@ package multipublish.core
 		
 		/**
 		 * 
-		 * 时间同步
+		 * 日志上传。
 		 * 
 		 */
 		
@@ -321,6 +321,7 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
+		private static var i:uint = 0;
 		
 		/**
 		 * 

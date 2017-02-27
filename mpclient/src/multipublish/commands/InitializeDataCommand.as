@@ -12,11 +12,11 @@ package multipublish.commands
 	 */
 	
 	
-	import com.winonetech.tools.LogSQLite;
-	
 	import cn.vision.events.pattern.QueueEvent;
 	import cn.vision.pattern.queue.SequenceQueue;
 	import cn.vision.utils.LogUtil;
+	
+	import com.winonetech.tools.LogSQLite;
 	
 	import multipublish.commands.steps.InitializeDocument;
 	import multipublish.commands.steps.InitializeProgram;

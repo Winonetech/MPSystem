@@ -5,13 +5,13 @@
 				xmlns:ct="multipublish.views.contents.*">
 	<s:VideoPlayer id="video" width="100%" height="100%"
 				   autoPlay="false" loop="false"
-				   source="{content.content}" scaleMode="letterbox"
 				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
+				   source="{content.content}" scaleMode="letterbox"
 				   mediaPlayerStateChange="handlerMediaStateChange(event)"
 				   complete="stop()"/>
+	
 	<fx:Script>
 		<![CDATA[
-			
 			import multipublish.core.mp;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
@@ -24,6 +24,11 @@
 			override protected function processPlay():void
 			{
 				if (video && video.source) video.play();
+				/* trace("play judge: " + Boolean(video && video.source) + " isPlaying: " + video.playing);
+				if (video.playing)
+				{
+					trace(this.getBounds(stage));
+				} */ 
 			}
 			
 			
@@ -42,9 +47,22 @@
 			 */
 			private function handlerMediaStateChange($e:MediaPlayerStateChangeEvent):void
 			{
-				if (playing && video.source && 
-					$e.state == MediaPlayerState.PAUSED)
-					video.play();
+//				if (playing && video.source && 
+//					$e.state == MediaPlayerState.PAUSED)
+//					video.play();
+				
+				if ($e.state == MediaPlayerState.PAUSED || 
+					$e.state == MediaPlayerState.READY)
+				{
+					if (playing) video.play();
+					dispatchReady();
+				}
+				else if ($e.state == MediaPlayerState.PLAYBACK_ERROR)
+				{
+					dispatchReady();
+					stop();
+				}
+
 			}
 			
 			

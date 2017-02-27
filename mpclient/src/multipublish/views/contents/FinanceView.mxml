@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  xmlns:contents="multipublish.views.contents.*"
+					  creationComplete="init()">
+	
+	<s:SWFLoader id="loader" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"
+				 scaleContent="true" maintainAspectRatio="true" source="{financeDateUrl}"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.vision.utils.MathUtil;
+			
+			import multipublish.consts.FinanceTypeConsts;
+			import multipublish.core.mp;
+			import multipublish.tools.FinanceDataUdtController;
+			import multipublish.vo.contents.Finance;
+			
+			
+			private function init():void
+			{
+				if (!config.fduc)
+				{
+					config.fduc = new FinanceDataUdtController;
+				}
+			}
+			
+			
+			override protected function processPlay():void
+			{
+				financeDateUrl = type[financeDate.contentName];
+				timerPlay();
+			}
+			
+			
+			override protected function processStop():void
+			{
+				timerStop();
+			}
+			
+			
+			private function timerPlay():void
+			{
+				if (!timer)
+				{
+					timer = new Timer(1000, time);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.start();
+				}
+			}
+			
+			
+			private function timerStop():void
+			{
+				if (timer)
+				{
+					timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerTimerComplete);
+					timer.stop();
+					timer = null;
+				}
+			}
+			
+			
+			private function handlerTimerComplete($e:Event):void
+			{
+				stop();
+			}
+			
+			override protected function resolveData():void
+			{
+				financeDate = data as Finance;
+				
+				if (financeDate)
+				{
+					time = financeDate.timelength || config.maxDurationTime;
+				}
+				else
+				{
+					dispatchReady();
+				}
+			}
+			
+			
+			override protected function processReset():void
+			{
+				financeDate = null;
+			}
+			
+			private function get time():uint
+			{
+				return mp::time;
+			}
+			
+			private function set time($value:uint):void
+			{
+				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
+				
+				if (timer)
+				{
+					timer.repeatCount = time;
+					timer.reset();
+					timer.start();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+
+			private var timer:Timer;
+			
+			[Bindable]
+			private var financeDate:Finance;
+			
+			[Bindable]
+			private var financeDateUrl:String;
+			
+			private var type:Object = {
+				"depositRate" : FinanceTypeConsts.DEPOSITRATE,
+				"quotation"   : FinanceTypeConsts.QUOTATION,
+				"oil"         : FinanceTypeConsts.OIL,
+				"gold"		  : FinanceTypeConsts.GOLD,
+				"stock"		  : FinanceTypeConsts.STOCK,
+				"存款利率" 	  : FinanceTypeConsts.DEPOSITRATE,
+				"外汇牌价"      : FinanceTypeConsts.QUOTATION,
+				"原油"         : FinanceTypeConsts.OIL,
+				"黄金"		  : FinanceTypeConsts.GOLD,
+				"股票"		  : FinanceTypeConsts.STOCK
+			};
+			
+		]]>
+	</fx:Script>
+	
+</contents:ContentView>

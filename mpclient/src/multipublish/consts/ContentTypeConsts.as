@@ -91,5 +91,18 @@ package multipublish.consts
 		
 		public static const CARTOON:String = "flash";
 		
+		
+		/**
+		 * 
+		 * 金融。
+		 * 
+		 * @default finance
+		 * 
+		 * @see com.winonetech.vo.contents.Video
+		 * 
+		 */
+		
+		public static const FINANCE:String = "financeData";
+		
 	}
 }

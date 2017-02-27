@@ -118,6 +118,7 @@ package multipublish.commands
 				window.nativeWindow.x = window.nativeWindow.y = 0;
 			}
 			
+			config.isVertical = r.width < r.height;
 			
 			//add guild view
 			window.addElement(view.guild    = new GuildView);
