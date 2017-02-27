@@ -3,15 +3,16 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" 
 					  xmlns:contents="multipublish.views.contents.*"
-					  creationComplete="mouseChildren = mouseEnabled = true">
-	
-	<s:VGroup width="100%" top="50" gap="20" horizontalAlign="center">
-		<s:VGroup id="container" width="100%" paddingLeft="{width * .382}" gap="20" horizontalAlign="left"/>
-		<s:HGroup id="buttonLine" width="100%" horizontalAlign="center" gap="15">
-			<s:Button label="提交" click="submit_clickHandler(event)"/>
-			<s:Button label="重置" click="reset_clickHandler (event)"/>
-		</s:HGroup>
-	</s:VGroup>
+					  creationComplete="mouseChildren = mouseEnabled = true" xmlns:controls="com.winonetech.controls.*">
+	<controls:MultiTouchScroller>
+		<s:VGroup width="100%" top="50" gap="20" horizontalAlign="center">
+			<s:VGroup id="container" width="100%" paddingLeft="{width * .382}" gap="20" horizontalAlign="left"/>
+			<s:HGroup id="buttonLine" width="100%" horizontalAlign="center" gap="15">
+				<s:Button label="提交" click="submit_clickHandler(event)"/>
+				<s:Button label="重置" click="reset_clickHandler (event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</controls:MultiTouchScroller>
 		
 	
 	

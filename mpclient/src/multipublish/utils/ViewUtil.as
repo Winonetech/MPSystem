@@ -1,9 +1,7 @@
 package multipublish.utils
 {
-	import cn.vision.collections.Map;
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.ScreenUtil;
-	import cn.vision.utils.TimerUtil;
 	
 	import flash.geom.Rectangle;
 	
@@ -173,7 +171,8 @@ package multipublish.utils
 				}
 				else
 				{
-					config.state = ClientStateConsts.BROD_NOPR;
+//					config.state = ClientStateConsts.BROD_NOPR;
+					guild(true, ClientStateConsts.BROD_NOPR);
 				}
 			}
 		}
