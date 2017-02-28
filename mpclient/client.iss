@@ -24,6 +24,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
+DisableDirPage=no
 OutputBaseFilename=WOS Player o2o
 SetupIconFile=files\MPClient.ico
 Compression=lzma
@@ -53,10 +54,9 @@ Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
-<<<<<<< HEAD
-=======
 
->>>>>>> 290b26ad08bf2831ea2c968d49ac67121a5c4f8a
+
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 
