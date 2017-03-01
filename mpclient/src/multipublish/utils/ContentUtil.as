@@ -41,7 +41,7 @@ package multipublish.utils
 				if (refer) 
 				{
 					//如果是不需要等待的模块，则需要创建一个CacheView壳来包含对应的视图。
-					var content:* = (UNWAIT_CONTENTS_VIEW.indexOf(refer) > 0)
+					var content:* = (UNWAIT_CONTENTS_VIEW.indexOf(refer) >= 0)
 						? getCacheView(refer)
 						: new refer;
 				}
@@ -85,7 +85,7 @@ package multipublish.utils
 			if (classRef) 
 			{
 				var content:Content = new classRef($content, "content", 
-					(UNWAIT_CONTENTS_VO.indexOf(classRef) > 0) ? $resolveWait : $useWait, $cacheGroup);
+					(UNWAIT_CONTENTS_VO.indexOf(classRef) >= 0) ? $resolveWait : $useWait, $cacheGroup);
 				//实例化对应的视图。
 			}
 			return content;

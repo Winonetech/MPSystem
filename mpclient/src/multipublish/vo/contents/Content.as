@@ -14,10 +14,8 @@ package multipublish.vo.contents
 	 */
 	
 	
-	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.TimerUtil;
-	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.consts.PathConsts;
 	import com.winonetech.core.VO;

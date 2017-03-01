@@ -3,18 +3,38 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" 
 					  xmlns:contents="multipublish.views.contents.*"
-					  creationComplete="init()">
+					  creationComplete="init()" xmlns:controls="com.winonetech.controls.*">
 	
 	<s:VGroup id="vg" width="100%" height="100%" top="30" horizontalAlign="center" gap="50">
 		
 		<s:Label id="title" width="50%" textAlign="center" fontWeight="bold" color="{notice.titleColor}"
 				 text="{notice.noticeTitle}" fontSize="{notice.titleFont}"
 				 paddingTop="30" paddingLeft="30" paddingRight="30"/>
-		
+		<!--
 		<s:TextArea borderVisible="false" contentBackgroundAlpha="0"
 					editable="false" selectable="false" height="{vg.height * 2 / 3}" 
 					id="text" maxWidth="{vg.width * 2 / 3}" textAlign="left" color="{notice.contentColor}"
-					text="{notice.content}" fontSize="{notice.contentFont}"/>
+					text="{notice.content}" fontSize="{notice.contentFont}"/> 
+		-->
+		<controls:MultiTouchScroller left="5" right="5"
+									 top="5" bottom="5" 
+									 id="scroll" 
+									 horizontalScrollPolicy="off"
+									 skinClass="multipublish.skins.ScrollerSkin"
+									 horizontalTouchScrollEnabled="false">
+			
+			<s:Group mouseChildren="false" width="100%"
+					 horizontalCenter="0" height="{vg.height * 3 / 4}">
+				
+				<mx:Text id="contentText" width="{vg.width * 2 / 3}"
+						 mouseEnabled="false" mouseChildren="false"
+						 selectable="false"
+						 fontSize="{notice.contentFont}"
+						 color="{notice.contentColor}"
+						 htmlText="{notice.content}"/>
+				
+			</s:Group>
+		</controls:MultiTouchScroller>
 		
 		
 	</s:VGroup>
@@ -59,6 +79,8 @@
 			
 			override protected function processStop():void
 			{
+				if (scroll) scroll.verticalScrollPosition = 0;
+				
 				timerStop();
 			}
 			

@@ -80,7 +80,12 @@ package multipublish.vo.contents
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
 			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
 			else useCache = true;
-			if (time == getPaperTime || $args[0]) updateContents();
+			
+			if (time == getPaperTime || $args[0]) 
+			{
+				allowed = true;
+				updateContents();
+			}
 		}
 		
 		
@@ -145,7 +150,7 @@ package multipublish.vo.contents
 //							var temp:String  = saveURL.split("/").pop();
 //							var save:String  = temp.split(".")[0];
 //							var bool:Boolean = save == date;
-							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup) : item;   //Cache主要存放一些下载路径和安装路径。
+							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup, false, true) : item;   //Cache主要存放一些下载路径和安装路径。
 							
 //							if (bool) 
 //							{
@@ -229,6 +234,8 @@ package multipublish.vo.contents
 			else
 			{
 				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach.length);
+				
+				downloadWhenUpt();
 			}
 			
 			TimerUtil.callLater(1, dispatchInit);
@@ -375,6 +382,7 @@ package multipublish.vo.contents
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
+				//解决当路径中存在小数点会导致解压缩路径错误的BUG。
 				var toSeparator:String = fzip.split("\\").join("/");
 				var typePointIndex:int = toSeparator.lastIndexOf(".");
 				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), toSeparator.slice(0, typePointIndex) + "/");

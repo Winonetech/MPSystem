@@ -99,7 +99,7 @@
 					
 					createTimer(gallary.updateFrequency, 0, gallary_updateHandler);
 					
-					gallary_updateHandler(null);
+//					gallary_updateHandler(null);
 					
 					applyCallback(callbackData);
 				}
@@ -146,7 +146,7 @@
 			 */
 			private function gallary_updateHandler($e:TimerEvent):void
 			{
-				gallary.update();
+				if (gallary) gallary.update();
 			}
 			
 			/**
@@ -174,7 +174,7 @@
 				{
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
-				}
+				};
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, list_mouseMoveHandler);
 				stage.addEventListener(MouseEvent.MOUSE_UP, list_mouseUpHandler);
 			}

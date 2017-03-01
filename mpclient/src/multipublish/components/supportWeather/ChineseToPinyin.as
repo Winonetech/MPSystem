@@ -90,7 +90,7 @@ package multipublish.components.supportWeather
 			return a;  
 		}  
 		public function pinyin(char:String):String {  
-			if (!char.charCodeAt(0) ||char.charCodeAt(0) < 1328) {  
+			if (!char.charCodeAt(0) || char.charCodeAt(0) < 1328) {  
 				return char;  
 			}  
 			if (spellArray[char.charCodeAt(0)]) {  

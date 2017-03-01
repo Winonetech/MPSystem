@@ -155,10 +155,6 @@ package multipublish.views
 				var result:MPView = ContentUtil.getContentView(source.contents[index]);
 				if (result)
 				{
-					if (result is NewsView)
-					{
-						trace();
-					}
 					result.width  = width;
 					result.height = height;
 					container.addElement(result);

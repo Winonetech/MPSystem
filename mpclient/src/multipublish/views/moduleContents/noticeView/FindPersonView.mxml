@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contents:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
-					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*">
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:contents="multipublish.views.contents.*" xmlns:controls="com.winonetech.controls.*">
 	
 	<s:VGroup id="group" horizontalAlign="center" horizontalCenter="0" height="100%" top="30" gap="12" width="50%">
 		
@@ -14,12 +14,24 @@
 				 source="{notice.picPath}"
 				 ready="readyHandler(event)"/>
 		
-		<mx:Text id="contentText" maxWidth="{group.width * 2 / 3}"
-				 selectable="false" horizontalCenter="0"
-				 mouseEnabled="false" mouseChildren="false"
-				 color="{notice.contentColor}"
-				 fontSize="{notice.contentFont}"
-				 htmlText="{notice.content}"/>
+		<controls:MultiTouchScroller left="5" right="5"
+									 top="5" bottom="5" id="scroll" 
+									 horizontalScrollPolicy="off"
+									 skinClass="multipublish.skins.ScrollerSkin"
+									 horizontalTouchScrollEnabled="false">
+			
+			<s:Group mouseChildren="false" width="100%"
+					 horizontalCenter="0" height="{group.height * 3 / 4}">
+				
+				<mx:Text id="contentText" width="{group.width * 2 / 3}"
+						 mouseEnabled="false" mouseChildren="false"
+						 selectable="false" 
+						 fontSize="{notice.contentFont}"
+						 htmlText="{notice.content}" 
+						 color="{notice.contentColor}"/>
+				
+			</s:Group>
+		</controls:MultiTouchScroller>
 	</s:VGroup>
 	
 	
@@ -55,6 +67,8 @@
 			
 			override protected function processStop():void
 			{
+				if (scroll) scroll.verticalScrollPosition = 0;
+				
 				timerStop();
 			}
 			

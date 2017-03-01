@@ -8,7 +8,6 @@ package multipublish.vo.schedules
 	 */
 	
 	
-	import cn.vision.collections.Map;
 	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.core.VO;

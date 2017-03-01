@@ -54,6 +54,7 @@ package multipublish.commands
 				data = data.replace(" ", "");
 				var temp:Array = data.split(",");
 				for each (var item:String in temp) Cache.cache(item);
+				Cache.start();
 			}
 		}
 		

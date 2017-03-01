@@ -53,6 +53,8 @@ package multipublish.vo.contents
 			$useWait:Boolean = true,
 			$cacheGroup:String = null)
 		{
+			failCount = 0;
+
 			super($data, $name, $useWait, $cacheGroup);
 		}
 		
@@ -79,6 +81,21 @@ package multipublish.vo.contents
 		}
 		
 		
+		/**
+		 * 
+		 * 更新时下载。
+		 * 
+		 */
+		
+		protected function downloadWhenUpt():void
+		{
+			if (allowed)
+			{
+				allowed = false;
+				Cache.start();
+			}
+		}
+		
 		
 		/**
 		 * 
@@ -99,9 +116,9 @@ package multipublish.vo.contents
 			http.addEventListener(ResultEvent.RESULT, http_defaultHandler);
 			http.addEventListener(FaultEvent.FAULT, http_defaultHandler);
 			http.method = $method;
-			http.requestTimeout = 10;
+			http.requestTimeout = 50;
 			http.url = $url;
-			http.resultFormat
+			http.resultFormat;
 			http.contentType = "application/json; charset=utf-8";
 			
 			if ($args)
@@ -136,7 +153,6 @@ package multipublish.vo.contents
 			
 		}
 		
-		
 		/**
 		 * 
 		 * 处理结果
@@ -168,16 +184,23 @@ package multipublish.vo.contents
 				tip = tip || {};
 				tip.title = "错误";
 				
-				if (http.url != localURL)
+				if (failCount++ <= RELOADTIMES)
 				{
-					LogUtil.log(tip.message = title + "加载数据出错：" + http.url);
-					LogUtil.log(title + "尝试加载本地缓存：" + localURL);
-					loadContent(localURL, true);
+					loadContent(http.url);
 				}
 				else
 				{
-					LogUtil.log(tip.message = title + "加载数据出错：" + remoteURL, localURL);
-					dispatchEvent(new ControlEvent(ControlEvent.ERROR, tip.message));
+					if (http.url != localURL)
+					{
+						LogUtil.log(tip.message = title + "加载数据出错：" + http.url);
+						LogUtil.log(title + "尝试加载本地缓存：" + localURL);
+						loadContent(localURL, true);
+					}
+					else
+					{
+						LogUtil.log(tip.message = title + "加载数据出错：" + remoteURL, localURL);
+						dispatchEvent(new ControlEvent(ControlEvent.ERROR, tip.message));
+					}
 				}
 			}
 			
@@ -277,11 +300,32 @@ package multipublish.vo.contents
 		 */
 		private var timer:Timer;
 		
-		
 		/**
 		 * @private
 		 */
 		private var http:HTTPService;
+		
+		
+		/**
+		 * 
+		 * 加载失败统计。
+		 * @private
+		 * 
+		 */
+		
+		private var failCount:uint;
+		
+		/**
+		 * 
+		 * 重新加载次数。
+		 * @private
+		 * 
+		 */
+		
+		private const RELOADTIMES:uint = 1;
+
+
+		protected var allowed:Boolean;
 		
 	}
 }
