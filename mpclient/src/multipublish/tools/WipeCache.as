@@ -1,11 +1,16 @@
 package multipublish.tools
 {
 	
+	import cn.vision.utils.LogUtil;
+	
 	import com.winonetech.consts.PathConsts;
+	import com.winonetech.tools.Cache;
 	
 	import flash.filesystem.File;
 	
 	import multipublish.consts.ContentConsts;
+	import multipublish.core.MPCConfig;
+	import multipublish.utils.CacheSizeUtil;
 	
 	/**
 	 * 
@@ -29,12 +34,15 @@ package multipublish.tools
 			};
 			list = list.filter(filter, null);
 			
-			if (judge(file)) deleteFile(list);
+			if (CacheSizeUtil.getSize(file) > SIZE) deleteFile(list);
 		}
 		
 		
 		/**
 		 * @private
+		 * 
+		 * @param $array:Array 需要删除文件数组。 
+		 * 
 		 */
 		private static function deleteFile($array:Array):void
 		{
@@ -51,44 +59,10 @@ package multipublish.tools
 				}
 				else if (compareDate(fs))
 				{
-					fs.deleteFile();
+					var arr:Array = fs.url.split(PathConsts.PATH_FILE);
+					if (!Cache.used(PathConsts.PATH_FILE + arr[1]))	fs.deleteFile();
 				}
 			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private static function judge(file:File):Boolean
-		{
-			var list:Array = file.getDirectoryListing();
-			count = 0;
-			return size(list) > SIZE;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private static function size($array:Array):Number
-		{
-			for each (var file:File in $array)
-			{
-				var fs:File = new File(file.nativePath);
-				if (fs.isDirectory)
-				{
-					var list:Array = fs.getDirectoryListing();
-					
-					size(list);
-				}
-				else
-				{
-					count = count + fs.size;
-				}
-			}
-			
-			return count;
 		}
 		
 		
@@ -103,8 +77,8 @@ package multipublish.tools
 		{
 			var file:File = File.applicationDirectory.resolvePath(PathConsts.PATH_FILE);
 			var fs:File = File.applicationDirectory.resolvePath(PathConsts.PATH_FILE + File.separator + $content);
-			var f :File = File.applicationDirectory.resolvePath(PathConsts.PATH_EPAPER);
-			if (judge(file))
+			var f :File = File.applicationDirectory.resolvePath(PathConsts.PATH_FILE + File.separator + "epaper" + File.separator);
+			if (CacheSizeUtil.getSize(file) > SIZE)
 			{
 				if (f.exists && fs.exists)
 				{
@@ -116,7 +90,7 @@ package multipublish.tools
 						var subfile:File = new File((list[i] as File).nativePath);
 						if (subfile.exists && !subfile.type && subfile.isDirectory)
 						{
-							keep = subfile.name == fs.name ? $daysKeep : ContentConsts.DAYSKEEP;
+							keep = subfile.name == fs.name ? $daysKeep : DAYSKEEP;
 							deleteEPFile(keep, subfile);
 						}
 					}
@@ -158,20 +132,24 @@ package multipublish.tools
 		private static function compareDate(file:File):Boolean
 		{
 			var result:Date = new Date;
-			result.date    -= ContentConsts.DAYSKEEP;
+			result.date    -= -1//DAYSKEEP;
 			return file.modificationDate < result;
 		}
 		
 		
+		private static function get config():MPCConfig
+		{
+			return MPCConfig.instance;
+		}
+		
 		/**
 		 * @private
 		 */
-		private static const SIZE:Number = 2 * 1024 * 1024 * 1024;
-		
+		private static const SIZE:Number = 0;//config.maxCacheKeep * 1024 * 1024 * 1024;
 		
 		/**
 		 * @private
 		 */
-		private static var count:Number = 0;
+		private static const DAYSKEEP:uint = config.maxCachedaysKeep;
 	}
 }
