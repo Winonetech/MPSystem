@@ -65,14 +65,15 @@
 		we are clipped. -->
 		<s:Group minWidth="263" minHeight="184" left="0" right="0" top="0" bottom="0">
 			
-			<!-- background when the videoElement doesn't fill its whole spot -->
+			<!-- background when the videoElement doesn't fill its whole spot 
 			<s:Rect bottom="0" left="0" right="0" top="0">
 				<s:fill>
 					<s:SolidColor color="0x000000" />
 				</s:fill>
 			</s:Rect>
+			-->
 			
-			<!--- The subcomponent that loads the video but does not define the appearance of the VideoPlayer component. -->
+			<!-- The subcomponent that loads the video but does not define the appearance of the VideoPlayer component. -->
 			<s:VideoDisplay id="videoDisplay" bottom="0" left="0" right="0" top="0"/>
 		</s:Group>
 	</s:Group>
