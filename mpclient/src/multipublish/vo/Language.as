@@ -406,6 +406,23 @@ package multipublish.vo
 		public var zoomTweenTime:String = "缩放切换时长：";
 		
 		
+		/**
+		 * 
+		 * 缓存存储上限。
+		 * 
+		 */
+		
+		public var maxCacheKeep:String = "缓存存储上限: ";
+		
+		
+		/**
+		 * 
+		 * 最大素材保存时间。
+		 * 
+		 */
+		
+		public var maxCachedaysKeep:String = "最大素材保存时间: ";
+		
 		//-----------------------------------------------------------------
 		// HELP
 		//-----------------------------------------------------------------
@@ -554,6 +571,24 @@ package multipublish.vo
 		
 		public var defaultCount3:String = "以个为单位，默认为3。";
 		
+		
+		/**
+		 * 
+		 * 以GB为单位，默认为30GB。
+		 * 
+		 */
+		
+		public var defaultCount30:String = "以GB为单位，默认为30GB。";
+		
+		
+		/**
+		 * 
+		 * 以天为单位，默认为30天。
+		 * 
+		 */
+		
+		public var defaultDay30:String = "以天为单位，默认为30天。";
+		
 		//-----------------------------------------------------------------
 		// button
 		//-----------------------------------------------------------------
@@ -656,6 +691,8 @@ package multipublish.vo
 			defaultTime60  :"以秒为单位，默认60秒。",
 			defaultTime7200:"以秒为单位，默认7200秒。",
 			defaultCount3  :"以个为单位，默认为3。",
+			defaultCount30 :"以GB为单位，默认为30GB。",
+			defaultDay30   :"以天为单位，默认为30天。",
 			
 			getTerminalNO:"获取终端编号",
 			cancel       :"取消",
@@ -726,6 +763,8 @@ package multipublish.vo
 			defaultTime60  :"In seconds, default 60.",
 			defaultTime7200:"In seconds, default 7200.",
 			defaultCount3  :"For a uint, default 3.",
+			defaultCount30 :"GB as a uint, default 30.",
+			defaultDay30   :"Days as a uint, default 30.",
 			
 			getTerminalNO:"Get terminal NO.",
 			cancel       :"Cancel",

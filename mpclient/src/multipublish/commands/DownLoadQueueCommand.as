@@ -48,7 +48,7 @@ package multipublish.commands
 		{
 			commandStart();
 			
-			if (config.replacable)
+			if (config.replacable || Cache.unwaitLave > 0)
 			{
 				cmd ? resolve() : send();
 			}
@@ -70,9 +70,14 @@ package multipublish.commands
 				waitQueue.removeEventListener(QueueEvent.QUEUE_END, wait_endHandler);
 				unwaitQueue.removeEventListener(QueueEvent.QUEUE_END, unwait_endHandler);
 				
-				ViewUtil.showDownload(false);
+				trace("需要下载的文件个数，等待：" + Cache.waitLave + "，非等待：" + Cache.unwaitLave)
 				
-				ViewUtil.showTree(false);
+				
+				if(provider.channelNow)
+				{
+					ViewUtil.showDownload(false);
+					ViewUtil.showTree(false);
+				}
 				
 				commandEnd();
 			}

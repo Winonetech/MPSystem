@@ -32,7 +32,6 @@ package multipublish.consts
 		public static const MODULE_TIME_DEFAUALT:uint = 60;
 		
 		
-		
 		/**
 		 * 
 		 * 天气默认数据

@@ -30,6 +30,7 @@ package multipublish.vo.contents
 	
 	import multipublish.core.mp;
 	import multipublish.tools.ImageCompare;
+	import multipublish.tools.WipeCache;
 	import multipublish.utils.EPaperUtil;
 	import multipublish.utils.URLUtil;
 	
@@ -79,7 +80,12 @@ package multipublish.vo.contents
 			var time:String = ObjectUtil.convert(new Date, String, "HH:MI:SS");
 			if (!isNaN(Number($args[1]))) daysKeep = uint($args[1]);
 			else useCache = true;
-			if (time == getPaperTime || $args[0]) updateContents();
+			
+			if (time == getPaperTime || $args[0]) 
+			{
+				allowed = true;
+				updateContents();
+			}
 		}
 		
 		
@@ -119,12 +125,10 @@ package multipublish.vo.contents
 						try
 						{
 							var errors:Array = EPaperUtil.mp::unzipFile(file, path);
-							temp++;
 						}
 						catch (e:Error)
 						{
 							LogUtil.log(title + "：解压报纸文件出错，文件已损坏，路径：" + fzip);
-							temp--;
 						}
 						if (errors)
 						{
@@ -146,7 +150,7 @@ package multipublish.vo.contents
 //							var temp:String  = saveURL.split("/").pop();
 //							var save:String  = temp.split(".")[0];
 //							var bool:Boolean = save == date;
-							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup) : item;   //Cache主要存放一些下载路径和安装路径。
+							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup, false, true) : item;   //Cache主要存放一些下载路径和安装路径。
 							
 //							if (bool) 
 //							{
@@ -168,10 +172,9 @@ package multipublish.vo.contents
 				{
 					LogUtil.log(title + "：已解析完毕：" + fzip);
 					if (file.exists) file.deleteFile();
-					temp ++;
 				}
 			}
-			
+			WipeCache.wipeEpaperCache(daysKeep, content);
 		}
 		
 		
@@ -207,7 +210,6 @@ package multipublish.vo.contents
 			images.clear();
 			retrys.clear();
 			reslvd = {};
-			temp = 0;
 			
 			//获取从当天开始，往前 daysKeep天的报纸
 			var date:Date = new Date;
@@ -224,7 +226,7 @@ package multipublish.vo.contents
 			wt::registCache.apply(this, urls);
 			//如果没有需要下载的报纸文件，开始解析报纸数据。
 			
-			if (cach.length == 0 || temp > 0) 
+			if (cach.length == 0) 
 			{
 				LogUtil.log(title + "：更新报纸信息，解析数据");
 				resolveData();
@@ -232,6 +234,8 @@ package multipublish.vo.contents
 			else
 			{
 				LogUtil.log(title + "：更新报纸信息，需要下载文件", cach.length);
+				
+				downloadWhenUpt();
 			}
 			
 			TimerUtil.callLater(1, dispatchInit);
@@ -258,7 +262,7 @@ package multipublish.vo.contents
 					if (EPaperUtil.mp::getDayInited(keyDay))
 					{
 						fzip = new VSFile(keyDay.substr(0, keyDay.length - 1) + ".zip");
-						if (fzip.exists) fzip.deleteFile();
+						if (fzip.exists) fzip.deleteFile();    //删除已解压电子报压缩包
 					}
 					
 					if (fileDay.exists && fileDay.isDirectory)
@@ -378,7 +382,10 @@ package multipublish.vo.contents
 				
 				delete retrys[cache.saveURL];
 				cache.removeEventListener(CommandEvent.COMMAND_END, cache_endHandler);
-				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), fzip.split("\\").join("/").split(".")[0] + "/");
+				//解决当路径中存在小数点会导致解压缩路径错误的BUG。
+				var toSeparator:String = fzip.split("\\").join("/");
+				var typePointIndex:int = toSeparator.lastIndexOf(".");
+				var errors:Array = EPaperUtil.mp::unzipFile(new VSFile(fzip), toSeparator.slice(0, typePointIndex) + "/");
 				if (errors)
 				{
 					LogUtil.log(title + "：解压以下文件出错，文件已损坏：\n");

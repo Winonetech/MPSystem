@@ -16,6 +16,8 @@ package multipublish.tools
 	
 	import multipublish.consts.MPTipConsts;
 	
+	import org.osmf.events.TimeEvent;
+	
 	
 	public final class Controller extends VSObject
 	{
@@ -70,6 +72,27 @@ package multipublish.tools
 				usecacheTimer.stop();
 				usecacheTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
 				usecacheTimer = null;
+			}
+		}
+		
+		
+		/**
+		 * 
+		 * 启动缓存清理定时器。
+		 * 
+		 * @param $handler:Function 缓存清理回调函数。
+		 * @param $time:Number 时间，以秒为单位。
+		 * @param $args 回调函数的参数。
+		 * 
+		 */
+		public function registControlCleanCache($handler:Function, $time:Number, ...$args):void
+		{
+			cleanCacheHandler = $handler;
+			if (!cleanCacheTimer)
+			{
+				cleanCacheTimer = new Timer($time * 1000);
+				cleanCacheTimer.addEventListener(TimerEvent.TIMER, handlerCleanCache);
+				cleanCacheTimer.start();
 			}
 		}
 		
@@ -229,6 +252,15 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
+		private function handlerCleanCache($e:TimerEvent):void
+		{
+			cleanCacheHandler && cleanCacheHandler.apply(null, null);
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private var usecacheHandler:Function;
 		
 		/**
@@ -260,6 +292,16 @@ package multipublish.tools
 		 * @private
 		 */
 		private var shotcutCache:Object;
+		
+		/**
+		 * @private
+		 */
+		private var cleanCacheTimer:Timer;
+		
+		/**
+		 * @private
+		 */
+		private var cleanCacheHandler:Function;
 		
 	}
 }

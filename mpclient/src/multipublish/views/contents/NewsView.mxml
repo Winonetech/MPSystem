@@ -83,7 +83,7 @@
 					
 					createTimer(news.updateFrequency, 0, news_updateHandler);
 					
-					news_updateHandler(null);
+//					news_updateHandler(null);
 					
 					applyCallback(callbackData);
 				}

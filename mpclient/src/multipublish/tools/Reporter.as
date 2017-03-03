@@ -93,6 +93,9 @@ package multipublish.tools
 		{
 			queue.addEventListener(QueueEvent.STEP_START, handlerCacheStart);
 			queue.addEventListener(QueueEvent.STEP_END, handlerCacheEnd);
+			
+			queue_sp.addEventListener(QueueEvent.STEP_START, handlerCacheStart);
+			queue_sp.addEventListener(QueueEvent.STEP_END, handlerCacheEnd);
 		}
 		
 		
@@ -107,7 +110,7 @@ package multipublish.tools
 				REPORTABLE[cache] =!cache.exist;
 				if (REPORTABLE[cache])
 				{
-					var name:String = cache.saveURL.split("/").pop();
+					var name:String = cache.isEpaper ? cache.saveURL : cache.saveURL.split("/").pop();
 					var data:String = name + ";2";
 					var memo:String = name + (cache.reloadCount == 0 ? "开始下载" : "再次下载");
 					
@@ -135,7 +138,7 @@ package multipublish.tools
 				(cache.exist && REPORTABLE[cache]))
 			{
 				var exist:Boolean = cache.exist;
-				var name:String = cache.saveURL.split("/").pop();
+				var name:String = cache.isEpaper ? cache.saveURL : cache.saveURL.split("/").pop();
 				var data:String = name + (exist ? ";3" : ";4");
 				var memo:String = name + (exist ? " 下载完成" : " 下载失败");
 				if(!exist) 
@@ -165,7 +168,7 @@ package multipublish.tools
 				{
 					var s:Number = .01 * uint(100 * cache.speed);
 					var p:Number = .01 * uint(100 * cache.percent);
-					var n:String = cache.saveURL.split("/").pop();
+					var n:String = cache.isEpaper ? cache.saveURL : cache.saveURL.split("/").pop();
 					service.report(n + "," + p + "," + s + "kb/s", false);
 				}
 			}
@@ -178,6 +181,12 @@ package multipublish.tools
 		private function get queue():ParallelQueue
 		{
 			return Cache.queue;
+		}
+		
+		
+		private function get queue_sp():ParallelQueue
+		{
+			return Cache.queue_sp;
 		}
 		
 		/**

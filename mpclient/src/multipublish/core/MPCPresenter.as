@@ -207,7 +207,8 @@ package multipublish.core
 		
 		public function rebootTerminal(...$args):void
 		{
-			execute(new RebootTerminalCommand);
+			var reboot:RebootTerminalCommand = new RebootTerminalCommand;
+			reboot.execute();
 		}
 		
 		
@@ -219,7 +220,8 @@ package multipublish.core
 		
 		public function restartPlayer(...$args):void
 		{
-			execute(new RestartPlayerCommand);
+			var restart:RestartPlayerCommand = new RestartPlayerCommand;
+			restart.execute();
 		}
 		
 		
@@ -231,7 +233,8 @@ package multipublish.core
 		
 		public function shotcutPlayer($value:String):void
 		{
-			execute(new ShotcutPlayerCommand($value));
+			var shotcut:ShotcutPlayerCommand = new ShotcutPlayerCommand($value);
+			shotcut.execute();
 		}
 		
 		
@@ -255,7 +258,8 @@ package multipublish.core
 		
 		public function shutdownTerminal($value:String = null):void
 		{
-			execute(new InitializeShutdownCommand($value));
+			var shutdown:InitializeShutdownCommand = new InitializeShutdownCommand($value);
+			shutdown.execute();
 		}
 		
 		
@@ -324,6 +328,17 @@ package multipublish.core
 		}
 		
 		
+		/**
+		 * 
+		 * 清理缓存。
+		 * 
+		 */
+		
+		public function cleanCache():void
+		{
+			execute(new CleanCacheCommand);
+		}
+		
 		
 		/**
 		 * 
@@ -342,6 +357,7 @@ package multipublish.core
 			execute(new ShotcutPlayerCommand);			//初始化截图数据。
 			execute(new ClientUpdateCommand);			//升级判定。
 			execute(new SendLedCommand);				//发送 LED。
+			execute(new CleanCacheCommand);				//启动缓存清理器。
 			execute(new SendLEDConfigCommand);			//发送LED配置。
 			execute(new InitializeViewCommand);			//调出显示页面。
 			execute(new InitializeServiceCommand);		//初始化服务。

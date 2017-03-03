@@ -4,6 +4,8 @@ package multipublish.commands
 	import cn.vision.net.FTPRequest;
 	import cn.vision.net.FTPUploader;
 	
+	import com.winonetech.tools.Cache;
+	
 	import multipublish.core.MDProvider;
 	
 	import mx.states.OverrideBase;
@@ -51,6 +53,8 @@ package multipublish.commands
 				
 				//强制更新。
 				arr[url] && arr[url].update(true, daysKeep);
+				
+				Cache.start();
 			}
 		}
 		

@@ -19,16 +19,16 @@ package multipublish.vo
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
-	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	import multipublish.core.mp;
-	import multipublish.managers.ButtonManager;
 	import multipublish.utils.ContentUtil;
 	import multipublish.utils.ModuleUtil;
 	import multipublish.vo.contents.Button;
 	import multipublish.vo.contents.Content;
 	import multipublish.vo.contents.EPaper;
-	import multipublish.vo.contents.Gallary;
 	import multipublish.vo.contents.Marquee;
 	import multipublish.vo.contents.News;
 	import multipublish.vo.contents.ResolveContent;
@@ -253,36 +253,102 @@ package multipublish.vo
 			}
 		}
 		
+		
+		private function setTimer($function:Function, ...$args):void
+		{
+			var timer:Timer;
+			var tempFunction:Function = function($e:TimerEvent):void
+			{
+				$function($args[0]);
+				timer = null;
+			};
+			timer = new Timer(33, 1);
+			timer.addEventListener(TimerEvent.TIMER, tempFunction);
+			timer.start();
+		}
+		
 		/**
 		 * @private
 		 */
 		private function initContents(datContents:*, component:Component, layout:Layout):void
 		{
+			
+//			var createEpaper:Function = function($ep:EPaper):void
+//			{
+//				if ($ep)
+//				{
+//					var temp:EPaper = $ep as EPaper;
+//					epapersMap[temp.content] = temp;
+//				}
+//			};
+			
 			for each (var datContent:Object in datContents)
 			{
 				var rawContent:Object = ObjectUtil.clone(datContent);
-				var content:Content = ContentUtil.getContentVO(rawContent, useWait, cacheGroup, resolveWait);
-				if (content is Button || content is Marquee)
+				
+				if (rawContent.contentType == "epaper")
 				{
-					content.pageID = component.linkID;
-					if (content is Button) ArrayUtil.push(layout.buttons, content);
+					creatingEpapers.push({component:component, content:rawContent});
 				}
-				else if (content is ResolveContent)
+				else
 				{
-					contentsMap[content.vid] = content;
-					content.addEventListener(ControlEvent.INIT, content_initHandler);
-					if (content is News)
+					var content:Content = ContentUtil.getContentVO(rawContent, useWait, cacheGroup, resolveWait);
+					if (content is Button || content is Marquee)
 					{
-						(content as News).noImage = component.noImage;  
+						content.pageID = component.linkID;
+						if (content is Button) ArrayUtil.push(layout.buttons, content);
 					}
-					else if (content is EPaper)
+					else if (content is ResolveContent)
 					{
-						var temp:EPaper = content as EPaper;
-						epapersMap[temp.content] = temp;
+						contentsMap[content.vid] = content;
+						content.addEventListener(ControlEvent.INIT, content_initHandler);
+						if (content is News)
+						{
+							(content as News).noImage = component.noImage;  
+						}
+						/*else if (content is EPaper)
+						{
+							setTimer(createEpaper, content);
+						}*/
 					}
 				}
 				
 				component.mp::addContent(content);
+			}//end of for
+			
+			if (creatingEpapers.length)
+			{
+				creatingTimer = new Timer(2000);
+				creatingTimer.addEventListener(TimerEvent.TIMER, creatingEpaper_timerHandler);
+				creatingTimer.start();
+			}
+		}
+		
+		private function creatingEpaper_timerHandler($e:TimerEvent):void
+		{
+			if (creatingEpapers.length)
+			{
+				var temp:Object = creatingEpapers.shift();
+				//记录一个函数开始运行之前的计时
+				var startTime:int = getTimer();
+				var epaper:EPaper = ContentUtil.getContentVO(temp.content, useWait, cacheGroup, resolveWait) as EPaper;
+				//这里totalTime就是创建EPAPER所消耗的时间，这样可以看出这个函数是否因为耗时太久而造成卡死的现象。
+				//如果耗时太久，就需要对其进行优化。
+				var totalTime:int = getTimer() - startTime;
+				
+				trace("========= " + totalTime + " =========");
+				
+				temp.component.mp::addContent(epaper);
+				epapersMap[epaper.content] = epaper;
+			}
+			else
+			{
+				if (creatingTimer)
+				{
+					creatingTimer.stop();
+					creatingTimer.removeEventListener(TimerEvent.TIMER, creatingEpaper_timerHandler);
+					creatingTimer = null;
+				}
 			}
 		}
 		
@@ -336,7 +402,7 @@ package multipublish.vo
 			content.removeEventListener(ControlEvent.INIT, content_initHandler);
 			delete contentsMap[content.vid];
 			
-			if (contentsMap.length == 0) 
+			if (contentsMap.length == 0 && creatingEpapers.length == 0) 
 			{
 				dispatchInit();
 				
@@ -377,6 +443,16 @@ package multipublish.vo
 		 * @private
 		 */
 		private var resolveWait:Boolean;
+		
+		/**
+		 * @private
+		 */
+		private var creatingEpapers:Array = [];
+		
+		/**
+		 * @private
+		 */
+		private var creatingTimer:Timer;
 		
 	}
 }

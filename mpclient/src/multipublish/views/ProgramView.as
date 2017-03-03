@@ -112,8 +112,8 @@ package multipublish.views
 			{
 				log(MPTipConsts.RECORD_PROGRAM_DATA, data);
 				
-				var tempW:Number = program.width;
-				var tempH:Number = program.height;
+				var tempW:Number = program.width  || config.width;
+				var tempH:Number = program.height || config.height;
 				
 				container.width  = tempW;
 				container.height = tempH;

@@ -310,6 +310,26 @@
 										textAlign="left" restrict="0-9."
 										change="textinput_changeHandler(event)"/>
 					</s:FormItem>
+					<s:FormItem label="{language.maxCacheKeep}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultCount30}"/>
+							</s:VGroup>
+						</s:helpContent>
+						<ct:Field text="{config.maxCacheKeep}" name="maxCacheKeep"
+								  textAlign="left" restrict="0-9."
+								  change="textinput_changeHandler(event)"/>
+					</s:FormItem>
+					<s:FormItem label="{language.maxCachedaysKeep}">
+						<s:helpContent>
+							<s:VGroup>
+								<s:Label text="{language.defaultDay30}"/>
+							</s:VGroup>
+						</s:helpContent>
+						<ct:Field text="{config.maxCachedaysKeep}" name="maxCachedaysKeep"
+								  textAlign="left" restrict="0-9."
+								  change="textinput_changeHandler(event)"/>
+					</s:FormItem>
 				</s:Form>
 			</s:NavigatorContent>
 		</mx:TabNavigator>

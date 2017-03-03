@@ -385,6 +385,23 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 最大缓存存储上限。
+		 * 
+		 */
+		
+		public var maxCacheKeep:uint = 30;
+		
+		
+		/**
+		 * 
+		 * 最大素材保存时间。
+		 * 
+		 */
+		
+		public var maxCachedaysKeep:uint = 30;
+		
+		/**
+		 * 
 		 * 启动等待推送时长，超时则加载本地缓存。
 		 * 
 		 */

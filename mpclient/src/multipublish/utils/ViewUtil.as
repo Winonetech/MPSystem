@@ -1,9 +1,7 @@
 package multipublish.utils
 {
-	import cn.vision.collections.Map;
 	import cn.vision.core.NoInstance;
 	import cn.vision.utils.ScreenUtil;
-	import cn.vision.utils.TimerUtil;
 	
 	import flash.geom.Rectangle;
 	
@@ -113,8 +111,11 @@ package multipublish.utils
 		
 		public static function playSchedule($note:Boolean):void
 		{
-			var controller:Controller = config.controller;
-			controller.removeControlAllBroadcast();
+			if ($note)
+			{
+				var controller:Controller = config.controller;
+				controller.removeControlAllBroadcast();
+			}
 			
 			if (provider.channelNow)
 			{
@@ -165,12 +166,13 @@ package multipublish.utils
 						
 						view.main.data = current;  //调用 data的 setter函数 会触发其 resolveData (MainView)
 						
-						view.main.play();
+						showTree(false);
 					}
 				}
 				else
 				{
-					config.state = ClientStateConsts.BROD_NOPR;
+//					config.state = ClientStateConsts.BROD_NOPR;
+					guild(true, ClientStateConsts.BROD_NOPR);
 				}
 			}
 		}

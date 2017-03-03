@@ -91,6 +91,7 @@ package multipublish.views
 					
 					component.addEventListener(ControlEvent.READY, handlerReady, false, 0, true);
 					
+					componentsDic[child.id] = component;
 					
 					component.x = child.x;
 					component.y = child.y;
@@ -98,9 +99,13 @@ package multipublish.views
 					component.height = child.h;
 					
 					registView(component);
-					component.data   = child;
 					
 					container.addElement(component);
+				}
+				
+				for each (child in sheet.componentsArr) 
+				{
+					componentsDic[child.id].data = child;
 				}
 			}
 			else
@@ -173,10 +178,10 @@ package multipublish.views
 			if (temp)
 			{
 				temp.removeEventListener(ControlEvent.READY, handlerReady);
-//				if (++readyCount >= sheet.componentsArr.length) 
-//				{
+				if (++readyCount >= sheet.componentsArr.length) 
+				{
 					dispatchReady();
-//				}
+				}
 			}
 		}
 		
@@ -185,6 +190,11 @@ package multipublish.views
 		 * @private
 		 */
 		private var sheet:Sheet;
+		
+		/**
+		 * @private
+		 */
+		private var componentsDic:Object = {};
 		
 		/**
 		 * @private
