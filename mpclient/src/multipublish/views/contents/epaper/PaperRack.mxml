@@ -101,7 +101,9 @@
 				var padding:Number = tile.horizontalGap;
 				
 				tile.paddingLeft = tile.paddingRight = tile.horizontalGap = hGap;
-				tile.paddingTop = tile.paddingBottom = tile.verticalGap = vGap;;
+				tile.paddingTop = tile.verticalGap = vGap;
+				tile.requestedRowCount = vCount;
+				tile.requestedColumnCount = hCount;
 				
 				pageCount = hCount * vCount;
 				

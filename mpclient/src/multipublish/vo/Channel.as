@@ -94,7 +94,11 @@ package multipublish.vo
 			
 			initSchedule(data);
 			
-			if (contentsMap.length == 0) TimerUtil.callLater(5, dispatchInit);
+			initEpapers();
+			
+			if (contentsMap.length == 0 && 
+				creatingEpapers.length == 0) 
+				TimerUtil.callLater(5, dispatchInit);
 		}
 		
 		
@@ -254,34 +258,11 @@ package multipublish.vo
 		}
 		
 		
-		private function setTimer($function:Function, ...$args):void
-		{
-			var timer:Timer;
-			var tempFunction:Function = function($e:TimerEvent):void
-			{
-				$function($args[0]);
-				timer = null;
-			};
-			timer = new Timer(33, 1);
-			timer.addEventListener(TimerEvent.TIMER, tempFunction);
-			timer.start();
-		}
-		
 		/**
 		 * @private
 		 */
 		private function initContents(datContents:*, component:Component, layout:Layout):void
 		{
-			
-//			var createEpaper:Function = function($ep:EPaper):void
-//			{
-//				if ($ep)
-//				{
-//					var temp:EPaper = $ep as EPaper;
-//					epapersMap[temp.content] = temp;
-//				}
-//			};
-			
 			for each (var datContent:Object in datContents)
 			{
 				var rawContent:Object = ObjectUtil.clone(datContent);
@@ -306,16 +287,15 @@ package multipublish.vo
 						{
 							(content as News).noImage = component.noImage;  
 						}
-						/*else if (content is EPaper)
-						{
-							setTimer(createEpaper, content);
-						}*/
 					}
 				}
-				
 				component.mp::addContent(content);
 			}//end of for
 			
+		}
+		
+		private function initEpapers():void
+		{
 			if (creatingEpapers.length)
 			{
 				creatingTimer = new Timer(2000);
@@ -330,13 +310,10 @@ package multipublish.vo
 			{
 				var temp:Object = creatingEpapers.shift();
 				//记录一个函数开始运行之前的计时
-				var startTime:int = getTimer();
 				var epaper:EPaper = ContentUtil.getContentVO(temp.content, useWait, cacheGroup, resolveWait) as EPaper;
+				epaper.addEventListener(ControlEvent.INIT, content_initHandler);
 				//这里totalTime就是创建EPAPER所消耗的时间，这样可以看出这个函数是否因为耗时太久而造成卡死的现象。
 				//如果耗时太久，就需要对其进行优化。
-				var totalTime:int = getTimer() - startTime;
-				
-				trace("========= " + totalTime + " =========");
 				
 				temp.component.mp::addContent(epaper);
 				epapersMap[epaper.content] = epaper;
