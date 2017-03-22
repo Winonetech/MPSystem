@@ -5669,6 +5669,11 @@ package multipublish.components.supportWeather
 					"weatherCode": "101160308"
 				},
 				{
+					"name": "庆阳",
+					"id": "160401",
+					"weatherCode": "101160401"
+				},
+				{
 					"name": "西峰",
 					"id": "160401",
 					"weatherCode": "101160401"
