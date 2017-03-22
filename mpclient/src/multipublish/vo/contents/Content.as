@@ -23,11 +23,12 @@ package multipublish.vo.contents
 	import com.winonetech.utils.CacheUtil;
 	
 	import multipublish.core.mp;
+	import multipublish.vo.MPVO;
 	
 	use namespace wt;
 	
 	
-	public class Content extends VO
+	public class Content extends MPVO
 	{
 		
 		/**

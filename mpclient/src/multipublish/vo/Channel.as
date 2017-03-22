@@ -15,7 +15,6 @@ package multipublish.vo
 	import cn.vision.utils.TimerUtil;
 	import cn.vision.utils.XMLUtil;
 	
-	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
@@ -40,7 +39,7 @@ package multipublish.vo
 	import multipublish.vo.schedules.Schedule;
 	
 	
-	public final class Channel extends VO
+	public final class Channel extends MPVO
 	{
 		
 		/**
