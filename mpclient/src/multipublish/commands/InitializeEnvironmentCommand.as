@@ -11,6 +11,7 @@ package multipublish.commands
 	
 	
 	import cn.vision.utils.ApplicationUtil;
+	import cn.vision.utils.ScreenUtil;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.Screen;
@@ -103,7 +104,7 @@ package multipublish.commands
 			window.showStatusBar = false;
 			//window.alwaysInFront = true;
 			
-			var r:Rectangle = Screen.mainScreen.bounds;
+			var r:Rectangle = ScreenUtil.getScreensBounds();
 			if (config.exportData || config.updateVersion)
 			{
 				window.nativeWindow.width  = 610;

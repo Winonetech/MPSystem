@@ -31,6 +31,7 @@ package multipublish.views.contents
 	import multipublish.views.elements.CallBtnView;
 	import multipublish.views.elements.CommanView;
 	import multipublish.views.elements.FinanceBtnView;
+	import multipublish.views.elements.HoloView;
 	import multipublish.views.elements.MapView;
 	import multipublish.views.elements.NavableAdView;
 	import multipublish.views.elements.OfficeView;
@@ -358,6 +359,7 @@ package multipublish.views.contents
 			type[ElementTypeConsts.MAP      ] = MapView;
 			type[ElementTypeConsts.CALLBTN	] = CallBtnView;
 			type[ElementTypeConsts.FINANCE  ] = FinanceBtnView;
+			type[ElementTypeConsts.HOLO     ] = HoloView;
 			//type[ElementTypeConsts.POPWINDOW] = PopWindowView;
 			//type[ElementTypeConsts.THUMBNAIL] = ThumbnailView;
 			//type[ElementTypeConsts.TIMELINE ] = TimelineView;

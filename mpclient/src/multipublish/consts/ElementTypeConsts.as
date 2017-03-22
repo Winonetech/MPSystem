@@ -142,5 +142,15 @@ package multipublish.consts
 		 */
 		
 		public static const FINANCE:uint = 13;
+		
+		
+		/**
+		 * 
+		 * 全息投影。
+		 * @default 14
+		 * 
+		 */
+		
+		public static const HOLO:uint = 14;
 	}
 }

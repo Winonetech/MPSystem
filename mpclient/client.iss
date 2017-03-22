@@ -3,7 +3,7 @@
 
 
 #define MyAppName "WOS Player o2o"
-#define MyAppVersion "18.8.5"
+#define MyAppVersion "18.8.8"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -45,7 +45,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 
 Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "MPClient\financeData\*"; DestDir: "{app}\financeData"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "financeData\*"; DestDir: "{app}\financeData"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion

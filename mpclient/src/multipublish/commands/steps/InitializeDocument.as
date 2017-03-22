@@ -35,6 +35,7 @@ package multipublish.commands.steps
 	import multipublish.vo.elements.Elecmap;
 	import multipublish.vo.elements.Element;
 	import multipublish.vo.elements.FinanceBtn;
+	import multipublish.vo.elements.HoloGrahpic;
 	import multipublish.vo.elements.Office;
 	import multipublish.vo.elements.Slide;
 	import multipublish.vo.elements.Website;
@@ -83,6 +84,7 @@ package multipublish.commands.steps
 			type[ElementTypeConsts.MAP      ] = handlerMap;
 			type[ElementTypeConsts.CALLBTN	] = handlerCall;
 			type[ElementTypeConsts.FINANCE  ] = handlerFinance;
+			type[ElementTypeConsts.HOLO     ] = handlerHolo;
 			
 			func = {};
 			func[DocumentTypeConsts.IMAGE] = handlerImage;
@@ -136,6 +138,12 @@ package multipublish.commands.steps
 		{
 			$data.parse($xml);
 			return $data.element = new FinanceBtn($data.raw);
+		}
+		
+		private function handlerHolo($data:ArrangeIcon, $xml:XML):Element
+		{
+			$data.parse($xml);
+			return $data.element = new HoloGrahpic($data.raw);
 		}
 		
 		/**

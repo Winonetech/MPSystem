@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<el:ElementView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s ="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:el="multipublish.views.elements.*"
+				xmlns:ct="com.winonetech.controls.*">
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xCCCCCC"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Group width="100%" height="100%">
+		
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		
+		<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" gap="10" width="50%" height="100%">
+			
+			<s:Label paddingLeft="20" width="100%" color="0xFFFFFF" maxDisplayedLines="1" text="{resource.title}" fontSize="40"/>
+			
+			<mx:HRule width="100%"/>
+			
+			<s:HGroup gap="10" width="100%" height="100%">
+				
+				<mx:Text width="50%" height="100%" fontSize="20" htmlText="{resource.about}" color="0xFFFFFF" selectable="false"/>
+				
+				<s:Image width="50%" height="100%" source="{resource.large}" fillMode="scale" scaleMode="zoom"/>
+				
+			</s:HGroup>
+			
+			<ct:MultiTouchScroller width="100%" height="100" id="scroller"
+								   horizontalScrollPolicy="off" verticalScrollPolicy="off"
+								   mouseDown="scroller_mouseDownHandler(event)">
+				
+				<s:HGroup gap="5" id="container" verticalAlign="middle"/>
+				
+			</ct:MultiTouchScroller>
+			
+		</s:VGroup>
+		
+		<s:VideoDisplay id="video" width="50%" height="100%" source="{resource.video}" loop="true"/>
+		
+	</s:Group>
+	
+	<s:Button right="{width * .5 + 10}" top="10" label="返回" click="back()"
+			  skinClass="multipublish.skins.BackButtonSkin" />
+	
+	<fx:Script>
+		<![CDATA[
+			import com.winonetech.controls.ImageButton;
+			
+			import multipublish.vo.elements.HoloGrahpic;
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				if (holo && holo.resources.length)
+				{
+					resource = holo.resources[0];
+				}
+			}
+			
+			override protected function processStop():void
+			{
+				super.processStop();
+				
+				video.source = null;
+				
+				if (scroller) 
+					scroller.horizontalScrollPosition = 0;
+			}
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				holo = data as HoloGrahpic;
+				
+				container.removeAllElements();
+				
+				for each (var child:* in holo.resources)
+				{
+					var item:ImageButton = new ImageButton;
+					item.source = child.thumb;
+					item.extra = child;
+					item.width = 120;
+					item.height = 90;
+					item.fillMode = "scale";
+					item.scaleMode = "zoom";
+					item.addEventListener(MouseEvent.CLICK, item_clickHandler, false, 0, true);
+					container.addElement(item);
+				}
+			}
+			
+			private function scroller_mouseDownHandler(event:MouseEvent):void
+			{
+				mouseMoved = false;
+				downPoint = new Point(mouseX, mouseY);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, scroller_mouseMoveHandler, false, 0, true);
+			}
+			
+			private function scroller_mouseMoveHandler(event:MouseEvent):void
+			{
+				if (Point.distance(downPoint, new Point(mouseX, mouseY)) > 5)
+				{
+					mouseMoved = false;
+					if (stage) stage.removeEventListener(MouseEvent.MOUSE_MOVE, scroller_mouseMoveHandler);
+				}
+			}
+			
+			private function item_clickHandler(e:MouseEvent):void
+			{
+				if (!mouseMoved)
+					resource = e.currentTarget.extra;
+			}
+			
+			
+			[Bindable]
+			private var holo:HoloGrahpic;
+			
+			[Bindable]
+			private var resource:Object;
+			
+			private var mouseMoved:Boolean;
+			
+			private var downPoint:Point;
+			
+		]]>
+	</fx:Script>
+	
+</el:ElementView>
