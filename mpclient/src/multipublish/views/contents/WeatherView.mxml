@@ -11,6 +11,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import cn.vision.utils.TimerUtil;
 			
 			import com.winonetech.events.ControlEvent;
 			
@@ -86,7 +87,7 @@
 					if(weather && weather.weatherData)
 						component.initData(weather.weatherData);
 					
-					dispatchReady();
+					TimerUtil.callLater(10, dispatchReady);
 				}
 				return result;
 			}

@@ -7,16 +7,11 @@
         <monitoritems>MPClient.exe|</monitoritems>
         <hideshow>CommService.exe|ApplicationFramework.exe|</hideshow>
 		<player>MPClient.exe</player>
-<<<<<<< HEAD
-		<!--<closemonitorplayer>CloseMonitorPlayer.exe</closemonitorplayer>-->
-		<closemonitorplayer></closemonitorplayer>
-=======
 		<closemonitorplayer>CloseMonitorPlayer.exe</closemonitorplayer>
->>>>>>> 926bc6660da546b08c62618c40076a4cb6aa143a
         <macsearch></macsearch>
         <grouppeertime>30</grouppeertime>
         <updatetime>1</updatetime>
-        <commservicedelay>0</commservicedelay>
-        <monitortime>3000</monitortime>
+        <commservicedelay>300</commservicedelay>
+        <monitortime>10000</monitortime>
 		<setforeground>0</setforeground>
 </config>

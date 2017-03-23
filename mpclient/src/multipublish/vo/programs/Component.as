@@ -12,17 +12,17 @@ package multipublish.vo.programs
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.consts.PathConsts;
-	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	import com.winonetech.utils.ConvertUtil;
 	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.vo.MPVO;
 	import multipublish.vo.contents.Content;
 	
 	
-	public final class Component extends VO
+	public final class Component extends MPVO
 	{
 		
 		/**

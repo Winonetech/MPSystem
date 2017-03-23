@@ -11,15 +11,14 @@ package multipublish.vo.programs
 	import cn.vision.collections.Map;
 	import cn.vision.utils.ArrayUtil;
 	
-	import com.winonetech.core.VO;
-	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.vo.MPVO;
 	import multipublish.vo.contents.Content;
 	import multipublish.vo.moduleContents.Module;
 	
 	
-	public final class Program extends VO
+	public final class Program extends MPVO
 	{
 		
 		/**

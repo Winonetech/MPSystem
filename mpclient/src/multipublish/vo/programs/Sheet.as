@@ -5,15 +5,15 @@ package multipublish.vo.programs
 	import cn.vision.utils.StringUtil;
 	
 	import com.winonetech.consts.PathConsts;
-	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.utils.CacheUtil;
 	
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	import multipublish.vo.MPVO;
 	
 	
-	public class Sheet extends VO
+	public class Sheet extends MPVO
 	{
 		
 		/**

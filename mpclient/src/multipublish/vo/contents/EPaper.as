@@ -146,18 +146,8 @@ package multipublish.vo.contents
 						}
 						else
 						{
-//							var date:String  = ObjectUtil.convert(new Date, String, "YYYY-MM-DD");
-//							var temp:String  = saveURL.split("/").pop();
-//							var save:String  = temp.split(".")[0];
-//							var bool:Boolean = save == date;
 							var cache:Cache = (item is String) ? Cache.cache(item, !useWait, cacheGroup, false, true) : item;   //Cache主要存放一些下载路径和安装路径。
 							
-//							if (bool) 
-//							{
-//								cache.extra = cache.extra || {};
-//								cache.extra.response = (i == 0);
-//								cache.addEventListener(CommandEvent.COMMAND_END, handler_spCacheEnd);
-//							}
 							if (!cach[cache.saveURL])
 							{
 								cache.extra = cache.extra || {};
@@ -174,7 +164,6 @@ package multipublish.vo.contents
 					if (file.exists) file.deleteFile();
 				}
 			}
-			WipeCache.wipeEpaperCache(daysKeep, content);
 		}
 		
 		
@@ -360,6 +349,8 @@ package multipublish.vo.contents
 					LogUtil.log(title + "：处理报纸图片完毕");
 					resolved = true;
 					dispatchEvent(new ControlEvent(ControlEvent.READY));
+					
+					WipeCache.wipeEpaperCache(daysKeep, content);
 				}
 			};
 			compare.addEventListener(CommandEvent.COMMAND_END, compareHandler);

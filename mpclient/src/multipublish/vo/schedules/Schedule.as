@@ -10,15 +10,14 @@ package multipublish.vo.schedules
 	
 	import cn.vision.utils.ObjectUtil;
 	
-	import com.winonetech.core.VO;
-	
 	import multipublish.consts.ScheduleTypeConsts;
 	import multipublish.core.mp;
 	import multipublish.utils.ScheduleUtil;
+	import multipublish.vo.MPVO;
 	import multipublish.vo.programs.Program;
 	
 
-	public final class Schedule extends VO
+	public final class Schedule extends MPVO
 	{
 		
 		/**

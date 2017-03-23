@@ -15,13 +15,11 @@ package multipublish.vo
 	import cn.vision.utils.TimerUtil;
 	import cn.vision.utils.XMLUtil;
 	
-	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
-	import flash.utils.getTimer;
 	
 	import multipublish.core.mp;
 	import multipublish.utils.ContentUtil;
@@ -41,7 +39,7 @@ package multipublish.vo
 	import multipublish.vo.schedules.Schedule;
 	
 	
-	public final class Channel extends VO
+	public final class Channel extends MPVO
 	{
 		
 		/**
@@ -96,7 +94,8 @@ package multipublish.vo
 			
 			initEpapers();
 			
-			if (contentsMap.length == 0 && creatingEpapers.length == 0) 
+			if (contentsMap.length == 0 && 
+				creatingEpapers.length == 0) 
 				TimerUtil.callLater(5, dispatchInit);
 		}
 		
@@ -257,19 +256,6 @@ package multipublish.vo
 		}
 		
 		
-		private function setTimer($function:Function, ...$args):void
-		{
-			var timer:Timer;
-			var tempFunction:Function = function($e:TimerEvent):void
-			{
-				$function($args[0]);
-				timer = null;
-			};
-			timer = new Timer(33, 1);
-			timer.addEventListener(TimerEvent.TIMER, tempFunction);
-			timer.start();
-		}
-		
 		/**
 		 * @private
 		 */
@@ -299,13 +285,8 @@ package multipublish.vo
 						{
 							(content as News).noImage = component.noImage;  
 						}
-						/*else if (content is EPaper)
-						{
-							setTimer(createEpaper, content);
-						}*/
 					}
 				}
-				
 				component.mp::addContent(content);
 			}//end of for
 		}
@@ -320,38 +301,6 @@ package multipublish.vo
 				creatingTimer = new Timer(2000);
 				creatingTimer.addEventListener(TimerEvent.TIMER, creatingEpaper_timerHandler);
 				creatingTimer.start();
-			}
-		}
-		
-		/**
-		 * @private
-		 */
-		private function creatingEpaper_timerHandler($e:TimerEvent):void
-		{
-			if (creatingEpapers.length)
-			{
-				var temp:Object = creatingEpapers.shift();
-				//记录一个函数开始运行之前的计时
-				var startTime:int = getTimer();
-				var epaper:EPaper = ContentUtil.getContentVO(temp.content, useWait, cacheGroup, resolveWait) as EPaper;
-				epaper.addEventListener(ControlEvent.INIT, content_initHandler);
-				//这里totalTime就是创建EPAPER所消耗的时间，这样可以看出这个函数是否因为耗时太久而造成卡死的现象。
-				//如果耗时太久，就需要对其进行优化。
-				var totalTime:int = getTimer() - startTime;
-				
-				trace("========= " + totalTime + " =========");
-				
-				temp.component.mp::addContent(epaper);
-				epapersMap[epaper.content] = epaper;
-			}
-			else
-			{
-				if (creatingTimer)
-				{
-					creatingTimer.stop();
-					creatingTimer.removeEventListener(TimerEvent.TIMER, creatingEpaper_timerHandler);
-					creatingTimer = null;
-				}
 			}
 		}
 		
@@ -395,6 +344,34 @@ package multipublish.vo
 			buttonGroup = {};
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private function creatingEpaper_timerHandler($e:TimerEvent):void
+		{
+			if (creatingEpapers.length)
+			{
+				var temp:Object = creatingEpapers.shift();
+				//记录一个函数开始运行之前的计时
+				var epaper:EPaper = ContentUtil.getContentVO(temp.content, useWait, cacheGroup, resolveWait) as EPaper;
+				epaper.addEventListener(ControlEvent.INIT, content_initHandler);
+				//这里totalTime就是创建EPAPER所消耗的时间，这样可以看出这个函数是否因为耗时太久而造成卡死的现象。
+				//如果耗时太久，就需要对其进行优化。
+				
+				temp.component.mp::addContent(epaper);
+				epapersMap[epaper.content] = epaper;
+			}
+			else
+			{
+				if (creatingTimer)
+				{
+					creatingTimer.stop();
+					creatingTimer.removeEventListener(TimerEvent.TIMER, creatingEpaper_timerHandler);
+					creatingTimer = null;
+				}
+			}
+		}
 		
 		/**
 		 * @private
