@@ -295,15 +295,39 @@ package multipublish.vo.contents
 			return mp::content;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set content($value:String):void
 		{
 			mp::content = $value;
 		}
 		
+		
+		/**
+		 * 
+		 * 网页类型，是本地站点还是一个网址。
+		 * 
+		 */
+		
 		public function get htmlType():String
 		{
 			return getProperty("htmlType");
 		}
+		
+		
+		/**
+		 * 
+		 * 是否允许外链。
+		 * 
+		 * 
+		 */
+		
+		public function get outsideChain():Boolean
+		{
+			return getProperty("outsideChain", Boolean);
+		}
+		
 		
 		/**
 		 * 
@@ -313,6 +337,8 @@ package multipublish.vo.contents
 		 */
 		
 		private var homePath:String;
+		
+		
 		/**
 		 * @private
 		 */

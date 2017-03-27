@@ -9,7 +9,7 @@
 	
 	<wt:Browser id="browser" left="0" right="0" top="0" bottom="60"
 				paintsDefaultBackground="false"
-				
+				outsideChain="{website.outsideChain}"
 				htmlDOMInitialize="handlerBrowserInitialize(event)"
 				complete="handlerBrowserComplete(event)"/>
 	
@@ -32,6 +32,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			
 			import cn.vision.utils.LogUtil;
 			
 			import input.Input;
@@ -139,6 +140,7 @@
 			/**
 			 * @private
 			 */
+			[Bindable]
 			private var website:HTMLWeb;
 			
 		]]>
