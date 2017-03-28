@@ -241,7 +241,7 @@ package multipublish.views
 				side = d < 0;
 				prev = view;
 				next = side ? fore : last;
-				if (prev && next)
+				if (next)
 				{
 					var b:Number = Math.abs(d);
 					var f:Boolean = b > distance;
@@ -252,7 +252,12 @@ package multipublish.views
 					Tweener.addTween(container, {x:a, time:t, 
 						onComplete:callbackTweenOver, 
 						onCompleteParams:[f]});
-				} else wt::tweening = false;
+				}
+				else
+				{
+					wt::tweening = false;
+					processPlay();
+				}
 			} else wt::tweening = false;
 		}
 		
@@ -272,12 +277,12 @@ package multipublish.views
 				view.reset();
 				view = next;
 				view.x = 0;
-				view.addEventListener(ControlEvent.STOP, handlerViewStop);
-				view.play();
 				index += side ? 1 : -1;
 				neigh = index;
 				fore = generateNext();
 				last = generateNext(false);
+				
+				processPlay();
 				
 				next = prev = null;
 				

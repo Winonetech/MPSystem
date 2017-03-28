@@ -8,13 +8,14 @@
 				   autoDisplayFirstFrame="true"
 				   source="{content.content}" scaleMode="letterbox"
 				   mediaPlayerStateChange="handlerMediaStateChange(event)"
-				   complete="stop()"/>
+				   complete="video_completeHandler(event)"/>
 	
 	<fx:Script>
 		<![CDATA[
 			import multipublish.core.mp;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.events.TimeEvent;
 			import org.osmf.media.MediaPlayerState;
 			
 			/**
@@ -76,6 +77,27 @@
 			
 			
 			
+			
+			private function video_completeHandler(event:TimeEvent):void
+			{
+				//解决系统内部机制会调用两次改方法的BUG。
+				if (event)
+				{
+					if (f)
+					{
+						f = !f;
+						return;
+					}
+					f = !f;  
+				}
+				
+				stop();
+			}
+			
+			/**
+			 * @private
+			 */
+			private var f:Boolean;
 			
 		]]>
 	</fx:Script>

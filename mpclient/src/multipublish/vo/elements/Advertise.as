@@ -36,9 +36,66 @@ package multipublish.vo.elements
 		{
 			super.parse($data);
 			
-			var list:* = data["waittime"];
-			if (list)
-				mp::wait = getProperty("waittime", uint);
+		}
+		
+		
+		/**
+		 * 
+		 * 是否全屏。
+		 * 
+		 */
+		
+		public function get fullscreen():Boolean
+		{
+			return getProperty("fullscrmode", uint) == 2;
+		}
+		
+		
+		/**
+		 * 
+		 * x。
+		 * 
+		 */
+		
+		public function get x():Number
+		{
+			return getProperty("adx", Number);
+		}
+		
+		
+		/**
+		 * 
+		 * x。
+		 * 
+		 */
+		
+		public function get y():Number
+		{
+			return getProperty("ady", Number);
+		}
+		
+		
+		/**
+		 * 
+		 * x。
+		 * 
+		 */
+		
+		public function get w():Number
+		{
+			return getProperty("adw", Number);
+		}
+		
+		
+		/**
+		 * 
+		 * x。
+		 * 
+		 */
+		
+		public function get h():Number
+		{
+			return getProperty("adh", Number);
 		}
 		
 		
@@ -50,14 +107,10 @@ package multipublish.vo.elements
 		
 		public function get wait():uint
 		{
-			return mp::wait;
+			return getProperty("waittime", uint);
 		}
 		
 		
-		/**
-		 * @private
-		 */
-		mp var wait:uint;
 		
 	}
 }

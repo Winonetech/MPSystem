@@ -3,17 +3,27 @@
 				 xmlns:s ="library://ns.adobe.com/flex/spark" 
 				 xmlns:mx="library://ns.adobe.com/flex/mx" 
 				 xmlns:dc="multipublish.views.documents.*">
-	<s:VideoPlayer id="video" loop="{loop}"
-				   scaleMode="zoom" autoPlay="true"
-				   mediaPlayerStateChange="video_mediaPlayerStateChangeHandler(event)"
+	<!--<s:VideoDisplay id="video" loop="{loop}"
+					scaleMode="zoom" autoPlay="false" autoRewind="true"
+					mediaPlayerStateChange="video_mediaPlayerStateChangeHandler(event)"
+					width="100%" height="100%"
+					source="{media.path}"
+					complete="video_completeHandler(event)"/>-->
+	
+	<s:VideoPlayer source="{media.path}" id="video"
 				   width="100%" height="100%"
-				   source="{media.path}" complete="stop()"
-				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"/>
+				   autoDisplayFirstFrame="true" scaleMode="letterbox"
+				   autoPlay="false" autoRewind="true" loop="false"
+				   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"
+				   mediaPlayerStateChange="media_stateChangeHandler(event)"
+				   complete="video_completeHandler(event)"/>
+	
 	<fx:Script>
 		<![CDATA[
 			import multipublish.vo.documents.Document;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.events.TimeEvent;
 			import org.osmf.media.MediaPlayerState;
 			
 			
@@ -47,20 +57,58 @@
 			
 			override protected function processStop():void
 			{
-				video && video.stop();
+				if (video && video.playing) video.stop();
 			}
 			
 			
 			/**
 			 * @private
 			 */
-			protected function video_mediaPlayerStateChangeHandler(event:MediaPlayerStateChangeEvent):void
+			protected function media_stateChangeHandler($e:MediaPlayerStateChangeEvent):void
 			{
-				if (event.state == MediaPlayerState.PLAYING)
+				if ($e.state == MediaPlayerState.PAUSED || 
+					$e.state == MediaPlayerState.READY)
 				{
-					if(!playing) video.stop();
+					if (playing) video.play();
+					dispatchReady();
+				}
+				else if ($e.state == MediaPlayerState.PLAYBACK_ERROR)
+				{
+					dispatchReady();
+					stop();
 				}
 			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function video_completeHandler(event:TimeEvent):void
+			{
+				/* if(!completed)
+				{
+					completed = true;
+					stop();
+				} */
+				//解决系统内部机制会调用两次改方法的BUG。
+				if (event)
+				{
+					if (f)
+					{
+						f = !f;
+						return;
+					}
+					f = !f;  
+				}
+				
+				stop();
+				
+			}
+			
+			/**
+			 * @private
+			 */
+			private var f:Boolean;
 			
 		]]>
 	</fx:Script>
