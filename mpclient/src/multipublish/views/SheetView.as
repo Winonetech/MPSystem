@@ -101,12 +101,10 @@ package multipublish.views
 					registView(component);
 					
 					container.addElement(component);
+					
+					component.data = child;
 				}
 				
-				for each (child in sheet.componentsArr) 
-				{
-					componentsDic[child.id].data = child;
-				}
 			}
 			else
 			{

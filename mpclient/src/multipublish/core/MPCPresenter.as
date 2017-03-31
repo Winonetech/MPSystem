@@ -177,18 +177,6 @@ package multipublish.core
 		
 		/**
 		 * 
-		 * 获取报纸
-		 * 
-		 */
-		
-		public function refreshEpaper($data:String):void
-		{
-			execute(new ReloadEPaperCommand($data));
-		}
-		
-		
-		/**
-		 * 
 		 * 时间同步
 		 * 
 		 */

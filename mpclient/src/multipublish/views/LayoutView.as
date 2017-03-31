@@ -9,8 +9,6 @@ package multipublish.views
 	
 	
 	import cn.vision.utils.ArrayUtil;
-	import cn.vision.utils.ClassUtil;
-	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.core.wt;
@@ -20,7 +18,6 @@ package multipublish.views
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
-	import flash.utils.getQualifiedClassName;
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.utils.EffectUtil;
@@ -470,8 +467,10 @@ package multipublish.views
 		 */
 		private function adPlay():void
 		{
-			if (ad)
+			if (ad && !adplaying)
 			{
+				adplaying = true;
+				
 				containsElement(ad) && removeElement(ad);
 				
 				addElement(ad);
@@ -489,8 +488,10 @@ package multipublish.views
 		 */
 		private function adStop():void
 		{
-			if (ad)
+			if (ad && adplaying)
 			{
+				adplaying = false;
+				
 				containsElement(ad) && removeElement(ad);
 				
 				ad.stop(false);
@@ -587,6 +588,11 @@ package multipublish.views
 			}
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private var adplaying:Boolean;
 		
 		/**
 		 * @private
