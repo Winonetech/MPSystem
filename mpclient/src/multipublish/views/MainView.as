@@ -242,16 +242,22 @@ package multipublish.views
 			var l:uint = schedule.programs.length;
 			neigh ++;
 			
-			var program:Program = schedule.programs[neigh];
-			var result:ProgramView = new ProgramView;
-			result.width   = application.width;
-			result.height  = application.height;
-			result.data    = program;
-			result.visible = false;
-			addElementAt(result, 0);
-			index = neigh;
+			if (neigh!= index)
+			{
+				var program:Program = schedule.programs[neigh];
+				if (program)
+				{
+					var result:ProgramView = new ProgramView;
+					result.width   = application.width;
+					result.height  = application.height;
+					result.data    = program;
+					result.visible = false;
+					addElementAt(result, 0);
+					index = neigh;
+				}
+				if(!result) result = generateNext();
+			}
 			
-			if(!result) result = generateNext();
 			return result;
 		}
 		

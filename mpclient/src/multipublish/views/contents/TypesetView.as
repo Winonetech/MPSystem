@@ -307,8 +307,10 @@ package multipublish.views.contents
 					{
 						addElement(advertise = new CacheView).visible = false;
 						advertise.refer = AdvertiseView;
-						advertise.width = width;
-						advertise.height = height;
+						advertise.width = ad.fullscreen ? width : ad.w;
+						advertise.height = ad.fullscreen ? height : ad.h;
+						advertise.x = ad.fullscreen ? 0 : ad.x;
+						advertise.y = ad.fullscreen ? 0 : ad.y;
 						advertise.data = ad;
 						
 						if(!timer)

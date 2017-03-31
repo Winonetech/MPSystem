@@ -35,7 +35,12 @@ package multipublish.vo.elements
 		override public function parse($data:Object):void
 		{
 			super.parse($data);
-			
+			//第一次传入数据
+			if (data["adenable"] != undefined)
+			{
+				mp::wait = getProperty("waittime", uint);
+				mp::fullscreeen = getProperty("fullscrmode", uint) == 2;
+			}
 		}
 		
 		
@@ -47,7 +52,7 @@ package multipublish.vo.elements
 		
 		public function get fullscreen():Boolean
 		{
-			return getProperty("fullscrmode", uint) == 2;
+			return mp::fullscreeen as Boolean;
 		}
 		
 		
@@ -107,10 +112,19 @@ package multipublish.vo.elements
 		
 		public function get wait():uint
 		{
-			return getProperty("waittime", uint);
+			return mp::wait;
 		}
 		
 		
+		/**
+		 * @private
+		 */
+		mp var wait:uint;
+		
+		/**
+		 * @private
+		 */
+		mp var fullscreeen:Boolean;
 		
 	}
 }
