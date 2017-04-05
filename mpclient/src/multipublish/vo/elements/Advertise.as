@@ -39,7 +39,11 @@ package multipublish.vo.elements
 			if (data["adenable"] != undefined)
 			{
 				mp::wait = getProperty("waittime", uint);
-				mp::fullscreeen = getProperty("fullscrmode", uint) == 2;
+				mp::fullscreeen = (getProperty("fullscrmode", uint) == 2);
+				mp::x = getProperty("adx", Number);
+				mp::y = getProperty("ady", Number);
+				mp::w = getProperty("adw", Number);
+				mp::h = getProperty("adh", Number);
 			}
 		}
 		
@@ -64,7 +68,7 @@ package multipublish.vo.elements
 		
 		public function get x():Number
 		{
-			return getProperty("adx", Number);
+			return mp::x;
 		}
 		
 		
@@ -76,7 +80,7 @@ package multipublish.vo.elements
 		
 		public function get y():Number
 		{
-			return getProperty("ady", Number);
+			return mp::y;
 		}
 		
 		
@@ -88,7 +92,7 @@ package multipublish.vo.elements
 		
 		public function get w():Number
 		{
-			return getProperty("adw", Number);
+			return mp::w;
 		}
 		
 		
@@ -100,7 +104,7 @@ package multipublish.vo.elements
 		
 		public function get h():Number
 		{
-			return getProperty("adh", Number);
+			return mp::h;
 		}
 		
 		
@@ -115,6 +119,26 @@ package multipublish.vo.elements
 			return mp::wait;
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		mp var x:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var y:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var w:Number;
+		
+		/**
+		 * @private
+		 */
+		mp var h:Number;
 		
 		/**
 		 * @private
