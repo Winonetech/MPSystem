@@ -14,9 +14,7 @@ package multipublish.core
 	import com.winonetech.core.Store;
 	
 	import flash.display.Stage;
-	import flash.filesystem.File;
 	
-	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
 	import multipublish.tools.MPService;
 	import multipublish.tools.Reporter;
@@ -155,19 +153,6 @@ package multipublish.core
 			return MPCView.instance;
 		}
 		
-		
-		/**
-		 * 
-		 * 备份文件是否存在。
-		 * 
-		 */
-		
-		public function get hasBackup():Boolean
-		{
-			var file:File = File.applicationDirectory.resolvePath(URLConsts.BACKUP_CONFIG);
-			
-			return file.exists;
-		}
 		
 		/**
 		 * 
@@ -587,6 +572,15 @@ package multipublish.core
 		 */
 		
 		public var version:String;
+		
+		
+		/**
+		 * 
+		 * 版本号。
+		 * 
+		 */
+		
+		public var lastVersion:String;
 		
 		
 		/**

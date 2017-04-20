@@ -290,22 +290,6 @@ package multipublish.core
 		
 		/**
 		 * 
-		 * 结束上报进度。
-		 * 
-		 */
-		
-		public function update($app:*, $value:String = null):void
-		{
-			app = $app;
-			config.updateVersion = true;
-			execute(new InitializeEnvironmentCommand);
-			execute(new InitializeConfigCommand);
-			execute(new ClientUpdateCommand($value));
-		}
-		
-		
-		/**
-		 * 
 		 * 回馈下载队列的状态。
 		 * 
 		 */
@@ -338,8 +322,8 @@ package multipublish.core
 		{
 			config.exportData = $args[0];
 			
-			execute(new InitializeEnvironmentCommand);	//初始化网络配置，初始化窗口和初始化LED。
 			execute(new InitializeConfigCommand);		//解析 config并映射到 MDConfig中。
+			execute(new InitializeEnvironmentCommand);	//初始化网络配置，初始化窗口和初始化LED。
 			execute(new InitializeFirstStartCommand);	//调出首次设置弹窗。(根据是否有终端编号以判定是否需要弹出设置窗口)
 			execute(new InitializeShutdownCommand);		//初始化关机数据。
 			execute(new ShotcutPlayerCommand);			//初始化截图数据。

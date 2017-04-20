@@ -16,6 +16,7 @@ package multipublish.commands
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.ScreenUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import flash.desktop.NativeApplication;
 	import flash.filesystem.File;
@@ -32,6 +33,7 @@ package multipublish.commands
 	import multipublish.consts.DataConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.ScreenController;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.ViewUtil;
 	import multipublish.views.GuildView;
 	
@@ -67,12 +69,16 @@ package multipublish.commands
 			
 			modelog(ClientStateConsts.INIT_ENVI);
 			
+			setDebugFalse();
+			
 			initializeNetInfo();
 			initializeWindow();
 			initializeLed();
 			initializeChannelCache();
 			
 			closeExplorer();
+			
+			frameChanged();
 			
 			commandEnd();
 		}
@@ -131,7 +137,9 @@ package multipublish.commands
 			window.showStatusBar = false;
 			//window.alwaysInFront = true;
 			
-			var r:Rectangle = getDebug() ? ScreenUtil.getMainScreenBounds() : ScreenUtil.getScreensBounds();
+			var r:Rectangle = config.debug 
+				? ScreenUtil.getMainScreenBounds() 
+				: ScreenUtil.getScreensBounds();
 			
 			config.screenController = new ScreenController;
 			
@@ -181,7 +189,7 @@ package multipublish.commands
 		 */
 		private function closeExplorer():void
 		{
-			if(!getDebug())
+			if(!config.debug)
 			{
 				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.EXPLORER_CLOSER));
 			}
@@ -190,29 +198,61 @@ package multipublish.commands
 		/**
 		 * @private
 		 */
-		private function getDebug():Boolean
+		private function frameChanged():void
 		{
-			var file:VSFile = new VSFile(FileUtil.resolvePathApplication("config.ini"));
-			if (file.exists)
+			const root:String = FileUtil.resolvePathApplication("");
+			const run:String = FileUtil.resolvePathApplication("changeFrame.exe");
+			var change:VSFile = new VSFile(FileUtil.resolvePathApplication("changeFrame.dat"));
+			
+			var result:Boolean = true;
+			if (change.exists)
 			{
-				var stream:FileStream = new FileStream;
-				stream.open(file, FileMode.READ);
+				change.deleteFile();
 				try
 				{
-					var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-					
+					LogUtil.log("更换守护程序。");
+					ApplicationUtil.execute(run, root);
 				}
-				catch (o:Error)
+				catch(e:Error)
 				{
-					Alert.show("读取配置文件出错！");
-				}
-				stream.close();
-				if (xml)
-				{
-					return ObjectUtil.convert(xml.debug, Boolean);
+					LogUtil.log("更换失败，更换程序不存在！");
 				}
 			}
-			return false;
+			else
+			{
+				var runfile:VSFile = new VSFile(run);
+				if (runfile.exists)
+				{
+					LogUtil.log("已更换守护进程，删除更换程序！");
+					runfile.deleteFile();
+				}
+				else
+				{
+					LogUtil.log("守护程序检测正常。");
+				}
+				
+				const host:String = FileUtil.resolvePathApplication("JRShell.exe");
+				try
+				{
+					LogUtil.log("启动守护进程。");
+					ApplicationUtil.execute(host, root);
+				}
+				catch(e:Error)
+				{
+					LogUtil.log("启动守护进程失败，守护进程不存在！");
+				}
+			}
+			runfile = change = null;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function setDebugFalse():void
+		{
+			config.debug = false;
+			ConfigUtil.saveNativeData();
+			ConfigUtil.backupConfig();
 		}
 		
 	}

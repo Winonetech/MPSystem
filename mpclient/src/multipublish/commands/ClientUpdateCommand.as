@@ -15,9 +15,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
-	import cn.vision.utils.XMLUtil;
 	
-	import com.winonetech.tools.Cache;
 	import com.winonetech.utils.CacheUtil;
 	
 	import flash.events.Event;
@@ -26,7 +24,7 @@ package multipublish.commands
 	
 	import multipublish.consts.ClientStateConsts;
 	import multipublish.consts.URLConsts;
-	import multipublish.utils.DataUtil;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.ZipUtil;
 	
 	import mx.rpc.events.FaultEvent;
@@ -70,8 +68,18 @@ package multipublish.commands
 			if (updater.exists)
 			{
 				uncomporess();
-				ApplicationUtil.exit();
-				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
+				/*ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));*/
+				
+				try
+				{
+					ApplicationUtil.exit();
+					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_REBOOT));
+				}
+				catch (e:Error)
+				{
+					LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/reboot.exe没有被其他安全软件隔离删除。");
+				}
 			}
 		}
 		
@@ -91,20 +99,29 @@ package multipublish.commands
 					//升级包下载完毕，退出并调用升级程序。
 					LogUtil.log("升级包下载完毕，退出并调用升级程序");
 					uncomporess();
-					ApplicationUtil.exit();
-					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
+					/*ApplicationUtil.exit();
+					ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));*/
+					try
+					{
+						ApplicationUtil.exit();
+						ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_REBOOT));
+					}
+					catch (e:Error)
+					{
+						LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/reboot.exe没有被其他安全软件隔离删除。");
+					}
 				}
 				else
 				{
 					LogUtil.log("升级完毕，删除更新包");
 					updater.deleteFile();
 					config.remoteVersion = null;
-					Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+					ConfigUtil.saveNativeData();
 				}
 			}
 			else
 			{
-				LogUtil.log("连接服务端自动更新检测：", config.version, config.terminalNO);
+				LogUtil.log("连接服务端自动更新检测，当前版本：", config.version, config.terminalNO);
 				
 				requestData(defaultHandler, {
 					"code": config.version,
@@ -175,7 +192,7 @@ package multipublish.commands
 					if (compareVersion(data.code))
 					{
 						config.remoteVersion = data.code;
-						Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+						ConfigUtil.saveNativeData();
 						
 							//下载更新包。
 							LogUtil.log("下载更新包：" + data.fpath);
@@ -233,7 +250,6 @@ package multipublish.commands
 			{
 				LogUtil.log("下载更新包成功，退出执行升级程序！");
 				requestData(handlerDownDefault, {"downId":downID});
-				
 			}
 		}
 		
@@ -242,12 +258,21 @@ package multipublish.commands
 		 */
 		private function handlerDownDefault(e:Event):void
 		{
-			http.removeEventListener(ResultEvent.RESULT, defaultHandler);
-			http.removeEventListener(FaultEvent.FAULT, defaultHandler);
+			http.removeEventListener(ResultEvent.RESULT, handlerDownDefault);
+			http.removeEventListener(FaultEvent.FAULT, handlerDownDefault);
 			
 			uncomporess();
-			ApplicationUtil.exit();
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
+			/*ApplicationUtil.exit();
+			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));*/
+			try
+			{
+				ApplicationUtil.exit();
+				ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.TOOL_REBOOT));
+			}
+			catch (e:Error)
+			{
+				LogUtil.log("重启终端失败，请检查终端重启工具assets/tools/reboot.exe没有被其他安全软件隔离删除。");
+			}
 		}
 		
 		

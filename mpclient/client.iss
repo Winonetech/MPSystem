@@ -3,10 +3,10 @@
 
 #define MyAppName "WOS Player"
 #define MyAppToolName "MPCExporter" 
-#define MyAppVersion "19.1.3"
+#define MyAppVersion "19.1.9"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
-#define MyAppExeName "JRShell.exe"
+#define MyAppExeName "MPClient.exe"
 #define MyAppToolExeName "MPCExporter.exe"
 
 [Setup]
@@ -53,7 +53,7 @@ Source: "MPClient\MPClient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\JRShell.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "files\JRShell.cfg.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "files\JRShellInner.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "led\*"; DestDir: "{app}\led"; Flags: ignoreversion recursesubdirs createallsubdirs

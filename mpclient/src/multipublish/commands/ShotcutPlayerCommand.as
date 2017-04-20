@@ -1,21 +1,9 @@
 package multipublish.commands
 {
-	import cn.vision.utils.DateUtil;
-	import cn.vision.utils.FileUtil;
-	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
-	import multipublish.consts.EventConsts;
-	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
-	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ConfigUtil;
-	import multipublish.utils.DataUtil;
-	
-	import mx.utils.OnDemandEventDispatcher;
 	
 	/**
 	 * 
@@ -128,7 +116,7 @@ package multipublish.commands
 			if (cmd != "config")
 			{
 				config.shotcut = cmd;
-				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+				ConfigUtil.saveNativeData();
 				ConfigUtil.backupConfig();
 			}
 			

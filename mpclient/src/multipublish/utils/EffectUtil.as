@@ -1,7 +1,5 @@
 package multipublish.utils
 {
-	import cn.vision.utils.StringUtil;
-	
 	import multipublish.core.MPCConfig;
 	import multipublish.vo.programs.Layout;
 	import multipublish.vo.programs.Page;
@@ -12,7 +10,6 @@ package multipublish.utils
 	import spark.effects.Fade;
 	import spark.effects.Move;
 	import spark.effects.Scale;
-	import spark.effects.easing.Power;
 
 	public final class EffectUtil
 	{

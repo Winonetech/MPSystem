@@ -45,7 +45,7 @@ package multipublish.commands
 		
 		private function timer_handler(e:TimerEvent):void
 		{
-			if (config.view.main.data) //当无排期播放时，不执行清空缓存。
+			if (config.view.main && config.view.main.data) //当无排期播放时，不执行清空缓存。
 			{
 				WipeCache.wipeNormalCache();
 				timerRemove();

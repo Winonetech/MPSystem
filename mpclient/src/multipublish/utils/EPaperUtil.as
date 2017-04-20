@@ -10,12 +10,9 @@ package multipublish.utils
 	
 	import com.coltware.airxzip.ZipEntry;
 	import com.coltware.airxzip.ZipFileReader;
-	import com.rubenswieringa.book.Book;
 	
-	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.net.URLStream;
 	import flash.utils.ByteArray;
 	
 	import multipublish.consts.URLConsts;

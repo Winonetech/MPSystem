@@ -12,16 +12,8 @@ package multipublish.utils
 	import cn.vision.utils.FileUtil;
 	
 	import multipublish.views.CacheView;
-	import multipublish.views.LayoutView;
 	import multipublish.views.contents.*;
-	import multipublish.views.moduleContents.AskPaperView;
-	import multipublish.views.moduleContents.EmergencyBroadView;
-	import multipublish.views.moduleContents.noticeView.FindPersonView;
-	import multipublish.views.moduleContents.noticeView.WelcomeView;
 	import multipublish.vo.contents.*;
-	import multipublish.vo.moduleContents.AskPaper;
-	import multipublish.vo.moduleContents.EmergencyBroad;
-	import multipublish.vo.moduleContents.Notice;
 	
 	
 	public final class ContentUtil extends NoInstance

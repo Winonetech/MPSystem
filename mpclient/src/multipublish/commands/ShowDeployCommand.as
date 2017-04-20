@@ -8,19 +8,13 @@ package multipublish.commands
 	 */
 	
 	
-	import cn.vision.net.FileSaver;
 	import cn.vision.utils.ApplicationUtil;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.Cache;
-	
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.URLConsts;
-	import multipublish.utils.DataUtil;
+	import multipublish.utils.ConfigUtil;
 	import multipublish.views.InstallerView;
 	
 	
@@ -73,9 +67,11 @@ package multipublish.commands
 		 */
 		private function save():void
 		{
-			var saver:FileSaver = Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
-			saver.addEventListener(Event.COMPLETE, handlerDefault);
-			saver.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+			ConfigUtil.saveNativeData();
+			ConfigUtil.backupConfig();
+			
+			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
+			ApplicationUtil.exit();
 		}
 		
 		/**
@@ -88,20 +84,6 @@ package multipublish.commands
 			view.installer.onSubmit = null;
 			view.installer.onCancel = null;
 			view.installer = null;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function handlerDefault($e:Event):void
-		{
-			var saver:FileSaver = $e.target as FileSaver;
-			saver.removeEventListener(Event.COMPLETE, handlerDefault);
-			saver.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
-			
-			ApplicationUtil.execute(FileUtil.resolvePathApplication(URLConsts.APPLICATION));
-			ApplicationUtil.exit();
 		}
 		
 	}

@@ -11,10 +11,8 @@ package multipublish.commands
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.ScreenUtil;
 	import cn.vision.utils.StringUtil;
-	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.Cache;
 	
@@ -22,8 +20,6 @@ package multipublish.commands
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
 	import flash.geom.Rectangle;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -32,7 +28,6 @@ package multipublish.commands
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.utils.ConfigUtil;
-	import multipublish.utils.DataUtil;
 	import multipublish.utils.ViewUtil;
 	import multipublish.views.InstallerView;
 	import multipublish.vo.Language;
@@ -76,7 +71,7 @@ package multipublish.commands
 			{
 				//如果备份存在而config不存在，则说明config是被删除的，故而需要还原。
 				//否则则视为配置终端。
-				if (config.hasBackup)
+				if (ConfigUtil.hasBackup())
 				{
 					ConfigUtil.restoreConfig();
 					commandEnd();
@@ -98,10 +93,16 @@ package multipublish.commands
 			else
 			{
 				//开启终端且存在config时需检测是否有备份，没有则备份之。
-				if (!config.hasBackup) ConfigUtil.backupConfig();  
+				if (!hasBackup()) ConfigUtil.backupConfig();
 				commandEnd();
 			}
 			
+		}
+		
+		private function hasBackup():Boolean
+		{
+			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.BACKUP_CONFIG));
+			return file.exists;
 		}
 		
 		/**
@@ -144,39 +145,17 @@ package multipublish.commands
 		 */
 		private function save():void
 		{
-			FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+			ConfigUtil.saveNativeData();
 			ConfigUtil.backupConfig();
 			
 			view.application.removeElement(view.installer);
 			ViewUtil.guild(true);
 			
-			loadConfig();
+			ConfigUtil.readNativeData();
+			
+			applySettings();
 			
 			commandEnd();
-		}
-		
-		/**
-		 * @private
-		 */
-		private function loadConfig():void
-		{
-			var file:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG));
-			if (file.exists)
-			{
-				var reader:FileStream = new FileStream;
-				reader.open(file, FileMode.READ);
-				var xml:XML = XML(reader.readUTFBytes(reader.bytesAvailable));
-				if (xml) 
-				{
-					XMLUtil.map(xml, config);
-					config.language.data = ObjectUtil.convert(xml["languageData"]);
-					
-					applySettings();
-				}
-				reader.close();
-				reader = null;
-			}
-			file = null;
 		}
 		
 		/**

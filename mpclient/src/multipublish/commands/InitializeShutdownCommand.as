@@ -13,10 +13,7 @@ package multipublish.commands
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	
-	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
-	
-	import flash.utils.ByteArray;
 	
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
@@ -24,7 +21,6 @@ package multipublish.commands
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ConfigUtil;
-	import multipublish.utils.DataUtil;
 	
 	
 	public final class InitializeShutdownCommand extends _InternalCommand
@@ -148,7 +144,7 @@ package multipublish.commands
 			{
 				config.shutdown = cmd;
 				
-				FileUtil.saveUTF(FileUtil.resolvePathApplication(URLConsts.NATIVE_CONFIG), DataUtil.getConfig());
+				ConfigUtil.saveNativeData();
 				ConfigUtil.backupConfig();
 			}
 			
