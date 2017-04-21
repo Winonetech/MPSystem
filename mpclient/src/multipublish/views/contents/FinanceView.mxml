@@ -5,31 +5,50 @@
 					  xmlns:contents="multipublish.views.contents.*"
 					  creationComplete="init()">
 	
-	<s:SWFLoader id="loader" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"
-				 scaleContent="true" maintainAspectRatio="true" source="{financeDateUrl}"/>
-	
+	<s:SWFLoader id="loader" width="100%" height="100%" autoLoad="false"
+				 horizontalAlign="center" verticalAlign="middle"
+				 smoothBitmapContent="true" mask="{cover}"
+				 scaleContent="true" maintainAspectRatio="true"/>
+	<s:Graphic id="cover" width="{scaledWidth}" height="{scaledHeight}"
+			   horizontalCenter="0" verticalCenter="0">
+		<s:Rect width="{scaledWidth}" height="{scaledHeight}">
+			<s:fill>
+				<s:SolidColor color="0"/>
+			</s:fill>
+		</s:Rect>
+	</s:Graphic>
 	<fx:Script>
 		<![CDATA[
 			import cn.vision.utils.MathUtil;
 			
+			import com.winonetech.tools.LogSQLite;
+			
+			import multipublish.consts.EventConsts;
 			import multipublish.consts.FinanceTypeConsts;
+			import multipublish.consts.MPTipConsts;
+			import multipublish.consts.TypeConsts;
 			import multipublish.core.mp;
 			import multipublish.tools.FinanceDataUdtController;
 			import multipublish.vo.contents.Finance;
 			
 			
-			private function init():void
-			{
-				if (!config.fduc)
-				{
-					config.fduc = new FinanceDataUdtController;
-				}
-			}
-			
-			
 			override protected function processPlay():void
 			{
 				financeDateUrl = type[financeDate.contentName];
+				
+				LogSQLite.log(
+					TypeConsts.FILE,
+					EventConsts.EVENT_START_PLAYING,
+					financeDate.contentName,
+					log(MPTipConsts.RECORD_CONTENT_PLAY, financeDate));
+				
+				if (loader && financeDate)
+				{
+					loader.addEventListener(Event.COMPLETE, handlerDefault);
+					loader.addEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+					loader.load(financeDateUrl);
+				}
+				
 				timerPlay();
 			}
 			
@@ -37,6 +56,27 @@
 			override protected function processStop():void
 			{
 				timerStop();
+				
+				if (loader) loader.unloadAndStop(true);
+			}
+			
+			override protected function processReset():void
+			{
+				financeDate = null;
+			}
+			
+			override protected function resolveData():void
+			{
+				financeDate = data as Finance;
+				
+				if (financeDate)
+				{
+					time = financeDate.timelength || config.maxDurationTime;
+				}
+				else
+				{
+					dispatchReady();
+				}
 			}
 			
 			
@@ -61,37 +101,68 @@
 				}
 			}
 			
+			/**
+			 * @private
+			 */
+			private function analyzeContent():void
+			{
+				var cw:Number = loader.content.loaderInfo.width;
+				var ch:Number = loader.content.loaderInfo.height;
+				var pw:Number = width;
+				var ph:Number = height;
+				var cs:Number =(cw / ch < pw / ph) ? ph / ch : pw / cw;
+				scaledWidth  = cs * cw;
+				scaledHeight = cs * ch;
+			}
 			
+			/**
+			 * @private
+			 */
+			private function init():void
+			{
+				if (!config.fduc)
+				{
+					config.fduc = new FinanceDataUdtController;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
 			private function handlerTimerComplete($e:Event):void
 			{
 				stop();
 			}
 			
-			override protected function resolveData():void
+			/**
+			 * @private
+			 */
+			private function handlerDefault($e:Event):void
 			{
-				financeDate = data as Finance;
-				
-				if (financeDate)
+				loader.removeEventListener(Event.COMPLETE, handlerDefault);
+				loader.removeEventListener(IOErrorEvent.IO_ERROR, handlerDefault);
+				if ($e.type == Event.COMPLETE)
 				{
-					time = financeDate.timelength || config.maxDurationTime;
+					analyzeContent();
 				}
 				else
 				{
-					dispatchReady();
+					stop();
 				}
 			}
 			
 			
-			override protected function processReset():void
-			{
-				financeDate = null;
-			}
-			
+			/**
+			 * @private
+			 */
 			private function get time():uint
 			{
 				return mp::time;
 			}
 			
+			/**
+			 * @private
+			 */
 			private function set time($value:uint):void
 			{
 				mp::time = MathUtil.clamp($value, 0, config.maxDurationTime);
@@ -108,16 +179,23 @@
 			/**
 			 * @private
 			 */
-			mp var time:uint;
-
 			private var timer:Timer;
 			
+			/**
+			 * @private
+			 */
 			[Bindable]
 			private var financeDate:Finance;
 			
+			/**
+			 * @private
+			 */
 			[Bindable]
 			private var financeDateUrl:String;
 			
+			/**
+			 * @private
+			 */
 			private var type:Object = {
 				"depositRate" : FinanceTypeConsts.DEPOSITRATE,
 				"quotation"   : FinanceTypeConsts.QUOTATION,
@@ -131,6 +209,23 @@
 				"股票"		  : FinanceTypeConsts.STOCK
 			};
 			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var scaledWidth:Number = 0;
+			
+			/**
+			 * @private
+			 */
+			[Bindable]
+			private var scaledHeight:Number = 0;
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+
 		]]>
 	</fx:Script>
 	
