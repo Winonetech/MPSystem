@@ -75,8 +75,6 @@
 						}
 					}
 				}
-				/* if (containsElement(preview)) removeElement(preview);
-				interactable = true; */
 			}
 			
 			

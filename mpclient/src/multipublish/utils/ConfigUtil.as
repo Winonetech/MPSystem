@@ -41,6 +41,7 @@ package multipublish.utils
 				}
 				reader.close();
 				reader = null;  //释放内存
+				config.exist = true;
 			}
 			file = null;  //释放内存
 		}

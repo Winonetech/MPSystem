@@ -660,7 +660,17 @@ package multipublish.core
 		 * 最后播放的节目。
 		 * 
 		 */
+		
 		public var latest:Schedule;
+		
+		
+		/**
+		 * 
+		 * 最后播放的节目。
+		 * 
+		 */
+		
+		public var exist:Boolean;
 		
 		/**
 		 * 

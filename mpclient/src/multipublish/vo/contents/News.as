@@ -75,13 +75,13 @@ package multipublish.vo.contents
 		 * @inheritDoc
 		 */
 		
-		override protected function loadContent($url:String, $useCache:Boolean = false, $method:String = "GET", $args:Object = null):void
+		override protected function loadContent($url:String, $repeat:Boolean = false, $method:String = "GET", $args:Object = null):void
 		{
 			var temp:int = getTimer();
-			if (time == 0 || (temp - time > updateFrequency * 1000) || $useCache)
+			if (time == 0 || (temp - time > updateFrequency * 1000) || $repeat)
 			{
 				time = temp;
-				super.loadContent($url, $useCache, $method, $args);
+				super.loadContent($url, $repeat, $method, $args);
 			}
 		}
 		

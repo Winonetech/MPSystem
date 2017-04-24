@@ -3,7 +3,7 @@
 
 #define MyAppName "WOS Player"
 #define MyAppToolName "MPCExporter" 
-#define MyAppVersion "19.1.9"
+#define MyAppVersion "19.1.11"
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"

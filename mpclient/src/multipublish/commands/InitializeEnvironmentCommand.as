@@ -14,18 +14,13 @@ package multipublish.commands
 	import cn.vision.utils.ApplicationUtil;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.ScreenUtil;
-	import cn.vision.utils.TimerUtil;
 	
 	import flash.desktop.NativeApplication;
 	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
 	import flash.geom.Rectangle;
 	import flash.net.NetworkInfo;
 	import flash.net.NetworkInterface;
-	import flash.utils.ByteArray;
 	
 	import input.Input;
 	
@@ -35,10 +30,8 @@ package multipublish.commands
 	import multipublish.tools.ScreenController;
 	import multipublish.utils.ConfigUtil;
 	import multipublish.utils.ViewUtil;
-	import multipublish.views.GuildView;
 	
 	import mx.binding.utils.BindingUtils;
-	import mx.controls.Alert;
 	
 	import spark.components.WindowedApplication;
 	
@@ -250,9 +243,12 @@ package multipublish.commands
 		 */
 		private function setDebugFalse():void
 		{
-			config.debug = false;
-			ConfigUtil.saveNativeData();
-			ConfigUtil.backupConfig();
+			if (config.exist)
+			{
+				config.debug = false;
+				ConfigUtil.saveNativeData();
+				ConfigUtil.backupConfig();
+			}
 		}
 		
 	}

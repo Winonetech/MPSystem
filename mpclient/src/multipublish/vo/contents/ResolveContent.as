@@ -103,7 +103,7 @@ package multipublish.vo.contents
 		 * 
 		 */
 		
-		protected function loadContent($url:String, $useCache:Boolean = false, $method:String = "GET", $args:Object = null):void
+		protected function loadContent($url:String, $repeat:Boolean = false, $method:String = "GET", $args:Object = null):void
 		{
 			resolved = false;
 			tip = {};
@@ -177,6 +177,10 @@ package multipublish.vo.contents
 					LogUtil.log(title + "解析JSON出错：", o.message, $data);
 				}
 				analyzeContent(data);
+				
+				dispatchInit();
+				
+				dispatchReady();
 			}
 			else
 			{
@@ -186,7 +190,7 @@ package multipublish.vo.contents
 				
 				if (failCount++ <= RELOADTIMES)
 				{
-					loadContent(http.url);
+					loadContent(http.url, true);
 				}
 				else
 				{
@@ -200,13 +204,14 @@ package multipublish.vo.contents
 					{
 						LogUtil.log(tip.message = title + "加载数据出错：" + remoteURL, localURL);
 						dispatchEvent(new ControlEvent(ControlEvent.ERROR, tip.message));
+						
+						dispatchInit();
+						
+						dispatchReady();
 					}
 				}
 			}
 			
-			dispatchInit();
-			
-			dispatchReady();
 		}
 		
 		
