@@ -1,7 +1,8 @@
 package multipublish.commands.steps
 {
-	import cn.vision.events.pattern.CommandEvent;
+	import cn.vision.events.CommandEvent;
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import multipublish.commands.Step;
@@ -34,7 +35,7 @@ package multipublish.commands.steps
 		
 		private function modelHandler($e:CommandEvent):void
 		{
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			var xml:XML = ObjectUtil.convert(model.data, XML);
 			var url:String = URLConsts.FINANCEDATA;
 			if (xml)
 			{

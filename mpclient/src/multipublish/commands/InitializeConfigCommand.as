@@ -9,6 +9,7 @@ package multipublish.commands
 	
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.XMLUtil;
 	
@@ -67,7 +68,7 @@ package multipublish.commands
 				if (xml) 
 				{
 					XMLUtil.map(xml, config);
-					config.language.data = XMLUtil.convert(xml["languageData"]);
+					config.language.data = ObjectUtil.convert(xml["languageData"]);
 					
 					applySettings();   //保存设置到缓存内
 				}
@@ -82,7 +83,7 @@ package multipublish.commands
 		 */
 		private function applySettings():void
 		{
-			if(!StringUtil.isEmpty(config.ftpHost) && 
+			if(!StringUtil.empty(config.ftpHost) && 
 				config.ftpHost != "127.0.0.1")
 			{
 				Cache.deftp(

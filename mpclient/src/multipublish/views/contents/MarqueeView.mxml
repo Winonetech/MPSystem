@@ -2,6 +2,230 @@
 <ct:ContentView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:ct="multipublish.views.contents.*">
+				xmlns:ct="multipublish.views.contents.*"
+				mouseChildren="false">
+	
+	<s:Group id="container" left="10" right="10" top="10" bottom="10" clipAndEnableScrolling="true"/>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			
+			import cn.vision.utils.MathUtil;
+			import cn.vision.utils.StringUtil;
+			
+			import multipublish.core.mp;
+			import multipublish.vo.contents.Marquee;
+			
+			import spark.components.Label;
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processPlay():void
+			{
+				super.processPlay();
+				
+				speedTimerCreate(30, label_speedtimerHandler);
+				stopTimerCreate(marquee.duration * 100, label_stoptimerHandler);
+				trace("marquee.duration -> " + marquee.duration);
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processStop():void
+			{
+				trace("------ stop -------");
+				timerRemove();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function processReset():void
+			{
+				super.processReset();
+				
+				marquee = null;
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function createChildren():void
+			{
+				super.createChildren();
+				
+				container.addElement(label = new Label);
+				label.verticalCenter = 0;
+				label.setStyle("fontSize", 400);
+				label.maxDisplayedLines = 1;
+				
+				label.x = container.width;
+				
+				updateLabel();
+			}
+			
+			
+			/**
+			 * @inheritDoc
+			 */
+			
+			override protected function resolveData():void
+			{
+				super.resolveData();
+				
+				marquee = data as Marquee;
+				
+				updateLabel();
+				
+				rollingSpeed = marquee && marquee.txtSpeed ? marquee.txtSpeed : 30;
+				
+				buttonMode = !StringUtil.empty(marquee.id);
+				
+				dispatchReady();
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			private function updateLabel():void
+			{
+				if (label)
+				{
+					label.x = container.width;
+					var c:uint = marquee ? marquee.fontColor : 0xFFFFFF;
+					label.setStyle("color", c);
+					label.text = marquee ? marquee.txtContents : null;
+					while(label.isTruncated) label.width += 50;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function stopTimerCreate($delay:uint, $handler:Function):void
+			{
+				if (!stopTimer)
+				{
+					stopTimer = new Timer($delay);
+					stopTimer.addEventListener(TimerEvent.TIMER, $handler);
+					stopTimer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function speedTimerCreate($delay:uint, $handler:Function):void
+			{
+				if (!speedTimer)
+				{
+					speedTimer = new Timer($delay);
+					speedTimer.addEventListener(TimerEvent.TIMER, $handler);
+					speedTimer.start();
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function timerRemove():void
+			{
+				if (stopTimer)
+				{
+					stopTimer.removeEventListener(TimerEvent.TIMER, label_stoptimerHandler);
+					stopTimer.stop();
+					stopTimer = null;
+				}
+				if (speedTimer)
+				{
+					speedTimer.removeEventListener(TimerEvent.TIMER, label_speedtimerHandler);
+					speedTimer.stop();
+					speedTimer = null;
+				}
+			}
+			
+			private function label_stoptimerHandler($e:TimerEvent):void
+			{
+				processStop();
+			}
+			private var flag:int;
+			/**
+			 * @private
+			 */
+			private function label_speedtimerHandler($e:TimerEvent):void
+			{
+				if (label)
+				{
+					trace("=========== " + (flag++) + " ===========");
+					label.x -= rollingSpeed;
+					if (label.x < -label.width) label.x = container.width;
+				}
+			}
+			
+			/**
+			 * @private
+			 */
+			private function handlerTimerComplete($e:TimerEvent):void
+			{
+				stop();
+			}
+			
+			
+			
+			
+			
+			/**
+			 * @private
+			 */
+			private var speedTimer:Timer;
+			
+			private var stopTimer:Timer;
+			
+			
+			/**
+			 * @private
+			 */
+			private var marquee:Marquee;
+			
+			/**
+			 * @private
+			 */
+			private var label:Label;
+			
+			/**
+			 * @private
+			 */
+			private var rollingSpeed:Number;
+			
+			/**
+			 * @private
+			 */
+			private var rollingTimes:uint;
+			
+			/**
+			 * @private
+			 */
+			private var rollingCount:uint;
+			
+			
+			/**
+			 * @private
+			 */
+			mp var time:uint;
+			
+		]]>
+	</fx:Script>
 	
 </ct:ContentView>

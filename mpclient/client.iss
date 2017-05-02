@@ -3,7 +3,8 @@
 
 
 #define MyAppName "WOS Player o2o"
-#define MyAppVersion "18.8.11"
+#define MyAppVersion "18.8.12"
+
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
 #define MyAppExeName "MPClient.exe"
@@ -23,8 +24,8 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\MPClient
 DefaultGroupName={#MyAppName}
-AllowNoIcons=yes
 DisableDirPage=no
+AllowNoIcons=yes
 OutputBaseFilename=WOS Player o2o
 SetupIconFile=files\MPClient.ico
 Compression=lzma
@@ -54,8 +55,6 @@ Source: "MPClient\MPClient.swf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\run.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\MPCExporter.exe"; DestDir: "{app}"; Flags: ignoreversion
-
-
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

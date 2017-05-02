@@ -1,7 +1,7 @@
 package multipublish.tools
 {
 	import cn.vision.core.VSObject;
-	import cn.vision.pattern.queue.SequenceQueue;
+	import cn.vision.queue.SequenceQueue;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;

@@ -16,6 +16,7 @@ package multipublish.commands
 	import cn.vision.utils.ApplicationUtil;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.utils.CacheUtil;
@@ -128,7 +129,7 @@ package multipublish.commands
 			
 			if ($e.type == Event.COMPLETE)
 			{
-				var xml:XML = XMLUtil.convert($e.target.data, XML);
+				var xml:XML = ObjectUtil.convert($e.target.data, XML);
 				
 				LogUtil.log("检测版本 " + "服务端：" + xml.version + "本地：" + config.version);
 				var updater:VSFile = new VSFile(FileUtil.resolvePathApplication(URLConsts.UPDATER));
@@ -150,7 +151,7 @@ package multipublish.commands
 						ftp.addEventListener(Event.COMPLETE, handlerFTPDefault);
 						ftp.addEventListener(IOErrorEvent.IO_ERROR, handlerFTPDefault);
 						ftp.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerFTPDefault);
-						var loadURL:String = CacheUtil.extractURI(XMLUtil.convert(xml.file));
+						var loadURL:String = CacheUtil.extractURI(ObjectUtil.convert(xml.file));
 						var saveURL:String = FileUtil.resolvePathApplication(URLConsts.UPDATER);
 						var request:FTPRequest = new FTPRequest(
 							config.ftpHost,

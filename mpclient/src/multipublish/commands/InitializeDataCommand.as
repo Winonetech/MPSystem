@@ -12,8 +12,8 @@ package multipublish.commands
 	 */
 	
 	
-	import cn.vision.events.pattern.QueueEvent;
-	import cn.vision.pattern.queue.SequenceQueue;
+	import cn.vision.events.QueueEvent;
+	import cn.vision.queue.SequenceQueue;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.tools.LogSQLite;

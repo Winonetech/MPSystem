@@ -220,8 +220,9 @@ package multipublish.views
 			if(!type)
 			{
 				type = {};
-				//type[ContentTypeConsts.MARQUEE] = MarqueeView;
 				type[ContentTypeConsts.CARTOON] = CartoonView;
+				//type[ContentTypeConsts.GALLERY] = GalleryView;
+				type[ContentTypeConsts.MARQUEE] = MarqueeView;
 				type[ContentTypeConsts.PICTURE] = PictureView;
 				type[ContentTypeConsts.TYPESET] = TypesetView;
 				type[ContentTypeConsts.RECORD ] = RecordView;
@@ -304,11 +305,9 @@ package multipublish.views
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 			}
+			if (index >= source.contents.length - 1) stop();
+			
 			tween(-width);
-			if (index >= source.contents.length - 1)
-			{
-				stop();
-			}
 		}
 		
 		

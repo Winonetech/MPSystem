@@ -9,8 +9,8 @@ package multipublish.commands
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.events.pattern.QueueEvent;
-	import cn.vision.pattern.queue.ParallelQueue;
+	import cn.vision.events.QueueEvent;
+	import cn.vision.queue.ParallelQueue;
 	import cn.vision.utils.FileUtil;
 	
 	import com.coltware.airxzip.ZipFileWriter;

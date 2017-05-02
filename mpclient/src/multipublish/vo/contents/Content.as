@@ -17,6 +17,8 @@ package multipublish.vo.contents
 	
 	import com.winonetech.core.VO;
 	
+	import flash.filesystem.File;
+	
 	
 	public class Content extends VO
 	{
@@ -67,7 +69,10 @@ package multipublish.vo.contents
 		
 		public function get content():String
 		{
-			return getProperty("getcontents");
+			var str:String = (getProperty("getcontents") as String).split("://").shift() == "file" 
+				? File.applicationDirectory.resolvePath("cache\\content\\" +
+					(getProperty("getcontents") as String).split("\\").pop()).nativePath : getProperty("getcontents");
+			return str;
 		}
 		
 	}

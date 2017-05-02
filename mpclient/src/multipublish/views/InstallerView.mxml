@@ -7,6 +7,18 @@
 		   horizontalCenter="0" verticalCenter="0"
 		   width="600" height="420"
 		   click="handlerInputClick(event)" xmlns:controls="com.winonetech.controls.*">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function communicate_changeHandler(event:Event):void
+			{
+				trace("Before : " + config.isCommunicate);
+				config.isCommunicate = Boolean(communicateGroup.selectedValue);
+				trace("After : " + config.isCommunicate);
+			}
+		]]>
+	</fx:Script>
+	
 	<s:Panel title="{language.setting}"
 			 width="100%" height="100%"
 			 skinClass="multipublish.skins.MPPanelSkin">
@@ -32,6 +44,13 @@
 						</s:layout>
 						<s:RadioButton label="中文" value="中文" group="{languageGroup}"/>
 						<s:RadioButton label="English" value="English" group="{languageGroup}"/>
+					</s:FormItem>
+					<s:FormItem label="{language.isCommunicate}">
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<s:RadioButton label="是" value="true" group="{communicateGroup}"/>
+						<s:RadioButton label="否" value="false" group="{communicateGroup}"/>
 					</s:FormItem>
 					<s:FormItem label="{language.companyID}">
 						<s:helpContent>
@@ -288,6 +307,9 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="languageGroup" selectedValue="{language.data}"
 							change="language_changeHandler(event)"/>
+		<s:RadioButtonGroup id="communicateGroup" 
+							selectedValue="{config.isCommunicate}"
+							change="communicate_changeHandler(event)"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[

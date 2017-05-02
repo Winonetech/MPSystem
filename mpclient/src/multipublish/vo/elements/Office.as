@@ -53,7 +53,7 @@ package multipublish.vo.elements
 			{
 				for each (var item:* in script)
 				{
-					if (item is String && !StringUtil.isEmpty(item))
+					if (item is String && !StringUtil.empty(item))
 					{
 						script = item;
 						break;

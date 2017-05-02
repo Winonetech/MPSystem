@@ -8,6 +8,7 @@ package multipublish.vo.elements
 	 */
 	
 	
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.XMLUtil;
 	
 	import multipublish.core.mp;
@@ -42,7 +43,7 @@ package multipublish.vo.elements
 			var list:* = data["folder"];
 			if (list)
 			{
-				mp::url = XMLUtil.convert(list["item"]["web_url"]);
+				mp::url = ObjectUtil.convert(list["item"]["web_url"]);
 			}
 		}
 		

@@ -9,7 +9,7 @@ package multipublish.consts
 	
 	
 	import cn.vision.core.NoInstance;
-	import cn.vision.data.Tip;
+	import cn.vision.datas.Tip;
 	import cn.vision.utils.StringUtil;
 	
 	

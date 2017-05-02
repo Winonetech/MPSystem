@@ -8,11 +8,11 @@ package multipublish.commands.steps
 	 */
 	
 	
-	import cn.vision.events.pattern.QueueEvent;
-	import cn.vision.pattern.queue.ParallelQueue;
+	import cn.vision.events.QueueEvent;
+	import cn.vision.queue.ParallelQueue;
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.XMLUtil;
+	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.tools.LogSQLite;
 	
@@ -160,7 +160,7 @@ package multipublish.commands.steps
 		private function gain($xml:XML):Content
 		{
 			//根据类型构建不同类型的数据结构
-			var refe:Class = type[XMLUtil.convert($xml["fileproterty"])];
+			var refe:Class = type[ObjectUtil.convert($xml["fileproterty"])];
 			return refe ? new refe($xml) : null;
 		}
 		
@@ -173,7 +173,7 @@ package multipublish.commands.steps
 			var model:Model = $e.command as Model;
 			var url:String = DataConsts.PATH_PROGRAM + "-" + model.extra.id + ".xml";
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			var xml:XML = ObjectUtil.convert(model.data, XML);
 			if (xml)
 			{
 				make(xml, config.temp[model.extra.id]);

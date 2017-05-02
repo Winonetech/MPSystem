@@ -8,8 +8,11 @@ package multipublish.commands
 	 */
 	
 	
+	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
 	import cn.vision.utils.XMLUtil;
+	
+	import com.winonetech.tools.Cache;
 	
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
@@ -21,7 +24,6 @@ package multipublish.commands
 	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.URLConsts;
-	import com.winonetech.tools.Cache;
 	import multipublish.utils.DataUtil;
 	import multipublish.views.InstallerView;
 	import multipublish.vo.Language;
@@ -63,7 +65,7 @@ package multipublish.commands
 		 */
 		private function show():void
 		{
-			if (StringUtil.isEmpty(config.terminalNO))
+			if (StringUtil.empty(config.terminalNO))
 			{
 				view.application.removeElement(view.guild);
 				view.application.addElement(view.installer = new InstallerView);
@@ -139,10 +141,10 @@ package multipublish.commands
 			
 			if ($e.type == Event.COMPLETE)
 			{
-				var xml:XML = XMLUtil.convert($e.target.data, XML);
+				var xml:XML = ObjectUtil.convert($e.target.data, XML);
 				if (xml)
 				{
-					config.terminalNO = XMLUtil.convert(xml.terminalNo);
+					config.terminalNO = ObjectUtil.convert(xml.terminalNo);
 					if(uint(config.terminalNO) > 0)
 					{
 						view.installer.onSubmit = save;

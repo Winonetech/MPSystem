@@ -9,30 +9,12 @@ package multipublish.core
 	
 	
 	import cn.vision.errors.SingleTonError;
-	import cn.vision.pattern.core.Command;
-	import cn.vision.pattern.core.Presenter;
-	import cn.vision.pattern.queue.SequenceQueue;
+	import cn.vision.core.Command;
+	import cn.vision.core.Presenter;
+	import cn.vision.queue.SequenceQueue;
 	
-	import multipublish.commands.ClientUpdateCommand;
-	import multipublish.commands.ExportDataCommand;
-	import multipublish.commands.ImportDataCommand;
-	import multipublish.commands.InitializeConfigCommand;
-	import multipublish.commands.InitializeDataCommand;
-	import multipublish.commands.InitializeEnvironmentCommand;
-	import multipublish.commands.InitializeFirstStartCommand;
-	import multipublish.commands.InitializeServiceCommand;
-	import multipublish.commands.InitializeShutdownCommand;
-	import multipublish.commands.InitializeViewCommand;
-	import multipublish.commands.LockTimeCommand;
-	import multipublish.commands.LogUploadCommand;
-	import multipublish.commands.PlaybackProgramCommand;
-	import multipublish.commands.PlaybackScheduleCommand;
-	import multipublish.commands.RebootTerminalCommand;
-	import multipublish.commands.RegulateVolumeCommand;
-	import multipublish.commands.ReportProgressCommand;
-	import multipublish.commands.RestartPlayerCommand;
-	import multipublish.commands.ShotcutPlayerCommand;
-	import multipublish.commands.ShowDeployCommand;
+	import multipublish.commands.*;
+	import multipublish.tools.ScheduleChangedController;
 	
 	import spark.components.WindowedApplication;
 	
@@ -116,8 +98,10 @@ package multipublish.core
 		{
 			config.cache  = $cache;
 			
+			if ($push && config.times <= 1) config.times++;
 			execute(new InitializeDataCommand($push));
 			execute(new PlaybackScheduleCommand);
+			if (i++ == 0) config.scc = new ScheduleChangedController;
 		}
 		
 		
@@ -321,6 +305,9 @@ package multipublish.core
 		 */
 		private var quene:SequenceQueue;
 		
+		/**
+		 * @private
+		 */
 		private static var i:uint = 0;
 		
 		/**

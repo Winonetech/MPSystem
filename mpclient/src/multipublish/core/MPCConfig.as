@@ -18,7 +18,9 @@ package multipublish.core
 	import multipublish.tools.Controller;
 	import multipublish.tools.FinanceDataUdtController;
 	import multipublish.tools.MPService;
+	import multipublish.tools.NativeService;
 	import multipublish.tools.Reporter;
+	import multipublish.tools.ScheduleChangedController;
 	import multipublish.tools.Shotcuter;
 	import multipublish.vo.Language;
 
@@ -50,11 +52,12 @@ package multipublish.core
 		 */
 		private function initialize():void
 		{
-			mp::service    = new MPService;
-			mp::controller = new Controller;
-			mp::shotcuter  = new Shotcuter;
-			mp::language   = new Language;
-			mp::reporter   = new Reporter;
+			mp::service       = new MPService;
+			mp::controller    = new Controller;
+			mp::shotcuter     = new Shotcuter;
+			mp::language   	  = new Language;
+			mp::reporter   	  = new Reporter;
+			mp::nativeService = new NativeService;
 		}
 		
 		
@@ -504,6 +507,29 @@ package multipublish.core
 		
 
 		/**
+		 * 
+		 * 是否与服务端通讯。
+		 * 
+		 */
+		public var isCommunicate:Boolean = true;
+		
+		
+		/**
+		 * 
+		 * 从服务端获取数据的次数。
+		 * 
+		 */
+		public var times:uint;
+		
+		
+		/**
+		 * 
+		 * 排期更新检测。
+		 * 
+		 */
+		public var scc:ScheduleChangedController;
+		
+		/**
 		 * @private
 		 */
 		mp var controller:Controller;
@@ -528,6 +554,15 @@ package multipublish.core
 		 */
 		mp var reporter:Reporter;
 		
+		/**
+		 * @private
+		 */
+		mp var nativeService:NativeService;
+		
+		public function get nativeService():NativeService
+		{
+			return mp::nativeService;
+		}
 		/**
 		 * @private
 		 */

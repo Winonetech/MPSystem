@@ -9,10 +9,10 @@ package multipublish.commands.steps
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.events.pattern.CommandEvent;
+	import cn.vision.events.CommandEvent;
 	import cn.vision.utils.DateUtil;
 	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.XMLUtil;
+	import cn.vision.utils.ObjectUtil;
 	
 	import com.winonetech.tools.LogSQLite;
 	
@@ -73,14 +73,14 @@ package multipublish.commands.steps
 		 */
 		private function make(xml:XML, saveURL:String, loadURL:String):void
 		{
-			config.source = XMLUtil.convert(xml["url"]);
+			config.source = ObjectUtil.convert(xml["url"]);
 			var list:XMLList = xml["schedule"];
 			var temp:Object = {};
 			var dict:Map = store.clear(Schedule);
 			for each (var item:XML in list)
 			{
-				var type:uint    = XMLUtil.convert(item["type"], uint);
-				var spot:Boolean = XMLUtil.convert(item["spot"], Boolean);
+				var type:uint    = ObjectUtil.convert(item["type"], uint);
+				var spot:Boolean = ObjectUtil.convert(item["spot"], Boolean);
 				
 				//如果是插播类型，需要判断该spot值，是false则代表该插播节目是第一次播放。
 				if (type != ScheduleTypeConsts.SPOTS || !spot)
@@ -104,7 +104,7 @@ package multipublish.commands.steps
 						var programs:XMLList = item["program"];
 						var l:uint = programs ? programs.length() : 0;
 						for (var i:int = 0; i < l; i++) 
-							push(temp, XMLUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});
+							push(temp, ObjectUtil.convert(programs[i]["id"]), {index:i, schedule:schedule});
 					}
 				}
 			}
@@ -117,7 +117,7 @@ package multipublish.commands.steps
 		 */
 		private function modelHandler($e:CommandEvent):void
 		{
-			var xml:XML = XMLUtil.convert(model.data, XML);
+			var xml:XML = ObjectUtil.convert(model.data, XML);
 			var url:String = DataConsts.PATH_SCHEDULE;
 			model.extra.tmp = (url != model.url) ? model.url : model.extra.tmp;   //排期获取路径是否为本地。改属性只存 url的加载。
 			if (xml)

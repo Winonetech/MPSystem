@@ -1,6 +1,6 @@
 package multipublish.errors
 {
-	import cn.vision.errors.VSError;
+	import cn.vision.core.VSError;
 	
 	public final class VideoUnsupportError extends VSError
 	{
