@@ -9,9 +9,9 @@ package multipublish.core
 	
 	
 	import cn.vision.errors.SingleTonError;
-	import cn.vision.pattern.core.Command;
-	import cn.vision.pattern.core.Presenter;
-	import cn.vision.pattern.queue.SequenceQueue;
+	import cn.vision.core.Command;
+	import cn.vision.core.Presenter;
+	import cn.vision.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
 	import multipublish.utils.ViewUtil;

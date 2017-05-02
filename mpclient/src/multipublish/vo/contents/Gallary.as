@@ -112,7 +112,7 @@ package multipublish.vo.contents
 							item.source = CacheUtil.extractURI(source, PathConsts.PATH_FILE);
 							//缩略图途径
 							var image:String = item.imageUrl;
-							if (StringUtil.isEmpty(image) && 
+							if (StringUtil.empty(image) && 
 								ext != FileTypeConsts.MP4 && 
 								ext != FileTypeConsts.FLV)
 							{

@@ -115,7 +115,7 @@ package multipublish.vo.contents
 		
 		public function get selectable():Boolean
 		{
-			return !StringUtil.isEmpty(group);
+			return !StringUtil.empty(group);
 		}
 		
 		

@@ -49,7 +49,7 @@ package multipublish.commands
 		 */
 		private function reloadFiles():void
 		{
-			if(!StringUtil.isEmpty(data))
+			if(!StringUtil.empty(data))
 			{
 				data = data.replace(" ", "");
 				var temp:Array = data.split(",");

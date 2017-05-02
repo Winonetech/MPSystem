@@ -59,7 +59,7 @@ package multipublish.commands
 		 */
 		private function sendLed():void
 		{
-			if (!StringUtil.isEmpty(data))
+			if (!StringUtil.empty(data))
 			{
 				try
 				{

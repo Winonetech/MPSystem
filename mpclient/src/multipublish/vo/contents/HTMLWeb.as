@@ -8,7 +8,7 @@ package multipublish.vo.contents
 	 */
 	
 	
-	import cn.vision.events.pattern.CommandEvent;
+	import cn.vision.events.CommandEvent;
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.HTTPUtil;

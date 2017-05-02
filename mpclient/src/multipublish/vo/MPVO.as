@@ -1,6 +1,6 @@
 package multipublish.vo
 {
-	import cn.vision.events.pattern.CommandEvent;
+	import cn.vision.events.CommandEvent;
 	
 	import com.winonetech.core.VO;
 	import com.winonetech.core.wt;

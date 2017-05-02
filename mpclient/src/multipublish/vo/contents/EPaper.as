@@ -9,8 +9,8 @@ package multipublish.vo.contents
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.events.pattern.CommandEvent;
-	import cn.vision.pattern.queue.SequenceQueue;
+	import cn.vision.events.CommandEvent;
+	import cn.vision.queue.SequenceQueue;
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.FileUtil;

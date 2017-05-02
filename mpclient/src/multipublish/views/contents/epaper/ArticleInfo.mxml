@@ -95,19 +95,19 @@
 				mp::data = $value;
 				
 				title = "";
-				if(!StringUtil.isEmpty(data.preTitle))
+				if(!StringUtil.empty(data.preTitle))
 				{
 					title += data.preTitle;
 				}
-				if(!StringUtil.isEmpty(data.title))
+				if(!StringUtil.empty(data.title))
 				{
-					title += (!StringUtil.isEmpty(title))
+					title += (!StringUtil.empty(title))
 						?(StringUtil.lineEnding + data.title)
 						: data.title;
 				}
-				if(!StringUtil.isEmpty(data.subTitle))
+				if(!StringUtil.empty(data.subTitle))
 				{
-					title += (!StringUtil.isEmpty(title))
+					title += (!StringUtil.empty(title))
 						?(StringUtil.lineEnding + data.subTitle)
 						: data.subTitle;
 				}
@@ -128,7 +128,7 @@
 					image = null;
 				}
 				
-				currentState = StringUtil.isEmpty(image) ? "noImage" : "hsImage";
+				currentState = StringUtil.empty(image) ? "noImage" : "hsImage";
 			}
 			
 			

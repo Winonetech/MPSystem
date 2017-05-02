@@ -8,7 +8,7 @@ package multipublish.views
 	 */
 	
 	
-	import cn.vision.data.Tip;
+	import cn.vision.datas.Tip;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.core.View;

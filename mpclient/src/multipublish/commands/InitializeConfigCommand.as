@@ -43,7 +43,7 @@ package multipublish.commands
 			
 			ConfigUtil.readNativeData();
 			
-			if(!StringUtil.isEmpty(config.ftpHost) && 
+			if(!StringUtil.empty(config.ftpHost) && 
 				config.ftpHost != "127.0.0.1")
 			{
 				Cache.deftp(

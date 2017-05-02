@@ -9,8 +9,7 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
-	import cn.vision.data.Tip;
-	import cn.vision.net.FTPLoader;
+	import cn.vision.datas.Tip;
 	import cn.vision.net.FTPRequest;
 	import cn.vision.net.FTPUploader;
 	import cn.vision.utils.BitmapUtil;
@@ -18,7 +17,6 @@ package multipublish.tools
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.tools.LogSQLite;
-	import com.winonetech.utils.CacheUtil;
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
@@ -43,8 +41,6 @@ package multipublish.tools
 	import multipublish.core.MPCConfig;
 	import multipublish.core.MPCView;
 	import multipublish.utils.URLUtil;
-	
-	import mx.managers.PopUpManager;
 	
 	
 	public final class Shotcuter extends VSObject

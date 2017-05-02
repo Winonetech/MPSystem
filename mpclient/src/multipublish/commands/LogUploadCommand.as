@@ -9,7 +9,7 @@ package multipublish.commands
 	 */
 	
 	
-	import cn.vision.data.Tip;
+	import cn.vision.datas.Tip;
 	import cn.vision.net.FTPRequest;
 	import cn.vision.net.FTPUploader;
 	import cn.vision.utils.FileUtil;

@@ -49,7 +49,7 @@ package multipublish.components.supportWeather
 			
 			dataObj = (JSON.parse(json) as Object);
 			
-			if(!StringUtil.isEmpty(dataObj.style.weather.iconDirPath))
+			if(!StringUtil.empty(dataObj.style.weather.iconDirPath))
 			{
 				imageUrl = dataObj.style.weather.iconDirPath;
 				imageUrl = imageUrl.replace("\\", "/");

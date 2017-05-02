@@ -103,7 +103,7 @@ package multipublish.vo.contents
 				for each (var item:* in $data.dataObjs)
 				{
 					delete item.media;
-					if (StringUtil.isEmpty(item.urls))
+					if (StringUtil.empty(item.urls))
 					{
 						var media:String = URLUtil.buildFTPURL(item.url);
 						wt::registCache(media);
@@ -125,7 +125,7 @@ package multipublish.vo.contents
 					//缩略图途径
 					var ext:String = FileUtil.getFileTypeByURL(item.url);
 					var image:String = item.imageUrl;
-					if (StringUtil.isEmpty(image) && 
+					if (StringUtil.empty(image) && 
 						ext != FileTypeConsts.MP4 && 
 						ext != FileTypeConsts.FLV)
 					{

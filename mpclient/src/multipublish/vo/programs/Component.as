@@ -50,7 +50,7 @@ package multipublish.vo.programs
 			super.parse($data);
 			
 			mp::background = getProperty("backgroundPic");
-			if(!StringUtil.isEmpty(mp::background))
+			if(!StringUtil.empty(mp::background))
 			{
 				wt::registCache(mp::background);
 				mp::background = CacheUtil.extractURI(mp::background, PathConsts.PATH_FILE);

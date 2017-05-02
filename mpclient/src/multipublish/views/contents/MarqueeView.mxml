@@ -102,7 +102,7 @@
 					rollingTimes = marquee ? marquee.rollingTimes : 0;
 				}
 				
-				buttonMode = !StringUtil.isEmpty(marquee.pageID);
+				buttonMode = !StringUtil.empty(marquee.pageID);
 				
 				dispatchReady();
 			}

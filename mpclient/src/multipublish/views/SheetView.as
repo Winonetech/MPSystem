@@ -145,7 +145,7 @@ package multipublish.views
 				
 				background.alpha = sheet.backgroundAlpha;
 				background.removeAllElements();
-				if (StringUtil.isEmpty(sheet.background))
+				if (StringUtil.empty(sheet.background))
 				{
 					component = rect = new Rect;
 					rect.percentHeight = 100;

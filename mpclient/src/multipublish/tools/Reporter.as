@@ -14,8 +14,8 @@ package multipublish.tools
 	
 	
 	import cn.vision.core.VSObject;
-	import cn.vision.events.pattern.QueueEvent;
-	import cn.vision.pattern.queue.ParallelQueue;
+	import cn.vision.events.QueueEvent;
+	import cn.vision.queue.ParallelQueue;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
 	

@@ -9,7 +9,7 @@ package multipublish.tools
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.pattern.core.Command;
+	import cn.vision.core.Command;
 	import cn.vision.system.VSFile;
 	import cn.vision.utils.BitmapUtil;
 	import cn.vision.utils.FileUtil;
@@ -26,7 +26,6 @@ package multipublish.tools
 	import flash.geom.Matrix;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
-	import flash.utils.getTimer;
 	
 	
 	public final class ImageCompare extends Command

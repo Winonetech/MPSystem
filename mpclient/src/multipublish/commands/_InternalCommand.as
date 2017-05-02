@@ -8,10 +8,9 @@ package multipublish.commands
 	 */
 	
 	
-	import cn.vision.data.Tip;
-	import cn.vision.pattern.core.Command;
+	import cn.vision.core.Command;
+	import cn.vision.datas.Tip;
 	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.RegexpUtil;
 	
 	import com.winonetech.core.Store;
 	import com.winonetech.utils.TipUtil;

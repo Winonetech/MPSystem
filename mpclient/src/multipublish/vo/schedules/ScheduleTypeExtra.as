@@ -50,7 +50,7 @@ package multipublish.vo.schedules
 		 */
 		private function initialize($extra:String):void
 		{
-			if(!StringUtil.isEmpty($extra))
+			if(!StringUtil.empty($extra))
 			{
 				if(!FUNC[Consts.INIT])
 				{ 

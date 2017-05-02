@@ -57,7 +57,7 @@ package multipublish.commands
 		private function shotcutPlayer():void
 		{
 			//无参数则不做任何操作。
-			if (!StringUtil.isEmpty(cmd))
+			if (!StringUtil.empty(cmd))
 			{
 				if (isNaN(Number(cmd)))
 				{

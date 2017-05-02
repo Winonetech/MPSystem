@@ -230,7 +230,7 @@
 						
 						if (currentState == "media")
 						{
-							if(!StringUtil.isEmpty(data.subTitle))
+							if(!StringUtil.empty(data.subTitle))
 							{
 								if(!contentContainer.containsElement(subTitleLabel))
 									contentContainer.addElementAt(subTitleLabel, 1);

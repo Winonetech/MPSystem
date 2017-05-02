@@ -16,15 +16,15 @@ package multipublish.components.supportWeather.vo
 				
 				visible = true;
 				
-				if(!StringUtil.isEmpty(obj.timeSize))
+				if(!StringUtil.empty(obj.timeSize))
 					timeSize = Number(obj.timeSize);
-				if(!StringUtil.isEmpty(obj.dateSize))
+				if(!StringUtil.empty(obj.dateSize))
 					dateSize = Number(obj.dateSize);
-				if(!StringUtil.isEmpty(obj.timeColor))
+				if(!StringUtil.empty(obj.timeColor))
 					timeColor = colorString2uint(obj.timeColor);
-				if(!StringUtil.isEmpty(obj.dateColor))
+				if(!StringUtil.empty(obj.dateColor))
 					dateColor = colorString2uint(obj.dateColor);
-				if(!StringUtil.isEmpty(obj.fontFamily))
+				if(!StringUtil.empty(obj.fontFamily))
 					fontFamily = obj.fontFamily;
 			}
 			

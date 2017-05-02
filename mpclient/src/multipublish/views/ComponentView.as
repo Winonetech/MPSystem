@@ -232,7 +232,7 @@ package multipublish.views
 				
 				background.alpha = source.backgroundAlpha;
 				background.removeAllElements();
-				if (StringUtil.isEmpty(source.background))
+				if (StringUtil.empty(source.background))
 				{
 					component = rect = new Rect;
 					rect.percentHeight = 100;

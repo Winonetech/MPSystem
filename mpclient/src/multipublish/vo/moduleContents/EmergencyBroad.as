@@ -41,7 +41,7 @@ package multipublish.vo.moduleContents
 			var urls:Array = getProperty("url", Array);
 			for each (var url:String in urls)
 			{
-				if (!StringUtil.isEmpty(url))
+				if (!StringUtil.empty(url))
 				{
 					wt::registCache(url);
 					wt::content.push(CacheUtil.extractURI(url, PathConsts.PATH_FILE));

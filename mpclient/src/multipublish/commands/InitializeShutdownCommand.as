@@ -68,7 +68,7 @@ package multipublish.commands
 		 */
 		private function shutdownTerminal():void
 		{
-			if (StringUtil.isEmpty(cmd))
+			if (StringUtil.empty(cmd))
 			{
 				//参数为空表示立即关机
 				shutdownDirectly();

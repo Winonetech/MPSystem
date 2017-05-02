@@ -175,7 +175,7 @@ package multipublish.views.contents
 			background.alpha = 1;
 			background.removeAllElements();
 			
-			if (StringUtil.isEmpty($source))
+			if (StringUtil.empty($source))
 			{
 				component = rect = new Rect;
 				rect.percentHeight = 100;
@@ -219,7 +219,7 @@ package multipublish.views.contents
 				
 				background.alpha = content.backgroundAlpha;
 				background.removeAllElements();
-				if (StringUtil.isEmpty(content.background))
+				if (StringUtil.empty(content.background))
 				{
 					component = rect = new Rect;
 					rect.percentHeight = 100;

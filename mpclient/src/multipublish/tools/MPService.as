@@ -409,7 +409,7 @@ package multipublish.tools
 				list = str.split("\n");
 				var filter:Function = function($item:*, $index:int, $array:Array):Boolean
 				{
-					return !StringUtil.isEmpty($item.substr(0, 5));
+					return !StringUtil.empty($item.substr(0, 5));
 				};
 				list = list.filter(filter, null);
 				while (list.length)

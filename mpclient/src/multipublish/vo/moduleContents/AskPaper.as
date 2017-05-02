@@ -34,7 +34,7 @@ package multipublish.vo.moduleContents
 			super.parse($data);
 			
 			var url:String = getProperty("url", String);
-			if (!StringUtil.isEmpty(url))
+			if (!StringUtil.empty(url))
 			{
 				wt::registCache(url);
 				mp::bcg = CacheUtil.extractURI(url, PathConsts.PATH_FILE);

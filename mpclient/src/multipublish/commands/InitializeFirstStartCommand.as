@@ -67,7 +67,7 @@ package multipublish.commands
 		 */
 		private function show():void
 		{
-			if (StringUtil.isEmpty(config.terminalNO))
+			if (StringUtil.empty(config.terminalNO))
 			{
 				//如果备份存在而config不存在，则说明config是被删除的，故而需要还原。
 				//否则则视为配置终端。
@@ -163,7 +163,7 @@ package multipublish.commands
 		 */
 		private function applySettings():void
 		{
-			if(!StringUtil.isEmpty(config.ftpHost) && 
+			if(!StringUtil.empty(config.ftpHost) && 
 				config.ftpHost != "127.0.0.1")
 			{
 				Cache.deftp(

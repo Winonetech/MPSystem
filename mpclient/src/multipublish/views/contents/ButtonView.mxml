@@ -70,11 +70,11 @@
 				if (button)
 				{
 					readyTotal = 0;
-					if (StringUtil.isEmpty(button.sourceUp))   readyTotal++;
-					if (StringUtil.isEmpty(button.sourceDown)) readyTotal++;
+					if (StringUtil.empty(button.sourceUp))   readyTotal++;
+					if (StringUtil.empty(button.sourceDown)) readyTotal++;
 					BindingUtils.bindProperty(this, "selected", button, "selected");
-					if (StringUtil.isEmpty(button.sourceUp) &&
-						StringUtil.isEmpty(button.sourceDown)) dispatchReady();
+					if (StringUtil.empty(button.sourceUp) &&
+						StringUtil.empty(button.sourceDown)) dispatchReady();
 				}
 				else
 				{
@@ -216,7 +216,7 @@
 			
 			public function get selectable():Boolean
 			{
-				return !StringUtil.isEmpty(group);
+				return !StringUtil.empty(group);
 			}
 			
 			
