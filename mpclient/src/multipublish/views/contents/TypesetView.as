@@ -41,6 +41,7 @@ package multipublish.views.contents
 	import multipublish.vo.elements.Advertise;
 	import multipublish.vo.elements.Arrange;
 	import multipublish.vo.elements.ArrangeIcon;
+	import multipublish.vo.elements.HoloGrahpic;
 	
 	import mx.effects.Sequence;
 	import mx.events.EffectEvent;
@@ -244,6 +245,17 @@ package multipublish.views.contents
 			main && main.play();
 			timer && timer.start();
 			addEventListener(MouseEvent.MOUSE_DOWN, handlerMouseDown, true);
+			
+			//全息投影模式
+			for each (var item:ArrangeIcon in typeset.arrange.icons)
+			{
+				if (item.element is HoloGrahpic)
+				{
+					view(item, new Rectangle(item.iconX, item.iconY, item.iconWidth, item.iconHeight));
+					removeEventListener(MouseEvent.MOUSE_DOWN, handlerMouseDown, true);
+					break;
+				}
+			}
 		}
 		
 		

@@ -23,14 +23,24 @@ package multipublish.vo.elements
 				resources.length = 0;
 				
 				var list:* = data["folder"]["item"];
-				if (list && list.length)
+				if (list is Array)
 				{
-					for each (var item:* in list)
+					if (list.length)
 					{
-						var resource:Object = createHoloResource(item);
-						resources[resources.length] = resource;
+						for each (var item:* in list)
+						{
+							var resource:Object = createHoloResource(item);
+							resources[resources.length] = resource;
+						}
 					}
 				}
+				else
+				{
+					item = list;
+					resource = createHoloResource(item);
+					resources[resources.length] = resource;
+				}
+				
 			}
 			
 		}

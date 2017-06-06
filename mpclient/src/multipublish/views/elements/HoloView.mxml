@@ -5,24 +5,37 @@
 				xmlns:el="multipublish.views.elements.*"
 				xmlns:ct="com.winonetech.controls.*">
 	
-	<s:Rect width="100%" height="100%">
+	<s:Rect width="100%" height="100%" id="bgRect">
 		<s:fill>
-			<s:SolidColor color="0xCCCCCC"/>
+			<s:SolidColor color="0x000000"/>
 		</s:fill>
 	</s:Rect>
 	
-	<s:Group width="100%" height="100%">
+	<s:Image width="100%" height="100%" id="bg" source="assets/images/bg.jpg" fillMode="scale" scaleMode="zoom"/>
+	
+	<s:Group width="100%" height="100%" id="bgGroup">
 		
-		<s:layout>
-			<s:HorizontalLayout gap="0"/>
-		</s:layout>
-		
-		<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" gap="10" width="50%" height="100%">
+		<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"
+				  gap="10" width="1366" height="100%" horizontalAlign="center" id="mainGroup">
 			
-			<s:Label paddingLeft="20" width="100%" color="0xFFFFFF" maxDisplayedLines="1" text="{resource.title}" fontSize="40"/>
+			<s:Group width="100%" height="100%">
+				
+				<s:Image width="100%" height="100%" fillMode="scale" scaleMode="stretch" source="assets/images/bgTop.jpg"/>
+				
+				<s:Group left="20" right="20" top="20" bottom="20">
+					<s:Image width="100%" height="100%" source="{resource.large}"
+							 fillMode="scale" scaleMode="letterbox"
+							 skinClass="multipublish.skins.ImageBrokenSkin"/>
+				</s:Group>
+				
+			</s:Group>
 			
-			<mx:HRule width="100%"/>
+			<!--<s:Label paddingLeft="20" width="100%" color="0xFFFFFF" maxDisplayedLines="1" text="{resource.title}" fontSize="40"/>
 			
+			<mx:HRule width="100%"/>-->
+			
+			
+			<!--
 			<s:HGroup gap="10" width="100%" height="100%">
 				
 				<mx:Text width="50%" height="100%" fontSize="20" htmlText="{resource.about}" color="0xFFFFFF" selectable="false"/>
@@ -30,32 +43,47 @@
 				<s:Image width="50%" height="100%" source="{resource.large}" fillMode="scale" scaleMode="zoom"/>
 				
 			</s:HGroup>
+			-->
 			
-			<ct:MultiTouchScroller width="100%" height="100" id="scroller"
-								   horizontalScrollPolicy="off" verticalScrollPolicy="off"
-								   mouseDown="scroller_mouseDownHandler(event)">
+			<s:Group width="100%" height="224">
 				
-				<s:HGroup gap="5" id="container" verticalAlign="middle"/>
+				<s:Image width="100%" height="224" fillMode="scale" scaleMode="stretch" source="assets/images/bgBottom.jpg"/>
 				
-			</ct:MultiTouchScroller>
-			
+				<ct:MultiTouchScroller top="20" bottom="24" height="224" id="scroller"
+									   horizontalScrollPolicy="off"
+									   verticalScrollPolicy="off"
+									   mouseDown="scroller_mouseDownHandler(event)">
+					
+					<s:HGroup gap="5" id="container" verticalAlign="middle"/>
+					
+				</ct:MultiTouchScroller>
+			</s:Group>
 		</s:VGroup>
 		
-		<s:VideoDisplay id="video" width="50%" height="100%" source="{resource.video}" loop="true"/>
+		<s:VideoPlayer id="video" width="100%" height="100%" source="{resource.video}" loop="true"
+					   scaleMode="letterbox" autoDisplayFirstFrame="true"
+					   skinClass="multipublish.skins.UnnavigationVideoPlayerSkin"/>
 		
 	</s:Group>
-	
+	<!--
 	<s:Button right="{width * .5 + 10}" top="10" label="返回" click="back()"
 			  skinClass="multipublish.skins.BackButtonSkin" />
-	
+	-->
 	<fx:Script>
 		<![CDATA[
+			import cn.vision.utils.LogUtil;
+			import cn.vision.utils.ScreenUtil;
+			
 			import com.winonetech.controls.ImageButton;
 			
+			import multipublish.skins.ImageBrokenSkin;
 			import multipublish.vo.elements.HoloGrahpic;
+			
 			override protected function processPlay():void
 			{
 				super.processPlay();
+				
+				resizeView();
 				
 				if (holo && holo.resources.length)
 				{
@@ -86,14 +114,65 @@
 					var item:ImageButton = new ImageButton;
 					item.source = child.thumb;
 					item.extra = child;
-					item.width = 120;
-					item.height = 90;
+					item.width = 240;
+					item.height = 180;
 					item.fillMode = "scale";
 					item.scaleMode = "zoom";
+					item.setStyle("skinClass", multipublish.skins.ImageBrokenSkin);
 					item.addEventListener(MouseEvent.CLICK, item_clickHandler, false, 0, true);
 					container.addElement(item);
 				}
 			}
+			
+			private function resizeView():void
+			{
+				var allBounds:Rectangle = ScreenUtil.getScreensBounds();
+				bgRect.x = allBounds.x;
+				bgRect.y = allBounds.y;
+				bgRect.width = allBounds.width;
+				bgRect.height = allBounds.height;
+				
+				bgGroup.x = allBounds.x;
+				bgGroup.y = allBounds.y;
+				bgGroup.width = allBounds.width;
+				bgGroup.height = allBounds.height;
+				
+				var mainBounds:Rectangle = ScreenUtil.getMainScreenBounds();
+				bg.x = mainBounds.x;
+				bg.y = mainBounds.y;
+				bg.width = mainBounds.width;
+				bg.height = mainBounds.height;
+				
+				
+				LogUtil.log("全局", allBounds);
+				LogUtil.log("主屏", mainBounds);
+				
+				mainGroup.x = mainBounds.x;
+				mainGroup.y = mainBounds.y;
+				mainGroup.width = mainBounds.width;
+				mainGroup.height = mainBounds.height;
+				scroller.maxWidth = mainBounds.width;
+				
+				
+				if (ScreenUtil.getScreenNums() > 1)
+				{
+					var videoBounds:Rectangle = ScreenUtil.getScreenBoundsAt(1);
+					video.visible = true;
+					video.x = videoBounds.x;
+					video.y = videoBounds.y;
+					video.width = videoBounds.width + 2;
+					video.height = videoBounds.height;
+					LogUtil.log("副屏", videoBounds);
+				}
+				else
+				{
+					video.visible = false;
+				}
+				
+				
+				
+			}
+			
 			
 			private function scroller_mouseDownHandler(event:MouseEvent):void
 			{

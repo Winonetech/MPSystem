@@ -3,7 +3,7 @@
 
 
 #define MyAppName "WOS Player o2o"
-#define MyAppVersion "18.8.12"
+#define MyAppVersion "18.8.17"
 
 #define MyAppPublisher "Winonetech"
 #define MyAppURL "http://www.winonetech.com/"
