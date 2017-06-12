@@ -141,6 +141,7 @@ package multipublish.tools
 			else
 			{
 				sheetObj.thumb = thumb;
+				//String(thumb).replace("thumb_", "");
 				sheetObj.image = StringUtil.replace(thumb, "thumb_", "");
 				createLoader(sheetObj.image, function(loader:ImageLoader):void
 				{

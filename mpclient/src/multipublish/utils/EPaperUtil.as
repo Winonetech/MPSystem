@@ -66,6 +66,24 @@ package multipublish.utils
 		}
 		
 		/**
+		 * 
+		 * 删除报纸文件在服务器上不存在的标记。
+		 * 
+		 * @param $path:String 报纸文件路径。
+		 * 
+		 */
+		
+		mp static function unregArchiveUnloadable($path:String):void
+		{
+			var cacheObj:Object = getEpaperCache();
+			if (cacheObj)
+			{
+				delete cacheObj[$path];
+				setEpaperCache(cacheObj);
+			}
+		}
+		
+		/**
 		 * @private
 		 */
 		private static function getEpaperCache():Object

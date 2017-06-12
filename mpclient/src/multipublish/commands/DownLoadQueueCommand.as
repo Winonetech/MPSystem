@@ -70,8 +70,7 @@ package multipublish.commands
 				waitQueue.removeEventListener(QueueEvent.QUEUE_END, wait_endHandler);
 				unwaitQueue.removeEventListener(QueueEvent.QUEUE_END, unwait_endHandler);
 				
-				trace("需要下载的文件个数，等待：" + Cache.waitLave + "，非等待：" + Cache.unwaitLave)
-				
+				//trace("需要下载的文件个数，等待：" + Cache.waitLave + "，非等待：" + Cache.unwaitLave)
 				
 				if(provider.channelNow)
 				{
@@ -92,6 +91,7 @@ package multipublish.commands
 		
 		private function resolve():void
 		{
+			LogUtil.log("解析下载命令");
  			var tempCmd:Array = cmd.split("-");
 			var args :String = tempCmd.pop();
 			var state:String = tempCmd.shift();
@@ -109,6 +109,7 @@ package multipublish.commands
 		
 		private function resolveStart($args:String):void
 		{
+			LogUtil.log("开始下载");
 			if ($args)   //传入参数表示使用子FTP地址
 			{
 				var temp:Array = trimBracket($args).split(",");
@@ -123,17 +124,23 @@ package multipublish.commands
 					config.ftpPassWord);
 			}
 			
-			//开始下载时再注册监听。
-			if (waitQueue.lave)
-				waitQueue.addEventListener(QueueEvent.QUEUE_END, wait_endHandler, false, 0, true);
-			if (unwaitQueue.lave)
-				unwaitQueue.addEventListener(QueueEvent.QUEUE_END, unwait_endHandler, false, 0, true);
-			
-			//展示下载提示框。
-			if (config.downloadState && Cache.waitLave) ViewUtil.showDownload(true);
-			
-			Cache.start();
-			
+			if (waitQueue.lave || unwaitQueue.lave)
+			{
+				//开始下载时再注册监听。
+				if (waitQueue.lave)
+					waitQueue.addEventListener(QueueEvent.QUEUE_END, wait_endHandler, false, 0, true);
+				if (unwaitQueue.lave)
+					unwaitQueue.addEventListener(QueueEvent.QUEUE_END, unwait_endHandler, false, 0, true);
+				
+				//展示下载提示框。
+				if (config.downloadState && Cache.waitLave) ViewUtil.showDownload(true);
+				
+				Cache.start();
+			}
+			else
+			{
+				commandEnd();
+			}
 		}
 		
 		/**

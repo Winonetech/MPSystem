@@ -84,7 +84,7 @@ package multipublish.commands
 			var ft:File  = new File(FileUtil.resolvePathApplication(DataConsts.CHANNEL_NEW) + ".tmp");
 			
 			if (f .exists) f .deleteFile();
-			if (ft.exists) ft.deleteFile(); 
+			if (ft.exists) ft.deleteFile();
 		}
 		
 		

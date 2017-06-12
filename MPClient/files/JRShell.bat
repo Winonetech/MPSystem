@@ -3,5 +3,5 @@ tasklist|find /i "JRShellInner.exe" ||goto :startjr
 exit
 :startjr
 if "%a%"=="" set a=%cd%
-start %a%\JRShellInner.exe
+start %a%\JRShellInner.exe %a%
 exit
