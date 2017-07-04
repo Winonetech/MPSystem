@@ -9,6 +9,7 @@ package multipublish.views
 	
 	
 	import cn.vision.utils.StringUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import com.winonetech.events.ControlEvent;
 	
@@ -178,7 +179,7 @@ package multipublish.views
 				temp.removeEventListener(ControlEvent.READY, handlerReady);
 				if (++readyCount >= sheet.componentsArr.length) 
 				{
-					dispatchReady();
+					TimerUtil.callLater(10, dispatchReady);
 				}
 			}
 		}

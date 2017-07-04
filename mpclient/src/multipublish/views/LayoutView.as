@@ -446,7 +446,6 @@ package multipublish.views
 				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timer_completeHandler);
 				timer.stop();
 				timer = null;
-				
 			}
 		}
 		
