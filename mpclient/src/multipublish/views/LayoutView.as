@@ -287,15 +287,6 @@ package multipublish.views
 		{
 			source = data as Layout;
 			
-			if (source.home && 
-				source.pagesArr.length)    //该 pagesArr为 children 即根页面集合。
-			{
-				main = createPage(source.home, true);    //增加页面并进入缓存。
-				main.addEventListener(ControlEvent.READY, handlerReady);
-				main.data = source.home;  
-				history.push(main);
-			}	
-			
 			if (source.ad && 
 				source.ad.enabled && 
 				source.ad.waitTime)
@@ -305,6 +296,15 @@ package multipublish.views
 				ad.x = source.ad.x;
 				ad.y = source.ad.y;
 			}
+			
+			if (source.home && 
+				source.pagesArr.length)    //该 pagesArr为 children 即根页面集合。
+			{
+				main = createPage(source.home, true);    //增加页面并进入缓存。
+				main.addEventListener(ControlEvent.READY, handlerReady);
+				main.data = source.home;  
+				history.push(main);
+			}	
 		}
 		
 		
