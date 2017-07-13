@@ -157,6 +157,10 @@
 				if (ScreenUtil.getScreenNums() > 1)
 				{
 					var videoBounds:Rectangle = ScreenUtil.getScreenBoundsAt(1);
+					if (videoBounds.equals(mainBounds))
+					{
+						videoBounds = ScreenUtil.getScreenBoundsAt(0);
+					}
 					video.visible = true;
 					video.x = videoBounds.x;
 					video.y = videoBounds.y;
@@ -168,8 +172,6 @@
 				{
 					video.visible = false;
 				}
-				
-				
 				
 			}
 			
