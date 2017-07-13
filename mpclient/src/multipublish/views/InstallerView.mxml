@@ -80,7 +80,7 @@
 							</s:VGroup>
 						</s:helpContent>
 						<ct:Field text="{config.httpHost}" name="httpHost"
-										textAlign="left" restrict="0-9."
+										textAlign="left" restrict="0-9.a-zA-Z"
 										change="textinput_changeHandler(event)"/>
 					</s:FormItem>
 					<s:FormItem label="{language.httpPort}">

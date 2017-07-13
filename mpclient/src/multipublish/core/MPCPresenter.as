@@ -8,12 +8,13 @@ package multipublish.core
 	 */
 	
 	
-	import cn.vision.errors.SingleTonError;
 	import cn.vision.core.Command;
 	import cn.vision.core.Presenter;
+	import cn.vision.errors.SingleTonError;
 	import cn.vision.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
+	import multipublish.tools.Statistics;
 	import multipublish.utils.ViewUtil;
 	
 	import spark.components.WindowedApplication;
