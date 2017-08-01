@@ -146,12 +146,8 @@ package multipublish.tools
 		
 		public function registControlBroadcast($time:Date, $handler:Function = null, ...$args):void
 		{
-			if(!commanTimer)
-			{
-				commanTimer = new Timer(1000);
-				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
-				commanTimer.start();
-			}
+			createTimer();
+			
 			var note:String = getNote($time);
 			broadcastCache = broadcastCache || {};
 			broadcastCache[note] = {handler:$handler, args:$args};
@@ -170,12 +166,8 @@ package multipublish.tools
 		
 		public function registControlShutdown($time:Date, $handler:Function = null, ...$args):void
 		{
-			if(!commanTimer)
-			{
-				commanTimer = new Timer(1000);
-				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
-				commanTimer.start();
-			}
+			createTimer();
+			
 			var note:String = getNote($time, true);
 			shutdownCache = shutdownCache || {};
 			shutdownCache[note] = {handler:$handler, args:$args};
@@ -194,15 +186,23 @@ package multipublish.tools
 		
 		public function registControlShotcut($time:Date, $handler:Function = null, ...$args):void
 		{
-			if(!commanTimer)
-			{
-				commanTimer = new Timer(1000);
-				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
-				commanTimer.start();
-			}
+			createTimer();
+			
 			var note:String = getNote($time, true);
 			shotcutCache = shotcutCache || {};
 			shotcutCache[note] = {handler:$handler, args:$args};
+		}
+		
+		
+		public function registControlUploadStatistics($delayTime:uint, $handler:Function = null, ...$args):void
+		{
+			createTimer();
+			
+			var date:Date = new Date;
+			date.seconds += $delayTime;
+			var note:String = getNote(date);
+			uploadStatisticsCache = uploadStatisticsCache || {};
+			uploadStatisticsCache[note] = {handler:$handler, args:$args};
 		}
 		
 		
@@ -214,6 +214,19 @@ package multipublish.tools
 		private function getNote($date:Date, $day:Boolean = false):String
 		{
 			return ($day ? $date.day + "/" : "") + $date.hours + "/" + $date.minutes + "/" + $date.seconds;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function createTimer():void
+		{
+			if(!commanTimer)
+			{
+				commanTimer = new Timer(1000);
+				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
+				commanTimer.start();
+			}
 		}
 		
 		
@@ -228,6 +241,14 @@ package multipublish.tools
 			if (broadcast && broadcast.handler)
 				broadcast.handler.apply(null, broadcast.args);
 			
+			var upload:Object = uploadStatisticsCache ? uploadStatisticsCache[note] : null;
+			if (upload)
+			{
+				if (upload && upload.handler)
+					upload.handler.apply(null, upload.args);
+			}
+			
+			
 			note = getNote(now, true);
 			var shutdown:Object = shutdownCache ? shutdownCache[note] : null;
 			if (shutdown && shutdown.handler)
@@ -236,6 +257,8 @@ package multipublish.tools
 			var shotcut:Object = shotcutCache ? shotcutCache[note] : null;
 			if (shotcut && shotcut.handler)
 				shotcut.handler.apply(null, shotcut.args);
+			
+			
 		}
 		
 		/**
@@ -292,6 +315,11 @@ package multipublish.tools
 		 * @private
 		 */
 		private var shotcutCache:Object;
+		
+		/**
+		 * @private
+		 */
+		private var uploadStatisticsCache:Object;
 		
 		/**
 		 * @private

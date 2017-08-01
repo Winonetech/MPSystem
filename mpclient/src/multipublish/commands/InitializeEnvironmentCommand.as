@@ -62,7 +62,7 @@ package multipublish.commands
 			
 			modelog(ClientStateConsts.INIT_ENVI);
 			
-			setDebugFalse();
+			//setDebugFalse();
 			
 			initializeNetInfo();
 			initializeWindow();

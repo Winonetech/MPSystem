@@ -11,15 +11,12 @@ package multipublish.views
 	import caurina.transitions.Tweener;
 	
 	import com.winonetech.events.ControlEvent;
-	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCView;
 	import multipublish.core.mp;
 	import multipublish.vo.programs.Program;
@@ -66,10 +63,12 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			LogSQLite.log(
+			/*LogSQLite.log(
 				TypeConsts.FILE,
 				EventConsts.EVENT_START_PLAYING, schedule.summary,
-				log(MPTipConsts.RECORD_SCHEDULE_PLAY, schedule));
+				log(MPTipConsts.RECORD_SCHEDULE_PLAY, schedule));*/
+			
+			log(MPTipConsts.RECORD_SCHEDULE_PLAY, schedule);
 			
 			if (view)
 			{

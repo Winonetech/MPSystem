@@ -13,11 +13,11 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.MathUtil;
 			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
+			import multipublish.tools.Statistics;
 			import multipublish.vo.contents.Picture;
 			
 			
@@ -47,6 +47,9 @@
 			override protected function processStop():void
 			{
 				timerStop();
+				
+				//统计播放图片素材
+				Statistics.censusResource(uint(data.id), 0, (content as Picture).content, time);
 			}
 			
 			

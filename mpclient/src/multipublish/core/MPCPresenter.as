@@ -47,9 +47,12 @@ package multipublish.core
 		 * 
 		 */
 		
-		public function execute($command:Command):void
+		public function execute($command:Command, $useQueue:Boolean = true):void
 		{
-			quene.execute($command);
+			if ($useQueue)
+				quene.execute($command);
+			else
+				$command.execute();
 		}
 		
 		/**
@@ -70,6 +73,12 @@ package multipublish.core
 		public function getLEDConfig($config:String):void
 		{
 			execute(new GetLEDConfigCommand($config));
+		}
+		
+		
+		public function uploadStatistics():void
+		{
+			execute(new StatisticsUploadCommand, false);
 		}
 		
 		
@@ -196,8 +205,7 @@ package multipublish.core
 		
 		public function rebootTerminal(...$args):void
 		{
-			var reboot:RebootTerminalCommand = new RebootTerminalCommand;
-			reboot.execute();
+			execute(new RebootTerminalCommand, false);
 		}
 		
 		
@@ -209,8 +217,7 @@ package multipublish.core
 		
 		public function restartPlayer(...$args):void
 		{
-			var restart:RestartPlayerCommand = new RestartPlayerCommand;
-			restart.execute();
+			execute(new RestartPlayerCommand, false);
 		}
 		
 		
@@ -222,8 +229,7 @@ package multipublish.core
 		
 		public function shotcutPlayer($value:String):void
 		{
-			var shotcut:ShotcutPlayerCommand = new ShotcutPlayerCommand($value);
-			shotcut.execute();
+			execute(new ShotcutPlayerCommand($value), false);
 		}
 		
 		
@@ -247,8 +253,7 @@ package multipublish.core
 		
 		public function shutdownTerminal($value:String = null):void
 		{
-			var shutdown:InitializeShutdownCommand = new InitializeShutdownCommand($value);
-			shutdown.execute();
+			execute(new InitializeShutdownCommand($value), false);
 		}
 		
 		

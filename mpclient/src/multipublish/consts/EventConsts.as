@@ -131,6 +131,15 @@ package multipublish.consts
 		
 		/**
 		 * 
+		 * 日志上传完毕。
+		 * 
+		 */
+		
+		public static var EVENT_STATISTICS_UPLOADED:String = "STATISTICSUPLOADED";
+		
+		
+		/**
+		 * 
 		 * 时间同步。
 		 * 
 		 */

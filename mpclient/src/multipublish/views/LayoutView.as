@@ -20,6 +20,7 @@ package multipublish.views
 	import flash.utils.Timer;
 	
 	import multipublish.consts.MPTipConsts;
+	import multipublish.tools.Statistics;
 	import multipublish.utils.EffectUtil;
 	import multipublish.views.contents.ButtonView;
 	import multipublish.views.contents.MarqueeView;
@@ -149,6 +150,9 @@ package multipublish.views
 					wt::tweening = true;
 					//新页面在历史记录中不存在，打开新页面。
 					log(MPTipConsts.RECORD_TYPESET_VIEW, $page);
+					
+					//统计按钮点击
+					if ($button) Statistics.censusButton(uint($button.getComponentID()));
 					
 					var effects:Array = [];
 					var lasts:Array = checkOfHistory($page);

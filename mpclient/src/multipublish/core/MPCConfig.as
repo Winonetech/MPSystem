@@ -405,6 +405,15 @@ package multipublish.core
 		
 		/**
 		 * 
+		 * 上传统计数据的时间，在启动后，此时间范围内，随机一个时间点上传。
+		 * 
+		 */
+		
+		public var uploadStatisticsTime:uint = 300;
+		
+		
+		/**
+		 * 
 		 * 是否禁用base64加密。
 		 * 
 		 */

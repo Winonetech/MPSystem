@@ -16,8 +16,6 @@ package multipublish.tools
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -35,9 +33,7 @@ package multipublish.tools
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.MPCView;
 	import multipublish.utils.URLUtil;
@@ -244,9 +240,11 @@ package multipublish.tools
 				config.service.shotcutOver(success, 
 					config.terminalNO + "," + ftpName + "," + URLUtil.buildFTPURL(upLoadPath));
 				
-				LogSQLite.log(TypeConsts.NETWORK, 
+				/*LogSQLite.log(TypeConsts.NETWORK, 
 					EventConsts.EVENT_TAKE_SCREENSHOT,
-					LogUtil.logTip(description, text));
+					LogUtil.logTip(description, text));*/
+				
+				LogUtil.logTip(description, text);
 			}
 		}
 		

@@ -55,9 +55,11 @@ package multipublish.views.contents
 		{
 			if (content)
 			{
-				LogSQLite.log(TypeConsts.FILE,
+				/*LogSQLite.log(TypeConsts.FILE,
 					EventConsts.EVENT_START_PLAYING, content.title,
 					log(MPTipConsts.RECORD_CONTENT_PLAY, content));
+				*/
+				log(MPTipConsts.RECORD_CONTENT_PLAY, content);
 			}
 		}
 		

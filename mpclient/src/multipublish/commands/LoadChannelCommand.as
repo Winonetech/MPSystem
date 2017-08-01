@@ -13,12 +13,8 @@ package multipublish.commands
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.ObjectUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
 	import multipublish.consts.DataConsts;
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	
 	
 	public final class LoadChannelCommand extends Step
@@ -106,9 +102,11 @@ package multipublish.commands
 			else
 			{
 				//加载到的排期数据无效。
-				LogSQLite.log(TypeConsts.FILE,
+				/*LogSQLite.log(TypeConsts.FILE,
 					EventConsts.EVENT_LOAD_ERROR, model.extra.url,
-					LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_CHANNEL));
+					LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_CHANNEL));*/
+				
+				LogUtil.logTip(MPTipConsts.RECORD_LOAD_FAILURE_CHANNEL);
 			}
 			commandEnd();
 		}

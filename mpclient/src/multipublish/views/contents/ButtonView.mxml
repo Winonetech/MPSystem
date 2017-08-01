@@ -33,14 +33,31 @@
 	<fx:Script>
 		
 		<![CDATA[
-			
 			import cn.vision.utils.StringUtil;
 			
 			import multipublish.consts.MPTipConsts;
 			import multipublish.core.mp;
+			import multipublish.views.ComponentView;
 			import multipublish.vo.contents.Button;
 			
 			import mx.binding.utils.BindingUtils;
+			
+			
+			public function getComponentID():String
+			{
+				var id:String = "0";
+				if (parent)
+				{
+					if (parent.parent)
+					{
+						if (parent.parent is ComponentView)
+						{
+							id = (parent.parent as ComponentView).data.id;
+						}
+					}
+				}
+				return id;
+			}
 			
 			
 			/**

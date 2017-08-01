@@ -13,11 +13,7 @@ package multipublish.commands
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.StringUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.consts.URLConsts;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ConfigUtil;
@@ -106,10 +102,11 @@ package multipublish.commands
 		 */
 		private function shutdownDirectly():void
 		{
-			LogSQLite.log(
+			/*LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_PC_SHUTDOWN,
-				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN));
+				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN))*/
+			LogUtil.logTip(MPTipConsts.RECORD_COMMAND_SHUTDOWN);
 			
 			config.service.communicationStop();
 			

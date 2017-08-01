@@ -59,12 +59,12 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.FileUtil;
 			import cn.vision.utils.ObjectUtil;
 			import cn.vision.utils.StringUtil;
 			
 			import multipublish.core.mp;
+			import multipublish.tools.Statistics;
 			
 			import mx.binding.utils.BindingUtils;
 			import mx.events.ResizeEvent;
@@ -87,6 +87,8 @@
 				stop();
 				
 				data = $data;
+				
+				Statistics.censusNews(data.id);
 			}
 			
 			

@@ -74,12 +74,14 @@ package multipublish.commands
 			var time:String = "time " + temp[1];
 			var exit:String = "del %0";
 			var cmd:String = date + StringUtil.lineEnding + time + StringUtil.lineEnding + exit;
-			
-			LogSQLite.log(
+				
+			/*LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_SYNC_SERVER_TIME,
-				LogUtil.log(MPTipConsts.RECORD_COMMAND_LOCKTIME));
+				LogUtil.log(MPTipConsts.RECORD_COMMAND_LOCKTIME));*/
 			
+			LogUtil.log(MPTipConsts.RECORD_COMMAND_LOCKTIME)
+					
 			var saver:FileSaver = Cache.save(URLConsts.TOOL_TIME, cmd);
 			saver.addEventListener(Event.COMPLETE, handlerSaveComplete);
 		}

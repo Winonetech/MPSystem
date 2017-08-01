@@ -8,15 +8,7 @@ package multipublish.views
 	 */
 	
 	
-	import com.winonetech.tools.LogSQLite;
-	
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.vo.programs.AD;
 	
 	
@@ -41,10 +33,12 @@ package multipublish.views
 		
 		override protected function processPlay():void
 		{
-			LogSQLite.log(
+			/*LogSQLite.log(
 				TypeConsts.FILE,
 				EventConsts.EVENT_START_PLAYING,
-				data, log(MPTipConsts.RECORD_TYPESET_PLAY_AD, data));
+				data, log(MPTipConsts.RECORD_TYPESET_PLAY_AD, data));*/
+			
+			log(MPTipConsts.RECORD_TYPESET_PLAY_AD, data);
 			
 			visible = true;
 		}

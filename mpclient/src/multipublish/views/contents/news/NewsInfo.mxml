@@ -54,13 +54,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.FileUtil;
 			import cn.vision.utils.ObjectUtil;
 			import cn.vision.utils.StringUtil;
 			
 			import multipublish.core.mp;
 			import multipublish.skins.VideoPlayerSkin;
+			import multipublish.tools.Statistics;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
 			import org.osmf.media.MediaPlayerState;
@@ -79,6 +79,8 @@
 			{
 				data = $data;
 				visible = true;
+				
+				Statistics.censusNews(data.id);
 			}
 			
 			

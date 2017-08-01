@@ -8,24 +8,24 @@ package multipublish.tools
 	 */
 	
 	
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	import mx.rpc.http.HTTPService;
-	
 	import cn.vision.utils.ArrayUtil;
 	import cn.vision.utils.DebugUtil;
 	import cn.vision.utils.LogUtil;
 	import cn.vision.utils.RegexpUtil;
 	import cn.vision.utils.StringUtil;
 	
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.ServiceConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.core.mp;
+	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 	
 	
 	public final class MPService
@@ -91,6 +91,8 @@ package multipublish.tools
 				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
 				http.send(JSON.stringify(temp));
 //				send(ServiceConsts.FORWARD_ON_LINE + config.terminalNO);
+				//统计终端上线
+				Statistics.censusTerminal(uint(config.terminalNO), "on line");
 			}
 		}
 		
@@ -112,6 +114,8 @@ package multipublish.tools
 				LogUtil.log("通讯：" + http.url + " cmd:" +　str);
 				http.send(JSON.stringify(temp));
 //				send(ServiceConsts.FORWARD_OFF_LINE + config.terminalNO);
+				//统计终端离线
+				Statistics.censusTerminal(uint(config.terminalNO), "off line");
 			}
 		}
 		
@@ -143,7 +147,7 @@ package multipublish.tools
 		
 		public function logover($success:Boolean = true, $name:String = null):void
 		{
-			send(ServiceConsts.UPLOAD_LOG + config.terminalNO + ($success ? ", " + $name : ", 0"));
+			send(ServiceConsts.UPLOAD_LOG + config.terminalNO + ($success ? "," + $name : ",0"));
 		}
 		
 		
@@ -161,7 +165,6 @@ package multipublish.tools
 			http.url = "http://" + config.httpHost + ":" + (config.httpPort || 80) + "/" + config.serviceURL;
 			LogUtil.log("通讯：" + http.url + " cmd:" +　str);
 			http.send(JSON.stringify(temp));
-//			send(ServiceConsts.DL_APPLY + config.terminalNO);
 		}
 		
 		
@@ -292,6 +295,7 @@ package multipublish.tools
 			{
 				mp::connected = false;
 				LogUtil.log("与服务端断开连接。");
+				Statistics.censusTerminal(uint(config.terminalNO), "disconnect");
 			}
 		}
 		

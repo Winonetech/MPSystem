@@ -18,11 +18,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import cn.vision.utils.MathUtil;
+			
+			import flash.utils.getTimer;
 			
 			import multipublish.consts.ContentConsts;
 			import multipublish.core.mp;
+			import multipublish.tools.Statistics;
 			import multipublish.vo.contents.Cartoon;
 			
 			
@@ -59,6 +61,11 @@
 				timerStop();
 				movieStop();
 				loaderStop();
+				
+				//统计播放FLASH素材
+				Statistics.censusResource(uint(data.id), 2, 
+					(content as Cartoon).content, 
+					int((getTimer() - rtime) * .001));
 			}
 			
 			
@@ -165,6 +172,7 @@
 					timer.reset();
 					timer.start();
 				}
+				rtime = getTimer();
 			}
 			
 			/**
@@ -259,6 +267,11 @@
 			 * @private
 			 */
 			private var movie:MovieClip;
+			
+			/**
+			 * @private
+			 */
+			private var rtime:int;
 			
 			
 			/**

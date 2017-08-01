@@ -15,16 +15,13 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSQLite;
 	import com.winonetech.utils.CacheUtil;
 	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.tools.MPService;
 	
 	
@@ -74,9 +71,11 @@ package multipublish.commands
 		 */
 		private function logUpload():void
 		{
-			LogSQLite.log(TypeConsts.NETWORK, 
+			/*LogSQLite.log(TypeConsts.NETWORK, 
 				EventConsts.EVENT_UPLOAD_LOG,
-				LogUtil.logTip(MPTipConsts.RECORD_LOG_UPLOAD));
+				LogUtil.logTip(MPTipConsts.RECORD_LOG_UPLOAD));*/
+			
+			LogUtil.logTip(MPTipConsts.RECORD_LOG_UPLOAD);
 			
 			var date:Date = new Date;
 			var month:Array = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -129,9 +128,11 @@ package multipublish.commands
 				: MPTipConsts.RECORD_LOG_UPLOAD_FAILURE;
 			var text:String = success ? "" : ($e as IOErrorEvent).text;
 			
-			LogSQLite.log(TypeConsts.NETWORK, 
+			/*LogSQLite.log(TypeConsts.NETWORK, 
 				EventConsts.EVENT_LOG_UPLOADED,
-				LogUtil.logTip(description, text));
+				LogUtil.logTip(description, text));*/
+			
+			LogUtil.logTip(description, text);
 			
 			service.logover(success, uploader.remoteURL.split("/").pop());
 		}

@@ -16,19 +16,13 @@ package multipublish.tools
 	import cn.vision.core.VSObject;
 	import cn.vision.events.QueueEvent;
 	import cn.vision.queue.ParallelQueue;
-	import cn.vision.utils.LogUtil;
-	import cn.vision.utils.RegexpUtil;
 	
 	import com.winonetech.tools.Cache;
-	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.TimerEvent;
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
-	import multipublish.consts.EventConsts;
-	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.core.MPCConfig;
 	import multipublish.utils.ReportUtil;
 	
@@ -114,10 +108,10 @@ package multipublish.tools
 					var data:String = name + ";2";
 					var memo:String = name + (cache.reloadCount == 0 ? "开始下载" : "再次下载");
 					
-					LogSQLite.log(
+					/*LogSQLite.log(
 						TypeConsts.FILE, 
 						EventConsts.EVENT_DOWNLOADING_START, name,
-						RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
+						RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));*/
 					
 					service.report(data);//发送2，开始下载。
 				}
@@ -147,10 +141,10 @@ package multipublish.tools
 					data += ";" + cache.code + ";" + cache.message;
 				}
 				
-				LogSQLite.log(
+				/*LogSQLite.log(
 					TypeConsts.FILE,
 					EventConsts.EVENT_DOWNLOADING_END, name,
-					RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));
+					RegexpUtil.replaceTag(MPTipConsts.RECORD_CACHE_REPORT, memo));*/
 				
 				service.report(data);//发送3,4，完成下载。
 				delete REPORTABLE[cache];

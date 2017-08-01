@@ -59,6 +59,9 @@ package multipublish.commands
 				controller.registControlBroadcast(new Date(2000, 0, 1), presenter.broadcastProgram);
 				//设定 n秒后执行加载频道排期。
 				controller.registControlUsecache(presenter.initializeModule, config.pushwaitTime || 5);
+				
+				var time:uint = Math.random() * config.uploadStatisticsTime;
+				controller.registControlUploadStatistics(time, presenter.uploadStatistics);
 			}
 			else
 			{

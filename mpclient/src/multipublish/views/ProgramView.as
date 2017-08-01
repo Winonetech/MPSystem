@@ -1,17 +1,9 @@
 package multipublish.views
 {
 	import com.winonetech.events.ControlEvent;
-	import com.winonetech.tools.LogSQLite;
 	
-	import input.core.ip;
-	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
-	import multipublish.core.mp;
-	import multipublish.utils.ContentUtil;
 	import multipublish.views.moduleContents.ModuleView;
-	import multipublish.vo.contents.Content;
 	import multipublish.vo.programs.Program;
 	
 	import spark.components.Group;
@@ -50,10 +42,11 @@ package multipublish.views
 		{
 			try
 			{
-				LogSQLite.log(
+				/*LogSQLite.log(
 					TypeConsts.FILE,
 					EventConsts.EVENT_START_PLAYING, program.summary,
-					log(MPTipConsts.RECORD_PROGRAM_PLAY, program));
+					log(MPTipConsts.RECORD_PROGRAM_PLAY, program))*/
+				log(MPTipConsts.RECORD_PROGRAM_PLAY, program);
 			}
 			catch (e:TypeError)
 			{

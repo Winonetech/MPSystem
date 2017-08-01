@@ -19,8 +19,10 @@ package multipublish.tools
 	import flash.data.SQLStatement;
 	
 	import multipublish.core.MDProvider;
+	import multipublish.core.MPCView;
 	import multipublish.skins.MPPanelSkin;
 	import multipublish.vo.Channel;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	public final class Statistics extends Command
@@ -60,6 +62,9 @@ package multipublish.tools
 		 */
 		private function create():void
 		{
+			stm.text = CREATE_TERMINAL;
+			stm.execute();
+			
 			stm.text = CREATE_RESOURCE;
 			stm.execute();
 			
@@ -99,8 +104,9 @@ package multipublish.tools
 					create();
 				}
 				
-				insert();
 			}
+			
+			insert();
 		}
 		
 		/**
@@ -112,31 +118,30 @@ package multipublish.tools
 			{
 				switch (type)
 				{
+					case "terminal":
+						stm.text = RegexpUtil.replaceTag(INSERT_TERMINAL, args);
+						stm.execute();
+						break;
 					case "resource":
 						stm.text = RegexpUtil.replaceTag(INSERT_RESOURCE, args);
+						stm.execute();
 						break;
 					case "button":
 						stm.text = RegexpUtil.replaceTag(INSERT_BUTTON, args);
+						stm.execute();
 						break;
 					case "epaper":
 						stm.text = RegexpUtil.replaceTag(INSERT_EPAPER, args);
+						stm.execute();
 						break;
 					case "news":
 						stm.text = RegexpUtil.replaceTag(INSERT_NEWS, args);
+						stm.execute();
 						break;
 					default:
-						stm.text = null;
 						break;
 				}
-				if (stm.text) stm.execute();
 			}
-		}
-		
-		
-		private static function getChannelID():String
-		{
-			var channel:Channel = MDProvider.instance.channelNow;
-			return channel ? channel.id : "0";
 		}
 		
 		
@@ -146,9 +151,26 @@ package multipublish.tools
 		 * 
 		 */
 		
-		public static function censusResource($id:uint, $type:uint, $path:String, $startTime:String, $playTime:uint):void
+		public static function censusTerminal($id:uint, $event:String):void
 		{
-			queue.execute(new Statistics("resource", [$id, $type, $path, $startTime, $playTime]);
+			var time:String = ObjectUtil.convert(new Date, String, "YYYY-MM-DD HH:MI:SS");
+			queue.execute(new Statistics("terminal", [$id, $event, time]));
+		}
+		
+		
+		
+		/**
+		 * 
+		 * 统计素材。
+		 * 
+		 */
+		
+		public static function censusResource($id:uint, $type:uint, $path:String, $playTime:uint):void
+		{
+			var date:Date = new Date;
+			date.seconds -= $playTime;
+			var time:String = ObjectUtil.convert(date, String, "YYYY-MM-DD HH:MI:SS");
+			queue.execute(new Statistics("resource", [getChannelID(), $id, $type, $path, time, $playTime]));
 		}
 		
 		
@@ -158,9 +180,10 @@ package multipublish.tools
 		 * 
 		 */
 		
-		public static function censusButton($id:uint, $clickTime:String):void
+		public static function censusButton($id:uint):void
 		{
-			queue.execute(new Statistics("button", [$id, $clickTime]));
+			var time:String = ObjectUtil.convert(new Date, String, "YYYY-MM-DD HH:MI:SS");
+			queue.execute(new Statistics("button", [getChannelID(), $id, time]));
 		}
 		
 		
@@ -170,9 +193,10 @@ package multipublish.tools
 		 * 
 		 */
 		
-		public static function censusEpaper($id:uint, $day:String, $clickTime:String):void
+		public static function censusEpaper($path:String, $day:String):void
 		{
-			queue.execute(new Statistics("epaper", [$id, $day, $clickTime]));
+			var time:String = ObjectUtil.convert(new Date, String, "YYYY-MM-DD HH:MI:SS");
+			queue.execute(new Statistics("epaper", [getChannelID(), $path, $day, time]));
 		}
 		
 		
@@ -182,9 +206,10 @@ package multipublish.tools
 		 * 
 		 */
 		
-		public static function censusNews($id:uint, $clickTime:String):void
+		public static function censusNews($id:uint):void
 		{
-			queue.execute(new Statistics("news", [$id, $clickTime]));
+			var time:String = ObjectUtil.convert(new Date, String, "YYYY-MM-DD HH:MI:SS");
+			queue.execute(new Statistics("news", [getChannelID(), $id, time]));
 		}
 		
 		
@@ -195,6 +220,15 @@ package multipublish.tools
 		{
 			if ($item is String) 
 				$array[$index] = "'" + $item + "'";
+		}
+		
+		/**
+		 * @private
+		 */
+		private static function getChannelID():uint
+		{
+			var s:Schedule = MPCView.instance.main.data as Schedule;
+			return uint(s ? s.id : "0");
 		}
 		
 		
@@ -229,6 +263,16 @@ package multipublish.tools
 		 */
 		private static var queue:SequenceQueue = new SequenceQueue;
 		
+		
+		/**
+		 * @private
+		 */
+		private static const CREATE_TERMINAL:String = 
+			"CREATE TABLE IF NOT EXISTS TERMINAL_STATISTICS (" +
+				"TERMINAL_ID INTEGER," +
+				"TERMINAL_EVENT VARCHAR," +
+				"TERMINAL_OCCURTIME VARCHAR" +
+			")";
 		
 		/**
 		 * @private
@@ -273,6 +317,15 @@ package multipublish.tools
 				"NEWS_ID INTEGER," +
 				"NEWS_CLICKTIME VARCHAR" +
 			")";
+		
+		/**
+		 * @private
+		 */
+		private static const INSERT_TERMINAL:String = "INSERT INTO TERMINAL_STATISTICS (" +
+				"TERMINAL_ID," +
+				"TERMINAL_EVENT," +
+				"TERMINAL_OCCURTIME" +
+			") VALUES ({$self})";
 		
 		/**
 		 * @private

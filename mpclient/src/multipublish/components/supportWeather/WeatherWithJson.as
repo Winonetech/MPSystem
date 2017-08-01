@@ -71,7 +71,6 @@ package multipublish.components.supportWeather
 				//				url = "http://apis.baidu.com/apistore" +
 				//					"/weatherservice/recentweathers?cityname=" + cityName; http://www.weather.com.cn/data/cityinfo/101010100.html
 				url = "http://weather.51wnl.com/weatherinfo/GetMoreWeather?cityCode="+cityCode+"&weatherType=0";
-				trace(url);
 				getDataByInterface();
 			}
 			else
@@ -127,10 +126,10 @@ package multipublish.components.supportWeather
 		{
 			httpservice.removeEventListener(ResultEvent.RESULT, http_defaultHandler);
 			httpservice.removeEventListener(FaultEvent.FAULT, http_defaultHandler);
-			trace("------",e.result);
+			//trace("------",e.result);
 			if (e.type == ResultEvent.RESULT)
 			{
-				trace((e as ResultEvent).result.toString());
+				//trace((e as ResultEvent).result.toString());
 				var temp:Object = JSON.parse((e as ResultEvent).result.toString());
 				if (temp.weatherinfo)
 				{
@@ -178,7 +177,7 @@ package multipublish.components.supportWeather
 		
 		private function send_error(e:Event):void
 		{
-			trace("数据接收失败");
+			//trace("数据接收失败");
 		}
 		
 		private function objToView(obj:Object):void

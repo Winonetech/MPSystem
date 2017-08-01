@@ -12,11 +12,7 @@ package multipublish.commands
 	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.LogUtil;
 	
-	import com.winonetech.tools.LogSQLite;
-	
-	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
-	import multipublish.consts.TypeConsts;
 	import multipublish.consts.URLConsts;
 	
 	
@@ -58,10 +54,11 @@ package multipublish.commands
 			
 			config.service.communicationStop();
 			
-			LogSQLite.log(
+			/*LogSQLite.log(
 				TypeConsts.NETWORK,
 				EventConsts.EVENT_PC_REBOOT,
-				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_REBOOT));
+				LogUtil.logTip(MPTipConsts.RECORD_COMMAND_REBOOT))*/
+			LogUtil.logTip(MPTipConsts.RECORD_COMMAND_REBOOT);
 			
 			try
 			{

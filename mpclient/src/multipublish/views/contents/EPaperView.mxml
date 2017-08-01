@@ -15,9 +15,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import com.winonetech.events.ControlEvent;
 			
+			import multipublish.tools.Statistics;
 			import multipublish.views.contents.epaper.PaperRackItem;
 			import multipublish.vo.contents.EPaper;
 			
@@ -115,6 +115,9 @@
 				if (e.target is PaperRackItem)
 				{
 					sheets.sheetShow(e.target.data.sheets);
+					
+					//统计查看哪一天的报纸
+					Statistics.censusEpaper(epaper.content, e.target.data.date);
 				}
 			}
 			

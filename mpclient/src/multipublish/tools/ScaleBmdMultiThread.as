@@ -1,18 +1,15 @@
 package multipublish.tools
 {
 	import cn.vision.errors.SingleTonError;
-	import cn.vision.pattern.core.Command;
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.MessageChannel;
 	import flash.system.Worker;
 	import flash.system.WorkerDomain;
 	import flash.utils.ByteArray;
-	import flash.utils.setInterval;
 	
 	
 	[Event(name="complete", type="flash.events.Event")]
@@ -56,9 +53,6 @@ package multipublish.tools
 			
 			
 		}
-		
-		
-		public static const instance:ScaleBmdMultiThread = new ScaleBmdMultiThread;
 		
 		
 		
@@ -134,6 +128,8 @@ package multipublish.tools
 		private var mainToWorker:MessageChannel;
 		
 		private var workerToMain:MessageChannel;
+		
+		public static const instance:ScaleBmdMultiThread = new ScaleBmdMultiThread;
 		
 	}
 }

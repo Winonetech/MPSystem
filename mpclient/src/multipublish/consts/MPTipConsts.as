@@ -483,6 +483,24 @@ package multipublish.consts
 		public static const RECORD_LOG_UPLOAD_FAILURE:Tip = new Tip("日志文件上传失败，{$self}", 2);
 		
 		
+		/**
+		 * 
+		 * 统计文件上传成功记录。
+		 * 
+		 */
+		
+		public static const STATISTICS_UPLOAD_SUCCESS:Tip = new Tip("统计文件上传成功。", 2);
+		
+		
+		/**
+		 * 
+		 * 统计文件上传失败记录。
+		 * 
+		 */
+		
+		public static const STATISTICS_UPLOAD_FAILURE:Tip = new Tip("统计文件上传失败，{$self}", 2);
+		
+		
 		
 		/**
 		 * 

@@ -154,6 +154,8 @@ package multipublish.utils
 				'\t<slideTweenTime>' +(config.slideTweenTime || 1.5)+ '</slideTweenTime>' + e + 
 				'\t<!-- 进入或返回缩放缓动时长 -->' + e + 
 				'\t<zoomTweenTime>' +(config.zoomTweenTime || 1)+ '</zoomTweenTime>' + e + 
+				'\t<!-- 启动后上传统计最大时长（在此时间范围内随机时间点上传） -->' + e + 
+				'\t<uploadStatisticsTime>' +(config.uploadStatisticsTime || 1)+ '</uploadStatisticsTime>' + e + 
 				e + 
 				'</config>';
 		}
