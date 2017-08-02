@@ -164,7 +164,8 @@ package multipublish.vo.schedules
 		
 		public function get timeEnd():Date
 		{
-			if (type == ScheduleTypeConsts.SPOTS)
+			return getProperty("end"  , Date);
+			/*if (type == ScheduleTypeConsts.SPOTS)
 			{
 				var start:Date = getProperty("start", Date);
 				var end  :Date = getProperty("end"  , Date);
@@ -174,7 +175,7 @@ package multipublish.vo.schedules
 			{
 				date = getProperty("end"  , Date);
 			}
-			return date;
+			return date;*/
 		}
 		
 		
