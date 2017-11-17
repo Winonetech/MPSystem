@@ -46,7 +46,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 
 Source: "MPClient\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "financeData\*"; DestDir: "{app}\financeData"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "financeData\*"; DestDir: "{app}\financeData"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\Adobe AIR\*"; DestDir: "{app}\Adobe AIR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\META-INF\*"; DestDir: "{app}\META-INF"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "MPClient\mimetype"; DestDir: "{app}"; Flags: ignoreversion
