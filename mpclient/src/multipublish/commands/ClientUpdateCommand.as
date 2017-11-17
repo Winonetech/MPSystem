@@ -76,25 +76,28 @@ package multipublish.commands
 		 */
 		private function clientUpdate():void
 		{
-			modelog(ClientStateConsts.UPDATE_CHECK);
-			
-			var loader:URILoader = new URILoader;
-			loader.timeout = 5;
-			loader.addEventListener(Event.COMPLETE, handlerLoadDefault);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, handlerLoadDefault);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerLoadDefault);
-			loader.addEventListener(TimeoutEvent.TIMEOUT, handlerLoadDefault);
-			
-			var request:URLRequest = new URLRequest;
-			request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80)+ URLConsts.GET_CLIENT_INFO;
-			var variables:URLVariables = new URLVariables;
-			variables.terminalNumber = config.terminalNO;
-			variables.versionNumber  = config.version;
-			request.data = variables;
-			
-			LogUtil.log("连接服务端自动更新检测：" + request.url, variables.terminalNumber, variables.versionNumber);
-			
-			loader.load(request);
+			if (config.isCommunicate) 
+			{
+				modelog(ClientStateConsts.UPDATE_CHECK);
+				
+				var loader:URILoader = new URILoader;
+				loader.timeout = 5;
+				loader.addEventListener(Event.COMPLETE, handlerLoadDefault);
+				loader.addEventListener(IOErrorEvent.IO_ERROR, handlerLoadDefault);
+				loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handlerLoadDefault);
+				loader.addEventListener(TimeoutEvent.TIMEOUT, handlerLoadDefault);
+				
+				var request:URLRequest = new URLRequest;
+				request.url = "http://" + config.httpHost + ":" +(config.httpPort || 80)+ URLConsts.GET_CLIENT_INFO;
+				var variables:URLVariables = new URLVariables;
+				variables.terminalNumber = config.terminalNO;
+				variables.versionNumber  = config.version;
+				request.data = variables;
+				
+				LogUtil.log("连接服务端自动更新检测：" + request.url, variables.terminalNumber, variables.versionNumber);
+				
+				loader.load(request);
+			}
 		}
 		
 		/**

@@ -9,15 +9,16 @@ package multipublish.commands
 	
 	
 	import cn.vision.collections.Map;
+	import cn.vision.utils.FileUtil;
+	import cn.vision.utils.TimerUtil;
 	
 	import multipublish.consts.ClientStateConsts;
+	import multipublish.consts.DataConsts;
 	import multipublish.consts.ScheduleRepeatTypeConsts;
 	import multipublish.consts.ScheduleTypeConsts;
 	import multipublish.tools.Controller;
 	import multipublish.utils.ScheduleUtil;
 	import multipublish.vo.schedules.Schedule;
-	
-	import spark.components.VideoPlayer;
 	
 	
 	public final class PlaybackScheduleCommand extends _InternalCommand
@@ -137,7 +138,6 @@ package multipublish.commands
 		{
 			return config.controller;
 		}
-		
 		
 		/**
 		 * @private

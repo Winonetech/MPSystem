@@ -10,7 +10,6 @@ package multipublish.commands
 	
 	import cn.vision.utils.ObjectUtil;
 	import cn.vision.utils.StringUtil;
-	import cn.vision.utils.XMLUtil;
 	
 	import com.winonetech.tools.Cache;
 	
@@ -70,6 +69,7 @@ package multipublish.commands
 				view.application.removeElement(view.guild);
 				view.application.addElement(view.installer = new InstallerView);
 				view.installer.onSubmit = load;
+				view.installer.commandEnd = commandEnd;
 				view.installer.onCancel = exit;
 				BindingUtils.bindProperty(view.installer, "labelSubmit", language, "getTerminalNO");
 				BindingUtils.bindProperty(view.installer, "labelCancel", language, "cancel");
@@ -148,6 +148,7 @@ package multipublish.commands
 					if(uint(config.terminalNO) > 0)
 					{
 						view.installer.onSubmit = save;
+						view.installer.communicateGroup.enabled = false;
 						BindingUtils.bindProperty(view.installer, "labelSubmit", language, "save");
 					}
 					else

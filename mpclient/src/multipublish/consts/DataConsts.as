@@ -49,5 +49,32 @@ package multipublish.consts
 		
 		public static const PATH_TYPESET:String = "cache/typeset/typeset";
 		
+		/**
+		 * 
+		 * 存放当前在播节目。 
+		 * 
+		 */
+		
+		public static const CURR_PROG:String = "current/current_program.xml";
+		
+		
+		/**
+		 * 
+		 * 播放日志记录。 
+		 * 
+		 */
+		
+		public static const PROG_LOG:String = "current/playlog/playlog_";
+		
+		
+		/**
+		 * 
+		 * 暂停 恢复记录。 
+		 * 
+		 */
+		
+		public static const PAUSE_CFG:String = "current/pause.config";
+		
+		
 	}
 }

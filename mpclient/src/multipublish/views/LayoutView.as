@@ -10,6 +10,8 @@ package multipublish.views
 	
 	import caurina.transitions.Tweener;
 	
+	import cn.vision.datas.VO;
+	
 	import com.winonetech.core.wt;
 	import com.winonetech.events.ControlEvent;
 	
@@ -40,8 +42,8 @@ package multipublish.views
 			super();
 			
 			initializeEnvironment();
+			
 		}
-		
 		
 		/**
 		 * @inheritDoc
@@ -60,6 +62,12 @@ package multipublish.views
 			}
 		}
 		
+		private function initContents():void 
+		{
+			contentCounter = {};
+		}
+		
+		private var contentCounter:Object = {};
 		
 		/**
 		 * @inheritDoc
@@ -98,13 +106,13 @@ package multipublish.views
 			if (source)
 			{
 				log(MPTipConsts.RECORD_LAYOUT_DATA, source);
-				
 				width  = source.width;
 				height = source.height;
 				navigatable = source.dragable && source.contents.length > 1;
 				x = source.x;
 				y = source.y;
 				initializeType();
+				initContents();
 				view = generateView();
 				fore = generateNext();
 				last = generateNext(false);
@@ -236,43 +244,65 @@ package multipublish.views
 		 */
 		private function tween($distance:Number):void
 		{
-			var d:Number = $distance;
-			if (d)
-			{
-				side = d < 0;
-				prev = view;
-				next = side ? fore : last;
-				if (next)
+				var d:Number = $distance;
+				if (d)
 				{
-					var b:Number = Math.abs(d);
-					var f:Boolean = b > distance;
-					var a:Number = f ? (side ? -width : width) : 0;
-					var p:Number = b / width;
-					var t:Number = Math.max(.3, p * config.slideTweenTime);
-					if (f) wt::tweening = true;
-					Tweener.addTween(container, {x:a, time:t, 
-						onComplete:callbackTweenOver, 
-						onCompleteParams:[f]});
-				}
-				else
-				{
-					wt::tweening = false;
-					processPlay();
-				}
-			} else wt::tweening = false;
+					side = d < 0;
+					prev = view;
+					next = side ? fore : last;
+					if (next)
+					{
+						var b:Number = Math.abs(d);
+						var f:Boolean = b > distance;
+						var a:Number = f ? (side ? -width : width) : 0;
+						var p:Number = b / width;
+						var t:Number = Math.max(.3, p * config.slideTweenTime);
+						if (f) wt::tweening = true;
+						Tweener.addTween(container, {x:a, time:t, 
+							onComplete:callbackTweenOver, 
+							onCompleteParams:[f]});
+					}
+					else
+					{
+						wt::tweening = false;
+//						playTimeCheck((view.data) as Content); 
+						processPlay();
+					}
+				} else wt::tweening = false;
 		}
 		
+		private function playTimeCheck($vo:Content):void
+		{
+//			if ($vo && $vo.playTimes)
+//			{
+//				if (contentCounter[$vo.vid]) 
+//				{
+//					contentCounter[$vo.vid] += 1;
+//				} 
+//				else
+//				{
+//					contentCounter[$vo.vid] = 1;
+//				}
+//				
+//				if (contentCounter[$vo.vid] >= $vo.playTimes && source.contents.indexOf($vo) >= 0) 
+//				{
+//					source.contents[source.contents.indexOf($vo)] = null;
+//				}
+//				
+//			}
+		}
 		
 		/**
 		 * @private
 		 */
 		private function callbackTweenOver($generate:Boolean = false):void
 		{
-			if ($generate)
+			if ($generate)   
 			{
 				container.x = 0;
 				container.removeElement(side ? last : fore);
 				container.removeElement(view);
+//				playTimeCheck((view.data as Content));
 				var gcable:Boolean = (view.data as Content).type == ContentTypeConsts.RECORD;
 				view.removeEventListener(ControlEvent.STOP, handlerViewStop);
 				view.reset();
@@ -282,11 +312,10 @@ package multipublish.views
 				neigh = index;
 				fore = generateNext();
 				last = generateNext(false);
-				
-				processPlay();
+				//解决boo读取时期与切换时期的并发问题。
+				config.playable && processPlay();
 				
 				next = prev = null;
-				
 				if (gcable) System.gc();
 			}
 			
@@ -305,6 +334,7 @@ package multipublish.views
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, handlerMouseMove);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, handlerMouseUp);
 			}
+			
 			if (index >= source.contents.length - 1) stop();
 			
 			tween(-width);

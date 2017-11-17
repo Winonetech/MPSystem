@@ -12,6 +12,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import multipublish.core.MPCConfig;
 			import multipublish.core.mp;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
@@ -25,11 +26,11 @@
 			override protected function processPlay():void
 			{
 				if (video && video.source) video.play();
-				/* trace("play judge: " + Boolean(video && video.source) + " isPlaying: " + video.playing);
-				if (video.playing)
-				{
-					trace(this.getBounds(stage));
-				} */ 
+//				 trace("play judge: " + Boolean(video && video.source) + " isPlaying: " + video.playing);
+//				if (video.playing)
+//				{
+//					trace(this.getBounds(stage));
+//				} 
 			}
 			
 			
@@ -39,7 +40,7 @@
 			
 			override protected function processStop():void
 			{
-				if (video && video.playing) video.stop();
+				if (video && video.playing) video.pause();
 			}
 			
 			override protected function resolveData():void
@@ -80,7 +81,6 @@
 					if (playing && !video.playing) 
 					{
 						video.play();
-						
 					}
 				}
 				else if ($e.state == MediaPlayerState.PLAYBACK_ERROR)
@@ -103,6 +103,7 @@
 						f = !f;
 						return;
 					}
+					
 					f = !f;  
 				}
 				

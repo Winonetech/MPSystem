@@ -1,5 +1,7 @@
 package multipublish.tools
 {
+	import cn.vision.utils.FileUtil;
+	
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -14,39 +16,40 @@ package multipublish.tools
 	{
 		public function ScheduleChangedController()
 		{
-			timer.addEventListener(TimerEvent.TIMER, changed_timerHandler);
-			timer.start();
-			
-			changed_timerHandler();
+			execute();
 		}
 		
+		private function execute():void
+		{
+			if (!config.isCommunicate && timer && !timer.running) 
+			{
+				timer.addEventListener(TimerEvent.TIMER, changed_timerHandler);
+				timer.start();
+				
+				changed_timerHandler();
+			}
+		}
 		
 		private function changed_timerHandler($e:TimerEvent = null):void
 		{
-			if (compareSchedule())  presenter.initializeModule(null, true);
+			if (!config.isCommunicate && compareSchedule())  presenter.initializeModule(null, true);
 		}
-		
 		
 		private function compareSchedule():Boolean
 		{
-			var file:File = File.applicationDirectory.resolvePath(DataConsts.PATH_SCHEDULE);   //排期文件.xml
-			var fs:FileStream = new FileStream;
-			var str:String;
-			fs.open(file, FileMode.READ);
-			str = fs.readUTFBytes(fs.bytesAvailable);
-			fs.close();
+			var str:String = FileUtil.readUTF(FileUtil.resolvePathApplication(DataConsts.PATH_SCHEDULE));
 			
 			if (!last)
 			{
 				last = str;
 				return false;
 			}
-			
-			if (last != str)
+			else if (last != str)
 			{
 				last = str;
 				return true;
 			}
+			
 			return false;
 			
 		}
@@ -60,7 +63,7 @@ package multipublish.tools
 		/**
 		 * @private
 		 */
-		private const DELAY:uint = 5;
+		private const DELAY:uint = config.scheduleGap || 1;
 		
 		/**
 		 * @private

@@ -9,8 +9,8 @@ package multipublish.tools
 	
 	
 	import cn.vision.collections.Map;
-	import cn.vision.core.VSObject;
 	import cn.vision.core.Presenter;
+	import cn.vision.core.VSObject;
 	import cn.vision.utils.LogUtil;
 	
 	import com.winonetech.core.Store;
@@ -57,7 +57,7 @@ package multipublish.tools
 			usecacheArgs = $args;
 			if(!usecackeTimer)
 			{
-				usecackeTimer = new Timer(1000, $time);
+				usecackeTimer = new Timer(1000 * $time, 1);
 				usecackeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handlerUsecache);
 				usecackeTimer.start();
 			}
@@ -170,6 +170,13 @@ package multipublish.tools
 			var shutdown:Object = shutdownCache ? shutdownCache[note] : null;
 			if (shutdown && shutdown.handler)
 				shutdown.handler.apply(null, shutdown.args);
+			
+			note = getNote(now, true);
+			
+			//判定是否到达对应的时间点
+			var contentCache:Object = contentCache ? contentCache[note] : null;
+			if (contentCache && contentCache.handler)
+				contentCache.handler.apply(null, contentCache.args);
 		}
 		
 		/**
@@ -180,6 +187,29 @@ package multipublish.tools
 			LogUtil.logTip(MPTipConsts.RECORD_CACHE_USE, usecackeTimer);
 			
 			usecacheHandler && usecacheHandler.apply(null, usecacheArgs);
+		}
+		
+		/**
+		 * 
+		 * 注册时间点，在该时间点下执行回调。
+		 * 
+		 * @param $time:Date 时间，精确到秒。
+		 * @param $handler:Function 调用函数。
+		 * @param $args 相关参数。
+		 * 
+		 */
+		
+		public function registContentBroadcast($time:Date, $handler:Function = null, ...$args):void
+		{
+			if(!contentTimer)
+			{
+				commanTimer = new Timer(1000);
+				commanTimer.addEventListener(TimerEvent.TIMER, handlerComman);
+				commanTimer.start();
+			}
+			var note:String = getNote($time);
+			contentCache = contentCache || {};
+			contentCache[note] = {handler:$handler, args:$args};
 		}
 		
 		
@@ -218,5 +248,7 @@ package multipublish.tools
 		 */
 		private var shutdownCache:Object;
 		
+		private var contentCache:Object;
+		private var contentTimer:Timer;
 	}
 }

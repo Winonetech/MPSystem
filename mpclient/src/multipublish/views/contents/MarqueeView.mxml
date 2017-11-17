@@ -3,19 +3,31 @@
 				xmlns:s ="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:ct="multipublish.views.contents.*"
-				mouseChildren="false">
+				mouseChildren="false"
+				mouseEnabled ="false">
 	
-	<s:Group id="container" left="10" right="10" top="10" bottom="10" clipAndEnableScrolling="true"/>
+	<!-- 
+	<s:Group id="container" left="10" right="10" top="10" bottom="10" 
+	--> 
+	<s:Group id="container" clipAndEnableScrolling="true" 
+			 creationComplete="container_creationCompleteHandler(event)">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="{color}"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
 	
 	<fx:Script>
 		<![CDATA[
-			
-			
 			import cn.vision.utils.MathUtil;
 			import cn.vision.utils.StringUtil;
 			
+			import multipublish.core.MPCConfig;
 			import multipublish.core.mp;
 			import multipublish.vo.contents.Marquee;
+			
+			import mx.events.FlexEvent;
 			
 			import spark.components.Label;
 			
@@ -29,8 +41,7 @@
 				super.processPlay();
 				
 				speedTimerCreate(30, label_speedtimerHandler);
-				stopTimerCreate(marquee.duration * 100, label_stoptimerHandler);
-				trace("marquee.duration -> " + marquee.duration);
+				stopTimerCreate(marquee.duration, label_stoptimerHandler);
 			}
 			
 			
@@ -40,8 +51,8 @@
 			
 			override protected function processStop():void
 			{
-				trace("------ stop -------");
 				timerRemove();
+				config.playable && container && (container.visible = false);
 			}
 			
 			
@@ -53,7 +64,7 @@
 			{
 				super.processReset();
 				
-				marquee = null;
+				container.removeAllElements();
 			}
 			
 			
@@ -67,12 +78,10 @@
 				
 				container.addElement(label = new Label);
 				label.verticalCenter = 0;
-				label.setStyle("fontSize", 400);
+				label.setStyle("fontSize", marquee.fontSize);
 				label.maxDisplayedLines = 1;
 				
-				label.x = container.width;
-				
-				updateLabel();
+//				updateLabel();
 			}
 			
 			
@@ -105,7 +114,9 @@
 				{
 					label.x = container.width;
 					var c:uint = marquee ? marquee.fontColor : 0xFFFFFF;
+					time = marquee ? marquee.playTime : -1;
 					label.setStyle("color", c);
+					color = marquee ? marquee.backgroundColor : 0;
 					label.text = marquee ? marquee.txtContents : null;
 					while(label.isTruncated) label.width += 50;
 				}
@@ -114,12 +125,12 @@
 			/**
 			 * @private
 			 */
-			private function stopTimerCreate($delay:uint, $handler:Function):void
+			private function stopTimerCreate($times:uint, $handler:Function):void
 			{
 				if (!stopTimer)
 				{
-					stopTimer = new Timer($delay);
-					stopTimer.addEventListener(TimerEvent.TIMER, $handler);
+					stopTimer = new Timer(1000, $times);
+					stopTimer.addEventListener(TimerEvent.TIMER_COMPLETE, $handler);
 					stopTimer.start();
 				}
 			}
@@ -160,17 +171,30 @@
 			{
 				processStop();
 			}
+			
 			private var flag:int;
+			
+			private var time:int = -1;
+			
+			[Bindable]
+			private var color:uint;
 			/**
 			 * @private
 			 */
 			private function label_speedtimerHandler($e:TimerEvent):void
 			{
-				if (label)
+				!stopTimer.running && stopTimer.start();
+				
+				if (label && time != 0)
 				{
-					trace("=========== " + (flag++) + " ===========");
 					label.x -= rollingSpeed;
-					if (label.x < -label.width) label.x = container.width;
+					if (label.x < -label.width) 
+					{
+						label.x = container.width;
+						time--;
+					}
+				} else if (time == 0) {
+					processStop();
 				}
 			}
 			
@@ -224,6 +248,11 @@
 			 * @private
 			 */
 			mp var time:uint;
+			
+			protected function container_creationCompleteHandler(event:FlexEvent):void
+			{
+				updateLabel();
+			}
 			
 		]]>
 	</fx:Script>

@@ -14,11 +14,13 @@ package multipublish.core
 	import com.winonetech.core.Store;
 	
 	import flash.display.Stage;
+	import flash.utils.Timer;
 	
 	import multipublish.tools.Controller;
 	import multipublish.tools.FinanceDataUdtController;
 	import multipublish.tools.MPService;
 	import multipublish.tools.NativeService;
+	import multipublish.tools.ProgramController;
 	import multipublish.tools.Reporter;
 	import multipublish.tools.ScheduleChangedController;
 	import multipublish.tools.Shotcuter;
@@ -58,8 +60,25 @@ package multipublish.core
 			mp::language   	  = new Language;
 			mp::reporter   	  = new Reporter;
 			mp::nativeService = new NativeService;
+			
 		}
 		
+		public function get playable():Boolean
+		{
+			return _playable;
+		}
+		
+		//不用set方法的原因是 如果赋值相同 则不会执行set方法。故改成此setter
+		public function setPlayable($boo:Boolean):void
+		{
+			(_playable = $boo) 
+				? view.main.play()
+				: view.main.stop();
+		}
+		
+		private var _playable:Boolean = true;
+		
+		public var timer:Timer;
 		
 		/**
 		 * 
@@ -528,6 +547,30 @@ package multipublish.core
 		 * 
 		 */
 		public var scc:ScheduleChangedController;
+	
+		/**
+		 * 
+		 * 排期更新检测间隔时间。
+		 * 
+		 */
+		
+		public var scheduleGap:uint = 3;
+		
+		/**
+		 * 
+		 * 节目控制检测。
+		 * 
+		 */
+		public var pc:ProgramController;
+		
+		/**
+		 * 
+		 * 节目控制检测间隔时间。
+		 * 
+		 */
+		
+		public var programGap :uint = 1;
+		
 		
 		/**
 		 * @private

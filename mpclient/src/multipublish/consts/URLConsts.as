@@ -10,6 +10,8 @@ package multipublish.consts
 	
 	import cn.vision.core.NoInstance;
 	
+	import multipublish.core.MPCConfig;
+	
 	
 	public final class URLConsts extends NoInstance
 	{
@@ -31,6 +33,7 @@ package multipublish.consts
 		 */
 		
 		public static const UPDATER:String = "update.exe";
+		
 		
 		
 		/**

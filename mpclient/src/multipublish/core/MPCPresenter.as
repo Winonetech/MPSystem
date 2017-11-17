@@ -8,12 +8,13 @@ package multipublish.core
 	 */
 	
 	
-	import cn.vision.errors.SingleTonError;
 	import cn.vision.core.Command;
 	import cn.vision.core.Presenter;
+	import cn.vision.errors.SingleTonError;
 	import cn.vision.queue.SequenceQueue;
 	
 	import multipublish.commands.*;
+	import multipublish.tools.ProgramController;
 	import multipublish.tools.ScheduleChangedController;
 	
 	import spark.components.WindowedApplication;
@@ -99,9 +100,14 @@ package multipublish.core
 			config.cache  = $cache;
 			
 			if ($push && config.times <= 1) config.times++;
+			
 			execute(new InitializeDataCommand($push));
 			execute(new PlaybackScheduleCommand);
-			if (i++ == 0) config.scc = new ScheduleChangedController;
+			
+			if (i++ == 0) {
+				config.scc = new ScheduleChangedController;
+				config.pc  = new ProgramController;
+			}
 		}
 		
 		

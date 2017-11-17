@@ -12,9 +12,7 @@
 		<![CDATA[
 			protected function communicate_changeHandler(event:Event):void
 			{
-				trace("Before : " + config.isCommunicate);
 				config.isCommunicate = Boolean(communicateGroup.selectedValue);
-				trace("After : " + config.isCommunicate);
 			}
 		]]>
 	</fx:Script>
@@ -314,11 +312,17 @@
 	<fx:Script>
 		<![CDATA[
 			import cn.vision.utils.DebugUtil;
+			import cn.vision.utils.StringUtil;
+			
+			import com.winonetech.tools.Cache;
 			
 			import input.Input;
 			import input.utils.TextUtil;
 			
+			import multipublish.consts.URLConsts;
 			import multipublish.core.MPCPresenter;
+			import multipublish.core.MPCView;
+			import multipublish.utils.DataUtil;
 			import multipublish.vo.Language;
 			
 			import spark.events.TextOperationEvent;
@@ -367,12 +371,35 @@
 				DebugUtil.execute(setLanguage, false, languageGroup.selectedValue);
 			}
 			
+			private function doNoCommunicate():void
+			{
+				if (uint(config.terminalNO) > 0) 
+				{
+					Cache.save(URLConsts.NATIVE_CONFIG, DataUtil.getConfig());
+					
+					MPCView.instance.application.removeElement(MPCView.instance.installer);
+					MPCView.instance.application.addElement(MPCView.instance.guild);
+					
+					DebugUtil.execute(commandEnd, false);
+				}
+				else 
+				{
+					config.terminalNO = StringUtil.formatUint(Math.round(Math.random() * 10000), 4);
+					labelSubmit = language.save;
+					communicateGroup.enabled = false;
+				}
+			}
+			
 			/**
 			 * @private
 			 */
 			private function submit_clickHandler($e:MouseEvent):void
 			{
-				if (onSubmit != null) 
+				if (!communicateGroup.selectedValue) 
+				{
+					doNoCommunicate();
+				}
+				else if (onSubmit != null) 
 				{
 					onSubmit();
 					onSubmit = null;
@@ -424,6 +451,15 @@
 			 */
 			
 			public var onSubmit:Function;
+			
+			
+			/**
+			 * 
+			 * 命令结束回调函数。
+			 * 
+			 */
+			
+			public var commandEnd:Function;
 			
 			
 			/**

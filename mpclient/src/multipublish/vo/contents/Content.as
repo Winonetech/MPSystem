@@ -48,6 +48,10 @@ package multipublish.vo.contents
 			return getProperty("timelength", uint);
 		}
 		
+		public function get playTimes():uint 
+		{
+			return getProperty("playtimes", uint);
+		}
 		
 		/**
 		 * 

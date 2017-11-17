@@ -3,13 +3,85 @@ package multipublish.utils
 	
 	
 	import cn.vision.core.NoInstance;
+	import cn.vision.utils.DateUtil;
+	import cn.vision.utils.FileUtil;
 	import cn.vision.utils.StringUtil;
 	
+	import com.winonetech.tools.Cache;
+	
+	import flash.filesystem.File;
+	
+	import multipublish.consts.DataConsts;
+	import multipublish.consts.URLConsts;
 	import multipublish.core.MPCConfig;
+	import multipublish.vo.contents.Content;
+	import multipublish.vo.contents.Marquee;
+	import multipublish.vo.programs.Layout;
+	import multipublish.vo.programs.Program;
+	import multipublish.vo.schedules.Schedule;
 	
 	
 	public final class DataUtil extends NoInstance
 	{
+		private static function convSchdule($schedule:Schedule):String
+		{
+			var result:String = null;
+			
+			if ($schedule && $schedule.hasProgram)
+			{
+				for each (var program:Program in $schedule.programs) 
+				{
+					for each (var layout:Layout in program.layouts)
+					{
+						for each (var content:Content in layout.contents)
+						{
+							if (!(content is Marquee))
+							{
+								result = result || "";
+								
+								result += content.id + "|" + DateUtil.getDateFormat($schedule.dateStart, true, 2)
+										+ "|" + DateUtil.getDateFormat($schedule.dateEnd, true, 2) + StringUtil.lineEnding;
+							}
+							
+						}
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		public static function programLog($schedule:Schedule):void
+		{
+			var result:String = null;
+			
+			if ($schedule) 
+			{
+				result = convSchdule($schedule);
+				
+				var file:File = new File(FileUtil.resolvePathApplication(DataConsts.PROG_LOG + MPCConfig.instance.terminalNO + "_" 
+					+ DateUtil.getDateFormat(new Date, false, 2, "", "", "") + ".txt"));
+				
+				if (result) 
+				{
+					if (file.exists) 
+					{
+						if (FileUtil.readUTF(file.nativePath) != result)
+						{
+							FileUtil.saveUTF(file.nativePath, result, true);
+						}
+						
+					} 
+					else
+					{
+						Cache.save(file.nativePath, result);
+					}
+				}
+				
+				
+			}
+			
+		}
 		
 		/**
 		 * 

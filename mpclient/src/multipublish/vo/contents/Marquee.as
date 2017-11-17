@@ -24,6 +24,7 @@ package multipublish.vo.contents
 			opacity			= uint(obj["opacity"]);
 			txtContents		= obj["txtcontents"];
 			txtSpeed		= uint(obj["txtspeed"]);
+			
 			if (txtSpeed == 0) txtSpeed = 30;
 		}
 		
@@ -73,5 +74,16 @@ package multipublish.vo.contents
 		 * 
 		 */
 		public var txtSpeed:uint;
+		
+		/**
+		 * 
+		 * 播放次数。
+		 *
+		 */
+		
+		public function get playTime():int 
+		{
+			return getProperty("playtimes", int) || -1;
+		}
 	}
 }

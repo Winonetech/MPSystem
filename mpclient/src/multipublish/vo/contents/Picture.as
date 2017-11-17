@@ -50,7 +50,11 @@ package multipublish.vo.contents
 			}
 			var temp2:String = (temp == "file") ? temp1 : CacheUtil.extractURI(url, PathConsts.PATH_FILE);
 			mp::content = temp2;
-			wt::registCache(url);
+			try
+			{
+				wt::registCache(url);
+			} 
+			catch(error:Error) {}
 		}
 		
 		

@@ -41,11 +41,11 @@ package multipublish.views.contents
 		
 		override protected function processPlay():void
 		{
-			LogSQLite.log(
-				TypeConsts.FILE,
-				EventConsts.EVENT_START_PLAYING,
-				content.content.split("/").pop(),
-				log(MPTipConsts.RECORD_CONTENT_PLAY, content));
+//			LogSQLite.log(
+//				TypeConsts.FILE,
+//				EventConsts.EVENT_START_PLAYING,
+//				content.content.split("/").pop(),
+//				log(MPTipConsts.RECORD_CONTENT_PLAY, content));
 			
 			if(!timer && content.duration)
 			{

@@ -203,7 +203,7 @@
 				"gold"		  : FinanceTypeConsts.GOLD,
 				"stock"		  : FinanceTypeConsts.STOCK,
 				"存款利率" 	  : FinanceTypeConsts.DEPOSITRATE,
-				"外汇牌价"      : FinanceTypeConsts.QUOTATION,
+				"外汇牌价"     : FinanceTypeConsts.QUOTATION,
 				"原油"         : FinanceTypeConsts.OIL,
 				"黄金"		  : FinanceTypeConsts.GOLD,
 				"股票"		  : FinanceTypeConsts.STOCK

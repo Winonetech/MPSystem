@@ -10,18 +10,27 @@ package multipublish.views
 	
 	import caurina.transitions.Tweener;
 	
+	import cn.vision.utils.DateUtil;
+	import cn.vision.utils.FileUtil;
+	
 	import com.winonetech.events.ControlEvent;
+	import com.winonetech.tools.Cache;
 	import com.winonetech.tools.LogSQLite;
 	
 	import flash.events.Event;
 	import flash.events.TimerEvent;
+	import flash.system.System;
 	import flash.utils.Timer;
 	
+	import multipublish.consts.DataConsts;
 	import multipublish.consts.EventConsts;
 	import multipublish.consts.MPTipConsts;
 	import multipublish.consts.TypeConsts;
+	import multipublish.consts.URLConsts;
 	import multipublish.core.MPCView;
 	import multipublish.core.mp;
+	import multipublish.utils.BUSUtil;
+	import multipublish.utils.DataUtil;
 	import multipublish.vo.programs.Program;
 	import multipublish.vo.schedules.Schedule;
 	
@@ -101,6 +110,8 @@ package multipublish.views
 			{
 				view.addEventListener(ControlEvent.STOP, handlerEnd);
 				view.play();
+				Cache.save(DataConsts.CURR_PROG, view.data.raw);
+				DataUtil.programLog(data as Schedule);
 			}
 		}
 		
@@ -203,11 +214,12 @@ package multipublish.views
 				view = generateView();
 				next = generateNext();
 				play();
+				updatePause();
 			}
 			else
 			{
-				processStop();
-				
+//				processStop();
+				stop();
 				if (next)
 				{
 					if (containsElement(next))
@@ -281,6 +293,7 @@ package multipublish.views
 				{
 					view.addEventListener(ControlEvent.STOP, handlerEnd);
 					view.play();
+//					play();
 				}
 			}
 			else
@@ -354,7 +367,30 @@ package multipublish.views
 			view = next;
 			next = generateNext();
 			view.addEventListener(ControlEvent.STOP, handlerEnd);
-			view.play();
+//			view.play();
+			play();
+			updatePause();
+		}
+		
+		private function updatePause():void
+		{
+			BUSUtil.updatePlayable(false);
+//			var result:String = FileUtil.readUTF(FileUtil.resolvePathApplication(DataConsts.PAUSE_CFG));
+//			
+//			try
+//			{
+//				if (result) 
+//				{
+//					var playing:Boolean = "true" == result;
+//					
+//					config.setPlayable(playing);
+//				} 
+//				else 
+//				{
+//					config.setPlayable(true);
+//				}
+//			} 
+//			catch(error:Error) {}
 		}
 		
 		
