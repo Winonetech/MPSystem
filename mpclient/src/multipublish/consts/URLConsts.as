@@ -158,5 +158,14 @@ package multipublish.consts
 		
 		public static const TOOL_TIME:String = "assets/tools/time.bat";
 		
+		
+		/**
+		 * 
+		 * 设置系统音量工具路径。
+		 * 
+		 */
+		
+		public static const TOOL_VOLUME:String = "assets/tools/volumeControl.bat";
+		
 	}
 }

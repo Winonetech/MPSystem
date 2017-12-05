@@ -126,6 +126,8 @@ package multipublish.commands
 			
 			if (waitQueue.lave || unwaitQueue.lave)
 			{
+				LogUtil.log("等待队列下载个数：" + waitQueue.lave);
+				LogUtil.log("非等待队列下载个数：" + unwaitQueue.lave);
 				//开始下载时再注册监听。
 				if (waitQueue.lave)
 					waitQueue.addEventListener(QueueEvent.QUEUE_END, wait_endHandler, false, 0, true);
@@ -239,8 +241,9 @@ package multipublish.commands
 			ViewUtil.showDownload(false);
 			
 			//新排期下载完毕，替换老排期
-			
-			if (unwaitQueue.lave + unwaitQueue.num == 0) downloadOver();
+			LogUtil.log("wait_endHandler - unwaitQueue.lave:" + unwaitQueue.lave, "unwaitQueue.num:" + unwaitQueue.num);
+//			if (unwaitQueue.lave + unwaitQueue.num == 0) downloadOver();
+			downloadOver();
 		}
 		
 		
@@ -251,6 +254,7 @@ package multipublish.commands
 		{
 			unwaitQueue.removeEventListener(QueueEvent.QUEUE_END, unwait_endHandler);
 			
+			LogUtil.log("unwait_endHandler - waitQueue.lave:" + waitQueue.lave, "waitQueue.num" + waitQueue.num);
 			if (waitQueue.lave + waitQueue.num == 0) downloadOver();
 		}
 		

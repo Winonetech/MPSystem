@@ -267,7 +267,9 @@ package multipublish.utils
 				}
 			}
 			else
+			{
 				LogUtil.log("config.ini文件不存在...");
+			}
 		}
 		
 		
